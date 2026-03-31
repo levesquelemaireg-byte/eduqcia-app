@@ -1,5 +1,6 @@
 /**
  * Réhydratation `TaeFormState` depuis une ligne `tae` publiée ou brouillon en base.
+ * Sortie alignée sur `bloc1`…`bloc7` (`TaeFormState`).
  * Serveur uniquement — voir `docs/WORKFLOWS.md` (Mes tâches et édition).
  */
 
