@@ -7,8 +7,8 @@ import { publishTaeAction } from "@/lib/actions/tae-publish";
 import { saveWizardDraftAction } from "@/lib/actions/tae-draft";
 import { useWizardSession } from "@/components/tae/TaeForm/WizardSessionContext";
 import {
-  getRedactionSliceForPreview,
   TAE_BLUEPRINT_STEP_INDEX,
+  TAE_BLOC5_STEP_INDEX,
   TAE_CD_STEP_INDEX,
   TAE_DOCUMENTS_STEP_INDEX,
   TAE_FORM_STEP_COUNT,
@@ -30,10 +30,11 @@ import {
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import {
   isActiveLigneDuTempsVariant,
+  isActiveNonRedactionVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
 import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
-import { isRedactionStepComplete } from "@/lib/tae/redaction-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import {
   isPublishBlockedOnlyByIconographicUrls,
   isWizardPublishReady,
@@ -116,9 +117,17 @@ export function StepperNavFooter() {
           toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
           return;
         }
-      } else if (!isRedactionStepComplete(getRedactionSliceForPreview(state))) {
+      } else if (!htmlHasMeaningfulText(state.bloc3.consigne)) {
         toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
         return;
+      }
+    }
+    if (state.currentStep === TAE_BLOC5_STEP_INDEX) {
+      if (!isActiveNonRedactionVariant(state)) {
+        if (!htmlHasMeaningfulText(state.bloc5.corrige)) {
+          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+          return;
+        }
       }
     }
     if (state.currentStep === TAE_DOCUMENTS_STEP_INDEX) {

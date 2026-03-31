@@ -247,6 +247,29 @@ export const TAE_BLUEPRINT_STEP_DESCRIPTION =
 /** Wizard — Étape 2 — `aria-label` du bouton info à côté du titre */
 export const TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA = "Afficher l'aide sur cette étape";
 
+/** Wizard TAÉ — étape 3 — Bloc 3 (consigne + guidage) — `step-meta.ts` */
+export const BLOC3_TITRE = "Consigne et guidage complémentaire";
+export const BLOC3_DESCRIPTION =
+  "Rédigez la consigne destinée à l'élève et le guidage complémentaire pour l'enseignant.";
+
+/** Wizard TAÉ — étape 4 — Bloc 4 — documents historiques */
+export const BLOC4_TITRE = "Documents historiques";
+export const BLOC4_DESCRIPTION = "Associez les documents historiques pertinents.";
+
+/** Wizard TAÉ — étape 5 — Bloc 5 — corrigé / options non rédactionnelles */
+export const BLOC5_TITRE = "Corrigé et options";
+export const BLOC5_DESCRIPTION = "Définissez le corrigé ou générez les options de réponse.";
+
+/** Wizard TAÉ — étape 6 — Bloc 6 — compétence disciplinaire */
+export const BLOC6_CD_TITRE = "Compétence disciplinaire";
+export const BLOC6_CD_DESCRIPTION =
+  "Sélectionnez la compétence, la composante et le critère dans le référentiel ministériel.";
+
+/** Wizard TAÉ — étape 7 — Bloc 7 — aspects + connaissances */
+export const BLOC7_TITRE = "Indexation";
+export const BLOC7_DESCRIPTION =
+  "Associez des aspects de société et des connaissances relatives à cette tâche.";
+
 /** Page « Créer une TAÉ » — Bloc 2 — chargement référentiel */
 export const BLOC2_LOADING_PARAMETERS = "Chargement des paramètres…";
 

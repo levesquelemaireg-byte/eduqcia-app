@@ -8,6 +8,7 @@ import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneP
 import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4DocumentsHistoriques";
 import { Bloc5CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc5CompetenceDisciplinaire";
 import { Bloc6ConnaissancesRelatives } from "@/components/tae/TaeForm/Bloc6ConnaissancesRelatives";
+import { Bloc5StepPlaceholder } from "@/components/tae/TaeForm/bloc5/Bloc5StepPlaceholder";
 import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
 import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
 import { FicheSommaireColumn } from "@/components/tae/TaeForm/sommaire";
@@ -44,6 +45,7 @@ const BLOC_COMPONENTS = [
   Bloc2ParametresTache,
   Bloc3ConsigneProduction,
   Bloc4DocumentsHistoriques,
+  Bloc5StepPlaceholder,
   Bloc5CompetenceDisciplinaire,
   Bloc6ConnaissancesRelatives,
 ] as const satisfies readonly ComponentType[];
