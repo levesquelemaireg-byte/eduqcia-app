@@ -1,0 +1,784 @@
+/**
+ * Chaînes alignées sur `docs/UI-COPY.md` (registre copy UI) et règles `docs/DECISIONS.md`.
+ */
+
+/** Page « Créer une TAÉ » — Toasts — erreur publication */
+export const TOAST_PUBLICATION_FAILED = "Impossible de publier la tâche. Réessayez.";
+
+/** Publication — données rejetées après envoi (sanitize / prérequis serveur) */
+export const TOAST_PUBLICATION_VALIDATION =
+  "La publication a été refusée : données incomplètes ou non reconnues. Vérifiez chaque étape puis réessayez.";
+
+/** Publication — document iconographique sans URL HTTPS publique (`blob:` ou fichier local) */
+export const TOAST_PUBLICATION_DOCUMENT_IMAGE =
+  "Pour publier, chaque document iconographique doit avoir une adresse HTTPS (téléversement terminé ou URL saisie).";
+
+/** Publication — niveau / discipline introuvable en base */
+export const TOAST_PUBLICATION_LOOKUP_NIVEAU =
+  "Niveau scolaire introuvable dans la base. Vérifiez la table « niveaux » (codes sec1…sec4) sur Supabase.";
+
+export const TOAST_PUBLICATION_LOOKUP_DISCIPLINE =
+  "Discipline introuvable dans la base. Vérifiez la table « disciplines » (codes HEC, GEO, HQC).";
+
+/**
+ * Tables `cd` / `connaissances` souvent vides si le schéma SQL seul a été appliqué.
+ * Les images Storage peuvent exister sans que la transaction « publier » réussisse.
+ */
+export const TOAST_PUBLICATION_LOOKUP_CD =
+  "Compétence disciplinaire introuvable en base. Importez les référentiels : npm run seed:ref (base vide) ou npm run seed:ref:fill (tâches d’apprentissage et d’évaluation déjà en base), avec la service role dans .env.local.";
+
+export const TOAST_PUBLICATION_LOOKUP_CONNAISSANCE =
+  "Connaissances relatives introuvables en base. Importez les référentiels : npm run seed:ref ou npm run seed:ref:fill (voir .env.local).";
+
+/** RPC — violation de clé étrangère ou référence absente */
+export const TOAST_PUBLICATION_RPC_FOREIGN_KEY =
+  "La base a refusé la publication (référence manquante). Vérifiez opérations intellectuelles, comportements, liaisons documents et jeux de données.";
+
+/** RPC — enum / type invalide (ex. aspects de société) */
+export const TOAST_PUBLICATION_RPC_ENUM =
+  "La base a refusé une valeur (souvent un aspect de société). Réessayez ou vérifiez les enums PostgreSQL.";
+
+/** RPC `update_tae_transaction` absente sur Supabase — voir `docs/ARCHITECTURE.md` § RPC mise à jour TAÉ */
+export const TOAST_PUBLICATION_RPC_FUNCTION_MISSING =
+  "Mise à jour impossible : la fonction SQL update_tae_transaction est absente sur Supabase. Exécutez la migration supabase/migrations/20250325180000_update_tae_transaction.sql (SQL Editor ou supabase db push), puis réessayez.";
+
+/** Bouton Publier — infobulle quand les docs sont « complets » mais bloqués (image locale) */
+export const PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE = TOAST_PUBLICATION_DOCUMENT_IMAGE;
+
+/** Module documents / Bloc 4 — `docs/UI-COPY.md` (Module, Étape 4) */
+export const DOCUMENT_MODULE_PAGE_TITLE = "Créer un document";
+export const DOCUMENT_MODULE_TITRE_LABEL = "Titre du document";
+
+/** Repère temporel — libellé, aide, champs (module documents, Bloc 4 TAÉ). */
+export const REPERE_TEMPOREL_LABEL = "Repère temporel";
+export const REPERE_TEMPOREL_MODAL_TITLE = "Repère temporel";
+export const REPERE_TEMPOREL_HELP =
+  "Indiquez une année, une période ou une date associée au document. Le système utilisera automatiquement l’année (4 chiffres) pour les exercices de classement. Pour les dates antérieures à l’an 1000, saisissez manuellement une année normalisée (négative autorisée). Cette donnée n’apparaît pas sur la fiche élève.";
+export const REPERE_TEMPOREL_PLACEHOLDER = "ex. 1837, vers 1760, juin 1834, années 1830";
+export const REPERE_TEMPOREL_MANUAL_PLACEHOLDER = "Année normalisée (ex. -30000)";
+export const REPERE_TEMPOREL_EXTRACTED_PREFIX = "Année extraite :";
+export const REPERE_TEMPOREL_MANUAL_HINT =
+  "Saisissez une année normalisée (peut être négative) pour les comparaisons automatiques.";
+export const ERROR_ANNEE_NORMALISEE_RANGE =
+  "L’année normalisée doit être comprise entre -300 000 et l’année en cours.";
+
+/** Après publication d’une tâche avec création de documents en base (`is_published` faux jusqu’à complétion). */
+export const TOAST_TAE_PUBLISH_UNPUBLISHED_DOCS =
+  "Des documents créés avec cette tâche ne sont pas encore visibles dans la banque collaborative. Complétez le repère temporel ou l’année normalisée depuis la fiche document pour les rendre visibles.";
+
+/** Tableau de bord — documents non publiés en banque (auteur). */
+export const DASHBOARD_INCOMPLETE_DOCUMENTS_TITLE = "Documents à compléter pour la banque";
+export const DASHBOARD_INCOMPLETE_DOCUMENTS_EMPTY =
+  "Tous vos documents sont visibles dans la banque ou n’ont pas besoin de complément.";
+export const DASHBOARD_INCOMPLETE_DOCUMENTS_COUNT = (n: number) =>
+  `${n} document${n > 1 ? "s" : ""} à compléter (repère temporel ou année) pour la banque.`;
+export const DASHBOARD_INCOMPLETE_DOCUMENTS_HINT =
+  "Ouvrez la fiche de chaque document depuis Mes tâches pour renseigner le repère temporel ou l’année normalisée.";
+
+/** Fiche document — complétion banque (auteur, `is_published` faux). */
+export const DOCUMENT_FICHE_BANK_SECTION_TITLE = "Visibilité dans la banque collaborative";
+export const DOCUMENT_FICHE_BANK_SECTION_BODY =
+  "Ce document n’est pas encore visible dans la banque. Renseignez le repère temporel ou l’année normalisée ci-dessous, puis enregistrez lorsque les métadonnées sont complètes.";
+export const DOCUMENT_FICHE_BANK_SAVE_CTA = "Enregistrer et rendre visible dans la banque";
+export const TOAST_DOCUMENT_BANK_UPDATE_OK =
+  "Document mis à jour. Il est maintenant visible dans la banque.";
+export const TOAST_DOCUMENT_BANK_UPDATE_INCOMPLETE =
+  "Les métadonnées ou le repère temporel sont encore incomplets. Vérifiez les champs obligatoires.";
+export const TOAST_DOCUMENT_BANK_UPDATE_AUTH =
+  "Vous devez être connecté pour modifier ce document.";
+export const TOAST_DOCUMENT_BANK_UPDATE_FORBIDDEN = "Vous ne pouvez pas modifier ce document.";
+/** Libellés alignés Bloc 4 / wizard TAÉ — type `textuel` · `iconographique`. */
+export const DOCUMENT_MODULE_TYPE_TEXT = "Textuel";
+export const DOCUMENT_MODULE_TYPE_IMAGE = "Iconographique";
+export const DOCUMENT_MODULE_CONTENU_LABEL = "Contenu (texte)";
+export const DOCUMENT_MODULE_SOURCE_LABEL = "Source";
+export const DOCUMENT_MODULE_SOURCE_PLACEHOLDER = "Ex. : Archives nationales du Québec, 1837.";
+/** Aide sous le champ Source — éditeur TipTap (wizard document, Bloc 4). */
+export const DOCUMENT_MODULE_SOURCE_FORMAT_HINT =
+  "Mise en forme disponible : gras, italique, souligné, listes à puces.";
+export const DOCUMENT_MODULE_SOURCE_TYPE_LABEL = "Type de source";
+export const DOCUMENT_MODULE_SOURCE_PRIMAIRE = "Primaire";
+export const DOCUMENT_MODULE_SOURCE_SECONDAIRE = "Secondaire";
+export const DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_TITLE = "Source primaire";
+export const DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_BODY =
+  "Une source primaire est un document produit à l'époque étudiée (ex. journal, lettre, artefact), qui provient directement du contexte historique.";
+export const DOCUMENT_MODULE_MODAL_SOURCE_SECONDAIRE_TITLE = "Source secondaire";
+export const DOCUMENT_MODULE_MODAL_SOURCE_SECONDAIRE_BODY =
+  "Une source secondaire est une analyse ou une interprétation produite après coup par un historien ou un chercheur à partir de sources.";
+/** Alias pour texte d’aide (SR / tests) — corps identique aux modales « Source primaire / secondaire ». */
+export const DOCUMENT_MODULE_SOURCE_PRIMAIRE_TOOLTIP = DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_BODY;
+export const DOCUMENT_MODULE_SOURCE_SECONDAIRE_TOOLTIP =
+  DOCUMENT_MODULE_MODAL_SOURCE_SECONDAIRE_BODY;
+export const DOCUMENT_MODULE_LEGEND_LABEL = "Légende";
+export const DOCUMENT_MODULE_LEGEND_HELP_P1 =
+  "La légende est un court texte optionnel qui accompagne une image pour en préciser le contenu, le contexte ou la signification historique. Elle aide l'élève à mieux comprendre ce qu'il observe (ex. : lieu, date, personnage, événement). La légende apparaîtra directement sur l'image, dans le coin de votre choix, sous forme de rectangle en surimpression : fond blanc semi-transparent et filet noir à gauche.";
+export const DOCUMENT_MODULE_LEGEND_HELP_P2 = "Maximum 50 mots.";
+/** Texte regroupé pour l’infobulle (i) du champ Légende — inclut la limite de mots. */
+export const DOCUMENT_MODULE_LEGEND_HELP_TOOLTIP = `${DOCUMENT_MODULE_LEGEND_HELP_P1} ${DOCUMENT_MODULE_LEGEND_HELP_P2}`;
+/** Corps modale d’aide — position des 4 coins (wizard document / Bloc 4). */
+export const DOCUMENT_MODULE_LEGEND_POSITION_HELP_MODAL_BODY =
+  "Choisissez le coin où le bandeau de légende s’affichera en surimpression sur l’image à l’impression. Les quatre boutons correspondent aux coins haut gauche, haut droit, bas gauche et bas droit. Pour le coin haut gauche, l’icône Material est le glyphe « coin haut droit » en symétrie horizontale (pas de glyphe « coin haut gauche » dans la police).";
+export const DOCUMENT_MODULE_LEGEND_POSITION_LABEL = "Position de la légende sur l'image";
+/** Sous-titre sous « Affichage à l'impression » — grille des 4 coins (icônes Material). */
+export const DOCUMENT_MODULE_LEGEND_POSITION_SUBTITLE = "Positionnement de la légende";
+export const DOCUMENT_MODULE_LEGEND_WORDS_ERROR = "La légende ne peut pas dépasser 50 mots.";
+export const DOCUMENT_MODULE_LEGEND_POSITION_ERROR =
+  "Choisissez un coin pour la légende lorsque celle-ci est renseignée.";
+export const DOCUMENT_MODULE_INDEX_DISCIPLINE = "Discipline";
+export const DOCUMENT_MODULE_INDEX_NIVEAU = "Niveau";
+export const DOCUMENT_MODULE_INDEX_CONNAISSANCES = "Connaissances associées";
+export const DOCUMENT_MODULE_ASPECTS_LABEL = "Aspects de société";
+/** Titre de section — encadré légal wizard document ; icône : `gavel` (`LegalNoticeIcon`). */
+export const DOCUMENT_MODULE_LEGAL_SECTION_HEADING = "Documentation légale";
+export const DOCUMENT_MODULE_LEGAL_CHECKBOX =
+  "Je confirme respecter les règles d'utilisation des œuvres en milieu scolaire au Québec (ex. Copibec)";
+export const DOCUMENT_MODULE_LEGAL_INTRO =
+  "En ajoutant ce document, vous confirmez que vous avez le droit de l'utiliser dans un contexte éducatif, conformément à la Loi sur le droit d'auteur et aux ententes applicables (ex. Copibec).";
+export const DOCUMENT_MODULE_LEGAL_BODY =
+  "Vous vous engagez à respecter les limites de reproduction permises (extraits raisonnables) et à citer adéquatement la source.";
+export const DOCUMENT_MODULE_LEGAL_FOOTER =
+  "La plateforme ne vérifie pas les droits d'auteur des contenus ajoutés et décline toute responsabilité en cas d'utilisation non conforme.";
+export const DOCUMENT_MODULE_SUBMIT = "Enregistrer le document";
+
+/** Wizard « Créer un document » — `docs/UI-COPY.md` (Module) */
+export const DOCUMENT_WIZARD_INTRO =
+  "Complétez les étapes pour créer un document historique structuré. L’aperçu se met à jour à chaque modification.";
+export const DOCUMENT_WIZARD_STEP_DOCUMENT_LABEL = "Étape 1 — Ajouter un document";
+/** Pas de paragraphe descriptif sous le titre d’étape — décision produit (wizard document). */
+export const DOCUMENT_WIZARD_STEP_DOCUMENT_DESC = "";
+export const DOCUMENT_WIZARD_STEP_CLASSIFICATION_LABEL = "Étape 2 — Indexer le document";
+export const DOCUMENT_WIZARD_STEP_CLASSIFICATION_DESC = "";
+export const DOCUMENT_WIZARD_STEP_CONFIRMATION_LABEL = "Étape 3 — Confirmation — Droits d'auteur";
+export const DOCUMENT_WIZARD_STEP_CONFIRMATION_DESC =
+  "Lisez le cadre légal et confirmez avant d’enregistrer le document.";
+/** Libellé visible au-dessus des boutons Textuel / Iconographique — astérisque via `RequiredMark` en UI. */
+export const DOCUMENT_WIZARD_TYPE_DOC_LABEL = "Type de document";
+export const DOCUMENT_WIZARD_LISTBOX_PLACEHOLDER = "Sélectionner";
+export const DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR =
+  "Une ou plusieurs connaissances sélectionnées ne correspondent pas au référentiel. Modifiez la sélection puis réessayez.";
+export const DOCUMENT_WIZARD_IMAGE_FILE_LABEL = "Fichier du document";
+export const DOCUMENT_WIZARD_IMAGE_DROP_HINT = "Glisser un fichier ici ou choisir";
+/** Texte permanent sous la zone de dépôt — JPG / PNG / WebP, 10 Mo, redimensionnement 660×400. */
+export const IMAGE_UPLOAD_FORMATS_INFO =
+  "Formats acceptés : JPG, PNG, WebP — taille maximale 10 Mo. Si votre image dépasse 660 × 400 px, elle sera redimensionnée automatiquement pour optimiser l'impression. La qualité visuelle est préservée.";
+export const DOCUMENT_WIZARD_IMAGE_FORMATS_HINT = IMAGE_UPLOAD_FORMATS_INFO;
+export const IMAGE_UPLOAD_ACCEPT_ATTR = "image/jpeg,image/png,image/webp";
+export const IMAGE_UPLOAD_FINAL_DIMS_LABEL = "Dimensions finales :";
+export const IMAGE_UPLOAD_FINAL_SIZE_LABEL = "Poids du fichier final :";
+export const IMAGE_UPLOAD_BADGE_AUTO_RESIZED = "Redimensionnée automatiquement";
+export const TOAST_DOCUMENT_IMAGE_TOO_LARGE_CLIENT =
+  "Le fichier dépasse 10 Mo. Choisissez une image plus légère.";
+export const IMAGE_UPLOAD_ERROR_FORMAT_NOT_ACCEPTED =
+  "Ce format de fichier n’est pas accepté. Utilisez JPG, PNG ou WebP.";
+export const IMAGE_UPLOAD_ERROR_FILE_TOO_LARGE_AFTER_RESIZE =
+  "L’image reste trop volumineuse après optimisation. Choisissez une image plus simple ou plus petite.";
+export const IMAGE_UPLOAD_ERROR_UNREADABLE =
+  "Le fichier image est illisible ou corrompu. Choisissez une autre image.";
+export const DOCUMENT_WIZARD_CONN_HELP = "Optionnel — cochez une ou plusieurs connaissances.";
+export const DOCUMENT_WIZARD_CONN_DISABLED = "Sélectionnez d’abord une discipline.";
+export const DOCUMENT_WIZARD_PREVIEW_HEADING = "Aperçu du document";
+export const TOAST_DOCUMENT_WIZARD_DRAFT_SAVED =
+  "Brouillon du document enregistré dans ce navigateur.";
+export const DOCUMENT_WIZARD_PDF_LEGACY_PREVIEW =
+  "Les fichiers PDF ne sont plus acceptés pour les documents iconographiques. Téléversez une image JPG, PNG ou WebP.";
+export const DOCUMENT_WIZARD_UPLOAD_INVALID =
+  "Choisissez un fichier JPG, PNG ou WebP d’au plus 10 Mo.";
+export const DOCUMENT_FICHE_PDF_OPEN_NEW_TAB = "Ouvrir le fichier dans un nouvel onglet";
+export const DOCUMENT_FICHE_NIVEAU = "Niveau";
+export const DOCUMENT_FICHE_DISCIPLINE = "Discipline";
+export const DOCUMENT_FICHE_ASPECTS = "Aspects de société";
+export const DOCUMENT_FICHE_CONNAISSANCES = "Connaissances";
+export const DOCUMENT_FICHE_AUTEUR = "Auteur";
+export const DOCUMENT_FICHE_DATE = "Date de création";
+export const DOCUMENT_FICHE_SOURCE = "Source";
+export const DOCUMENT_FICHE_SOURCE_TYPE = "Type de source";
+/** Fiche / pastilles — libellé explicite du choix Textuel ou Iconographique. */
+export const DOCUMENT_FICHE_TYPE_DOCUMENT = "Type de document";
+/** Fiche lecture `/documents/[id]` — surtitre cartouche (aligné fiche tâche). */
+export const DOCUMENT_FICHE_EYEBROW = "Document historique";
+/** Lien retour banque — même libellé que fiche tâche (`FicheRetourLink`). */
+export const DOCUMENT_FICHE_RETOUR = "Retour";
+/** Colonne méta — titre de section (grille large). */
+export const DOCUMENT_FICHE_SECTION_INDEXATION = "Références et indexation";
+export const TOAST_DOCUMENT_CREATE_SUCCESS = "Document enregistré.";
+/** Base distante sans colonnes PO documents — insert sans légende / champs optionnels après repli. */
+export const TOAST_DOCUMENT_CREATE_DEGRADED =
+  "Document enregistré. La base Supabase n’a pas toutes les colonnes du dépôt (ex. légende) : appliquez les migrations `20250327140000_documents_source_type_legende_po.sql` et suivantes, puis rechargez le cache schéma si besoin.";
+export const TOAST_DOCUMENT_CREATE_FAILED =
+  "Impossible d'enregistrer le document. Vérifiez les champs puis réessayez.";
+export const TOAST_DOCUMENT_CREATE_AUTH = "Connectez-vous pour enregistrer un document.";
+
+/** Bloc 4 — import image document (fichier invalide — format ou taille avant envoi) */
+export const TOAST_DOCUMENT_IMAGE_INVALID =
+  "Choisissez une image JPG, PNG ou WebP d’au plus 10 Mo.";
+
+/** Bloc 4 — échec envoi Supabase Storage */
+export const TOAST_DOCUMENT_IMAGE_UPLOAD_FAILED =
+  "L’envoi de l’image a échoué. Réessayez ou vérifiez le bucket « tae-document-images » sur Supabase.";
+
+/** Bloc 4 — session requise pour l’upload */
+export const TOAST_DOCUMENT_IMAGE_UPLOAD_AUTH =
+  "Connectez-vous pour importer une image, puis réessayez.";
+
+/** Page « Créer une TAÉ » — Toasts — erreur sauvegarde brouillon (`docs/UI-COPY.md` — Toasts) */
+export const TOAST_DRAFT_SAVE_FAILED = "Impossible d'enregistrer le brouillon. Réessayez.";
+
+/** Bannières reprise brouillon — `docs/UI-COPY.md` (Créer une TAÉ) */
+/** Brouillon serveur / session — format antérieur sans `bloc1` (toast erreur, pas de reprise). */
+export const TOAST_WIZARD_DRAFT_OBSOLETE =
+  "Ce brouillon provient d’une version antérieure du formulaire et ne peut pas être repris. Reprenez la création de la tâche.";
+
+export const WIZARD_BANNER_SERVER_TITLE = "Brouillon enregistré";
+export const WIZARD_BANNER_SERVER_BODY =
+  "Vous avez déjà une tâche en cours enregistrée sur le serveur. Vous pouvez la reprendre ou continuer un nouveau formulaire (le brouillon serveur reste disponible jusqu’à publication ou suppression).";
+
+export const WIZARD_BANNER_LOCAL_TITLE = "Travail non enregistré en ligne";
+export const WIZARD_BANNER_LOCAL_BODY =
+  "Ce navigateur contient une reprise de formulaire qui n’a pas été enregistrée avec « Sauvegarder le brouillon ». Vous pouvez la reprendre ou l’ignorer.";
+
+export const WIZARD_BANNER_RESUME = "Reprendre";
+export const WIZARD_BANNER_DISMISS_SERVER = "Masquer pour cette visite";
+export const WIZARD_BANNER_DISMISS_LOCAL = "Ignorer le brouillon local";
+
+/** Wizard — Étape 2 — texte d’aide dans l’infobulle (ⓘ) du titre d’étape (`TaeForm` + `step-meta`). */
+export const TAE_BLUEPRINT_STEP_DESCRIPTION =
+  "Définissez les paramètres pédagogiques requis : niveau scolaire, discipline, opération intellectuelle et comportement attendu. Le comportement attendu détermine l'outil d'évaluation, dont la grille de correction ministérielle. L'espace de production (lignes ou formats non rédactionnels) est fixé automatiquement selon le comportement.";
+
+/** Wizard — Étape 2 — `aria-label` du bouton info à côté du titre */
+export const TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA = "Afficher l'aide sur cette étape";
+
+/** Page « Créer une TAÉ » — Bloc 2 — chargement référentiel */
+export const BLOC2_LOADING_PARAMETERS = "Chargement des paramètres…";
+
+/** Page « Créer une TAÉ » — Bloc 2 — erreur chargement `oi.json` */
+export const BLOC2_ERROR_OI_FETCH =
+  "Impossible de charger les opérations intellectuelles. Réessayez.";
+
+/** Bloc 2 — niveau scolaire — option vide du `<select>` */
+export const BLOC2_NIVEAU_PLACEHOLDER = "Sélectionner un niveau";
+
+/** Bloc 2 — discipline — aide sous champ (sélection manuelle) */
+export const BLOC2_DISCIPLINE_HELP = "Choisissez la discipline associée au niveau sélectionné.";
+
+/** Bloc 2 — placeholders listbox (discipline, OI, comportement) */
+export const BLOC2_LISTBOX_PLACEHOLDER = "Sélectionner";
+
+/** Bloc 2 — discipline imposée (Sec 3 / 4) — libellé avec glyphe `settings` dans le JSX */
+export const BLOC2_DISCIPLINE_AUTO_ASSIGNED = "Assignée automatiquement";
+
+/** Bloc 2 — opération intellectuelle — texte d'aide sous le champ */
+export const BLOC2_OI_FIELD_HELP =
+  "Sélectionnez l'opération intellectuelle mobilisée dans la tâche.";
+
+/** Bloc 2 — comportement attendu — texte d'aide sous le champ */
+export const BLOC2_COMPORTEMENT_FIELD_HELP =
+  "Le comportement attendu sélectionné détermine l'outil d'évaluation, c'est-à-dire la grille de correction ministérielle affichée sous la tâche.";
+
+/** Bloc 2 — comportement — prérequis OI non choisie */
+export const BLOC2_COMPORTEMENT_PREREQ_OI =
+  "(Disponible après la sélection de l'opération intellectuelle.)";
+
+/** Bloc 2 — CTA grille de correction */
+export const BLOC2_VOIR_GRILLE_CTA = "Voir la grille de correction";
+
+/** Bloc 2 — section espace de production (lecture seule) */
+export const BLOC2_ESPACE_PRODUCTION_SECTION_LABEL = "Espace de production";
+
+/** Bloc 2 — espace de production — rédactionnel — avant le nombre (gras dans le JSX) */
+export const BLOC2_ESPACE_PRODUCTION_REDACTION_BEFORE =
+  "Pour ce comportement, l'espace de production est constitué de ";
+
+/** Bloc 2 — espace de production — rédactionnel — après le nombre */
+export const BLOC2_ESPACE_PRODUCTION_REDACTION_AFTER = " lignes pour la réponse écrite.";
+
+/** Bloc 2 — espace de production — non rédactionnel */
+export const BLOC2_ESPACE_PRODUCTION_COPY_NON_REDACTION =
+  "Pour ce comportement, l'espace de production est constitué de cases à remplir, de lettres (A, B, C ou D) ou d'un champ « Réponse : ».";
+
+/** Bouton `info` à côté d’un label — `aria-label` (`docs/UI-COPY.md` — Étape 2, bouton info) */
+export const ARIA_OPEN_FIELD_HELP = "Ouvrir l'aide sur ce champ";
+
+/** Liste OI — entrée `coming_soon` (`docs/UI-COPY.md` — Étape 2, OI à venir) */
+export const BLOC2_OI_COMING_SOON = "Bientôt disponible";
+
+/** Modale aide — Opération intellectuelle — intro (liste dynamique des titres dans `oi.json` en complément) */
+export const BLOC2_MODAL_OI_INTRO =
+  "L'opération intellectuelle précise le type d'action cognitive demandée à l'élève. Les libellés ci-dessous reprennent les catégories du référentiel ministériel ; la liste déroulante reprend les entrées disponibles.";
+
+/** Modale aide — Comportement attendu */
+export const BLOC2_MODAL_COMPORTEMENT_INTRO =
+  "Le comportement attendu décrit une compétence observable, évaluée à l'aide de la grille de correction ministérielle associée à l'opération intellectuelle. Il détermine le nombre de documents historiques et l'outil d'évaluation.";
+
+/** Modale aide — Comportement attendu — invite si aucune sélection */
+export const BLOC2_MODAL_COMPORTEMENT_PICK_FIRST =
+  "Choisissez d'abord un comportement dans la liste pour voir un exemple d'énoncé.";
+
+/** Modale aide — Espace de production (valeur lue dans `oi.json`, plus de saisie manuelle) */
+export const BLOC2_MODAL_NB_LIGNES_BODY =
+  "L'espace de production (nombre de lignes ou formats non rédactionnels) est défini automatiquement à partir du comportement attendu sélectionné, conformément aux données ministérielles.";
+
+/** Blocs 5 / 6 / sommaire — discipline sans fichier JSON (ex. géographie) */
+export const WIZARD_REFERENTIEL_CD_INDISPO =
+  "Référentiel compétence disciplinaire non disponible pour cette discipline dans les données actuelles.";
+
+export const WIZARD_REFERENTIEL_CONN_INDISPO =
+  "Référentiel connaissances relatives non disponible pour cette discipline dans les données actuelles.";
+
+/** Blocs 5 / 6 — erreur réseau ou fichier */
+export const WIZARD_REFERENTIEL_LOAD_FAILED = "Chargement du référentiel impossible.";
+
+/** Bloc 6 — aucune ligne après filtrage niveau */
+export const WIZARD_CONNAISSANCES_EMPTY_FILTER =
+  "Aucune entrée ne correspond au niveau et à la discipline sélectionnés.";
+
+/** Titre de section — 0 ou 1 document affiché */
+export const FICHE_SECTION_TITLE_DOCUMENT = "Document";
+
+/** Titre de section — 2 documents ou plus */
+export const FICHE_SECTION_TITLE_DOCUMENTS = "Documents";
+
+/** Pluriel dynamique : liste vide ou un seul item → singulier. */
+export function ficheDocumentsSectionTitle(documentCount: number): string {
+  return documentCount <= 1 ? FICHE_SECTION_TITLE_DOCUMENT : FICHE_SECTION_TITLE_DOCUMENTS;
+}
+
+/** Bloc 2 — encadré paramètres verrouillés (`docs/UI-COPY.md` — Paramètres verrouillés) */
+export const BLOC2_BLUEPRINT_LOCKED_TITLE = "Paramètres verrouillés";
+
+export const BLOC2_BLUEPRINT_LOCKED_LBL_NIVEAU = "Niveau scolaire :";
+export const BLOC2_BLUEPRINT_LOCKED_LBL_DISCIPLINE = "Discipline :";
+export const BLOC2_BLUEPRINT_LOCKED_LBL_OI = "Opération intellectuelle :";
+export const BLOC2_BLUEPRINT_LOCKED_LBL_COMPORTEMENT = "Comportement attendu :";
+export const BLOC2_BLUEPRINT_LOCKED_LBL_NB_LIGNES = "Nombre de lignes :";
+export const BLOC2_BLUEPRINT_LOCKED_LBL_DOCUMENTS = "Documents prévus :";
+
+export const BLOC2_UNLOCK_CTA = "Modifier les paramètres";
+export const BLOC2_UNLOCK_MODAL_TITLE = "Modifier les paramètres";
+export const BLOC2_UNLOCK_MODAL_BODY =
+  "Modifier le niveau, la discipline ou l'opération intellectuelle peut réinitialiser les étapes suivantes (consigne, documents, etc.). Souhaitez-vous déverrouiller ce bloc ?";
+export const BLOC2_UNLOCK_MODAL_CANCEL = "Annuler";
+export const BLOC2_UNLOCK_MODAL_CONFIRM = "Confirmer";
+
+/** Modale barème (Bloc 2 + fiche) — titre ; `docs/UI-COPY.md` */
+export const MODALE_OUTIL_EVALUATION_TITRE = "Outil d'évaluation";
+
+/** Page liste `/questions` — titre, CTA, état vide (`docs/UI-COPY.md` — Mes tâches) */
+export const PAGE_LISTE_MES_TACHES_TITLE = "Mes tâches";
+export const PAGE_LISTE_MES_TACHES_SUBTITLE =
+  "Tâches d'apprentissage et d'évaluation que vous avez créées (brouillons et publiées).";
+export const CTA_CREER_UNE_TACHE = "Créer une tâche";
+export const LISTE_TACHES_VIDE_CATEGORIE = "Aucune tâche dans cette catégorie.";
+
+/** Toasts — après publication réussie (`docs/UI-COPY.md` — Mes tâches / Créer) */
+export const TOAST_TACHE_PUBLIEE_SUCCES = "Tâche publiée avec succès";
+
+/** Toast — après enregistrement d’une TAÉ modifiée (`docs/UI-COPY.md` — Toasts) */
+export const TOAST_TACHE_MAJ_SUCCES = "Modifications enregistrées avec succès";
+
+/**
+ * Toast — mise à jour refusée (TAÉ dans une épreuve) (`docs/UI-COPY.md` — Toasts).
+ */
+export const TOAST_PUBLICATION_TAE_LOCKED_EVALUATION =
+  "Impossible d'enregistrer les modifications : la tâche figure dans une ou plusieurs épreuves. Retirez-la des épreuves concernées, puis réessayez.";
+
+/** CTA footer wizard — création (`docs/UI-COPY.md` — Boutons wizard) */
+export const WIZARD_PUBLISH_CTA = "Publier";
+
+/** CTA footer wizard — édition (`docs/UI-COPY.md` — Boutons wizard) */
+export const WIZARD_EDIT_SAVE_CTA = "Enregistrer les modifications";
+
+/** Page `/questions/[id]/edit` (`docs/UI-COPY.md` — Édition guidée) */
+export const PAGE_MODIFIER_UNE_TACHE_TITLE = "Modifier une tâche";
+export const PAGE_MODIFIER_UNE_TACHE_SUBTITLE =
+  "Reprenez les six (6) étapes pour mettre à jour votre tâche, alignée sur les prescriptions ministérielles.";
+
+/** Page « Mes tâches » — modale suppression (`docs/UI-COPY.md`) */
+export const MY_QUESTIONS_DELETE_MODAL_TITLE = "Supprimer cette tâche ?";
+export const MY_QUESTIONS_DELETE_MODAL_BODY =
+  "Cette opération est irréversible. La tâche sera définitivement retirée de votre banque de données.";
+export const MY_QUESTIONS_DELETE_MODAL_CANCEL = "Annuler";
+export const MY_QUESTIONS_DELETE_MODAL_CONFIRM = "Supprimer";
+
+/** Ligne liste — brouillon `tae_wizard_drafts` sans consigne saisie (`docs/UI-COPY.md` — Mes tâches) */
+export const MY_QUESTIONS_WIZARD_PREVIEW_FALLBACK = "Création en cours — reprendre le formulaire";
+
+export const MY_QUESTIONS_WIZARD_DELETE_MODAL_TITLE = "Supprimer ce brouillon ?";
+export const MY_QUESTIONS_WIZARD_DELETE_MODAL_BODY =
+  "Le contenu enregistré du formulaire de création sera effacé. Cette opération est irréversible.";
+
+export const MY_QUESTIONS_DELETE_BLOCKED_IN_EVALUATION =
+  "Impossible de supprimer cette tâche : elle figure dans une ou plusieurs épreuves. Retirez-la des épreuves concernées, puis réessayez.";
+
+export const TOAST_MES_QUESTIONS_DELETED = "La tâche a été supprimée.";
+export const TOAST_MES_QUESTIONS_DELETE_FAILED = "Impossible de supprimer la tâche. Réessayez.";
+
+export const TOAST_MES_QUESTIONS_WIZARD_DRAFT_DELETED = "Le brouillon a été supprimé.";
+export const TOAST_MES_QUESTIONS_WIZARD_DRAFT_DELETE_FAILED =
+  "Impossible de supprimer le brouillon. Réessayez.";
+
+/** Page `/bank` — `docs/UI-COPY.md` — Banque collaborative */
+export const PAGE_BANK_TITLE = "Banque collaborative";
+export const PAGE_BANK_TAB_TASKS = "Tâches";
+export const PAGE_BANK_TAB_DOCUMENTS = "Documents historiques";
+export const PAGE_BANK_TAB_EVALUATIONS = "Épreuves";
+export const PAGE_BANK_TASKS_SUBTITLE =
+  "Parcourez les tâches d’apprentissage et d’évaluation publiées par d’autres enseignants.";
+export const PAGE_BANK_EVALUATIONS_SUBTITLE =
+  "Parcourez les épreuves publiées par d’autres enseignants.";
+export const PAGE_BANK_EVALUATIONS_CTA_INTRO =
+  "Pour composer une épreuve, utilisez l’entrée dédiée.";
+export const PAGE_BANK_EVALUATIONS_CTA_LINK = "Créer une épreuve";
+/** Liste banque documents — `docs/UI-COPY.md` — Banque (module) */
+export const PAGE_BANK_DOCUMENTS_EMPTY =
+  "Aucun document ne correspond aux filtres. Ajustez la recherche ou créez un document.";
+export const PAGE_BANK_DOCUMENTS_SEARCH_LABEL = "Recherche par titre ou source";
+export const PAGE_BANK_DOCUMENTS_FILTER_DISCIPLINE = "Discipline";
+export const PAGE_BANK_DOCUMENTS_FILTER_NIVEAU = "Niveau scolaire";
+export const PAGE_BANK_DOCUMENTS_FILTER_TYPE = "Type de document";
+export const PAGE_BANK_DOCUMENTS_FILTER_TYPE_ALL = "Tous";
+export const PAGE_BANK_DOCUMENTS_FILTER_TYPE_TEXT = DOCUMENT_MODULE_TYPE_TEXT;
+export const PAGE_BANK_DOCUMENTS_FILTER_TYPE_IMAGE = DOCUMENT_MODULE_TYPE_IMAGE;
+export const BANK_DOCUMENT_FILTER_SUBMIT = "Filtrer";
+export const BANK_DOCUMENT_FILTER_RESET = "Réinitialiser";
+export const BANK_DOCUMENT_LINK_FICHE = "Voir la fiche";
+export const BANK_DOCUMENT_PICKER_LOADING = "Chargement des documents…";
+export const BANK_DOCUMENT_PICKER_EMPTY =
+  "Aucun document publié dans la banque pour le moment. Créez-en un depuis le module dédié.";
+/** Onglet Documents — renvoi module ; copy registre : [UI-COPY.md](../../docs/UI-COPY.md) */
+export const PAGE_BANK_DOCUMENTS_CTA_INTRO =
+  "Pour créer un document historique structuré, utilisez l’entrée dédiée.";
+export const PAGE_BANK_DOCUMENTS_CTA_LINK = "Créer un document";
+
+/** Fiche document — aligné registre « Utilisé dans X tâches » (`docs/UI-COPY.md` — Module) ; compteur = TAÉ publiées uniquement (`docs/FEATURES.md` §5.4). */
+export function copyDocumentPublishedTaeUsageCount(count: number): string {
+  if (count === 0) return "Utilisé dans : aucune tâche publiée";
+  if (count === 1) return "Utilisé dans : 1 tâche";
+  return `Utilisé dans : ${count} tâches`;
+}
+export const PAGE_BANK_EVALUATIONS_EMPTY =
+  "Aucune épreuve ne correspond aux critères. Ajustez la recherche.";
+export const PAGE_BANK_EMPTY = "Aucun résultat";
+export const BANK_TASK_FILTER_OI = "Opération intellectuelle";
+export const BANK_TASK_FILTER_COMPORTEMENT = "Comportement attendu";
+export const BANK_TASK_FILTER_COMPORTEMENT_HINT =
+  "Disponible après la sélection de l’opération intellectuelle.";
+export const BANK_TASK_FILTER_NIVEAU = "Niveau scolaire";
+export const BANK_TASK_FILTER_DISCIPLINE = "Discipline";
+/** Filtre sur `tae.cd_id` (= clé d’une ligne du référentiel Miller, étape 5 du wizard). */
+export const BANK_TASK_FILTER_CD = "Compétence disciplinaire";
+export const BANK_TASK_FILTER_CD_HINT =
+  "Optionnel. Numéro technique du critère dans le référentiel (celui enregistré sur la tâche). Laissez vide si vous ne le connaissez pas — utilisez plutôt le niveau scolaire et la discipline.";
+export const BANK_TASK_FILTER_CONNAISSANCES =
+  "Connaissances relatives (identifiants entiers du référentiel, séparés par des virgules)";
+export const BANK_TASK_FILTER_SEARCH = "Recherche dans la consigne (texte sans mise en forme)";
+export const BANK_TASK_FILTER_SORT = "Tri";
+export const BANK_TASK_SORT_RECENT = "Plus récentes";
+export const BANK_TASK_SORT_POPULAR = "Plus populaires";
+export const BANK_TASK_FILTER_SUBMIT = "Filtrer";
+export const BANK_TASK_FILTER_RESET = "Réinitialiser";
+export const BANK_TASK_LOAD_MORE = "Charger plus";
+export const BANK_EVAL_SEARCH_LABEL = "Recherche par titre";
+/** Banque — épreuve publiée par un autre enseignant : pas d’édition depuis cet écran. */
+export const BANK_EVAL_NO_EDIT_OTHER = "Réservé à l’auteur";
+
+/** Banque — onglet Épreuves ; compteur `evaluation_tae` (forme longue, DECISIONS lexique). */
+export function copyBankEvaluationTaskCount(count: number): string {
+  if (count === 0) {
+    return "Aucune tâche d’apprentissage et d’évaluation dans cette épreuve";
+  }
+  if (count === 1) return "1 tâche d’apprentissage et d’évaluation";
+  return `${count} tâches d’apprentissage et d’évaluation`;
+}
+
+export const BANK_TASK_LINK_VOIR = "Voir";
+/** Liste banque tâches — pastille d’état publication (`docs/UI-COPY.md` — Banque). */
+export const BANK_TASK_LIST_BADGE_PUBLISHED = "Publié";
+export const BANK_TASK_PUBLISHED_ON = "Publié le";
+export const BANK_TASK_BY = "Par";
+
+/** Banque — ajouter une tâche publiée à une épreuve brouillon */
+export const BANK_TASK_ADD_TO_EVALUATION = "Ajouter à une épreuve";
+export const EVAL_BANK_MODAL_TITLE = "Choisir une épreuve brouillon";
+export const EVAL_BANK_MODAL_EMPTY =
+  "Aucune épreuve brouillon. Créez d’abord une épreuve depuis Mes épreuves.";
+export const EVAL_BANK_MODAL_CANCEL = "Annuler";
+export const EVAL_BANK_MODAL_GO = "Continuer";
+
+/** Composition d’épreuve — `docs/UI-COPY.md` (Page création / édition) */
+export const EVAL_COMP_PAGE_TITLE_NEW = "Créer une épreuve";
+export const EVAL_COMP_PAGE_TITLE_EDIT = "Modifier l’épreuve";
+export const EVAL_LIST_LINK_EDIT = "Modifier";
+export const EVAL_COMP_TITLE_LABEL = "Titre de l'épreuve";
+export const EVAL_COMP_PICKER_TAB_BANK = "Banque";
+export const EVAL_COMP_PICKER_TAB_MINE = "Mes tâches";
+export const EVAL_COMP_CART_TITLE = "Composition de l'épreuve";
+export function evalCompCartCount(n: number): string {
+  if (n === 0) return "Aucune tâche";
+  if (n === 1) return "1 tâche";
+  return `${n} tâches`;
+}
+export const EVAL_COMP_CART_EMPTY =
+  "Aucune tâche ajoutée. Parcourez la banque et cliquez sur « Ajouter » pour composer votre épreuve.";
+export const EVAL_COMP_SAVE_DRAFT = "Enregistrer le brouillon";
+/** Ouvre `/evaluations/[id]/print` (nouvel onglet) après sauvegarde du brouillon — `docs/UI-COPY.md` */
+export const EVAL_COMP_PREVIEW = "Aperçu";
+export const EVAL_COMP_PUBLISH = "Publier";
+export const EVAL_COMP_ADD = "Ajouter";
+export const EVAL_COMP_ALREADY_ADDED = "Déjà ajoutée";
+export const EVAL_COMP_LOAD_MORE = "Charger plus";
+export const EVAL_COMP_BADGE_BANK = "Banque";
+export const EVAL_COMP_BADGE_MINE = "Ma tâche";
+export const EVAL_COMP_QUESTION_PREFIX = "Question";
+export const EVAL_COMP_DOCS_PREFIX = "Documents";
+export const EVAL_COMP_MOVE_UP_LABEL = "Monter";
+export const EVAL_COMP_MOVE_DOWN_LABEL = "Descendre";
+export const EVAL_COMP_REMOVE_LABEL = "Retirer";
+
+export const TOAST_EVAL_SAVE_DRAFT_OK = "Brouillon enregistré.";
+export const TOAST_EVAL_PUBLISH_OK = "Épreuve publiée.";
+export const TOAST_EVAL_AUTH = "Connectez-vous pour enregistrer.";
+export const TOAST_EVAL_TITRE_REQUIS = "Indiquez un titre d'épreuve.";
+export const TOAST_EVAL_PUBLISH_EMPTY = "Ajoutez au moins une tâche avant de publier.";
+export const TOAST_EVAL_TAE_INELIGIBLE = "Une ou plusieurs tâches ne peuvent pas être ajoutées.";
+export const TOAST_EVAL_NOT_FOUND = "Épreuve introuvable.";
+export const TOAST_EVAL_RPC_MISSING =
+  "Enregistrement impossible : la fonction SQL save_evaluation_composition est absente sur Supabase. Appliquez la migration puis réessayez.";
+export const TOAST_EVAL_GENERIC = "Enregistrement impossible. Réessayez.";
+
+/** Page impression épreuve — lien vers composition (`docs/UI-COPY.md`) */
+export const EVAL_PRINT_BACK_TO_EDIT = "Retour à l'édition";
+
+/** Coquille connectée — `not-found` sous `(app)` (`docs/UI-COPY.md`) */
+export const PAGE_APP_NOT_FOUND_TITLE = "Page introuvable";
+export const PAGE_APP_NOT_FOUND_DESCRIPTION = "Cette page n'existe pas ou vous n'y avez pas accès.";
+export const PAGE_APP_NOT_FOUND_CTA_DASHBOARD = "Tableau de bord";
+export const PAGE_APP_NOT_FOUND_CTA_EVALUATIONS = "Mes épreuves";
+
+/** Étape 1 — Recherche collaborateurs (`docs/UI-COPY.md`) */
+export const BLOC1_COLLAB_SEARCH_MIN_CHARS =
+  "Saisissez au moins deux caractères pour lancer la recherche.";
+export const BLOC1_COLLAB_SEARCH_EMPTY = "Aucun enseignant ne correspond à votre recherche.";
+export const BLOC1_COLLAB_SEARCH_LOADING = "Recherche en cours…";
+export const BLOC1_COLLAB_SEARCH_PICK_FROM_LIST =
+  "Choisissez un collègue dans la liste des résultats.";
+export const BLOC1_COLLAB_SEARCH_ALREADY_ADDED =
+  "Cette personne figure déjà parmi les collaborateurs.";
+
+/**
+ * Wizard TAÉ — parcours ordre chronologique (non rédactionnel).
+ * Spec : `docs/wizard-oi-non-redactionnelle.md` (parcours 1).
+ */
+/** Ancien textarea prérempli — conservé pour spec / brouillons JSON historiques ; le wizard utilise `consigne_theme` + template. */
+export const NR_ORDRE_CONSIGNE_PREFILL =
+  "Les documents [1, 2, 3 et 4] portent sur [Réalité sociale ou thème]. Classez-les en ordre chronologique. Quelle option (A, B, C ou D) présente la bonne séquence ?";
+export const NR_ORDRE_CONSIGNE_LABEL = "Consigne";
+export const NR_ORDRE_CONSIGNE_HELP =
+  "Le libellé de cette consigne est fixe et conforme à la formulation officielle du ministère. Complétez uniquement la zone soulignée en bleu — la réalité sociale ou le thème couvert par vos documents. Les numéros de documents sont générés automatiquement.";
+export const NR_ORDRE_CONSIGNE_MINISTERIAL_BADGE = "Libellé ministériel";
+export const NR_ORDRE_TEMPLATE_CARD_FOOTER =
+  "Seule la zone soulignée en bleu est modifiable. Les numéros de documents sont générés automatiquement.";
+export const NR_ORDRE_TEMPLATE_LEGEND_FIXED = "Texte fixe (ministériel)";
+export const NR_ORDRE_TEMPLATE_LEGEND_AUTO = "Généré automatiquement";
+export const NR_ORDRE_TEMPLATE_LEGEND_EDITABLE = "Zone éditable";
+export const NR_ORDRE_TEMPLATE_LEGEND_GROUP_ARIA = "Légende : nature des zones de la consigne";
+export const NR_ORDRE_TEMPLATE_RENUMBER_NOTE =
+  "Les numéros de documents s'ajustent automatiquement si cette tâche est intégrée à une épreuve regroupant plusieurs tâches. Vous n'avez pas à les gérer manuellement.";
+export const NR_ORDRE_TEMPLATE_PREVIEW_LABEL = "Aperçu";
+export const NR_ORDRE_THEME_PLACEHOLDER = "réalité sociale ou thème";
+export const NR_ORDRE_THEME_INPUT_ARIA_LABEL =
+  "Réalité sociale ou thème couvert par les documents — seule zone modifiable de la consigne ministérielle";
+export const NR_ORDRE_THEME_REQUIRED =
+  "Indiquez la réalité sociale ou le thème couvert par les documents.";
+export const NR_ORDRE_WIZARD_DOC_TOKEN_TITLE =
+  "Numérotation générée automatiquement selon les documents de la tâche";
+/** Préfixe du jeton wizard (ex. « Doc 1–4 ») — suivi d’espaces et de chiffres ou d’une plage en cadratin. */
+export const NR_ORDRE_WIZARD_DOC_TOKEN_PREFIX = "Doc";
+/** Fragments de la phrase publiée (`{{doc_*}}` réécrits à l’impression épreuve). */
+export const NR_ORDRE_PUBLISHED_INTRO_LES_DOCUMENTS = "Les documents ";
+export const NR_ORDRE_PUBLISHED_INTRO_DOC_PLACEHOLDERS =
+  "{{doc_A}}, {{doc_B}}, {{doc_C}} et {{doc_D}}";
+export const NR_ORDRE_PUBLISHED_INTRO_PORTENT_SUR = " portent sur ";
+export const NR_ORDRE_PUBLISHED_INTRO_SUFFIX =
+  ". Classez-les en ordre chronologique. Quelle option (A, B, C ou D) présente la bonne séquence ?";
+/** Feuille élève (ordre chronologique) — zone unique pour la lettre A–D. */
+export const NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
+export const NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA =
+  "Options de réponse : quatre suites de numéros de documents";
+/**
+ * Guidage **élève** (feuille / sommaire / `tae.guidage` publié) — fixe pour l’OI ordre chronologique, non éditable.
+ * Distinct de `NR_ORDRE_OPTIONS_HELP` (texte **enseignant** sur la génération des options A–D).
+ */
+export const NR_ORDRE_STUDENT_GUIDAGE =
+  "Cherchez dans chaque document des indices de temps (dates, événements, mots liés à une époque), puis utilisez vos connaissances pour confirmer leur ordre du plus ancien au plus récent.";
+/** Bloc 3 ordre chrono — texte sous le titre Guidage complémentaire (formulaire). */
+export const NR_ORDRE_GUIDAGE_FORM_LEAD =
+  "Ce guidage est prédéterminé pour ce parcours. Il ne peut pas être modifié et sera affiché aux mêmes endroits que pour les autres tâches (fiche, feuille élève selon les options d’impression).";
+/** Modale info — guidage fixe ordre chronologique. */
+export const NR_ORDRE_GUIDAGE_INFO_MODAL_BODY =
+  "Pour l’ordre chronologique, le guidage élève est identique pour toutes les tâches de ce type. Il apparaît dans la section Guidage de la fiche et sur la feuille élève lorsque le guidage est prévu à l’impression.";
+export const NR_ORDRE_OPTIONS_SECTION_TITLE = "Options de réponse";
+export const NR_ORDRE_OPTIONS_LABEL = "Options de réponse";
+export const NR_ORDRE_OPTIONS_HELP =
+  "Saisissez la bonne séquence chronologique (étape 1), puis générez les quatre options. Une seule option doit correspondre à l'ordre chronologique exact.";
+export const NR_ORDRE_OPTION_A_LABEL = "Option A";
+export const NR_ORDRE_OPTION_B_LABEL = "Option B";
+export const NR_ORDRE_OPTION_C_LABEL = "Option C";
+export const NR_ORDRE_OPTION_D_LABEL = "Option D";
+export const NR_ORDRE_OPTION_A_PLACEHOLDER = "ex. : 1 - 2 - 3 - 4";
+export const NR_ORDRE_OPTION_B_PLACEHOLDER = "ex. : 2 - 4 - 1 - 3";
+export const NR_ORDRE_OPTION_C_PLACEHOLDER = "ex. : 3 - 1 - 4 - 2";
+export const NR_ORDRE_OPTION_D_PLACEHOLDER = "ex. : 4 - 3 - 2 - 1";
+/** Saisie structurée (4 cases) — pas de placeholder texte libre pour les suites. */
+export const NR_ORDRE_PIN_HELP =
+  "Quatre chiffres de 1 à 4, chacun une seule fois par option. Même présentation pour les options A à D.";
+export const NR_ORDRE_PIN_SR_HINT =
+  "Chiffres 1 à 4, sans doublon dans la ligne. Utilisez une case par position.";
+export function NR_ORDRE_PIN_CELL_ARIA(optionLabel: string, positionOneBased: number): string {
+  return `${optionLabel}, position ${positionOneBased} sur 4`;
+}
+
+/** Générateur de suites — étape 1 (séquence correcte). */
+export const NR_ORDRE_SEQ_STEP1_TITLE = "Étape 1 — Saisir la bonne séquence";
+export const NR_ORDRE_SEQ_STEP1_DESCRIPTION =
+  "Entrez l'ordre chronologique correct des 4 documents. Chaque chiffre de 1 à 4 doit être utilisé une seule fois. L'outil génère ensuite trois distracteurs aléatoires, mélange les quatre options et identifie automatiquement la lettre correspondant à la bonne réponse.";
+export const NR_ORDRE_SEQ_STEP1_HINT =
+  "Exemple : si le document 3 vient en premier, suivi du 1, du 4 puis du 2, entrez 3 – 1 – 4 – 2.";
+export const NR_ORDRE_SEQ_VALIDATION_ERROR =
+  "Séquence invalide. Chaque chiffre de 1 à 4 doit apparaître exactement une fois.";
+export function NR_ORDRE_SEQ_PIN_CELL_ARIA(positionOneBased: number): string {
+  return `Séquence correcte, position ${positionOneBased} sur 4`;
+}
+
+/** Générateur de suites — étape 2 (résultats). */
+export const NR_ORDRE_SEQ_STEP2_TITLE = "Étape 2 — Options générées";
+export const NR_ORDRE_SEQ_STEP2_DESCRIPTION =
+  "Les quatre options ci-dessous ont été mélangées aléatoirement. Consultez-les ci-dessous.";
+export const NR_ORDRE_SEQ_CORRECT_BADGE = "Réponse correcte";
+export const NR_ORDRE_SEQ_CORRIGE_SUMMARY_LABEL = "Corrigé — lettre exacte";
+export function NR_ORDRE_SEQ_CORRIGE_VALUE(
+  letter: "A" | "B" | "C" | "D",
+  d1: number,
+  d2: number,
+  d3: number,
+  d4: number,
+): string {
+  return `Option ${letter} · Séquence : ${d1} – ${d2} – ${d3} – ${d4}`;
+}
+export const NR_ORDRE_SEQ_RESET = "Saisir une nouvelle séquence";
+
+export const NR_ORDRE_GENERATE_CTA = "Générer les options A B C D";
+export const NR_ORDRE_GENERATE_HELP =
+  "À partir de la séquence saisie à l’étape 1, l’outil choisit trois suites incorrectes (sans remise parmi les permutations possibles), mélange les quatre options sous les lettres A à D et indique le corrigé. Vous pouvez regénérer tant que la séquence est valide, ou repartir de zéro avec « Saisir une nouvelle séquence ».";
+export const NR_ORDRE_CORRECT_LABEL = "Corrigé — Lettre exacte";
+export const NR_ORDRE_CORRECT_HELP =
+  "Après génération des options, la lettre du corrigé est déterminée automatiquement et affichée à l’étape 2.";
+export const NR_ORDRE_CORRECT_ERROR =
+  "Veuillez indiquer la lettre correspondant à la bonne réponse.";
+export const NR_ORDRE_BLOC4_INFO =
+  "Cette tâche requiert exactement 4 documents. Les documents sont numérotés automatiquement selon leur ordre de saisie.";
+export const NR_ORDRE_GATE_PRE_DOCS =
+  "Complétez d'abord les étapes « Paramètres de la tâche » et « Consigne et production attendue » (étapes 2 et 3) pour accéder au dossier documentaire.";
+export const NR_ORDRE_GATE_BLOC3 =
+  "Complétez et verrouillez l'étape « Paramètres de la tâche » (étape 2) pour rédiger la consigne et les options.";
+export const NR_ORDRE_STEP4_TITLE = "Étape 4 · Dossier documentaire";
+export const NR_ORDRE_STEP4_DESCRIPTION =
+  "Ajoutez quatre documents historiques : pour chacun, le titre, le contenu (texte ou image), la source et le type de source. L’élève repère le temps à partir du document.";
+
+/** Bloc 4 — rappel séquence / correspondance chiffres ↔ documents (`OrdreChronologiqueBloc4SequenceReminder`). */
+export const NR_ORDRE_BLOC4_REMINDER_TITLE = "Rappel — séquence chronologique et dossier";
+export const NR_ORDRE_BLOC4_REMINDER_LEAD =
+  "La bonne suite chronologique retenue est « {{suite}} ». Sur le questionnaire (deuxième feuillet à l’impression), cette suite apparaît sous l’option {{letter}}). Les chiffres 1 à 4 dans les suites correspondent aux documents du dossier (premier feuillet), dans l’ordre de saisie ci-dessous :";
+/** Placeholders : {{d}} = chiffre 1–4, {{L}} = lettre A–D. */
+export const NR_ORDRE_BLOC4_REMINDER_DIGIT_DOC = "Chiffre {{d}} — document {{L}}";
+
+export function formatNrOrdreBloc4ReminderLead(
+  suiteDisplay: string,
+  optionLetter: "A" | "B" | "C" | "D",
+): string {
+  return NR_ORDRE_BLOC4_REMINDER_LEAD.replace("{{suite}}", suiteDisplay).replace(
+    "{{letter}}",
+    optionLetter,
+  );
+}
+
+export function formatNrOrdreBloc4ReminderDigitDocLine(digit: number, slotLetter: string): string {
+  return NR_ORDRE_BLOC4_REMINDER_DIGIT_DOC.replace("{{d}}", String(digit)).replace(
+    "{{L}}",
+    slotLetter,
+  );
+}
+
+/**
+ * Wizard TAÉ — parcours ligne du temps (non rédactionnel, OI1 · comportement 1.2).
+ * Spec : `docs/wizard-oi-non-redactionnelle.md` (parcours 2). Branchement wizard à venir.
+ */
+/**
+ * Guidage **élève** (`tae.guidage`) — fixe pour ce parcours, non éditable par l’enseignant.
+ * L’élève relie le **document cible** aux **segments** A, B, C (ou D) de la ligne du temps.
+ */
+export const NR_LIGNE_TEMPS_STUDENT_GUIDAGE =
+  "Repérez dans le document des indices temporels (dates, événements, tournures ou références à une période), puis comparez-les aux segments de la ligne du temps pour choisir la lettre qui correspond à la période où se situent les faits présentés.";
+/** Bloc 3 (futur) — texte sous le titre Guidage complémentaire lorsque le parcours ligne du temps sera branché. */
+export const NR_LIGNE_TEMPS_GUIDAGE_FORM_LEAD =
+  "Ce guidage est prédéterminé pour ce parcours. Il ne peut pas être modifié et sera affiché aux mêmes endroits que pour les autres tâches (fiche, feuille élève selon les options d’impression).";
+/** Modale info — guidage fixe ligne du temps. */
+export const NR_LIGNE_TEMPS_GUIDAGE_INFO_MODAL_BODY =
+  "Pour situer des faits sur une ligne du temps, le guidage élève est identique pour toutes les tâches de ce type. Il apparaît dans la section Guidage de la fiche et sur la feuille élève lorsque le guidage est prévu à l’impression.";
+
+/** Plage de lettres dans la consigne publiée (trois segments). */
+export const NR_LIGNE_TEMPS_LETTERS_THREE = "A, B et C";
+/** Plage de lettres dans la consigne publiée (quatre segments). */
+export const NR_LIGNE_TEMPS_LETTERS_FOUR = "A, B, C et D";
+/** Badge — consigne non éditable (texte ministériel). */
+export const NR_LIGNE_TEMPS_CONSIGNE_MINISTERIAL_BADGE = "Libellé ministériel fixe";
+/** Modale info — consigne fixe (parcours ligne du temps). */
+export const NR_LIGNE_TEMPS_CONSIGNE_INFO_MODAL_BODY =
+  "Le libellé affiché aux élèves est fixe pour ce comportement. Les numéros de document s’ajustent automatiquement lorsque la tâche est intégrée à une épreuve regroupant plusieurs tâches.";
+export const NR_LIGNE_TEMPS_STUDENT_SHEET_TIMELINE_ARIA =
+  "Ligne du temps : segments chronologiques et lettres de réponse";
+export const NR_LIGNE_TEMPS_BLOC4_INFO =
+  "Cette tâche requiert exactement un document cible. L’élève s’en sert pour repérer la période sur la ligne du temps.";
+export const NR_LIGNE_TEMPS_GATE_PRE_DOCS =
+  "Complétez d’abord les étapes « Paramètres de la tâche » et « Consigne et production attendue » (étapes 2 et 3) pour accéder au dossier documentaire.";
+export const NR_LIGNE_TEMPS_GATE_BLOC3 =
+  "Complétez et verrouillez l’étape « Paramètres de la tâche » (étape 2) pour configurer la ligne du temps.";
+export const NR_LIGNE_TEMPS_STEP4_TITLE = "Étape 4 · Dossier documentaire";
+export const NR_LIGNE_TEMPS_STEP4_DESCRIPTION =
+  "Ajoutez le document cible : titre, contenu (texte ou image), source et type de source. L’élève identifie la période à partir de ce document.";
+export const NR_LIGNE_TEMPS_SEGMENT_COUNT_LABEL = "Nombre de segments";
+export const NR_LIGNE_TEMPS_OPTION_3 = "3 segments (A, B, C)";
+export const NR_LIGNE_TEMPS_OPTION_4 = "4 segments (A, B, C, D)";
+export const NR_LIGNE_TEMPS_DATE_START = "Date de début";
+export const NR_LIGNE_TEMPS_DATE_END = "Date de fin";
+export const NR_LIGNE_TEMPS_DATE_CHAINED_HINT =
+  "La date de fin d’une période est automatiquement la date de début de la suivante.";
+export const NR_LIGNE_TEMPS_TIMELINE_PREVIEW_TITLE = "Ligne du temps";
+export const NR_LIGNE_TEMPS_SELECT_CORRECT_TITLE = "Bonne réponse sur la frise";
+export const NR_LIGNE_TEMPS_SELECT_CORRECT_HELP =
+  "Cliquez sur le segment correspondant à la période des faits du document cible. La lettre du corrigé est enregistrée automatiquement.";
+export const NR_LIGNE_TEMPS_SELECT_CORRECT_MISSING =
+  "Sélectionnez le segment correct sur la frise.";
+export const NR_LIGNE_TEMPS_CORRECT_PREFIX = "Lettre correcte : ";
+export const NR_LIGNE_TEMPS_PERIOD_PREFIX = "Période ";
+
+/** Frise SVG (wizard) — dates incomplètes ou non strictement croissantes. */
+export const NR_LIGNE_TEMPS_TIMELINE_EMPTY =
+  "Complétez les dates ci-dessus pour voir apparaître la ligne du temps.";
+
+/** Frise — aperçu partiel : au moins deux dates valides, pas encore toutes les périodes. */
+export const NR_LIGNE_TEMPS_TIMELINE_PARTIAL_HINT =
+  "La frise se complète au fil de la saisie. Renseignez toutes les dates pour verrouiller les segments A à D et publier.";
+
+/** Accessibilité — segment cliquable sur la frise (plage d'années). */
+export function NR_LIGNE_TEMPS_TIMELINE_SEGMENT_ARIA(
+  letter: string,
+  startYear: number,
+  endYear: number,
+): string {
+  return `Sélectionner le segment ${letter} (${startYear}–${endYear}) comme bonne réponse`;
+}
+
+/** Grille d’évaluation — `outil_evaluation` sans entrée dans `grilles-evaluation.json` (`docs/UI-COPY.md`). */
+export function copyGrilleAbsentePourOutil(outilId: string): string {
+  return `Grille non disponible pour l'outil ${outilId}.`;
+}

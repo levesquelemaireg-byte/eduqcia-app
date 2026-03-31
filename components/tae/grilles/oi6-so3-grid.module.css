@@ -1,0 +1,112 @@
+/* OI6_SO3 — aligné `public/data/grilles-templates.html` <template id="OI6_SO3">.
+ * Colonnes : 115 + 110 + 295 + 140 = 660px (inline dans OI6SO3Grid.tsx).
+ * Lignes verticales internes : entre Col1|Col2 uniquement — aucune entre Col2|Col3 ni Col3|Col4. */
+
+.root {
+  background: transparent;
+  box-sizing: border-box;
+}
+
+.table {
+  table-layout: fixed;
+  width: 660px;
+  min-width: 660px;
+  max-width: 660px;
+  border-collapse: collapse;
+  border: 1.5px solid #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  font-weight: normal;
+  line-height: 1.15;
+  color: #000;
+  background: transparent;
+}
+
+.table th,
+.table td {
+  box-sizing: border-box;
+  border: 1px solid #000;
+  padding: 6px 8px;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* Col 1 — rubrique */
+.thRub {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/*
+ * Col 2 / 3 : sélecteurs `.table .…` pour battre `.table th|td { border: 1px }` (spécificité),
+ * sinon border-right / border-left: none ne s’appliquent pas et une fausse ligne Col2|Col3 reste visible.
+ */
+.table .thCond {
+  text-align: center;
+  vertical-align: middle;
+  border-right: none;
+  padding: 6px 4px;
+}
+
+/*
+ * Col 3 — 9pt (seule colonne plus petite ; `<table>` reste 10pt pour 1, 2, 4).
+ * Texte centré ; fusion avec col. 4. Pas de nowrap. Points : `.nowrapParen`.
+ */
+.table .tdDesc {
+  text-align: center;
+  vertical-align: middle;
+  border-left: none;
+  border-right: none;
+  padding: 6px 8px;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  font-size: 9pt;
+  line-height: 1.15;
+  min-width: 0;
+}
+
+/* Col 4 — fusion avec col. 3 : pas de bordure gauche */
+.table .tdScore {
+  text-align: center;
+  vertical-align: middle;
+  border-left: none;
+}
+
+/* Séparateur entre les deux groupes — ligne 4 (toutes les cellules de la rangée) */
+.rowGroup2 > th,
+.rowGroup2 > td {
+  border-top: 3px double #000;
+}
+
+.star {
+  /* Proche du corps du texte comme sur le PDF (éviter * géant) */
+  font-size: 1.05em;
+  line-height: 0;
+  vertical-align: -0.06em;
+  display: inline-block;
+}
+
+.nowrapParen {
+  white-space: nowrap;
+}
+
+/* Note sous le tableau (hors <table>) — aligné template `.oi6so3-note` */
+.footnote {
+  text-align: left;
+  font-size: 9pt;
+  font-style: italic;
+  font-weight: normal;
+  border-top: 1px solid #000;
+  padding-top: 4px;
+  margin: 0;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.2;
+}
+
+/* Astérisque seul en gras net (pas italique sur le * — meilleur contraste qu’Arial bold italic 9pt) */
+.footnoteMark {
+  font-weight: 800;
+  font-style: normal;
+}

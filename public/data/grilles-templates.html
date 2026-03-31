@@ -1,0 +1,794 @@
+<!--
+  LEGACY — remplacé par GrilleOI3SO5.tsx / OI6SO3Grid.tsx (GrilleOI6SO3) /
+  GrilleOI7SO1.tsx dans components/tae/grilles/. Conserver pour référence
+  historique uniquement ; le rendu produit consomme grilles-evaluation.json
+  et les composants React.
+
+  Grilles d'évaluation — Templates HTML (extrait maquette/grilles-preview.html)
+  Généré : scripts/extract-grilles-templates-from-preview.mjs
+-->
+
+<template id="OI0_SO1">
+  <table class="grille" aria-label="Grille OI0_SO1 — Établir des faits">
+                <colgroup>
+                  <col style="width: 200px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <div>Établir des faits</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L'élève établit correctement le fait.</td>
+                  <td>L'élève établit plus ou moins correctement le fait.</td>
+                  <td>L'élève établit incorrectement le fait ou ne l'établit pas.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI1_SO1">
+  <table
+                class="grille"
+                aria-label="Grille OI1_SO1 (HTML) — Ordonner chronologiquement des faits"
+              >
+                <colgroup>
+                  <col style="width: 200px" />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >hourglass</span
+                      >
+                      <div>Situer dans le temps et dans l’espace</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève situe tous les faits dans le temps.</td>
+                  <td>L’élève ne situe pas tous les faits dans le temps.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI1_SO2">
+  <table
+                class="grille"
+                aria-label="Grille OI1_SO2 (HTML) — Situer des faits sur une ligne du temps"
+              >
+                <colgroup>
+                  <col style="width: 200px" />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >hourglass</span
+                      >
+                      <div>Situer dans le temps et dans l’espace</div>
+                    </div>
+                  </th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève situe les faits dans le temps.</td>
+                  <td>L’élève ne situe pas les faits dans le temps.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI1_SO3">
+  <table
+                class="grille"
+                aria-label="Grille OI1_SO3 (HTML) — Classer des faits (antériorité et postériorité)"
+              >
+                <colgroup>
+                  <col style="width: 200px" />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >hourglass</span
+                      >
+                      <div>Situer dans le temps et dans l’espace</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève situe tous les faits dans le temps.</td>
+                  <td>L’élève ne situe pas tous les faits dans le temps.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI2_SO1">
+  <table
+                class="grille"
+                aria-label="Grille OI2_SO1 (HTML) — Identifier sur une carte (variante A)"
+              >
+                <colgroup>
+                  <col style="width: 200px" />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >map_search</span
+                      >
+                      <div>Situer dans le temps et dans l’espace</div>
+                    </div>
+                  </th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève situe le fait dans l’espace.</td>
+                  <td>L’élève ne situe pas le fait dans l’espace.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI2_SO2">
+  <table
+                class="grille"
+                aria-label="Grille OI2_SO2 (HTML) — Identifier sur une carte (variante B)"
+              >
+                <colgroup>
+                  <col style="width: 200px" />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >map_search</span
+                      >
+                      <div>Situer dans le temps et dans l’espace</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève situe le fait dans l’espace.</td>
+                  <td>L’élève ne situe pas le fait dans l’espace.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI2_SO3">
+  <table
+                class="grille"
+                aria-label="Grille OI2_SO3 (HTML) — Identifier sur une carte (plusieurs faits)"
+              >
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >map_search</span
+                      >
+                      <div>Situer dans le temps et dans l’espace</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève situe les faits dans l’espace.</td>
+                  <td>L’élève ne situe pas les faits dans l’espace.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI3_SO1">
+  <table class="grille" aria-label="Grille OI3_SO1 (HTML) — Indiquer une différence">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >text_compare</span
+                      >
+                      <div>Dégager des différences et des similitudes</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève dégage correctement la différence.</td>
+                  <td>L’élève dégage plus ou moins correctement la différence.</td>
+                  <td>L’élève dégage incorrectement la différence ou ne la dégage pas.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI3_SO2">
+  <table class="grille" aria-label="Grille OI3_SO2 (HTML) — Indiquer une similitude">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >text_compare</span
+                      >
+                      <div>Dégager des différences et des similitudes</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève dégage correctement la similitude.</td>
+                  <td>L’élève dégage plus ou moins correctement la similitude.</td>
+                  <td>L’élève dégage incorrectement la similitude ou ne la dégage pas.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI3_SO3">
+  <table
+                class="grille"
+                aria-label="Grille OI3_SO3 (HTML) — Point de désaccord (divergence)"
+              >
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >text_compare</span
+                      >
+                      <div>Dégager des différences et des similitudes</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>
+                    L’élève établit correctement le point de divergence entre les points de vue.
+                  </td>
+                  <td>
+                    L’élève établit plus ou moins correctement le point de divergence ou ne présente
+                    que les deux points de vue.
+                  </td>
+                  <td>
+                    L’élève établit incorrectement le point de divergence entre les points de vue ou
+                    ne l’établit pas.
+                  </td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI3_SO4">
+  <table class="grille" aria-label="Grille OI3_SO4 (HTML) — Point d’accord (convergence)">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >text_compare</span
+                      >
+                      <div>Dégager des différences et des similitudes</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>
+                    L’élève établit correctement le point de convergence entre les points de vue.
+                  </td>
+                  <td>
+                    L’élève établit plus ou moins correctement le point de convergence entre les
+                    points de vue.
+                  </td>
+                  <td>
+                    L’élève établit incorrectement le point de convergence entre les points de vue ou
+                    ne l’établit pas.
+                  </td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI3_SO5">
+  <table
+                class="grille grille--complex grille--oi3so5"
+                aria-label="Grille OI3_SO5 (HTML) — Comparer des points de vue"
+              >
+                <colgroup>
+                  <col class="grille__col-rubrique" />
+                  <col class="grille__col-cond" />
+                  <col class="grille__col-oi3-detail" />
+                  <col class="grille__col-oi3-pts" />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="5">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >text_compare</span
+                      >
+                      <div>Dégager des<br />différences et<br />des similitudes</div>
+                    </div>
+                  </th>
+                  <th class="grille__cond no-border-right" rowspan="4">
+                    L’élève nomme correctement l’acteur qui présente une position différente
+                  </th>
+                  <td class="no-border-left no-border-right">
+                    et présente correctement les deux positions.
+                  </td>
+                  <td class="no-border-left">3 points</td>
+                </tr>
+                <tr>
+                  <td class="no-border-left no-border-right">
+                    et présente correctement une position et plus ou moins correctement l’autre
+                    position.
+                  </td>
+                  <td class="no-border-left">2 points</td>
+                </tr>
+                <tr>
+                  <td class="no-border-left no-border-right">
+                    et présente plus ou moins correctement les deux positions.
+                    <br />
+                    <strong>ou</strong>
+                    <br />
+                    et présente correctement une position et incorrectement l’autre position ou ne la
+                    présente pas.
+                  </td>
+                  <td class="no-border-left">1 point</td>
+                </tr>
+                <tr>
+                  <td class="no-border-left no-border-right">
+                    et présente tout au plus une seule position plus ou moins correctement.
+                  </td>
+                  <td class="no-border-left">0 point</td>
+                </tr>
+                <tr class="grille__double-sep">
+                  <td class="no-border-right" colspan="2" style="text-align: left">
+                    L’élève nomme incorrectement l’acteur qui présente une position différente ou ne
+                    le nomme pas.
+                  </td>
+                  <td class="no-border-left">0 point</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI4_SO1">
+  <table
+                class="grille"
+                aria-label="Grille OI4_SO1 (HTML) — Facteur explicatif (réponse écrite)"
+              >
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >manufacturing</span
+                      >
+                      <div>Déterminer des causes et des conséquences</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève détermine correctement le facteur explicatif.</td>
+                  <td>L’élève détermine plus ou moins correctement le facteur explicatif.</td>
+                  <td>
+                    L’élève détermine incorrectement le facteur explicatif ou ne le détermine pas.
+                  </td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI4_SO2">
+  <table class="grille" aria-label="Grille OI4_SO2 (HTML) — Conséquence (réponse écrite)">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >manufacturing</span
+                      >
+                      <div>Déterminer des causes et des conséquences</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève détermine correctement la conséquence.</td>
+                  <td>L’élève détermine plus ou moins correctement la conséquence.</td>
+                  <td>L’élève détermine incorrectement la conséquence ou ne la détermine pas.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI4_SO3">
+  <table
+                class="grille"
+                aria-label="Grille OI4_SO3 (HTML) — Deux facteurs explicatifs (numéros de documents)"
+              >
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >manufacturing</span
+                      >
+                      <div>Déterminer des causes et des conséquences</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève détermine les deux facteurs explicatifs.<br />(2 sur 2)</td>
+                  <td>L’élève détermine l’un des facteurs explicatifs.<br />(1 sur 2)</td>
+                  <td>L’élève ne détermine pas les facteurs explicatifs.<br />(0 sur 2)</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI4_SO4">
+  <table
+                class="grille"
+                aria-label="Grille OI4_SO4 (HTML) — Facteur et conséquence (numéros de documents)"
+              >
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >manufacturing</span
+                      >
+                      <div>Déterminer des causes et des conséquences</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève détermine le facteur explicatif et la conséquence.<br />(2 sur 2)</td>
+                  <td>L’élève détermine le facteur explicatif ou la conséquence.<br />(1 sur 2)</td>
+                  <td>
+                    L’élève ne détermine pas le facteur explicatif ni la conséquence.<br />(0 sur 2)
+                  </td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI5_SO1">
+  <table class="grille" aria-label="Grille OI5_SO1 (HTML) — Association de deux faits">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >graph_3</span
+                      >
+                      <div>Mettre en relation des faits</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève met en relation tous les faits.<br />(2 sur 2)</td>
+                  <td>L’élève met en relation certains faits.<br />(1 sur 2)</td>
+                  <td>L’élève ne met pas en relation les faits.<br />(0 sur 2)</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI5_SO2">
+  <table class="grille" aria-label="Grille OI5_SO2 (HTML) — Association de quatre faits">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >graph_3</span
+                      >
+                      <div>Mettre en relation des faits</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève met en relation tous les faits.<br />(4 sur 4)</td>
+                  <td>L’élève met en relation certains faits.<br />(3 ou 2 sur 4)</td>
+                  <td>L’élève ne met pas en relation les faits.<br />(1 ou 0 sur 4)</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI6_SO1">
+  <table class="grille" aria-label="Grille OI6_SO1 (HTML) — Indiquer un changement">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >alt_route</span
+                      >
+                      <div>Déterminer des changements et des continuités</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève détermine correctement le changement.</td>
+                  <td>L’élève détermine plus ou moins correctement le changement.</td>
+                  <td>L’élève détermine incorrectement le changement ou ne le détermine pas.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI6_SO2">
+  <table class="grille" aria-label="Grille OI6_SO2 (HTML) — Indiquer une continuité">
+                <colgroup>
+                  <col style="width: 220px" />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="2">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                        >alt_route</span
+                      >
+                      <div>Déterminer des changements et des continuités</div>
+                    </div>
+                  </th>
+                  <th>2 points</th>
+                  <th>1 point</th>
+                  <th>0 point</th>
+                </tr>
+                <tr>
+                  <td>L’élève détermine correctement la continuité.</td>
+                  <td>L’élève détermine plus ou moins correctement la continuité.</td>
+                  <td>L’élève détermine incorrectement la continuité ou ne la détermine pas.</td>
+                </tr>
+              </table>
+</template>
+
+<template id="OI6_SO3">
+  <table
+                class="grille grille--oi6so3"
+                aria-label="Grille OI6_SO3 (HTML) — Montrer transformation ou maintien"
+              >
+                <colgroup>
+                  <col style="width: 115px" />
+                  <col style="width: 110px" />
+                  <col style="width: 295px" />
+                  <col style="width: 140px" />
+                </colgroup>
+                <tbody>
+                  <tr>
+                    <th class="grille__rubrique" rowspan="6">
+                      <div class="grille__rubrique-inner">
+                        <span class="material-symbols-outlined oi-icon" aria-hidden="true"
+                          >alt_route</span
+                        >
+                        <div>
+                          Déterminer des<br />
+                          changements et<br />
+                          des continuités
+                        </div>
+                      </div>
+                    </th>
+                    <th class="grille__cond no-border-right" rowspan="3">
+                      L’élève indique<br />
+                      s’il y a<br />
+                      changement ou<br />
+                      continuité
+                    </th>
+                    <td class="grille__prec no-border-left">
+                      et présente des faits qui le montrent correctement.
+                    </td>
+                    <td class="grille__pts">3 points (ou 2 points<span class="star">*</span>)</td>
+                  </tr>
+                  <tr>
+                    <td class="grille__prec no-border-left">
+                      et présente des faits qui le montrent plus ou moins correctement.
+                    </td>
+                    <td class="grille__pts">2 points (ou 1 point<span class="star">*</span>)</td>
+                  </tr>
+                  <tr>
+                    <td class="grille__prec no-border-left">
+                      et présente des faits qui le montrent incorrectement ou n’en présente pas.
+                    </td>
+                    <td class="grille__pts">0 point</td>
+                  </tr>
+                  <tr class="oi6so3__rowGroup2">
+                    <th class="grille__cond no-border-right" rowspan="3">
+                      L’élève<br />
+                      n’indique pas<br />
+                      s’il y a<br />
+                      changement ou<br />
+                      continuité
+                    </th>
+                    <td class="grille__prec no-border-left">mais présente des faits exacts.</td>
+                    <td class="grille__pts">2 points (ou 1 point<span class="star">*</span>)</td>
+                  </tr>
+                  <tr>
+                    <td class="grille__prec no-border-left">
+                      mais présente des faits plus ou moins exacts.
+                    </td>
+                    <td class="grille__pts">1 point (ou 0 point<span class="star">*</span>)</td>
+                  </tr>
+                  <tr>
+                    <td class="grille__prec no-border-left">
+                      et présente des faits inexacts ou n’en présente pas.
+                    </td>
+                    <td class="grille__pts">0 point</td>
+                  </tr>
+                </tbody>
+              </table>
+</template>
+
+<template id="OI7_SO1">
+  <table
+                class="grille grille--oi7so1"
+                aria-label="Grille OI7_SO1 (HTML) — Enchaînement logique"
+              >
+                <colgroup>
+                  <col style="width: 94px" />
+                  <col style="width: 118px" />
+                  <col style="width: 378px" />
+                  <col style="width: 70px" />
+                </colgroup>
+                <tr>
+                  <th class="grille__rubrique" rowspan="6">
+                    <div class="grille__rubrique-inner">
+                      <span class="material-symbols-outlined oi-icon" aria-hidden="true">list</span>
+                      <div>Établir des liens de causalité</div>
+                    </div>
+                  </th>
+                  <th class="grille__cond no-border-right oi7so1__double-bottom" rowspan="3">
+                    L’élève précise les trois éléments
+                  </th>
+                  <td class="grille__detail no-border-left no-border-right">
+                    et établit correctement deux liens de causalité.
+                  </td>
+                  <td class="grille__pts no-border-left">3 points</td>
+                </tr>
+                <tr>
+                  <td class="grille__detail no-border-left no-border-right">
+                    et établit correctement un lien de causalité.
+                  </td>
+                  <td class="grille__pts no-border-left">2 points</td>
+                </tr>
+                <tr>
+                  <td class="grille__detail no-border-left no-border-right oi7so1__double-bottom">
+                    mais n’établit correctement aucun lien de causalité.
+                  </td>
+                  <td class="grille__pts no-border-left oi7so1__double-bottom">1 point</td>
+                </tr>
+                <tr>
+                  <th
+                    class="grille__cond no-border-right oi7so1__no-top oi7so1__double-bottom"
+                    rowspan="2"
+                  >
+                    L’élève précise deux éléments
+                  </th>
+                  <td class="grille__detail no-border-left no-border-right oi7so1__no-top">
+                    et établit correctement un lien de causalité.
+                  </td>
+                  <td class="grille__pts no-border-left oi7so1__no-top">2 points</td>
+                </tr>
+                <tr>
+                  <td class="grille__detail no-border-left no-border-right oi7so1__double-bottom">
+                    mais n’établit correctement aucun lien de causalité.
+                  </td>
+                  <td class="grille__pts no-border-left oi7so1__double-bottom">1 point</td>
+                </tr>
+                <tr>
+                  <td
+                    class="grille__detail grille__detail--oi7-footer no-border-left no-border-right"
+                    colspan="2"
+                  >
+                    L’élève précise un seul élément ou n’en précise pas.
+                  </td>
+                  <td class="grille__pts no-border-left">0 point</td>
+                </tr>
+              </table>
+</template>

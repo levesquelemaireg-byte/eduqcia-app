@@ -1,0 +1,334 @@
+/* Letter US + marges feuille — `app/globals.css` : `--tae-print-sheet-*`, `--tae-print-document-figure-*` */
+
+/*
+ * Grille documents (auto-fit) — largeurs min. de colonne :
+ * - 20rem : textuel, paragraphes lisibles en multi-colonnes.
+ * - 26rem : dès qu’une carte iconographique est présente (hybride :has + .docsGridHasIcono) —
+ *   largeur min. pour légendes sur cartes géo / historiques ; monter 27.5–28rem si illisible,
+ *   descendre 24–25rem si trop de passages en une colonne (calibration sur corpus réel).
+ */
+
+/* Conteneur racine — deux feuillets `.paper` ; à l’écran un seul visible selon l’onglet. */
+.printFeuilletRoot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: var(--tae-print-sheet-width);
+  max-width: 100%;
+}
+
+.feuilletPaneScreenHidden {
+  display: none;
+}
+
+.paper {
+  box-sizing: border-box;
+  width: var(--tae-print-sheet-width);
+  min-height: var(--tae-print-sheet-min-height);
+  max-width: 100%;
+  padding: var(--tae-print-sheet-padding);
+  background: var(--color-panel);
+  color: var(--color-deep);
+  container-type: inline-size;
+  container-name: paper;
+  /* Aligné impression (`globals.css` @media print) — Arial 11pt ; barèmes : typo propre sur `table` */
+  --font-sans: Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  box-shadow: var(--wizard-preview-card-shadow);
+}
+
+.sectionBlock {
+  margin-bottom: 1.25rem;
+}
+
+/* Espace réduit entre consigne et guidage (une ligne, pas un « saut » de section). */
+.sectionBlock.sectionTightToNext {
+  margin-bottom: 0.5em;
+}
+
+.sectionBlock:last-child {
+  margin-bottom: 0;
+}
+
+/* Grille documents — auto-fit ; --col-min relevé si iconographique (:has + classe React) */
+.docsGrid {
+  --col-min: 20rem;
+  display: grid;
+  gap: 0.875rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
+}
+
+.docsGrid:has([data-doc-type="iconographique"]),
+.docsGrid.docsGridHasIcono {
+  --col-min: 26rem;
+}
+
+/* HTML TipTap / consigne — Preflight Tailwind enlève list-style sur ul/ol ; rétablir puces / numéros. */
+.htmlFlow p {
+  margin: 0 0 0.5em;
+}
+
+.htmlFlow p:last-child {
+  margin-bottom: 0;
+}
+
+.htmlFlow ul,
+.htmlFlow ol {
+  margin: 0.35em 0 0.5em;
+  padding-left: 1.5em;
+}
+
+.htmlFlow ul {
+  list-style-type: disc;
+  list-style-position: outside;
+}
+
+.htmlFlow ol {
+  list-style-type: decimal;
+  list-style-position: outside;
+}
+
+.htmlFlow li {
+  display: list-item;
+  margin-bottom: 0.2em;
+}
+
+/* TipTap : souvent `<li><p>…</p></li>` — éviter double marge qui masque le repère visuel. */
+.htmlFlow li > p {
+  margin: 0 0 0.2em;
+}
+
+.htmlFlow li > p:last-child {
+  margin-bottom: 0;
+}
+
+.htmlFlow li::marker {
+  color: var(--color-deep);
+}
+
+.documentCell {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  /* Aperçu = impression — contours noirs (#000), alignés barèmes / fiche. */
+  border: 1pt solid #000;
+  border-radius: 0;
+  /* Compact : gagner de la place dans la grille documents (aperçu = impression). */
+  padding: 0.4rem 0.5rem;
+  background: var(--color-panel);
+  /* Impression : ne pas fragmenter un document sur deux pages. */
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+.documentCellFull {
+  grid-column: 1 / -1;
+}
+
+/*
+ * Iconographique : bordure extérieure de la carte = largeur du contenu (image / titre / source),
+ * pas toute la colonne de la grille. Exclut `.documentCellFull` (texte dense pleine largeur).
+ */
+.documentCell[data-doc-type="iconographique"]:not(.documentCellFull) {
+  box-sizing: border-box;
+  width: max-content;
+  max-width: 100%;
+  justify-self: start;
+  align-items: flex-start;
+}
+
+.documentHeaderLine {
+  margin: 0;
+  font-size: 10.5pt;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.documentBody {
+  margin: 0;
+  margin-top: 0.5em;
+}
+
+/* Légende / HTML sous une figure iconographique — moins d’air qu’un `mt-2` Tailwind. */
+.htmlFlowAfterFigure {
+  margin-top: 0.35em;
+}
+
+/* Coupures de paragraphes lisibles sur textes longs (fiche imprimable) */
+.documentBody p {
+  orphans: 3;
+  widows: 3;
+}
+
+.documentSource {
+  margin: 0.5em 0 0;
+  font-size: 8pt;
+  color: var(--color-steel);
+}
+
+/* Citation à la suite du libellé « Source : » (flex uniquement quand HTML citation). */
+.documentSourceRow {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25em;
+}
+
+.documentSourceLabel {
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.documentSourceValue {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Citation TipTap / `<p>` historique : inline pour rester sur la ligne du libellé. */
+.documentSourceValue.htmlFlow p {
+  display: inline;
+  margin: 0;
+}
+
+.documentSourceValue.htmlFlow p:not(:last-child)::after {
+  content: " ";
+}
+
+.documentSourceValue.htmlFlow ul,
+.documentSourceValue.htmlFlow ol {
+  display: inline;
+  margin: 0;
+  padding-left: 1.25em;
+  vertical-align: top;
+}
+
+/*
+ * Figure iconographique — cadre serré sur l’image (redimensionnement serveur max 660×400 px).
+ * `inline-block` + `max-width: 100%` : boîte = dimensions rendues de l’image (pas d’étirement en largeur).
+ */
+.documentFigure {
+  position: relative;
+  margin: 0 0 0.3rem;
+  box-sizing: border-box;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+  border: 1px solid #000;
+  padding: 0;
+  background: transparent;
+}
+
+.documentFigureImg {
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  max-height: calc(
+    var(--tae-print-document-figure-max-height) * var(--tae-doc-print-figure-scale, 1)
+  );
+  object-fit: contain;
+  object-position: center;
+}
+
+.answerLines {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.answerLine {
+  min-height: 7.5mm;
+  margin: 0;
+  border-bottom: 0.45pt solid var(--color-deep);
+  break-inside: avoid;
+}
+
+.grilleBaremeRow {
+  margin-bottom: 0.45rem;
+  padding: 0.4rem 0.5rem;
+  border: 0.5pt solid var(--color-border);
+  border-radius: var(--radius-sm);
+  break-inside: avoid;
+}
+
+.grilleBaremeLabel {
+  margin: 0;
+  font-size: 10pt;
+  font-weight: 600;
+}
+
+.grilleBaremeDesc {
+  margin: 0.25rem 0 0;
+  font-size: 9.5pt;
+  color: var(--color-steel);
+}
+
+.guidageBlock {
+  margin-top: 0;
+}
+
+.guidageBlock .htmlFlow {
+  font-style: italic;
+}
+
+/*
+ * Après la grille documents : un seul « morceau » pour la pagination (impression).
+ * Si la place restante sur la page ne suffit pas, le moteur envoie tout le bloc à la suivante.
+ * Limite UA : si le bloc dépasse une page entière, fragmentation ou débordement possible.
+ */
+.postDocumentsPrintGroup {
+  min-width: 0;
+}
+
+@media print {
+  .printFeuilletRoot {
+    gap: 0;
+    align-items: stretch;
+  }
+
+  .feuilletPaneScreenHidden {
+    display: block !important;
+  }
+
+  .feuilletDossierPane {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  /*
+   * Géométrie feuille : variables `--tae-print-sheet-*` ; impression : `@page` marges + `#tae-wizard-printable-fiche` sans padding (`globals.css`).
+   * `@page` : `lib/tae/print-page-css.ts`.
+   * Typo feuille : 11pt / 1.5 via `globals.css` (spécificité id + contexte print).
+   * Ne pas surcharger le padding de `.paper` ici (aligné sur les mêmes variables / globals).
+   */
+  .paper {
+    box-shadow: none;
+  }
+
+  .docsGrid {
+    gap: 0.6rem;
+  }
+
+  .documentCell {
+    border-color: #000;
+  }
+
+  .postDocumentsPrintGroup {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .documentFigure {
+    border-color: #000;
+    break-inside: avoid;
+  }
+
+  .answerLine {
+    border-bottom-color: #222;
+  }
+}

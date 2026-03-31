@@ -1,0 +1,632 @@
+[
+  {
+    "id": "OI0_SO1",
+    "oi": "OI0",
+    "comportement_id": "0.1",
+    "outil_image": "OI0_SO1.png",
+    "operation": "Établir des faits",
+    "comportement_enonce": "Établir un fait à partir d'un document historique",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L'élève établit correctement le fait."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L'élève établit plus ou moins correctement le fait."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L'élève établit incorrectement le fait ou ne l'établit pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI1_SO1",
+    "oi": "OI1",
+    "comportement_id": "1.1",
+    "outil_image": "OI1_SO1.png",
+    "operation": "Situer dans le temps et dans l’espace",
+    "comportement_enonce": "Ordonner chronologiquement des faits en tenant compte de repères de temps.",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève situe tous les faits dans le temps."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas tous les faits dans le temps."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI1_SO2",
+    "oi": "OI1",
+    "comportement_id": "1.2",
+    "outil_image": "OI1_SO2.png",
+    "operation": "Situer dans le temps et dans l’espace",
+    "comportement_enonce": "Situer des faits sur une ligne du temps.",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 1,
+      "echelle": [
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève situe les faits dans le temps."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas les faits dans le temps."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI1_SO3",
+    "oi": "OI1",
+    "comportement_id": "1.3",
+    "outil_image": "OI1_SO3.png",
+    "operation": "Situer dans le temps et dans l’espace",
+    "comportement_enonce": "Classer des faits selon qu'ils sont antérieurs ou postérieurs à un repère de temps.",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève situe tous les faits dans le temps."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas tous les faits dans le temps."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI2_SO1",
+    "oi": "OI2",
+    "comportement_id": "2.1",
+    "outil_image": "OI2_SO1.png",
+    "operation": "Situer dans le temps et dans l’espace",
+    "comportement_enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (variante A).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 1,
+      "echelle": [
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève situe le fait dans l’espace."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas le fait dans l’espace."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI2_SO2",
+    "oi": "OI2",
+    "comportement_id": "2.2",
+    "outil_image": "OI2_SO2.png",
+    "operation": "Situer dans le temps et dans l’espace",
+    "comportement_enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (variante B).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève situe le fait dans l’espace."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas le fait dans l’espace."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI2_SO3",
+    "oi": "OI2",
+    "comportement_id": "2.3",
+    "outil_image": "OI2_SO3.png",
+    "operation": "Situer dans le temps et dans l’espace",
+    "comportement_enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (plusieurs faits).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève situe les faits dans l’espace."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas les faits dans l’espace."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI3_SO1",
+    "oi": "OI3",
+    "comportement_id": "3.1",
+    "outil_image": "OI3_SO1.png",
+    "operation": "Dégager des différences et des similitudes",
+    "comportement_enonce": "Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève dégage correctement la différence."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève dégage plus ou moins correctement la différence."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève dégage incorrectement la différence ou ne la dégage pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI3_SO2",
+    "oi": "OI3",
+    "comportement_id": "3.2",
+    "outil_image": "OI3_SO2.png",
+    "operation": "Dégager des différences et des similitudes",
+    "comportement_enonce": "Indiquer ce qui est semblable par rapport à un ou plusieurs objets de comparaison.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève dégage correctement la similitude."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève dégage plus ou moins correctement la similitude."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève dégage incorrectement la similitude ou ne la dégage pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI3_SO3",
+    "oi": "OI3",
+    "comportement_id": "3.3",
+    "outil_image": "OI3_SO3.png",
+    "operation": "Dégager des différences et des similitudes",
+    "comportement_enonce": "Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence).",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève établit correctement le point de divergence entre les points de vue."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève établit plus ou moins correctement le point de divergence ou ne présente que les deux points de vue."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève établit incorrectement le point de divergence entre les points de vue ou ne l’établit pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI3_SO4",
+    "oi": "OI3",
+    "comportement_id": "3.4",
+    "outil_image": "OI3_SO4.png",
+    "operation": "Dégager des différences et des similitudes",
+    "comportement_enonce": "Indiquer le point précis sur lequel des acteurs ou des historiens sont d'accord (convergence).",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève établit correctement le point de convergence entre les points de vue."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève établit plus ou moins correctement le point de convergence entre les points de vue."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève établit incorrectement le point de convergence entre les points de vue ou ne l’établit pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI3_SO5",
+    "oi": "OI3",
+    "comportement_id": "3.5",
+    "outil_image": "OI3_SO5.png",
+    "operation": "Dégager des différences et des similitudes",
+    "comportement_enonce": "Montrer des différences et des similitudes par rapport à des points de vue d'acteurs ou à des interprétations d'historiens. Les acteurs peuvent être des personnes, des groupes de personnes, des organisations ou des institutions.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 3,
+      "echelle": [
+        {
+          "points": 3,
+          "label": "3 points",
+          "description": "L’élève nomme correctement l’acteur qui présente une position différente et présente correctement les deux positions."
+        },
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève nomme correctement l’acteur qui présente une position différente et présente correctement une position et plus ou moins correctement l’autre position."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève nomme correctement l’acteur qui présente une position différente et présente plus ou moins correctement les deux positions, ou présente correctement une position et incorrectement l’autre position ou ne la présente pas."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève nomme correctement l’acteur qui présente une position différente et présente tout au plus une seule position plus ou moins correctement, ou nomme incorrectement l’acteur qui présente une position différente ou ne le nomme pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI4_SO1",
+    "oi": "OI4",
+    "comportement_id": "4.1",
+    "outil_image": "OI4_SO1.png",
+    "operation": "Déterminer des causes et des conséquences",
+    "comportement_enonce": "Indiquer un facteur explicatif, c'est-à-dire un fait qui explique une réalité historique. Il peut s'agir d'événements, d'intérêts, d'objectifs, d'influences, d'éléments géographiques ou d'actions (réponse écrite).",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève détermine correctement le facteur explicatif."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève détermine plus ou moins correctement le facteur explicatif."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève détermine incorrectement le facteur explicatif ou ne le détermine pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI4_SO2",
+    "oi": "OI4",
+    "comportement_id": "4.2",
+    "outil_image": "OI4_SO2.png",
+    "operation": "Déterminer des causes et des conséquences",
+    "comportement_enonce": "Indiquer un fait qui découle d'une réalité historique (réponse écrite).",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève détermine correctement la conséquence."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève détermine plus ou moins correctement la conséquence."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève détermine incorrectement la conséquence ou ne la détermine pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI4_SO3",
+    "oi": "OI4",
+    "comportement_id": "4.3",
+    "outil_image": "OI4_SO3.png",
+    "operation": "Déterminer des causes et des conséquences",
+    "comportement_enonce": "Déterminer les deux facteurs explicatifs (réponse constituée de numéros de documents).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève détermine les deux facteurs explicatifs. (2 sur 2)"
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève détermine l’un des facteurs explicatifs. (1 sur 2)"
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne détermine pas les facteurs explicatifs. (0 sur 2)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI4_SO4",
+    "oi": "OI4",
+    "comportement_id": "4.4",
+    "outil_image": "OI4_SO4.png",
+    "operation": "Déterminer des causes et des conséquences",
+    "comportement_enonce": "Déterminer le facteur explicatif et la conséquence (réponse constituée de numéros de documents).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève détermine le facteur explicatif et la conséquence. (2 sur 2)"
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève détermine le facteur explicatif ou la conséquence. (1 sur 2)"
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne détermine pas le facteur explicatif ni la conséquence. (0 sur 2)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI5_SO1",
+    "oi": "OI5",
+    "comportement_id": "5.1",
+    "outil_image": "OI5_SO1.png",
+    "operation": "Mettre en relation des faits",
+    "comportement_enonce": "Associer des faits à des manifestations ou à des descriptions qui leur sont apparentées. Les faits peuvent être des actions, des événements, des mesures, des idéologies, des activités économiques, etc. (deux faits).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève met en relation tous les faits. (2 sur 2)"
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève met en relation certains faits. (1 sur 2)"
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne met pas en relation les faits. (0 sur 2)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI5_SO2",
+    "oi": "OI5",
+    "comportement_id": "5.2",
+    "outil_image": "OI5_SO2.png",
+    "operation": "Mettre en relation des faits",
+    "comportement_enonce": "Associer des faits à des manifestations ou à des descriptions qui leur sont apparentées. Les faits peuvent être des actions, des événements, des mesures, des idéologies, des activités économiques, etc. (quatre faits).",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève met en relation tous les faits. (4 sur 4)"
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève met en relation certains faits. (3 ou 2 sur 4)"
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne met pas en relation les faits. (1 ou 0 sur 4)"
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI6_SO1",
+    "oi": "OI6",
+    "comportement_id": "6.1",
+    "outil_image": "OI6_SO1.png",
+    "operation": "Déterminer des changements et des continuités",
+    "comportement_enonce": "Indiquer un fait qui montre qu'une réalité historique se transforme.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève détermine correctement le changement."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève détermine plus ou moins correctement le changement."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève détermine incorrectement le changement ou ne le détermine pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI6_SO2",
+    "oi": "OI6",
+    "comportement_id": "6.2",
+    "outil_image": "OI6_SO2.png",
+    "operation": "Déterminer des changements et des continuités",
+    "comportement_enonce": "Indiquer un fait qui montre qu'une réalité historique se maintient.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève détermine correctement la continuité."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève détermine plus ou moins correctement la continuité."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève détermine incorrectement la continuité ou ne la détermine pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI6_SO3",
+    "oi": "OI6",
+    "comportement_id": "6.3",
+    "outil_image": "OI6_SO3.png",
+    "operation": "Déterminer des changements et des continuités",
+    "comportement_enonce": "Montrer qu'une réalité historique se transforme ou se maintient.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 3,
+      "note": "L’élève présente un repère de temps plus ou moins exact ou inexact, ou n’en présente pas.",
+      "echelle": [
+        {
+          "points": 3,
+          "label": "3 points (ou 2 points*)",
+          "description": "L’élève indique s’il y a changement ou continuité et présente des faits qui le montrent correctement."
+        },
+        {
+          "points": 2,
+          "label": "2 points (ou 1 point*)",
+          "description": "L’élève indique s’il y a changement ou continuité et présente des faits qui le montrent plus ou moins correctement."
+        },
+        {
+          "points": 2,
+          "label": "2 points (ou 1 point*)",
+          "description": "L’élève n’indique pas s’il y a changement ou continuité mais présente des faits exacts."
+        },
+        {
+          "points": 1,
+          "label": "1 point (ou 0 point*)",
+          "description": "L’élève n’indique pas s’il y a changement ou continuité mais présente des faits plus ou moins exacts."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève indique s’il y a changement ou continuité et présente des faits qui le montrent incorrectement ou n’en présente pas, ou n’indique pas s’il y a changement ou continuité et présente des faits inexacts ou n’en présente pas."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI7_SO1",
+    "oi": "OI7",
+    "comportement_id": "7.1",
+    "outil_image": "OI7_SO1.png",
+    "operation": "Établir des liens de causalité",
+    "comportement_enonce": "Exprimer un enchaînement logique qui existe entre des faits.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 3,
+      "echelle": [
+        {
+          "points": 3,
+          "label": "3 points",
+          "description": "L’élève précise les trois éléments et établit correctement deux liens de causalité."
+        },
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève précise les trois éléments et établit correctement un lien de causalité, ou précise deux éléments et établit correctement un lien de causalité."
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève précise les trois éléments mais n’établit correctement aucun lien de causalité, ou précise deux éléments mais n’établit correctement aucun lien de causalité."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève précise un seul élément ou n’en précise pas."
+        }
+      ]
+    }
+  }
+]
+

@@ -1,26 +1,752 @@
 @import "tailwindcss";
 
+/*
+ * Material Symbols Outlined — Google Fonts (app/layout.tsx), pas les icônes Material legacy.
+ * Règle : glyphe = 1em, espacement = em, alignement via flex + gap (pas d’offsets px arbitraires).
+ * Voir DESIGN-SYSTEM.md §1.4.
+ */
+.material-symbols-outlined {
+  /* !important : Tailwind preflight / `font-sans` ne doit pas écraser la police à ligatures */
+  font-family: "Material Symbols Outlined", sans-serif !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 1em;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  overflow: visible;
+  min-width: 1em;
+  min-height: 1em;
+  /* Ligatures — aligné feuille Google Fonts Material Symbols */
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  /* Variable font — requis pour un rendu fiable des glyphes (Outlined) */
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+  -webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Glyphes OI (données opérations intellectuelles — `oi.json`, fiche, cartes).
+ * Composant : `MaterialSymbolOiGlyph` (`data-oi-glyph`). Rotations / correctifs ici uniquement.
+ * DESIGN-SYSTEM.md §1.4 — Glyphes OI.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Changements et continuités (`alt_route`) : flèches orientées vers la droite */
+  --oi-glyph-alt-route-rotate: 90deg;
+}
+.material-symbols-outlined[data-oi-glyph="alt_route"] {
+  transform: rotate(var(--oi-glyph-alt-route-rotate));
+  transform-origin: center;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Pattern réutilisable : icône + texte (SaaS, wrap, alignement vertical stable) */
+.icon-text,
+.icon-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--icon-gap-em);
+  flex-wrap: wrap;
+  max-width: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Variante pleine largeur (ligne de formulaire, grille) */
+.icon-text-block {
+  display: flex;
+  align-items: center;
+  gap: var(--icon-gap-em);
+  flex-wrap: wrap;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Icône en tête de bloc multi-lignes (texte aligné sur la 1re ligne) */
+.icon-lead {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--icon-gap-em);
+}
+.icon-lead .material-symbols-outlined {
+  flex-shrink: 0;
+  margin-top: 0.125em;
+}
+
+/* DESIGN-SYSTEM.md §1 — fondations (tokens globaux, pas de HSL en dur ailleurs) */
+:root {
+  --color-deep: hsl(220, 40%, 18%);
+  --color-steel: hsl(215, 30%, 35%);
+  --color-surface: hsl(210, 20%, 96%);
+  --color-accent: hsl(195, 70%, 45%);
+
+  --color-success: hsl(145, 55%, 40%);
+  --color-warning: hsl(38, 90%, 50%);
+  --color-error: hsl(0, 70%, 50%);
+  --color-border: hsl(215, 20%, 85%);
+  /* Traits discrets (frise ligne du temps — jalons vers les dates) */
+  --color-border-secondary: hsl(215, 22%, 78%);
+  --color-muted: hsl(215, 15%, 60%);
+
+  --color-bg: hsl(210, 25%, 98%);
+  --color-panel: hsl(0, 0%, 100%);
+  --color-panel-alt: hsl(210, 20%, 96%);
+
+  /* Frise ligne du temps (TimeLine) — alias explicites pour fond / bordures */
+  --color-background-primary: var(--color-panel);
+  --color-border-primary: var(--color-deep);
+  /* Aligné sur les états positifs type `bg-success/15` (publication, validation) */
+  --color-background-success: color-mix(in srgb, var(--color-success) 15%, transparent);
+  --color-border-success: var(--color-success);
+
+  --color-accent-pulse: hsla(195, 70%, 45%, 0.12);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+  --space-8: 96px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px hsl(220 30% 10% / 0.08);
+  --shadow-md: 0 4px 12px hsl(220 30% 10% / 0.12);
+  --shadow-lg: 0 8px 24px hsl(220 30% 10% / 0.16);
+
+  /* Wizard « Créer une tâche » — split-screen aperçu (WORKFLOWS) — canevas gris ~50 % */
+  --wizard-preview-canvas: hsl(0 0% 50%);
+  /* Ombre marquée — fiche « flottante » sur le canevas gris du wizard */
+  --wizard-preview-card-shadow:
+    0 36px 72px -20px rgb(0 0 0 / 0.35), 0 16px 32px -12px rgb(0 0 0 / 0.22),
+    0 4px 12px rgb(0 0 0 / 0.12), 0 0 0 1px rgb(0 0 0 / 0.08);
+
+  /* DESIGN-SYSTEM.md §1.4 — icônes Material Symbols (espacement typographique, pas en px) */
+  --icon-gap-em: 0.35em;
+  --icon-artboard-grid: 24px; /* grille de dessin Material (référence) */
+
+  /*
+   * Échelle typographique racine — confort lecture (réf. WCAG 16px min ; 18px courant pour UI dense).
+   * Toutes les utilitaires Tailwind en rem suivent cette base.
+   */
+  --app-font-root-scale: 112.5%;
+
+  /*
+   * Interlignes app (hors barèmes ministériels — `components/tae/grilles/` inchangé).
+   * Réf. pratiques UI : corps >16px → ~1,35–1,4 ; texte secondaire / paragraphes → ~1,4–1,5 ; UI dense → ~1,3–1,35.
+   */
+  --app-leading-body: 1.375;
+
+  /* DESIGN-SYSTEM.md §8.1 — layout app */
+  --sidebar-width: 18rem;
+  --sidebar-collapsed: 5.5rem;
+  --topbar-height: 3.5rem;
+
+  /*
+   * Feuille imprimable TAÉ — Letter portrait.
+   * Aperçu écran (`.paper`) : marges blanches = ce padding.
+   * Impression : `@page { margin: … }` dans `lib/tae/print-page-css.ts` (**TAE_PRINT_PAGE_MARGIN**, = cette valeur)
+   * — répété sur chaque page ; le padding ne le serait pas sur un bloc fragmenté.
+   */
+  --tae-print-sheet-width: 8.5in;
+  --tae-print-sheet-min-height: 11in;
+  --tae-print-sheet-padding: 2cm;
+
+  /*
+   * Documents iconographiques — fiche / aperçu (`printable-fiche-preview.module.css`).
+   * Plafond hauteur sur l’`<img>` (images déjà bornées côté serveur ~400 px) ; `--tae-doc-print-figure-scale` défaut 1.
+   */
+  --tae-print-document-figure-max-height: 11cm;
+}
+
+/*
+ * Miller (CD, connaissances) — grille selon la largeur du panneau parent.
+ * En dessous du seuil : empilement vertical (lisible). Au-dessus : grille horizontale avec minmax(0,1fr).
+ */
+/* Fond colonne aperçu wizard — léger relief sur gris moyen */
+.tae-wizard-preview-canvas {
+  background-color: var(--wizard-preview-canvas);
+  background-image: radial-gradient(ellipse 90% 60% at 50% -5%, hsl(0 0% 58%) 0%, transparent 52%);
+}
+
+.tae-miller-host {
+  container-type: inline-size;
+  min-width: 0;
+  max-width: 100%;
+  text-align: left;
+}
+
+.tae-miller-grid {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+@container (min-width: 42rem) {
+  .tae-miller-grid--3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+    justify-items: stretch;
   }
 }
 
+@container (min-width: 52rem) {
+  .tae-miller-grid--4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: start;
+    justify-items: stretch;
+  }
+}
+
+.tae-miller-col {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  min-width: 0;
+  width: 100%;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+}
+
+/*
+ * Les <button> ont souvent text-align: center (UA) ; si le navigateur les rend en flex
+ * (inline-flex + justify-center), le texte reste centré sans text-align explicite.
+ */
+.tae-miller-col button[type="button"] {
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.tae-miller-col:last-child {
+  border-bottom: none;
+}
+
+@container (min-width: 42rem) {
+  .tae-miller-grid--3 > .tae-miller-col {
+    border-bottom: none;
+    border-right: 1px solid var(--color-border);
+  }
+  .tae-miller-grid--3 > .tae-miller-col:last-child {
+    border-right: none;
+  }
+}
+
+@container (min-width: 52rem) {
+  .tae-miller-grid--4 > .tae-miller-col {
+    border-bottom: none;
+    border-right: 1px solid var(--color-border);
+  }
+  .tae-miller-grid--4 > .tae-miller-col:last-child {
+    border-right: none;
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  --color-deep: hsl(220 40% 18%);
+  --color-steel: hsl(215 30% 35%);
+  --color-surface: hsl(210 20% 96%);
+  --color-accent: hsl(195 70% 45%);
+  --color-success: hsl(145 55% 40%);
+  --color-warning: hsl(38 90% 50%);
+  --color-error: hsl(0 70% 50%);
+  --color-border: hsl(215 20% 85%);
+  --color-border-secondary: hsl(215 22% 78%);
+  --color-muted: hsl(215 15% 60%);
+  --color-bg: hsl(210 25% 98%);
+  --color-panel: hsl(0 0% 100%);
+  --color-panel-alt: hsl(210 20% 96%);
+
+  --shadow-sm: 0 1px 3px hsl(220 30% 10% / 0.08);
+  --shadow-md: 0 4px 12px hsl(220 30% 10% / 0.12);
+  --shadow-lg: 0 8px 24px hsl(220 30% 10% / 0.16);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /*
+   * `leading-*` Tailwind — valeurs resserrées vs défaut (ex. relaxed 1,625 → trop aéré à ~18px racine).
+   * `body` utilise `--app-leading-body` (= même ratio que `leading-normal` ici).
+   */
+  --leading-tight: 1.22;
+  --leading-snug: 1.32;
+  --leading-normal: 1.375;
+  --leading-relaxed: 1.45;
+  --leading-loose: 1.55;
+}
+
+/* Accessibilité — §11 : focus visible (outline accent, offset 2px) */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Champs formulaire auth : bordure + halo accent (pas d’outline double) */
+input.auth-input:focus-visible,
+select.auth-input:focus-visible,
+textarea.auth-input:focus-visible,
+button.auth-input:focus-visible {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-pulse);
+}
+
+/* DESIGN-SYSTEM.md §2.2.1 — select natif : même chevron partout (évite le rendu OS) */
+select.form-select {
+  appearance: none;
+  background-color: var(--color-panel);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M6 9l6 6 6-6' stroke='%23889aad' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.25rem;
+}
+
+/* Curseur « nombre de lignes » (formulaire TAE) — track + thumb cohérents, tokens uniquement */
+input[type="range"].form-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 2rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+/*
+ * Radio & case à cocher — état coché / actif en teal institutionnel (`--color-accent`, ~hsl(195 70% 45 %)).
+ * Évite le bleu navigateur par défaut sur tout le périmètre formulaire.
+ */
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: var(--color-accent);
+}
+
+/* DESIGN-SYSTEM.md — boutons : curseur main ; désactivé : not-allowed (icônes cliquables incluses). */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+input[type="range"].form-range:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+input[type="range"].form-range::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+input[type="range"].form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -6px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  border: 3px solid var(--color-panel);
+  box-shadow: var(--shadow-sm);
+}
+
+input[type="range"].form-range:focus {
+  outline: none;
+}
+
+input[type="range"].form-range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 3px var(--color-accent-pulse);
+}
+
+input[type="range"].form-range::-moz-range-track {
+  height: 10px;
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+input[type="range"].form-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent);
+  border: 3px solid var(--color-panel);
+  box-shadow: var(--shadow-sm);
+}
+
+input[type="range"].form-range:focus-visible::-moz-range-thumb {
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 3px var(--color-accent-pulse);
+}
+
+/* forms-guide.md §3 — héritage typo sur les contrôles natifs */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+html {
+  font-size: var(--app-font-root-scale);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-deep);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-weight: 400;
+  line-height: var(--app-leading-body);
+}
+
+/* Wizard — aperçu impression : masque AppShell + split wizard + chrome modale (`html` pendant l’ouverture) */
+@media print {
+  html.tae-print-preview-modal-open [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  html.tae-print-preview-modal-open aside[aria-label="Menu application"],
+  html.tae-print-preview-modal-open .app-shell-root > button[aria-label="Fermer le menu"],
+  html.tae-print-preview-modal-open .app-shell-mobile-header {
+    display: none !important;
+  }
+
+  html.tae-print-preview-modal-open .app-shell-main {
+    margin-left: 0 !important;
+  }
+
+  html.tae-print-preview-modal-open .main--app {
+    padding: 0 !important;
+  }
+
+  html.tae-print-preview-modal-open .app-shell-root {
+    background: var(--color-bg) !important;
+  }
+
+  /* Tout le split wizard (titres page, stepper, sommaire) — la modale porte seule la feuille */
+  html.tae-print-preview-modal-open .tae-wizard-split-root {
+    display: none !important;
+  }
+
+  html.tae-print-preview-modal-open .tae-print-preview-chrome {
+    display: none !important;
+  }
+
+  html.tae-print-preview-modal-open .tae-print-preview-root {
+    position: static !important;
+    inset: auto !important;
+    z-index: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  html.tae-print-preview-modal-open .tae-print-preview-scroll {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    background: var(--color-bg) !important;
+  }
+
+  html.tae-print-preview-modal-open .tae-print-preview-root [role="dialog"] {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
+}
+
+/* Route `/questions/[id]/print` — document minimal (pas d’AppShell) ; `@page` injecté par `TaePrintRouteShell` */
+@media print {
+  html[data-tae-print-route] [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  html[data-tae-print-route] .tae-print-screen-only {
+    display: none !important;
+  }
+
+  html[data-tae-print-route] .tae-print-document-layout {
+    background: transparent !important;
+    min-height: 0 !important;
+  }
+
+  html[data-tae-print-route] .tae-print-page-main {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Feuille Letter : marges blanches = `@page` injecté (`lib/tae/print-page-css.ts`) — pas de padding ici en print */
+@media print {
+  html.tae-print-preview-modal-open #tae-wizard-printable-fiche,
+  html[data-tae-print-route] #tae-wizard-printable-fiche {
+    /* Remplir la zone utile après marges `@page` ; `max-width: 100%` sur un parent étroit rétrécissait la feuille. */
+    width: 100% !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    box-shadow: none !important;
+    background: var(--color-panel) !important;
+    /* Frise ligne du temps (`font-family: var(--font-sans)` sur les `<text>` SVG) — même pile qu’au corps. */
+    --font-sans: Arial, Helvetica, sans-serif;
+    /* Corps fiche imprimable : Arial ; pas les barèmes — `eval-grid.module.css` impose Arial sur `table` (tailles propres). */
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 11pt !important;
+    line-height: 1.5 !important;
+  }
+
+  html.tae-print-preview-modal-open body,
+  html[data-tae-print-route] body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: var(--color-bg) !important;
+  }
+}
+
+/*
+ * Ordre chronologique — feuille élève (fiche sommaire + aperçu impression wizard + `/questions/[id]/print`).
+ * Intro + grille 2×2 + « Réponse » dans `consigne` ; guidage élève injecté à l’impression (`.ordre-chrono-student-guidage`) depuis `tae.guidage` — voir `ordre-chronologique-payload.ts`.
+ */
+[data-ordre-chrono-student="true"] .ordre-chrono-student-root {
+  margin-top: 0.15rem;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-intro {
+  margin: 0 0 0.65rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-guidage {
+  margin: 0 0 1rem;
+  line-height: 1.45;
+  color: var(--color-steel);
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-guidage p {
+  margin: 0;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 2.25rem;
+  margin: 0 0 1.35rem;
+  align-items: start;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-option {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-letter-label {
+  font-weight: 600;
+  color: var(--color-deep);
+  flex-shrink: 0;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-seq {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.12rem;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-digit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.7rem;
+  height: 1.7rem;
+  padding: 0 0.25rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--color-deep);
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-sep {
+  color: var(--color-muted);
+  user-select: none;
+  font-weight: 500;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-reponse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  margin-top: 0.25rem;
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-reponse-label {
+  font-weight: 600;
+  color: var(--color-deep);
+}
+
+[data-ordre-chrono-student="true"] .ordre-chrono-student-reponse-box {
+  display: inline-block;
+  width: 2.1rem;
+  height: 2.1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  flex-shrink: 0;
+}
+
+/*
+ * Ligne du temps (1.2) — feuille élève (sommaire, aperçu impression, `/questions/[id]/print`).
+ * Intro + frise + « Réponse » dans `consigne` ; guidage injecté entre intro et frise — `ligne-du-temps-payload.ts`.
+ */
+[data-ligne-temps-student="true"] .ligne-temps-student-root {
+  margin-top: 0.15rem;
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-student-intro {
+  margin: 0 0 0.65rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-student-guidage {
+  margin: 0 0 1rem;
+  line-height: 1.45;
+  color: var(--color-steel);
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-student-guidage p {
+  margin: 0;
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-frise {
+  margin: 0 0 1.1rem;
+}
+
+/*
+ * Frise ruban SVG (feuille élève / wizard) — gabarit 800×120, teals en hex dans le markup.
+ */
+.ligne-temps-ribbon-svg {
+  display: block;
+  overflow: visible;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Encadré lettre sélectionnée (wizard `TimeLine`) — bordure success 2px ; fond segment vert via `fill` inline sur le rect segment. */
+.ligne-temps-ribbon-letter-selected {
+  stroke: var(--color-border-success);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Zone cliquable — `none` (pas `transparent`) pour ne pas masquer le texte au-dessus dans certains moteurs. */
+.ligne-temps-ribbon-hit {
+  cursor: pointer;
+  fill: none;
+  pointer-events: all;
+}
+
+.ligne-temps-ribbon-hit:focus {
+  outline: none;
+}
+
+.ligne-temps-ribbon-hit:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-student-reponse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  margin-top: 0.25rem;
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-student-reponse-label {
+  font-weight: 600;
+  color: var(--color-deep);
+}
+
+[data-ligne-temps-student="true"] .ligne-temps-student-reponse-box {
+  display: inline-block;
+  width: 2.1rem;
+  height: 2.1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  flex-shrink: 0;
+}
+
+/* DESIGN-SYSTEM.md §8.4 — tooltips sidebar repliée (desktop) */
+@media (min-width: 1024px) {
+  .sidebar--collapsed .sidebar__link[data-tooltip] {
+    position: relative;
+  }
+  .sidebar--collapsed .sidebar__link[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 60;
+    white-space: nowrap;
+    border-radius: var(--radius-sm);
+    background: var(--color-deep);
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    box-shadow: var(--shadow-md);
+    pointer-events: none;
+  }
 }

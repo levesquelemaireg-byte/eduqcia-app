@@ -1,0 +1,186 @@
+/**
+ * État du wizard « Créer une tâche » — structure par blocs (behaviour-driven).
+ * Le nombre d’étapes = `TAE_FORM_STEP_COUNT` (`components/tae/TaeForm/step-meta.ts`).
+ */
+
+import type { Dispatch } from "react";
+import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
+import type { DocumentSlotData } from "@/lib/tae/document-helpers";
+import type { CdFormSlice, CdSelectionWithIds } from "@/lib/tae/cd-helpers";
+import { initialCdFormSlice } from "@/lib/tae/cd-helpers";
+import type { ConnaissanceSelectionWithIds } from "@/lib/tae/connaissances-helpers";
+import {
+  initialAspects,
+  type AspectSocieteKey,
+  type RedactionSlice,
+} from "@/lib/tae/redaction-helpers";
+import type { LigneDuTempsPayload } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
+import type { OrdreChronologiquePayload } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+
+/** Doit rester égal à `TAE_FORM_STEPS.length`. */
+export const TAE_FORM_STEP_COUNT = 7;
+
+export const TAE_CONCEPTION_STEP_INDEX = 0;
+export const TAE_BLUEPRINT_STEP_INDEX = 1;
+/** Bloc 3 — consigne (+ guidage selon comportement). */
+export const TAE_REDACTION_STEP_INDEX = 2;
+export const TAE_DOCUMENTS_STEP_INDEX = 3;
+/** Bloc 5 — corrigé / options non-rédactionnelles. */
+export const TAE_BLOC5_STEP_INDEX = 4;
+/** Bloc 6 — compétence disciplinaire. */
+export const TAE_CD_STEP_INDEX = 5;
+/** Bloc 7 — aspects de société + connaissances. */
+export const TAE_CONNAISSANCES_STEP_INDEX = 6;
+
+export type BlueprintSlice = {
+  niveau: string;
+  discipline: string;
+  oiId: string;
+  comportementId: string;
+  nbLignes: number | null;
+  nbDocuments: number | null;
+  outilEvaluation: string | null;
+  documentSlots: { slotId: DocumentSlotId }[];
+  blueprintLocked: boolean;
+};
+
+export type ConceptionSlice = {
+  modeConception: "" | "seul" | "equipe";
+  collaborateurs: { id: string; displayName: string }[];
+};
+
+export type Bloc3Slice = {
+  consigne: string;
+  guidage: string;
+};
+
+export type Bloc4Slice = {
+  documents: Partial<Record<DocumentSlotId, DocumentSlotData>>;
+};
+
+/**
+ * Données non rédactionnelles au Bloc 5 — union discriminée (extensions futures).
+ */
+export type NonRedactionData =
+  | { type: "placeholder" }
+  | { type: "ordre-chronologique"; payload: OrdreChronologiquePayload }
+  | { type: "ligne-du-temps"; payload: LigneDuTempsPayload };
+
+export type Bloc5Slice = {
+  corrige: string;
+  nonRedaction: NonRedactionData | null;
+};
+
+export type Bloc6Slice = {
+  cd: CdFormSlice;
+};
+
+export type Bloc7Slice = {
+  aspects: Record<AspectSocieteKey, boolean>;
+  connaissances: ConnaissanceSelectionWithIds[];
+};
+
+export type TaeFormState = {
+  currentStep: number;
+  bloc1: ConceptionSlice;
+  bloc2: BlueprintSlice;
+  bloc3: Bloc3Slice;
+  bloc4: Bloc4Slice;
+  bloc5: Bloc5Slice;
+  bloc6: Bloc6Slice;
+  bloc7: Bloc7Slice;
+};
+
+export type Bloc5Props = {
+  state: TaeFormState;
+  dispatch: Dispatch<TaeFormAction>;
+};
+
+export type TaeFormAction =
+  | { type: "HYDRATE"; state: TaeFormState }
+  | { type: "SET_STEP"; step: number }
+  | { type: "STEP_NEXT" }
+  | { type: "STEP_PREV" }
+  | { type: "SET_MODE_CONCEPTION"; mode: "seul" | "equipe" }
+  | { type: "ADD_COLLABORATEUR"; id: string; displayName: string }
+  | { type: "REMOVE_COLLABORATEUR"; id: string }
+  | { type: "SET_NIVEAU"; niveau: string }
+  | { type: "SET_DISCIPLINE"; discipline: string }
+  | { type: "SET_OI"; oiId: string }
+  | {
+      type: "SET_COMPORTEMENT";
+      comportementId: string;
+      nbDocuments: number;
+      outilEvaluation: string;
+      nbLignes: number;
+    }
+  | { type: "LOCK_BLUEPRINT" }
+  | { type: "UNLOCK_BLUEPRINT" }
+  | { type: "SET_CONSIGNE"; value: string }
+  | { type: "SET_ASPECT"; aspect: AspectSocieteKey; value: boolean }
+  | { type: "SET_GUIDAGE"; value: string }
+  | { type: "SET_CORRIGE"; value: string }
+  | {
+      type: "UPDATE_DOCUMENT_SLOT";
+      slotId: DocumentSlotId;
+      patch: Partial<DocumentSlotData>;
+    }
+  | { type: "SET_CD_SELECTION"; selection: CdSelectionWithIds | null }
+  | { type: "TOGGLE_CONNAISSANCE"; selection: ConnaissanceSelectionWithIds }
+  | { type: "CLEAR_CONNAISSANCES" }
+  | { type: "REMOVE_CONNAISSANCE_BY_ROW_ID"; rowId: string }
+  | { type: "NON_REDACTION_PATCH_ORDRE_CHRONO"; patch: Partial<OrdreChronologiquePayload> }
+  | { type: "NON_REDACTION_PATCH_LIGNE_TEMPS"; patch: Partial<LigneDuTempsPayload> };
+
+export const initialBlueprint: BlueprintSlice = {
+  niveau: "",
+  discipline: "",
+  oiId: "",
+  comportementId: "",
+  nbLignes: null,
+  nbDocuments: null,
+  outilEvaluation: null,
+  documentSlots: [],
+  blueprintLocked: false,
+};
+
+export const initialConception: ConceptionSlice = {
+  modeConception: "",
+  collaborateurs: [],
+};
+
+export const initialBloc3: Bloc3Slice = {
+  consigne: "",
+  guidage: "",
+};
+
+export const initialBloc5: Bloc5Slice = {
+  corrige: "",
+  nonRedaction: null,
+};
+
+export const initialBloc7: Bloc7Slice = {
+  aspects: { ...initialAspects },
+  connaissances: [],
+};
+
+export const initialTaeFormState: TaeFormState = {
+  currentStep: 0,
+  bloc1: initialConception,
+  bloc2: initialBlueprint,
+  bloc3: initialBloc3,
+  bloc4: { documents: {} },
+  bloc5: initialBloc5,
+  bloc6: { cd: initialCdFormSlice },
+  bloc7: initialBloc7,
+};
+
+/** Vue agrégée pour aperçu / sommaire / helpers existants (`RedactionSlice`). */
+export function getRedactionSliceForPreview(state: TaeFormState): RedactionSlice {
+  return {
+    consigne: state.bloc3.consigne,
+    guidage: state.bloc3.guidage,
+    corrige: state.bloc5.corrige,
+    aspects: state.bloc7.aspects,
+  };
+}

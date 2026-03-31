@@ -1,0 +1,109 @@
+[
+  {
+    "TYPE_FICHIER": "METADONNEES",
+    "discipline": "Histoire du Québec et du Canada",
+    "niveau": "Secondaire 3-4",
+    "total_cd": 2,
+    "derniere_mise_a_jour": "2026-01-30"
+  },
+  {
+    "id": "HQC-CD1",
+    "titre": "Caractériser une période de l’histoire du Québec et du Canada",
+    "composantes": [
+      {
+        "id": "HQC-CD1-1",
+        "titre": "Établir des faits historiques",
+        "criteres": [
+          { "id": "HQC-CD1-1-1", "texte": "Retracer des événements" },
+          {
+            "id": "HQC-CD1-1-2",
+            "texte": "Considérer les aspects de société (culturel, économique, politique, social, territorial)"
+          },
+          {
+            "id": "HQC-CD1-1-3",
+            "texte": "Identifier des acteurs historiques et des témoins"
+          },
+          { "id": "HQC-CD1-1-4", "texte": "Relever des actions et des paroles" }
+        ]
+      },
+      {
+        "id": "HQC-CD1-2",
+        "titre": "Établir la chronologie",
+        "criteres": [
+          { "id": "HQC-CD1-2-1", "texte": "Se référer à des repères de temps" },
+          {
+            "id": "HQC-CD1-2-2",
+            "texte": "Établir la succession des événements (antériorité et postériorité)"
+          }
+        ]
+      },
+      {
+        "id": "HQC-CD1-3",
+        "titre": "Considérer des éléments géographiques",
+        "criteres": [
+          {
+            "id": "HQC-CD1-3-1",
+            "texte": "Déterminer les limites du territoire (frontières géopolitiques)"
+          },
+          {
+            "id": "HQC-CD1-3-2",
+            "texte": "Relever les éléments naturels du territoire"
+          },
+          {
+            "id": "HQC-CD1-3-3",
+            "texte": "Relever des traces de l'occupation du territoire"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "HQC-CD2",
+    "titre": "Interpréter une réalité sociale",
+    "composantes": [
+      {
+        "id": "HQC-CD2-1",
+        "titre": "Cerner l’objet d’interprétation",
+        "criteres": [
+          {
+            "id": "HQC-CD2-1-1",
+            "texte": "Préciser des éléments du contexte sociohistorique (québécois, canadien, nord-américain, mondial)"
+          },
+          { "id": "HQC-CD2-1-2", "texte": "Considérer les aspects de société" },
+          {
+            "id": "HQC-CD2-1-3",
+            "texte": "Formuler des explications provisoires"
+          }
+        ]
+      },
+      {
+        "id": "HQC-CD2-2",
+        "titre": "Analyser une réalité sociale",
+        "criteres": [
+          {
+            "id": "HQC-CD2-2-1",
+            "texte": "Établir des changements et des continuités (durée, effets à court, moyen et long terme)"
+          },
+          {
+            "id": "HQC-CD2-2-2",
+            "texte": "Déterminer des causes et des conséquences"
+          }
+        ]
+      },
+      {
+        "id": "HQC-CD2-3",
+        "titre": "Assurer la validité de son interprétation",
+        "criteres": [
+          {
+            "id": "HQC-CD2-3-1",
+            "texte": "Discerner des intentions, des valeurs et des croyances qui sous-tendent les actions"
+          },
+          {
+            "id": "HQC-CD2-3-2",
+            "texte": "Considérer différentes autres interprétations (témoins ou historiens)"
+          }
+        ]
+      }
+    ]
+  }
+]

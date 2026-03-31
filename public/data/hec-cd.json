@@ -1,0 +1,207 @@
+[
+  {
+    "TYPE_FICHIER": "METADONNEES",
+    "discipline": "Histoire et éducation à la citoyenneté",
+    "niveau": "Secondaire 1-2",
+    "total_cd": 3,
+    "derniere_mise_a_jour": "2026-01-30"
+  },
+  {
+    "id": "HEC-CD1",
+    "titre": "Interroger les réalités sociales dans une perspective historique",
+    "composantes": [
+      {
+        "id": "HEC-CD1-1",
+        "titre": "Se tourner vers le passé des réalités sociales",
+        "criteres": [
+          {
+            "id": "HEC-CD1-1-1",
+            "texte": "Se questionner sur l’origine des réalités sociales"
+          },
+          {
+            "id": "HEC-CD1-1-2",
+            "texte": "S’enquérir du contexte de l’époque"
+          },
+          {
+            "id": "HEC-CD1-1-3",
+            "texte": "Se préoccuper des croyances, attitudes et valeurs de l’époque"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD1-2",
+        "titre": "Considérer les réalités sociales sous l’angle de la durée",
+        "criteres": [
+          {
+            "id": "HEC-CD1-2-1",
+            "texte": "Se questionner sur les réalités sociales à l’aide des repères de temps"
+          },
+          {
+            "id": "HEC-CD1-2-2",
+            "texte": "S’enquérir d’éléments de continuité et de changement"
+          },
+          {
+            "id": "HEC-CD1-2-3",
+            "texte": "Se préoccuper des traces de ces réalités sociales dans le présent"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD1-3",
+        "titre": "Envisager les réalités sociales dans leur complexité",
+        "criteres": [
+          {
+            "id": "HEC-CD1-3-1",
+            "texte": "S’enquérir de leurs divers aspects"
+          },
+          {
+            "id": "HEC-CD1-3-2",
+            "texte": "Se préoccuper d’avoir une vision globale"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "HEC-CD2",
+    "titre": "Interpréter les réalités sociales à l’aide de la méthode historique",
+    "composantes": [
+      {
+        "id": "HEC-CD2-1",
+        "titre": "Établir les faits des réalités sociales",
+        "criteres": [
+          {
+            "id": "HEC-CD2-1-1",
+            "texte": "Se documenter sur divers aspects de ces faits"
+          },
+          {
+            "id": "HEC-CD2-1-2",
+            "texte": "Sélectionner des documents pertinents"
+          },
+          {
+            "id": "HEC-CD2-1-3",
+            "texte": "Délimiter le cadre spatio-temporel"
+          },
+          {
+            "id": "HEC-CD2-1-4",
+            "texte": "Dégager les circonstances et les actions"
+          },
+          {
+            "id": "HEC-CD2-1-5",
+            "texte": "Identifier des témoins et des acteurs"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD2-2",
+        "titre": "Expliquer les réalités sociales",
+        "criteres": [
+          {
+            "id": "HEC-CD2-2-1",
+            "texte": "Rechercher des facteurs explicatifs"
+          },
+          {
+            "id": "HEC-CD2-2-2",
+            "texte": "Établir des liens entre ces facteurs"
+          },
+          {
+            "id": "HEC-CD2-2-3",
+            "texte": "Déterminer des conséquences dans la durée"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD2-3",
+        "titre": "Relativiser son interprétation des réalités sociales",
+        "criteres": [
+          {
+            "id": "HEC-CD2-3-1",
+            "texte": "Tenir compte de ses représentations et du cadre de référence des auteurs"
+          },
+          {
+            "id": "HEC-CD2-3-2",
+            "texte": "Relever des similitudes et des différences entre des sociétés selon l’angle d’entrée privilégié"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "HEC-CD3",
+    "titre": "Construire sa conscience citoyenne à l’aide de l’histoire",
+    "composantes": [
+      {
+        "id": "HEC-CD3-1",
+        "titre": "Rechercher des fondements de son identité sociale",
+        "criteres": [
+          {
+            "id": "HEC-CD3-1-1",
+            "texte": "Relever des attributs de son identité sociale"
+          },
+          {
+            "id": "HEC-CD3-1-2",
+            "texte": "Établir des liens entre ses attributs identitaires et leurs origines"
+          },
+          {
+            "id": "HEC-CD3-1-3",
+            "texte": "Reconnaître la diversité des identités sociales"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD3-2",
+        "titre": "Qualifier la participation à la vie collective",
+        "criteres": [
+          {
+            "id": "HEC-CD3-2-1",
+            "texte": "Établir des liens entre l’action humaine et le changement social"
+          },
+          {
+            "id": "HEC-CD3-2-2",
+            "texte": "Reconnaître les types d’actions possibles"
+          },
+          {
+            "id": "HEC-CD3-2-3",
+            "texte": "Relever des occasions de participation sociale"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD3-3",
+        "titre": "Comprendre l’utilité d’institutions publiques",
+        "criteres": [
+          {
+            "id": "HEC-CD3-3-1",
+            "texte": "Examiner la nature, l’origine et le fonctionnement d’institutions publiques"
+          },
+          {
+            "id": "HEC-CD3-3-2",
+            "texte": "Saisir la fonction de ces institutions"
+          },
+          {
+            "id": "HEC-CD3-3-3",
+            "texte": "Cerner le rôle que chacun peut y jouer"
+          }
+        ]
+      },
+      {
+        "id": "HEC-CD3-4",
+        "titre": "Établir l’apport de réalités sociales à la vie démocratique",
+        "criteres": [
+          {
+            "id": "HEC-CD3-4-1",
+            "texte": "Cerner des valeurs et des principes découlant de réalités sociales"
+          },
+          {
+            "id": "HEC-CD3-4-2",
+            "texte": "Reconnaître des lieux d’exercice de principes et de valeurs à la base de la vie démocratique"
+          },
+          {
+            "id": "HEC-CD3-4-3",
+            "texte": "Relever des droits et des responsabilités des individus"
+          }
+        ]
+      }
+    ]
+  }
+]

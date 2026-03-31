@@ -1,0 +1,88 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
+import { MillerCdColumns } from "@/components/tae/TaeForm/bloc5/MillerCdColumns";
+import { useTaeForm } from "@/components/tae/TaeForm/FormState";
+import { isCdStepGateOk } from "@/lib/tae/cd-step-guards";
+import {
+  cdDataUrlForDiscipline,
+  parseCdJsonArray,
+  type CdCompetenceNode,
+} from "@/lib/tae/cd-helpers";
+import { WIZARD_REFERENTIEL_CD_INDISPO, WIZARD_REFERENTIEL_LOAD_FAILED } from "@/lib/ui/ui-copy";
+/**
+ * Étape 5 — Compétence disciplinaire — BLOC5-CD.md
+ */
+export function Bloc5CompetenceDisciplinaire() {
+  const { state, dispatch } = useTaeForm();
+  const discipline = state.bloc2.discipline as DisciplineCode;
+  const [rows, setRows] = useState<CdCompetenceNode[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  const gateOk = isCdStepGateOk(state);
+  const dataUrl = cdDataUrlForDiscipline(discipline);
+
+  useEffect(() => {
+    if (!dataUrl) return;
+    let cancelled = false;
+    fetch(dataUrl)
+      .then((r) => {
+        if (!r.ok) throw new Error("fetch");
+        return r.json();
+      })
+      .then((raw: unknown) => {
+        if (cancelled) return;
+        setLoadError(false);
+        setRows(parseCdJsonArray(raw));
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [dataUrl]);
+
+  if (!gateOk) {
+    return (
+      <p className="text-sm leading-relaxed text-muted">
+        Complétez d&apos;abord les étapes « Paramètres de la tâche », « Consigne et production
+        attendue » et « Documents historiques » pour accéder à la compétence disciplinaire.
+      </p>
+    );
+  }
+
+  if (discipline === "geo") {
+    return <p className="text-sm leading-relaxed text-muted">{WIZARD_REFERENTIEL_CD_INDISPO}</p>;
+  }
+
+  if (loadError) {
+    return (
+      <p className="text-sm text-error" role="alert">
+        {WIZARD_REFERENTIEL_LOAD_FAILED}
+      </p>
+    );
+  }
+
+  if (rows === null) {
+    return <div className="h-40 animate-pulse rounded-xl bg-border/30" aria-hidden="true" />;
+  }
+
+  if (rows.length === 0) {
+    return <p className="text-sm text-muted">Aucun élément pour le moment.</p>;
+  }
+
+  return (
+    <MillerCdColumns
+      key={
+        state.bloc6.cd.selection
+          ? `${state.bloc6.cd.selection.competenceId}-${state.bloc6.cd.selection.composanteId}-${state.bloc6.cd.selection.critereId}`
+          : "none"
+      }
+      competences={rows}
+      selection={state.bloc6.cd.selection}
+      onSelectCritere={(sel) => dispatch({ type: "SET_CD_SELECTION", selection: sel })}
+    />
+  );
+}

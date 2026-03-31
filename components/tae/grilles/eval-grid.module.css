@@ -1,0 +1,244 @@
+/* Barèmes ministériels — Arial, traits #000, fond transparent. */
+
+.evalViewport {
+  /* Largeur fixe 660px — jamais inférieure (règle produit) ; hauteur = contenu. Écrans étroits : défilement horizontal sur le parent (overflow-x-auto). */
+  box-sizing: border-box;
+  --eval-grid-base-width: 660px;
+  width: var(--eval-grid-base-width);
+  min-width: var(--eval-grid-base-width);
+  max-width: var(--eval-grid-base-width);
+  flex-shrink: 0;
+  background: transparent;
+  --eval-grid-ink: #000;
+  --eval-grid-font-size: 14px;
+  --eval-grid-line-height: 1.15;
+  --eval-grid-py: 6px;
+  --eval-grid-px: 8px;
+}
+
+.viewportCompact {
+  --eval-grid-font-size: 12.5px;
+  --eval-grid-line-height: 1.12;
+  --eval-grid-py: 4px;
+  --eval-grid-px: 6px;
+}
+
+.viewportComfort {
+  --eval-grid-font-size: 14.5px;
+  --eval-grid-line-height: 1.18;
+  --eval-grid-py: 7px;
+  --eval-grid-px: 9px;
+}
+
+.wrapper {
+  background: transparent;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  color: var(--eval-grid-ink, #000);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: var(--eval-grid-font-size, 14px);
+  line-height: var(--eval-grid-line-height, 1.15);
+  table-layout: fixed;
+  border: 2px solid var(--eval-grid-ink, #000);
+}
+
+/* OI7_SO1 — contour 1px ; pas de gras ; col. 3 centrée sauf dernière ligne fusionnée (gauche) ; points sans bordure gauche. */
+.tableOi7 {
+  font-size: var(--eval-grid-font-size, 14px);
+  line-height: 1.12;
+  border-width: 1px;
+}
+
+.tableOi7 .cellRubrique,
+.tableOi7 .cellCond,
+.tableOi7 .cellPoints {
+  font-weight: normal;
+}
+
+.tableOi7 .cellDetail {
+  text-align: center;
+}
+
+.tableOi7 .oi7FooterMergedCell {
+  text-align: left;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/*
+ * OI3_SO5 — **4 colonnes** (660px) : rubrique | condition | libellé | points ;
+ * traits verticaux retirés entre cond|libellé et libellé|points (`noBorderRight` / `noBorderLeft`).
+ * Corps **9pt** sauf rubrique **12,5px**.
+ */
+.tableOi3So5 {
+  font-size: 9pt;
+  line-height: 1.14;
+  hyphens: none;
+  /* Contour extérieur 1px (traits internes `.cell` restent 1px). */
+  border-width: 1px;
+}
+
+.tableOi3So5 .cell {
+  padding: 4px 6px;
+}
+
+/* Colonnes étroites : clip + césure pour ne pas empiéter sur la colonne voisine. */
+.tableOi3So5 .cellRubrique,
+.tableOi3So5 .cellCond {
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  max-width: 0; /* avec table-layout:fixed + <col>, force le respect de la largeur de colonne */
+  font-weight: 500;
+}
+
+/* Seul le titre rubrique reste à l’échelle d’avant (tout le reste hérite du 9pt du tableau). */
+.tableOi3So5 .cellRubrique {
+  font-size: 12.5px;
+}
+
+.tableOi3So5 .oi3CellDetail {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.tableOi3So5 .oi3CellPts {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Pied : gauche + retours à la ligne dans la col. libellé (pas `nowrap` → évite chevauchement avec « 0 point »). */
+.tableOi3So5 .oi3FooterTextCell {
+  text-align: left;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/*
+ * Colonnes OI3_SO5 — 84 + 106 + 420 + 50 = 660 ; col. 3 prioritaire (la plus large).
+ */
+.tableOi3So5 .oi3ColRub {
+  width: 84px;
+}
+
+.tableOi3So5 .oi3ColCond {
+  width: 106px;
+}
+
+.tableOi3So5 .oi3ColDetailText {
+  width: 420px;
+}
+
+.tableOi3So5 .oi3ColPts {
+  width: 50px;
+}
+
+/* Toutes les cellules : texte centré (horizontal + vertical via vertical-align). */
+.cell {
+  border: 1px solid var(--eval-grid-ink, #000);
+  padding: var(--eval-grid-py, 6px) var(--eval-grid-px, 8px);
+  vertical-align: middle;
+  text-align: center;
+  background: transparent;
+}
+
+.cellRubrique {
+  font-weight: 700;
+}
+
+.cellCond {
+  font-weight: 700;
+}
+
+.cellPoints {
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+/* Colonne description — graisse normale ; alignement à gauche par défaut. OI7_SO1 : `.tableOi7 .cellDetail` centré ; `.oi7FooterMergedCell` → gauche. */
+.cellDetail {
+  font-weight: normal;
+  text-align: left;
+}
+
+.noBorderLeft {
+  border-left-width: 0;
+}
+
+.noBorderRight {
+  border-right-width: 0;
+}
+
+.noBorderTop {
+  border-top-width: 0;
+}
+
+.doubleSepTop td,
+.doubleSepTop th {
+  border-top: 3px double var(--eval-grid-ink, #000);
+}
+
+/* Double ligne « fine » (≈ 1px | gap | 1px) — aligné PNG / PDF ministériel ; pas 4px double (trop épais). */
+.doubleBottom {
+  border-bottom: 3px double var(--eval-grid-ink, #000) !important;
+}
+
+.sp {
+  position: relative;
+  min-height: 0;
+}
+
+.spText {
+  text-align: center;
+  padding: 0 100px 0 4px;
+}
+
+.spPts {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.star {
+  font-size: 1.35em;
+  line-height: 0;
+  vertical-align: -0.08em;
+  display: inline-block;
+}
+
+.colRubriqueNarrow {
+  width: 18%;
+}
+
+.colCondNarrow {
+  width: 22%;
+}
+
+/* OI7_SO1 — 94 + 118 + 378 + 70 = 660 ; col. 3 élargie en priorité depuis col. 4, puis 2, puis 1. */
+.tableOi7 .oi7ColRub {
+  width: 94px;
+}
+
+.tableOi7 .oi7ColCond {
+  width: 118px;
+}
+
+.tableOi7 .oi7ColDesc {
+  width: 378px;
+}
+
+.tableOi7 .oi7ColPts {
+  width: 70px;
+}
+
+/* Contenu entre `(` et `)` : une seule ligne (pas de césure « (1 sur » / « 2). »). */
+.nowrapParenGroup {
+  white-space: nowrap;
+}

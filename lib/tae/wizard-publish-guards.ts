@@ -1,0 +1,101 @@
+/**
+ * Publication d’une TAÉ — prérequis métier (docs/FEATURES.md, docs/WORKFLOWS.md).
+ */
+
+import { isProfileCollaborateurId } from "@/lib/tae/collaborateur-user-ids";
+import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
+import { isCdStepComplete } from "@/lib/tae/cd-step-guards";
+import { isConnaissancesStepComplete } from "@/lib/tae/connaissances-step-guards";
+import {
+  isDocumentsCompleteButNotPublishable,
+  isDocumentsStepPublishable,
+} from "@/lib/tae/document-helpers";
+import {
+  isLigneDuTempsStep3Complete,
+  normalizeLigneDuTempsPayload,
+} from "@/lib/tae/non-redaction/ligne-du-temps-payload";
+import {
+  isOrdreChronologiqueDocumentsPublishable,
+  isOrdreChronologiqueDocumentsStepComplete,
+  isOrdreChronologiqueStep3Complete,
+  normalizeOrdreChronologiquePayload,
+} from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+import {
+  isActiveLigneDuTempsVariant,
+  isActiveOrdreChronologiqueVariant,
+} from "@/lib/tae/non-redaction/wizard-variant";
+import { isRedactionStepComplete } from "@/lib/tae/redaction-helpers";
+import { getRedactionSliceForPreview } from "@/lib/tae/tae-form-state-types";
+import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
+
+/** Même règle que `FormState.isConceptionStepComplete` — évite d’importer le module client depuis `lib/`. */
+function conceptionOkForPublish(c: TaeFormState["bloc1"]): boolean {
+  if (c.modeConception === "seul") return true;
+  if (c.modeConception === "equipe") {
+    if (c.collaborateurs.length < 1) return false;
+    return c.collaborateurs.every((x) => isProfileCollaborateurId(x.id));
+  }
+  return false;
+}
+
+function redactionStepOkForPublish(state: TaeFormState): boolean {
+  if (isActiveOrdreChronologiqueVariant(state)) {
+    const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
+    return p !== null && isOrdreChronologiqueStep3Complete(p);
+  }
+  if (isActiveLigneDuTempsVariant(state)) {
+    const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+    return p !== null && isLigneDuTempsStep3Complete(p);
+  }
+  return isRedactionStepComplete(getRedactionSliceForPreview(state));
+}
+
+function documentsStepOkForPublish(state: TaeFormState): boolean {
+  const b = state.bloc2;
+  if (isActiveOrdreChronologiqueVariant(state)) {
+    return isOrdreChronologiqueDocumentsPublishable(b.documentSlots, state.bloc4.documents);
+  }
+  if (isActiveLigneDuTempsVariant(state)) {
+    return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
+  }
+  return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
+}
+
+function documentsCompleteButUrlsBlocked(state: TaeFormState): boolean {
+  const b = state.bloc2;
+  if (isActiveOrdreChronologiqueVariant(state)) {
+    return (
+      isOrdreChronologiqueDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
+      !isOrdreChronologiqueDocumentsPublishable(b.documentSlots, state.bloc4.documents)
+    );
+  }
+  if (isActiveLigneDuTempsVariant(state)) {
+    return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
+  }
+  return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
+}
+
+/** Toutes les étapes requises avant `is_published = true` côté serveur. */
+export function isWizardPublishReady(state: TaeFormState): boolean {
+  if (!conceptionOkForPublish(state.bloc1)) return false;
+  const b = state.bloc2;
+  if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
+  if (!redactionStepOkForPublish(state)) return false;
+  if (!documentsStepOkForPublish(state)) return false;
+  if (!isCdStepComplete(state)) return false;
+  if (!isConnaissancesStepComplete(state)) return false;
+  return true;
+}
+
+/** Prêt partout sauf URL publique pour un document iconographique (infobulle Publier). */
+export function isPublishBlockedOnlyByIconographicUrls(state: TaeFormState): boolean {
+  if (!conceptionOkForPublish(state.bloc1)) return false;
+  const b = state.bloc2;
+  if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
+  if (!redactionStepOkForPublish(state)) return false;
+  if (!documentsCompleteButUrlsBlocked(state)) return false;
+  if (!isCdStepComplete(state)) return false;
+  if (!isConnaissancesStepComplete(state)) return false;
+  return true;
+}

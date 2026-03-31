@@ -1,0 +1,229 @@
+import { describe, expect, it } from "vitest";
+import { buildPublishPayload } from "@/lib/tae/publish-tae-payload";
+import type { DocumentSlotData } from "@/lib/tae/document-helpers";
+import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
+import { initialTaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+
+const ctx = {
+  niveauId: 10,
+  disciplineId: 20,
+  cdId: 30 as number | null,
+  connIds: [100, 101],
+};
+
+function assertPayload(
+  r: ReturnType<typeof buildPublishPayload>,
+): asserts r is Exclude<typeof r, { error: string }> {
+  expect(r).not.toHaveProperty("error");
+}
+
+describe("buildPublishPayload", () => {
+  it("sans slots : documents_new et slots vides", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [];
+    const r = buildPublishPayload("auteur-uuid", state, ctx);
+    assertPayload(r);
+    expect(r.documents_new).toEqual([]);
+    expect(r.slots).toEqual([]);
+    expect(r.auteur_id).toBe("auteur-uuid");
+    expect(r.tae.niveau_id).toBe(10);
+    expect(r.tae.discipline_id).toBe(20);
+    expect(r.tae.cd_id).toBe(30);
+    expect(r.tae.connaissances_ids).toEqual([100, 101]);
+    expect(r.collaborateurs_user_ids).toEqual([]);
+  });
+
+  it("slot idle → validation", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    const r = buildPublishPayload("u", state, ctx);
+    expect(r).toEqual({ error: "validation" });
+  });
+
+  it("reuse sans document_id → validation", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    const slot: DocumentSlotData = {
+      ...emptyDocumentSlot(),
+      mode: "reuse",
+      source_document_id: null,
+    };
+    state.bloc4.documents = { doc_A: slot };
+    const r = buildPublishPayload("u", state, ctx);
+    expect(r).toEqual({ error: "validation" });
+  });
+
+  it("reuse avec document_id", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_B" }];
+    state.bloc4.documents = {
+      doc_B: {
+        ...emptyDocumentSlot(),
+        mode: "reuse",
+        source_document_id: "doc-existing-uuid",
+      },
+    };
+    const r = buildPublishPayload("u", state, ctx);
+    assertPayload(r);
+    expect(r.documents_new).toEqual([]);
+    expect(r.slots).toEqual([
+      {
+        slot: "doc_B",
+        ordre: 0,
+        mode: "reuse",
+        document_id: "doc-existing-uuid",
+      },
+    ]);
+  });
+
+  it("create textuel : trim titre et source_citation", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    const auteurId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
+    const collabId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
+    state.bloc2.oiId = "oi1";
+    state.bloc2.comportementId = "c1";
+    state.bloc2.nbLignes = 5;
+    state.bloc1.modeConception = "equipe";
+    state.bloc1.collaborateurs = [{ id: collabId, displayName: "Collègue test" }];
+    state.bloc3.consigne = "<p>C</p>";
+    state.bloc3.guidage = "g";
+    state.bloc5.corrige = "<p>K</p>";
+    state.bloc7.aspects.economique = true;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc4.documents = {
+      doc_A: {
+        ...emptyDocumentSlot(),
+        mode: "create",
+        type: "textuel",
+        titre: "  Titre  ",
+        contenu: "<p>Corps</p>",
+        source_citation: "  Source  ",
+      },
+    };
+    const r = buildPublishPayload(auteurId, state, ctx);
+    assertPayload(r);
+    expect(r.tae.conception_mode).toBe("equipe");
+    expect(r.collaborateurs_user_ids).toEqual([collabId]);
+    expect(r.tae.aspects_societe).toEqual(["Économique"]);
+    expect(r.documents_new[0]).toMatchObject({
+      titre: "Titre",
+      type: "textuel",
+      contenu: "<p>Corps</p>",
+      source_citation: "Source",
+      source_type: "secondaire",
+      niveaux_ids: [10],
+      disciplines_ids: [20],
+      connaissances_ids: [100, 101],
+      repere_temporel: null,
+      annee_normalisee: null,
+    });
+    expect(r.slots[0]).toMatchObject({
+      slot: "doc_A",
+      ordre: 0,
+      mode: "create",
+      newIndex: 0,
+    });
+  });
+
+  it("équipe sans collaborateur profil → validation", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc1.modeConception = "equipe";
+    state.bloc1.collaborateurs = [];
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc4.documents = {
+      doc_A: {
+        ...emptyDocumentSlot(),
+        mode: "create",
+        type: "textuel",
+        titre: "T",
+        contenu: "<p>x</p>",
+        source_citation: "S",
+      },
+    };
+    const r = buildPublishPayload("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", state, ctx);
+    expect(r).toEqual({ error: "validation" });
+  });
+
+  it("iconographique : URL non http(s) → document_image", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc4.documents = {
+      doc_A: {
+        ...emptyDocumentSlot(),
+        mode: "create",
+        type: "iconographique",
+        titre: "T",
+        source_citation: "S",
+        imageUrl: "blob:http://local/x",
+      },
+    };
+    const r = buildPublishPayload("u", state, ctx);
+    expect(r).toEqual({ error: "document_image" });
+  });
+
+  it("iconographique : https accepté", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc4.documents = {
+      doc_A: {
+        ...emptyDocumentSlot(),
+        mode: "create",
+        type: "iconographique",
+        titre: "T",
+        source_citation: "S",
+        imageUrl: "https://example.com/x.png",
+      },
+    };
+    const r = buildPublishPayload("u", state, ctx);
+    assertPayload(r);
+    expect(r.documents_new[0].image_url).toBe("https://example.com/x.png");
+    expect(r.documents_new[0].contenu).toBeNull();
+    expect(r.documents_new[0]).not.toHaveProperty("print_impression_scale");
+    expect(r.documents_new[0].source_type).toBe("secondaire");
+  });
+
+  it("iconographique : print_impression_scale absent du payload (défaut SQL 1)", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc4.documents = {
+      doc_A: {
+        ...emptyDocumentSlot(),
+        mode: "create",
+        type: "iconographique",
+        titre: "T",
+        source_citation: "S",
+        imageUrl: "https://example.com/x.png",
+        printImpressionScale: 0.8,
+      },
+    };
+    const r = buildPublishPayload("u", state, ctx);
+    assertPayload(r);
+    expect(r.documents_new[0]).not.toHaveProperty("print_impression_scale");
+  });
+
+  it("create : source primaire et légende dans le payload iconographique", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc4.documents = {
+      doc_A: {
+        ...emptyDocumentSlot(),
+        mode: "create",
+        type: "iconographique",
+        titre: "Carte",
+        source_citation: "Source",
+        imageUrl: "https://example.com/map.png",
+        source_type: "primaire",
+        image_legende: "Légende courte",
+        image_legende_position: "bas_droite",
+      },
+    };
+    const r = buildPublishPayload("u", state, ctx);
+    assertPayload(r);
+    expect(r.documents_new[0]).toMatchObject({
+      source_type: "primaire",
+      image_legende: "Légende courte",
+      image_legende_position: "bas_droite",
+    });
+  });
+});

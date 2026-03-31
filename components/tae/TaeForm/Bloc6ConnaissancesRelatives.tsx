@@ -1,0 +1,157 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tae/TaeForm/bloc6";
+import { useTaeForm } from "@/components/tae/TaeForm/FormState";
+import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
+import { isConnaissancesStepGateOk } from "@/lib/tae/connaissances-step-guards";
+import {
+  connDataUrlForDiscipline,
+  filterConnRowsByNiveau,
+  parseConnJsonArray,
+  type ConnRawRow,
+  type ConnaissanceSelectionWithIds,
+  type HecConnRow,
+  type HqcConnRow,
+} from "@/lib/tae/connaissances-helpers";
+import {
+  WIZARD_CONNAISSANCES_EMPTY_FILTER,
+  WIZARD_REFERENTIEL_CONN_INDISPO,
+  WIZARD_REFERENTIEL_LOAD_FAILED,
+} from "@/lib/ui/ui-copy";
+
+/**
+ * Étape 6 — Connaissances relatives — docs/WORKFLOWS.md §7
+ */
+export function Bloc6ConnaissancesRelatives() {
+  const { state, dispatch } = useTaeForm();
+  const discipline = state.bloc2.discipline as DisciplineCode;
+  const niveau = state.bloc2.niveau as NiveauCode;
+  const [rows, setRows] = useState<ConnRawRow[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
+  /** Incrémenté au « Réinitialiser » pour remonter les Miller (état local réinitialisé). */
+  const [millerResetKey, setMillerResetKey] = useState(0);
+
+  const gateOk = isConnaissancesStepGateOk(state);
+
+  const selectedIds = useMemo(
+    () => new Set(state.bloc7.connaissances.map((c) => c.rowId)),
+    [state.bloc7.connaissances],
+  );
+
+  const syncNavigationRowId = state.bloc7.connaissances[0]?.rowId ?? null;
+
+  const onToggle = (sel: ConnaissanceSelectionWithIds) => {
+    dispatch({ type: "TOGGLE_CONNAISSANCE", selection: sel });
+  };
+
+  const dataUrl = connDataUrlForDiscipline(discipline);
+
+  useEffect(() => {
+    if (!dataUrl) return;
+    let cancelled = false;
+    fetch(dataUrl)
+      .then((r) => {
+        if (!r.ok) throw new Error("fetch");
+        return r.json();
+      })
+      .then((raw: unknown) => {
+        if (cancelled) return;
+        setLoadError(false);
+        const parsed = parseConnJsonArray(raw, discipline);
+        setRows(filterConnRowsByNiveau(parsed, niveau));
+      })
+      .catch(() => {
+        if (!cancelled) setLoadError(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [dataUrl, discipline, niveau]);
+
+  if (!gateOk) {
+    return (
+      <p className="text-sm leading-relaxed text-muted">
+        Complétez d&apos;abord les étapes « Paramètres de la tâche », « Consigne et production
+        attendue », « Documents historiques » et « Compétence disciplinaire » pour accéder aux
+        connaissances relatives.
+      </p>
+    );
+  }
+
+  if (discipline === "geo") {
+    return <p className="text-sm leading-relaxed text-muted">{WIZARD_REFERENTIEL_CONN_INDISPO}</p>;
+  }
+
+  if (loadError) {
+    return (
+      <p className="text-sm text-error" role="alert">
+        {WIZARD_REFERENTIEL_LOAD_FAILED}
+      </p>
+    );
+  }
+
+  if (rows === null) {
+    return <div className="h-40 animate-pulse rounded-xl bg-border/30" aria-hidden="true" />;
+  }
+
+  if (rows.length === 0) {
+    return (
+      <p className="text-sm text-muted" role="status">
+        {WIZARD_CONNAISSANCES_EMPTY_FILTER}
+      </p>
+    );
+  }
+
+  const handleResetConnaissances = () => {
+    dispatch({ type: "CLEAR_CONNAISSANCES" });
+    setMillerResetKey((k) => k + 1);
+  };
+
+  const resetConnaissancesButton = (
+    <div className="flex justify-end pt-1">
+      <button
+        type="button"
+        onClick={handleResetConnaissances}
+        className="icon-text max-w-full flex-wrap justify-end gap-[0.35em] rounded-md px-2 py-1 text-xs font-medium text-muted transition-colors hover:bg-error/5 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        <span
+          className="material-symbols-outlined shrink-0 text-[0.95em] leading-none text-inherit"
+          aria-hidden="true"
+        >
+          remove_selection
+        </span>
+        {/* docs/DECISIONS.md — Page Créer une TAÉ · Étape 6 · Connaissances relatives */}
+        <span>Réinitialiser</span>
+      </button>
+    </div>
+  );
+
+  if (discipline === "hec") {
+    return (
+      <div className="space-y-3">
+        <MillerConnaissancesHec
+          key={millerResetKey}
+          rows={rows as HecConnRow[]}
+          selectedIds={selectedIds}
+          syncNavigationRowId={syncNavigationRowId}
+          onToggle={onToggle}
+        />
+        {resetConnaissancesButton}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      <MillerConnaissancesHqc
+        key={millerResetKey}
+        rows={rows as HqcConnRow[]}
+        selectedIds={selectedIds}
+        syncNavigationRowId={syncNavigationRowId}
+        onToggle={onToggle}
+      />
+      {resetConnaissancesButton}
+    </div>
+  );
+}
