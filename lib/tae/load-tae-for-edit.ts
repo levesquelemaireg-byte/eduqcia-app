@@ -1,5 +1,6 @@
 /**
  * Charge une TAÉ existante depuis Supabase → `TaeFormState` pour `/questions/[id]/edit`.
+ * Hydratation structurée en `bloc1`…`bloc7` (même modèle que le wizard « Créer une tâche »).
  */
 
 import { readFile } from "fs/promises";

@@ -1,3 +1,7 @@
+/**
+ * Payload `publish_tae_transaction` — lecture `TaeFormState` via `bloc1`…`bloc7` uniquement
+ * (contrat RPC inchangé : `consigne`, `guidage`, `corrige`, `aspects_societe`, documents, etc.).
+ */
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import { buildCollaborateursUserIdsForPayload } from "@/lib/tae/collaborateur-user-ids";
 import { getSlotData, isPublicHttpUrl } from "@/lib/tae/document-helpers";
