@@ -270,6 +270,41 @@ export const BLOC7_TITRE = "Indexation";
 export const BLOC7_DESCRIPTION =
   "Associez des aspects de société et des connaissances relatives à cette tâche.";
 
+/** Bloc 5 — rédactionnel — corrigé (`Bloc5Redactionnel`) */
+export const BLOC5_REDACTIONNEL_LABEL = "Production attendue";
+export const BLOC5_REDACTIONNEL_HELP = `Décrivez ce que l'élève doit produire pour répondre correctement à la tâche. Cette information apparaît dans le corrigé destiné à l'enseignant, jamais sur la feuille de l'élève.`;
+export const BLOC5_REDACTIONNEL_PLACEHOLDER = `ex. L'élève doit identifier deux causes de la Rébellion des Patriotes et les mettre en relation avec le contexte politique de 1837.`;
+
+/** Bloc 5 — placeholders non rédactionnels */
+export const BLOC5_NON_REDACTIONNEL_PLACEHOLDER_TITRE = "Génération des options";
+export const BLOC5_NON_REDACTIONNEL_PLACEHOLDER_MESSAGE =
+  "La génération automatique des options pour ce type de parcours sera disponible prochainement.";
+export const BLOC5_COMPORTEMENT_INCONNU = `Ce type de parcours n'est pas encore pris en charge dans cette version.`;
+
+/** Bloc 5 — états de readiness (parcours non rédactionnels) */
+export const BLOC5_ATTENTE_DOCUMENTS = `Les options seront générables une fois que tous les documents auront une année valide.`;
+export const BLOC5_PRET_A_GENERER =
+  "Tous les documents sont prêts. Vous pouvez générer les options.";
+
+/** Bloc 7 — champs (corps d’étape) */
+export const BLOC7_ASPECTS_LABEL = "Aspects de société";
+export const BLOC7_ASPECTS_HELP = `Sélectionnez les aspects de société mobilisés par cette tâche.`;
+export const BLOC7_CONNAISSANCES_LABEL = "Connaissances relatives";
+export const BLOC7_CONNAISSANCES_HELP = `Associez les connaissances du programme liées à cette tâche.`;
+export const BLOC7_CONNAISSANCES_EMPTY = "Aucune connaissance sélectionnée.";
+
+/** Navigation wizard — libellés boutons (stepper / pied de page) */
+export const WIZARD_BTN_SUIVANT = "Suivant";
+export const WIZARD_BTN_PRECEDENT = "Précédent";
+export const WIZARD_BTN_PUBLIER = "Publier la tâche";
+export const WIZARD_BTN_SAUVEGARDER = "Enregistrer le brouillon";
+export const WIZARD_CONFIRM_QUITTER = `Vous avez des modifications non sauvegardées. Voulez-vous quitter sans enregistrer ?`;
+
+/** Stepper — états */
+export const STEPPER_BLOC_INCOMPLET = "Ce bloc est incomplet.";
+export const STEPPER_BLOC_COMPLET = "Ce bloc est complété.";
+export const STEPPER_BLOC_VERROUILLE = "Complétez les blocs précédents pour accéder à celui-ci.";
+
 /** Page « Créer une TAÉ » — Bloc 2 — chargement référentiel */
 export const BLOC2_LOADING_PARAMETERS = "Chargement des paramètres…";
 
