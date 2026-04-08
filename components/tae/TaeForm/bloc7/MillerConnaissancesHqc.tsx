@@ -2,87 +2,108 @@
 
 import { useMemo, useState } from "react";
 import {
-  hecBranchNeedsSousColumn,
-  hecRowToSelection,
+  hqcBranchNeedsSousColumn,
+  hqcRowToSelection,
   uniqueInOrder,
   type ConnaissanceSelectionWithIds,
-  type HecConnRow,
+  type HqcConnRow,
 } from "@/lib/tae/connaissances-helpers";
 import { cn } from "@/lib/utils/cn";
 import { MILLER_CHOICE_BTN_WRAP, MILLER_COLUMN_LIST_CLASSNAME } from "@/lib/ui/miller-columns";
-import { MillerColumnHead } from "@/components/tae/TaeForm/bloc6/MillerColumnHead";
-import { encSous, SOUS_NULL } from "@/components/tae/TaeForm/bloc6/millerConnaissancesEnc";
+import { MillerColumnHead } from "@/components/tae/TaeForm/bloc7/MillerColumnHead";
+import { encSous, SOUS_NULL } from "@/components/tae/TaeForm/bloc7/millerConnaissancesEnc";
+
+function pairKeyFromParts(periode: string, realite: string): string {
+  return JSON.stringify([periode, realite]);
+}
 
 type Props = {
-  rows: HecConnRow[];
+  rows: HqcConnRow[];
   selectedIds: Set<string>;
   onToggle: (row: ConnaissanceSelectionWithIds) => void;
-  /** Réhydratation : aligne les colonnes sur la première connaissance sélectionnée. */
   syncNavigationRowId?: string | null;
 };
 
-function initialHecRealite(rows: HecConnRow[], syncId: string | null): string | null {
-  if (syncId) {
-    const r = rows.find((x) => x.id === syncId);
-    if (r) return r.realite_sociale;
-  }
-  return rows[0]?.realite_sociale ?? null;
+function findHqcPairIdx(rows: HqcConnRow[], syncId: string | null): number {
+  if (!syncId) return 0;
+  const r = rows.find((x) => x.id === syncId);
+  if (!r) return 0;
+  const keys = uniqueInOrder(rows.map((row) => pairKeyFromParts(row.periode, row.realite_sociale)));
+  const i = keys.findIndex((k) => {
+    const [periode, realite] = JSON.parse(k) as [string, string];
+    return periode === r.periode && realite === r.realite_sociale;
+  });
+  return i >= 0 ? i : 0;
 }
 
-function initialHecSection(rows: HecConnRow[], syncId: string | null): string | null {
+function initialHqcSection(rows: HqcConnRow[], syncId: string | null): string | null {
   if (!syncId) return null;
   const r = rows.find((x) => x.id === syncId);
   return r?.section ?? null;
 }
 
-function initialHecSousPick(rows: HecConnRow[], syncId: string | null): string | null {
+function initialHqcSousPick(rows: HqcConnRow[], syncId: string | null): string | null {
   if (!syncId) return null;
   const r = rows.find((x) => x.id === syncId);
   if (!r) return null;
-  if (!hecBranchNeedsSousColumn(rows, r.realite_sociale, r.section)) return null;
+  if (!hqcBranchNeedsSousColumn(rows, r.periode, r.realite_sociale, r.section)) return null;
   return encSous(r.sous_section);
 }
 
-export function MillerConnaissancesHec({
+export function MillerConnaissancesHqc({
   rows,
   selectedIds,
   onToggle,
   syncNavigationRowId = null,
 }: Props) {
   const syncId = syncNavigationRowId ?? null;
-  const [realite, setRealite] = useState<string | null>(() => initialHecRealite(rows, syncId));
-  const [section, setSection] = useState<string | null>(() => initialHecSection(rows, syncId));
+  const pairs = useMemo(() => {
+    const keys = uniqueInOrder(rows.map((r) => pairKeyFromParts(r.periode, r.realite_sociale)));
+    return keys.map((k) => JSON.parse(k) as [string, string]);
+  }, [rows]);
+
+  const [pairIdx, setPairIdx] = useState(() => findHqcPairIdx(rows, syncId));
+  const [section, setSection] = useState<string | null>(() => initialHqcSection(rows, syncId));
   const [userSousPick, setUserSousPick] = useState<string | null>(() =>
-    initialHecSousPick(rows, syncId),
+    initialHqcSousPick(rows, syncId),
   );
 
-  const realites = useMemo(() => uniqueInOrder(rows.map((r) => r.realite_sociale)), [rows]);
+  const currentPair = pairs[pairIdx] ?? null;
 
   const sections = useMemo(() => {
-    if (!realite) return [];
-    return uniqueInOrder(rows.filter((r) => r.realite_sociale === realite).map((r) => r.section));
-  }, [rows, realite]);
-
-  const needsSousSectionColumn = useMemo(() => {
-    if (!realite || !section) return false;
-    return hecBranchNeedsSousColumn(rows, realite, section);
-  }, [rows, realite, section]);
-
-  const sousKeys = useMemo(() => {
-    if (!realite || !section || !needsSousSectionColumn) return [];
+    if (!currentPair) return [];
+    const [periode, realite] = currentPair;
     return uniqueInOrder(
       rows
-        .filter((r) => r.realite_sociale === realite && r.section === section)
+        .filter((r) => r.periode === periode && r.realite_sociale === realite)
+        .map((r) => r.section),
+    );
+  }, [rows, currentPair]);
+
+  const needsSousSectionColumn = useMemo(() => {
+    if (!currentPair || !section) return false;
+    const [periode, realite] = currentPair;
+    return hqcBranchNeedsSousColumn(rows, periode, realite, section);
+  }, [rows, currentPair, section]);
+
+  const sousKeys = useMemo(() => {
+    if (!currentPair || !section || !needsSousSectionColumn) return [];
+    const [periode, realite] = currentPair;
+    return uniqueInOrder(
+      rows
+        .filter(
+          (r) => r.periode === periode && r.realite_sociale === realite && r.section === section,
+        )
         .map((r) => encSous(r.sous_section)),
     );
-  }, [rows, realite, section, needsSousSectionColumn]);
+  }, [rows, currentPair, section, needsSousSectionColumn]);
 
   const autoResolvedSousKey = useMemo(() => {
-    if (!needsSousSectionColumn || !realite || !section) return null;
+    if (!needsSousSectionColumn || !currentPair || !section) return null;
     if (sousKeys.length === 0) return null;
     if (sousKeys.length === 1) return sousKeys[0]!;
     return null;
-  }, [needsSousSectionColumn, realite, section, sousKeys]);
+  }, [needsSousSectionColumn, currentPair, section, sousKeys]);
 
   const sousKey = useMemo(() => {
     if (autoResolvedSousKey !== null) return autoResolvedSousKey;
@@ -91,21 +112,26 @@ export function MillerConnaissancesHec({
   }, [autoResolvedSousKey, userSousPick, sousKeys]);
 
   const enoncesRows = useMemo(() => {
-    if (!realite || !section) return [];
+    if (!currentPair || !section) return [];
+    const [periode, realite] = currentPair;
     if (!needsSousSectionColumn) {
-      return rows.filter((r) => r.realite_sociale === realite && r.section === section);
+      return rows.filter(
+        (r) => r.periode === periode && r.realite_sociale === realite && r.section === section,
+      );
     }
     if (sousKey === null) return [];
     const sk = sousKey === SOUS_NULL ? null : sousKey;
     return rows.filter(
       (r) =>
+        r.periode === periode &&
         r.realite_sociale === realite &&
         r.section === section &&
         (r.sous_section === null ? SOUS_NULL : r.sous_section) === encSous(sk),
     );
-  }, [rows, realite, section, needsSousSectionColumn, sousKey]);
+  }, [rows, currentPair, section, needsSousSectionColumn, sousKey]);
 
-  const showEnonces = Boolean(realite && section) && (!needsSousSectionColumn || sousKey !== null);
+  const showEnonces =
+    Boolean(currentPair && section) && (!needsSousSectionColumn || sousKey !== null);
 
   const gridColsClass =
     section && needsSousSectionColumn ? "tae-miller-grid--4" : "tae-miller-grid--3";
@@ -119,16 +145,17 @@ export function MillerConnaissancesHec({
         )}
       >
         <div className="tae-miller-col">
-          <MillerColumnHead label="Réalité sociale" />
+          <MillerColumnHead label="Période et réalité" />
           <ul
             className={MILLER_COLUMN_LIST_CLASSNAME}
             role="listbox"
-            aria-label="Réalités sociales"
+            aria-label="Périodes et réalités sociales"
           >
-            {realites.map((t) => {
-              const sel = realite === t;
+            {pairs.map((p, i) => {
+              const label = `${p[0]} — ${p[1]}`;
+              const sel = pairIdx === i;
               return (
-                <li key={t} className="mb-1">
+                <li key={pairKeyFromParts(p[0], p[1])} className="mb-1">
                   <button
                     type="button"
                     className={cn(
@@ -137,12 +164,12 @@ export function MillerConnaissancesHec({
                       sel ? "bg-accent/12 font-semibold text-deep" : "text-steel hover:bg-surface",
                     )}
                     onClick={() => {
-                      setRealite(t);
+                      setPairIdx(i);
                       setSection(null);
                       setUserSousPick(null);
                     }}
                   >
-                    {t}
+                    {label}
                   </button>
                 </li>
               );
@@ -153,7 +180,7 @@ export function MillerConnaissancesHec({
         <div className="tae-miller-col">
           <MillerColumnHead label="Section" />
           <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Sections">
-            {realite ? (
+            {currentPair ? (
               sections.map((s) => {
                 const sel = section === s;
                 return (
@@ -229,7 +256,7 @@ export function MillerConnaissancesHec({
                           ? "bg-success/15 font-medium text-deep ring-1 ring-inset ring-success/30"
                           : "text-steel hover:bg-surface",
                       )}
-                      onClick={() => onToggle({ rowId: r.id, ...hecRowToSelection(r) })}
+                      onClick={() => onToggle({ rowId: r.id, ...hqcRowToSelection(r) })}
                     >
                       {r.enonce}
                     </button>

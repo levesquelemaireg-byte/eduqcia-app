@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tae/TaeForm/bloc6";
+import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tae/TaeForm/bloc7";
 import { SectionAspects } from "@/components/tae/TaeForm/bloc3/SectionAspects";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import {

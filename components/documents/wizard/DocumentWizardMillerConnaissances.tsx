@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
-import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tae/TaeForm/bloc6";
+import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tae/TaeForm/bloc7";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
 import {
