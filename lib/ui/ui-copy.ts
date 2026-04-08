@@ -352,10 +352,14 @@ export const BLOC3_DESCRIPTION =
 /** Wizard TAÉ — descriptions contextuelles par étape et comportement (StepHeader). */
 export const STEP_DESCRIPTIONS: Record<number, Record<string, string>> = {
   2: {
-    "1.1": "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
-    "1.2": "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
-    "1.3": "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
-    default: "Rédigez la consigne de la tâche. L’appel documentaire (ex.\u00a0: « Consultez le document A. ») sera ajouté automatiquement au début.",
+    "1.1":
+      "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
+    "1.2":
+      "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
+    "1.3":
+      "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
+    default:
+      "Rédigez la consigne de la tâche. L’appel documentaire (ex.\u00a0: « Consultez le document A. ») sera ajouté automatiquement au début.",
   },
 };
 
@@ -398,7 +402,6 @@ export const BLOC5_REDACTIONNEL_PLACEHOLDER = `ex. L'élève doit identifier deu
 export const BLOC5_NON_REDACTIONNEL_PLACEHOLDER_TITRE = "Génération des options";
 export const BLOC5_NON_REDACTIONNEL_PLACEHOLDER_MESSAGE =
   "La génération automatique des options pour ce type de parcours sera disponible prochainement.";
-export const BLOC5_COMPORTEMENT_INCONNU = `Ce type de parcours n'est pas encore pris en charge dans cette version.`;
 
 /** Bloc 5 — états de readiness (parcours non rédactionnels) */
 export const BLOC5_ATTENTE_DOCUMENTS = `Les options seront générables une fois que tous les documents auront une année valide.`;
@@ -1129,15 +1132,11 @@ export const PERSP_BLOC3_TYPE_LABEL = "Type de perspectives";
 export const PERSP_BLOC3_TYPE_ACTEURS = "Acteurs de l'époque";
 export const PERSP_BLOC3_TYPE_HISTORIENS = "Historiens et historiennes";
 export const PERSP_BLOC3_CONTEXTE_LABEL = "Contexte";
-export const PERSP_BLOC3_CONTEXTE_PLACEHOLDER =
-  "Ex\u00a0: sur la lutte du Parti patriote en 1834";
-export const PERSP_BLOC3_CONTEXTE_PLACEHOLDER_COMPARE =
-  "Ex\u00a0: en 1775";
-export const PERSP_BLOC3_CONTEXTE_HINT =
-  "Décrivez brièvement l’enjeu historique et la période.";
+export const PERSP_BLOC3_CONTEXTE_PLACEHOLDER = "Ex\u00a0: sur la lutte du Parti patriote en 1834";
+export const PERSP_BLOC3_CONTEXTE_PLACEHOLDER_COMPARE = "Ex\u00a0: en 1775";
+export const PERSP_BLOC3_CONTEXTE_HINT = "Décrivez brièvement l’enjeu historique et la période.";
 export const PERSP_BLOC4_ACTEUR_LABEL = "Acteur ou historien";
-export const PERSP_BLOC4_ACTEUR_PLACEHOLDER =
-  "Ex\u00a0: François de Lévis, général français";
+export const PERSP_BLOC4_ACTEUR_PLACEHOLDER = "Ex\u00a0: François de Lévis, général français";
 export const PERSP_BLOC4_EXTRAIT_LABEL = "Extrait";
 export const PERSP_BLOC4_SOURCE_LABEL = "Source";
 /** Bloc 5 — corrigé intrus (3.5). */
@@ -1176,8 +1175,7 @@ export const BLOC3_MODAL_CONSIGNE_35_BODY =
   "La consigne est entièrement définie par le ministère pour ce comportement — elle ne peut pas être modifiée. Ce gabarit standardisé demande à l'élève d'identifier lequel des trois points de vue se distingue des deux autres, puis de justifier sa réponse par comparaison.\n\nVotre seule saisie ici est le contexte\u00a0: décrivez l'enjeu historique et la période concernée (ex\u00a0: « concernant la crise agricole au Bas-Canada au 19e siècle »). Ce contexte s'insère automatiquement dans la formule pour ancrer la question dans votre situation d'apprentissage.\n\nÀ l'étape suivante, vous saisirez les trois perspectives — regroupées dans un seul document ou réparties en documents distincts selon votre choix — chacune associée à son acteur ou historien, son extrait et sa source.";
 /** Bloc 3 — OI6·6.3 template pur (enjeu). */
 export const BLOC3_OI6_ENJEU_LABEL = "Réalité historique";
-export const BLOC3_OI6_ENJEU_PLACEHOLDER =
-  "Ex\u00a0: le mode de vie des Premières Nations";
+export const BLOC3_OI6_ENJEU_PLACEHOLDER = "Ex\u00a0: le mode de vie des Premières Nations";
 export const BLOC3_OI6_ENJEU_HINT =
   "Décrivez la réalité historique dont l'élève devra évaluer le changement ou la continuité.";
 export const BLOC3_MODAL_CONSIGNE_63_TITLE = "Consigne — changement ou continuité";
@@ -1190,12 +1188,9 @@ export const BLOC3_OI7_ENJEU_GLOBAL_PLACEHOLDER =
 export const BLOC3_OI7_ENJEU_GLOBAL_HINT =
   "Formulez une réalité qui suit naturellement « Expliquez comment ».";
 export const BLOC3_OI7_ELEMENT_LABEL = "Élément";
-export const BLOC3_OI7_ELEMENT_PLACEHOLDER_1 =
-  "Premier élément à préciser et à lier";
-export const BLOC3_OI7_ELEMENT_PLACEHOLDER_2 =
-  "Deuxième élément à préciser et à lier";
-export const BLOC3_OI7_ELEMENT_PLACEHOLDER_3 =
-  "Troisième élément à préciser et à lier";
+export const BLOC3_OI7_ELEMENT_PLACEHOLDER_1 = "Premier élément à préciser et à lier";
+export const BLOC3_OI7_ELEMENT_PLACEHOLDER_2 = "Deuxième élément à préciser et à lier";
+export const BLOC3_OI7_ELEMENT_PLACEHOLDER_3 = "Troisième élément à préciser et à lier";
 export const BLOC3_MODAL_CONSIGNE_71_TITLE = "Consigne — liens de causalité";
 export const BLOC3_MODAL_CONSIGNE_71_BODY =
   "La consigne est entièrement définie par le ministère pour ce comportement — elle ne peut pas être modifiée. Ce gabarit demande à l'élève d'expliquer comment trois éléments historiques s'enchaînent et se causent mutuellement.\n\nSaisissez la réalité historique et les trois éléments à lier causalement. Ils s'insèrent automatiquement dans la formule ministérielle.\n\nChacun des trois documents saisis à l'étape suivante doit fournir la matière nécessaire pour l'un des trois éléments.";
@@ -1207,20 +1202,17 @@ export const BLOC3_REVENIR_GABARIT = "Revenir au gabarit";
 export const BLOC3_COMPOSANTES_LABEL = "Composantes de la consigne";
 export const BLOC3_COMPOSANTES_DISABLED = "Composantes de la consigne — désactivées";
 export const BLOC3_BADGE_GABARIT = "Gabarit recommandé";
-export const BLOC4_MOMENTS_STRUCTURE_GROUPE =
-  "Un seul document (objets comparés groupés)";
+export const BLOC4_MOMENTS_STRUCTURE_GROUPE = "Un seul document (objets comparés groupés)";
 export const BLOC4_MOMENTS_STRUCTURE_SEPARE = "Documents distincts";
 /** Bloc 4 — Moments (OI6). */
 export const BLOC4_MOMENTS_TITRE_LABEL = "Titre";
-export const BLOC4_MOMENTS_TITRE_PLACEHOLDER =
-  "Ex\u00a0: Structure politique après Utrecht";
+export const BLOC4_MOMENTS_TITRE_PLACEHOLDER = "Ex\u00a0: Structure politique après Utrecht";
 export const BLOC4_MOMENTS_TITRE_HINT =
   "Donnez un titre pour orienter l'élève — avec ou sans repère temporel.";
 export const BLOC4_MOMENTS_ETAT_A = "État A";
 export const BLOC4_MOMENTS_ETAT_B = "État B";
 export const PERSP_BLOC4_TITRE_LABEL = "Titre";
-export const PERSP_BLOC4_TITRE_PLACEHOLDER =
-  "Ex\u00a0: La capitulation de Montréal, 1760";
+export const PERSP_BLOC4_TITRE_PLACEHOLDER = "Ex\u00a0: La capitulation de Montréal, 1760";
 
 /** Grille d’évaluation — `outil_evaluation` sans entrée dans `grilles-evaluation.json` (`docs/UI-COPY.md`). */
 export function copyGrilleAbsentePourOutil(outilId: string): string {
