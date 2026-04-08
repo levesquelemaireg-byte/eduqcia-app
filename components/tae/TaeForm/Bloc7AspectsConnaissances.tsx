@@ -34,9 +34,9 @@ import {
 import { RequiredMark } from "@/components/ui/RequiredMark";
 
 /**
- * Étape 7 — Indexation (aspects de société + connaissances relatives) — docs/WORKFLOWS.md
+ * Étape 7 — Aspects de société + connaissances relatives — docs/WORKFLOWS.md
  */
-export function Bloc7Indexation() {
+export function Bloc7AspectsConnaissances() {
   const { state, dispatch } = useTaeForm();
   const discipline = state.bloc2.discipline as DisciplineCode;
   const niveau = state.bloc2.niveau as NiveauCode;

@@ -7,7 +7,7 @@ import { Bloc2ParametresTache } from "@/components/tae/TaeForm/Bloc2ParametresTa
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneProduction";
 import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4DocumentsHistoriques";
 import { Bloc6CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc6CompetenceDisciplinaire";
-import { Bloc7Indexation } from "@/components/tae/TaeForm/Bloc7Indexation";
+import { Bloc7AspectsConnaissances } from "@/components/tae/TaeForm/Bloc7AspectsConnaissances";
 import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
 import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
 import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
@@ -52,7 +52,7 @@ const BLOC_COMPONENTS = [
   Bloc4DocumentsHistoriques,
   Bloc5,
   Bloc6CompetenceDisciplinaire,
-  Bloc7Indexation,
+  Bloc7AspectsConnaissances,
 ] as const satisfies readonly ComponentType[];
 
 type TaeFormInnerProps = {
