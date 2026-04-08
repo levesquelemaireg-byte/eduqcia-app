@@ -1,3 +1,10 @@
+// Résolveur des variantes Bloc 3 et Bloc 4 selon le comportement attendu.
+// Couvre uniquement les étapes 3 (rédaction/consigne) et 4 (documents).
+// Le routage du Bloc 5 est dans bloc5/Bloc5.tsx, qui suit un pattern similaire
+// mais opère sur un périmètre distinct (cas intrus, variantes NR, rédactionnel).
+// Cette séparation est volontaire : chaque résolveur a une responsabilité unique
+// sur un périmètre clair, conformément au principe de séparation des responsabilités.
+
 import type { ComponentType } from "react";
 import dynamic from "next/dynamic";
 import { Bloc3AvantApres } from "@/components/tae/non-redaction/avant-apres/Bloc3AvantApres";
@@ -79,10 +86,9 @@ const Bloc4Perspectives = dynamic(
   () => import("@/components/tae/TaeForm/bloc4/Bloc4Perspectives"),
   { ssr: false },
 );
-const Bloc4Moments = dynamic(
-  () => import("@/components/tae/TaeForm/bloc4/Bloc4Moments"),
-  { ssr: false },
-);
+const Bloc4Moments = dynamic(() => import("@/components/tae/TaeForm/bloc4/Bloc4Moments"), {
+  ssr: false,
+});
 
 function resolvePerspectivesBlocComponent(
   stepIndex: number,

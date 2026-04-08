@@ -14,14 +14,14 @@
 
 > **Note d'estimation** : chaque renommage est une opération multi-fichiers (composant + tous les imports + entrées dans `BLOC_COMPONENTS` de `TaeForm/index.tsx` + références dans `step-meta.ts` + éventuellement la slice du state qui s'appelle encore `bloc6` dans le code alors que le composant devient `Bloc6`). Compte 30 à 60 minutes par renommage plutôt que 5 minutes.
 
-- [ ] Renommer `Bloc5CompetenceDisciplinaire` en `Bloc6CompetenceDisciplinaire` (fichier + import dans `BLOC_COMPONENTS` de `TaeForm/index.tsx`)
-- [ ] Renommer `Bloc7Indexation` en `Bloc7AspectsConnaissances` (ou nom plus explicite à finaliser)
-- [ ] Déplacer le contenu du dossier `bloc6/` vers `bloc7/` (Miller columns pour l'étape 7) et mettre à jour les imports
-- [ ] Déplacer `bloc3/SectionAspects.tsx` vers `bloc7/` (mal rangé, mais utilisé activement par `Bloc7Indexation` — pas mort)
-- [ ] Supprimer `bloc3/SectionCorrige.tsx` (mort confirmé par grep, aucun import)
-- [ ] Vérifier puis éventuellement supprimer `bloc5/non-redactionnel/Bloc5TestScalability.tsx` et son entrée `test-scalability` dans `BLOC5_DYNAMIC_BY_SLUG`
-- [ ] Vérifier puis éventuellement supprimer `bloc5/non-redactionnel/Bloc5Default.tsx` (fallback `BLOC5_COMPORTEMENT_INCONNU` — ne devrait jamais s'afficher si tous les comportements sont mappés)
-- [ ] Unifier les deux résolveurs de Bloc 5 : `bloc5/Bloc5.tsx` duplique partiellement `wizardBlocResolver.tsx` — choisir un seul résolveur autoritatif et supprimer l'autre
+- [x] Renommer `Bloc5CompetenceDisciplinaire` en `Bloc6CompetenceDisciplinaire` (fichier + import dans `BLOC_COMPONENTS` de `TaeForm/index.tsx`)
+- [x] Renommer `Bloc7Indexation` en `Bloc7AspectsConnaissances` (ou nom plus explicite à finaliser)
+- [x] Déplacer le contenu du dossier `bloc6/` vers `bloc7/` (Miller columns pour l'étape 7) et mettre à jour les imports
+- [x] Déplacer `bloc3/SectionAspects.tsx` vers `bloc7/` (mal rangé, mais utilisé activement par `Bloc7AspectsConnaissances` — pas mort)
+- [x] Supprimer `bloc3/SectionCorrige.tsx` (mort confirmé par grep, aucun import)
+- [x] Supprimer `bloc5/non-redactionnel/Bloc5TestScalability.tsx` + sa config + son entrée dans le union `ComportementSlug` et le registre
+- [x] Supprimer `bloc5/non-redactionnel/Bloc5Default.tsx` + la copy orpheline `BLOC5_COMPORTEMENT_INCONNU`
+- [x] **Hors objet** — pas de duplication réelle. `wizardBlocResolver` couvre les étapes 3-4 (variantes NR + perspectives), `bloc5/Bloc5.tsx` couvre l'étape 5 (intrus + variantes NR + rédactionnel). Split fonctionnel cohérent par périmètre, séparation volontaire des responsabilités. Commentaires de tête de fichier ajoutés dans les deux résolveurs pour documenter cette décision et éviter qu'un futur audit ne suggère à nouveau une fusion.
 
 ---
 
@@ -142,13 +142,13 @@
 
 | Phase                                                  | Avancement         |
 | ------------------------------------------------------ | ------------------ |
-| Phase 1 — Le grand ménage                              | 0 / 8 actions      |
+| Phase 1 — Le grand ménage                              | 8 / 8 actions ✅   |
 | Phase 2 — Refonte modèle références + drag-and-drop    | 0 / 8 actions      |
 | Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions      |
 | Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions      |
 | Phase 5 — Quick wins UX                                | 0 / 8 actions      |
 | Phase 6 — Picker banque documents                      | 0 / 9 actions      |
 | Phase 7 — Décisions et spec finale                     | 0 / 8 actions      |
-| **Total**                                              | **0 / 55 actions** |
+| **Total**                                              | **8 / 55 actions** |
 
 Mets à jour ce tableau au fur et à mesure que tu coches des actions dans les sections ci-dessus.
