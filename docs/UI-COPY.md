@@ -555,7 +555,7 @@ Route `app/(app)/not-found.tsx` : affiché lorsque `notFound()` est invoqué (re
 
 #### Messages (gate, chargement, vide — code)
 
-- « Complétez d'abord les étapes « Paramètres de la tâche », « Consigne et production attendue » et « Documents historiques » pour accéder à la compétence disciplinaire. » (`Bloc5CompetenceDisciplinaire.tsx`)
+- « Complétez d'abord les étapes « Paramètres de la tâche », « Consigne et production attendue » et « Documents historiques » pour accéder à la compétence disciplinaire. » (`Bloc6CompetenceDisciplinaire.tsx`)
 - « Aucun élément pour le moment. » (liste CD vide)
 - _(Messages référentiel indisponible / erreur chargement : même chaînes que § Étape 2 — Référentiels.)_
 

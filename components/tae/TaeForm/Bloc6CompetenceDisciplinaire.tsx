@@ -18,7 +18,7 @@ import {
 /**
  * Étape 6 — Compétence disciplinaire — BLOC5-CD.md (`state.bloc6.cd`)
  */
-export function Bloc5CompetenceDisciplinaire() {
+export function Bloc6CompetenceDisciplinaire() {
   const { state, dispatch } = useTaeForm();
   const discipline = state.bloc2.discipline as DisciplineCode;
   const [rows, setRows] = useState<CdCompetenceNode[] | null>(null);

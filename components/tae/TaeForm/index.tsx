@@ -6,7 +6,7 @@ import { Bloc1AuteursTache } from "@/components/tae/TaeForm/Bloc1AuteursTache";
 import { Bloc2ParametresTache } from "@/components/tae/TaeForm/Bloc2ParametresTache";
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneProduction";
 import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4DocumentsHistoriques";
-import { Bloc5CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc5CompetenceDisciplinaire";
+import { Bloc6CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc6CompetenceDisciplinaire";
 import { Bloc7Indexation } from "@/components/tae/TaeForm/Bloc7Indexation";
 import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
 import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
@@ -51,7 +51,7 @@ const BLOC_COMPONENTS = [
   Bloc3ConsigneProduction,
   Bloc4DocumentsHistoriques,
   Bloc5,
-  Bloc5CompetenceDisciplinaire,
+  Bloc6CompetenceDisciplinaire,
   Bloc7Indexation,
 ] as const satisfies readonly ComponentType[];
 

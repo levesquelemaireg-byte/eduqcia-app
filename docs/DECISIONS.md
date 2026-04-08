@@ -303,12 +303,12 @@ Le pseudo-code TypeScript de [module-dcuments-historiques.md](./module-dcuments-
 | Documents historiques                 | —                                                                                                                 |
 | Sommaire                              | Remplace définitivement « preview » et « aperçu » dans l’UI formulaire                                            |
 | Brouillon                             | —                                                                                                                 |
-| Phrase d'introduction                 | **Amorce documentaire** — phrase générée automatiquement, jamais saisie manuellement par l'enseignant              |
+| Phrase d'introduction                 | **Amorce documentaire** — phrase générée automatiquement, jamais saisie manuellement par l'enseignant             |
 | Épreuve (composition)                 | Libellé UI et [FAQ.md](./FAQ.md) ; tables `evaluations` / `evaluation_tae` — [ARCHITECTURE.md](./ARCHITECTURE.md) |
 
 ## Checklist — suivi et tâches ouvertes
 
 - [ ] **Copy officielle manquante** pour : Profil enseignant (`templates/teacher-profile.php`) ; Liste enseignants (`templates/teachers.php`) ; Modifier profil (`templates/edit-profile.php`). **Créer / modifier une épreuve (composition)** : [UI-COPY.md](./UI-COPY.md#page--créer--modifier-une-épreuve-composition). Toute solution temporaire : marquer **PROVISOIRE** dans le code et dans [UI-COPY.md](./UI-COPY.md) lorsque la copy est ajoutée.
-- [ ] **Étape 5 — Compétence disciplinaire :** l’ancien registre ne listait pas tous les libellés de l’écran ; compléter [UI-COPY.md](./UI-COPY.md) à partir de `Bloc5CompetenceDisciplinaire` / `BLOC5-CD.md` et des constantes existantes.
+- [ ] **Étape 5 — Compétence disciplinaire :** l’ancien registre ne listait pas tous les libellés de l’écran ; compléter [UI-COPY.md](./UI-COPY.md) à partir de `Bloc6CompetenceDisciplinaire` / `BLOC5-CD.md` et des constantes existantes.
 - [ ] **Modes d’impression** (formatif / sommatif / corrigé / épreuve) : finaliser la copy dans [UI-COPY.md](./UI-COPY.md) après arbitrage produit ([FEATURES.md](./FEATURES.md) §10.5).
 - [ ] **Synchronisation** : [module-dcuments-historiques.md](./module-dcuments-historiques.md) ↔ ce fichier ↔ [UI-COPY.md](./UI-COPY.md).
