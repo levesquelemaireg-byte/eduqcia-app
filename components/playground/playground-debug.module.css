@@ -1,0 +1,108 @@
+/**
+ * Mode debug playground — activé via `[data-playground-preview][data-debug="true"]`.
+ * Les couleurs distinguent les `data-fragment` (aucun impact hors preview).
+ */
+
+.preview[data-debug="true"] :global([data-fragment]) {
+  position: relative;
+  outline-width: 2px;
+  outline-style: dashed;
+  outline-offset: 3px;
+}
+
+.preview[data-debug="true"] :global([data-fragment])::before {
+  content: attr(data-fragment);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 6px;
+  font-size: 10px;
+  line-height: 1.2;
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(15, 23, 42, 0.88);
+  pointer-events: none;
+  border-radius: 0 0 4px 0;
+}
+
+/* Couleurs d’outline par fragment */
+.preview[data-debug="true"] :global([data-fragment="SectionConsigne"]) {
+  outline-color: #dc2626;
+}
+.preview[data-debug="true"] :global([data-fragment="SectionCorrige"]) {
+  outline-color: #ea580c;
+}
+.preview[data-debug="true"] :global([data-fragment="SectionDocuments"]) {
+  outline-color: #ca8a04;
+}
+.preview[data-debug="true"] :global([data-fragment="SectionGuidage"]) {
+  outline-color: #16a34a;
+}
+.preview[data-debug="true"] :global([data-fragment="SectionCD"]) {
+  outline-color: #0891b2;
+}
+.preview[data-debug="true"] :global([data-fragment="SectionConnaissances"]) {
+  outline-color: #2563eb;
+}
+.preview[data-debug="true"] :global([data-fragment="FicheFooter"]) {
+  outline-color: #7c3aed;
+}
+.preview[data-debug="true"] :global([data-fragment="TaeCard"]) {
+  outline-color: #db2777;
+}
+.preview[data-debug="true"] :global([data-fragment="TaeCardCorps"]) {
+  outline-color: #db2777;
+}
+.preview[data-debug="true"] :global([data-fragment="TaeCardPied"]) {
+  outline-color: #9333ea;
+}
+.preview[data-debug="true"] :global([data-fragment="PrintableFicheFromTaeData"]) {
+  outline-color: #0d9488;
+}
+.preview[data-debug="true"] :global([data-fragment="PrintBasculeFeuillets"]) {
+  outline-color: #b45309;
+}
+.preview[data-debug="true"] :global([data-fragment="PrintDossier"]) {
+  outline-color: #15803d;
+}
+.preview[data-debug="true"] :global([data-fragment="PrintQuestionnaire"]) {
+  outline-color: #1d4ed8;
+}
+.preview[data-debug="true"] :global([data-fragment="WizardPlaceholder"]) {
+  outline-color: #64748b;
+}
+
+.pageBreakGuide {
+  pointer-events: none;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 893px;
+  z-index: 60;
+  border-top: 2px dashed rgb(220 38 38);
+}
+
+.pageBreakLabel {
+  position: absolute;
+  left: 8px;
+  top: -10px;
+  padding: 0 4px;
+  font-size: 10px;
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+  color: rgb(185 28 28);
+  background: rgb(255 255 255);
+}
+
+@media (prefers-color-scheme: dark) {
+  .pageBreakLabel {
+    color: rgb(252 165 165);
+    background: rgb(24 24 27);
+  }
+}

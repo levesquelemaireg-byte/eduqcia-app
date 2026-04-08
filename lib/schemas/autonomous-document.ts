@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { typeIconographiqueSchema } from "@/lib/documents/type-iconographique";
 import { documentLegendPositionSchema, documentSourceTypeSchema } from "@/lib/schemas/document";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import {
@@ -13,6 +14,11 @@ import { isAnneeNormaliseeInAllowedRange } from "@/lib/utils/annee-normalisee-bo
 export function countWordsFr(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
+
+/** Limite de mots pour la légende (documents iconographiques) — aligné `LimitCounterPill`. */
+export const DOCUMENT_LEGEND_MAX_WORDS = 50;
+/** Dernier palier neutre avant la rampe d’avertissement (compteur > cette valeur). */
+export const DOCUMENT_LEGEND_WORD_WARNING_AFTER = 45;
 
 const aspectsSchema = z.object({
   economique: z.boolean(),
@@ -44,7 +50,7 @@ function preprocessIntId(v: unknown): number {
 }
 
 /**
- * Sélections Miller (même modèle que le wizard TAÉ étape 6) — résolues en `connaissances_ids` côté serveur.
+ * Sélections Miller (même modèle que le wizard TAÉ étape 7) — résolues en `connaissances_ids` côté serveur.
  */
 export const autonomousDocumentFormSchema = z
   .object({
@@ -71,6 +77,10 @@ export const autonomousDocumentFormSchema = z
     image_legende_position: documentLegendPositionSchema.nullable().optional(),
     repere_temporel: z.string().optional(),
     annee_normalisee: z.number().int().nullable().optional(),
+    type_iconographique: z
+      .union([typeIconographiqueSchema, z.literal(""), z.null()])
+      .optional()
+      .transform((v) => (v === "" || v === undefined || v === null ? null : v)),
     legal_accepted: z.boolean().refine((v) => v === true, {
       message: "Vous devez confirmer le cadre légal pour continuer.",
     }),
@@ -103,7 +113,7 @@ export const autonomousDocumentFormSchema = z
       }
       const legend = data.image_legende?.trim() ?? "";
       if (legend.length > 0) {
-        if (countWordsFr(legend) > 50) {
+        if (countWordsFr(legend) > DOCUMENT_LEGEND_MAX_WORDS) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             path: ["image_legende"],
@@ -126,6 +136,22 @@ export const autonomousDocumentFormSchema = z
         message: ERROR_ANNEE_NORMALISEE_RANGE,
       });
     }
+    if (data.doc_type === "textuel" && data.type_iconographique != null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["type_iconographique"],
+        message: "Réservé aux documents iconographiques.",
+      });
+    }
   });
 
 export type AutonomousDocumentFormValues = z.infer<typeof autonomousDocumentFormSchema>;
+
+/** Édition `/documents/[id]/edit` — même champs + identifiant document. */
+export const autonomousDocumentUpdateFormSchema = autonomousDocumentFormSchema.and(
+  z.object({
+    document_id: z.string().uuid(),
+  }),
+);
+
+export type AutonomousDocumentUpdateFormValues = z.infer<typeof autonomousDocumentUpdateFormSchema>;

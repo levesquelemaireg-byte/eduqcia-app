@@ -13,6 +13,8 @@ import {
 } from "@/lib/tae/non-redaction/ligne-du-temps-ribbon-layout";
 import { cn } from "@/lib/utils/cn";
 import {
+  NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_HINT,
+  NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_LEAD,
   NR_LIGNE_TEMPS_SELECT_CORRECT_HELP,
   NR_LIGNE_TEMPS_SELECT_CORRECT_TITLE,
   NR_LIGNE_TEMPS_TIMELINE_EMPTY,
@@ -28,11 +30,18 @@ type Props = {
   onPickLetter: (letter: "A" | "B" | "C" | "D") => void;
   /** Densité réduite dans le sommaire / aperçu étroit. */
   density?: "default" | "compact";
+  /** Si false : pas de sélection sur la frise (aperçu Bloc 3). */
+  interactive?: boolean;
 };
 
 const PREVIEW_LETTERS = ["A", "B", "C", "D"] as const;
 
-export function LigneDuTempsFrisePicker({ payload, onPickLetter, density = "default" }: Props) {
+export function LigneDuTempsFrisePicker({
+  payload,
+  onPickLetter,
+  density = "default",
+  interactive = true,
+}: Props) {
   const complete = ligneDuTempsBoundariesNumericComplete(payload);
   const nums: number[] | null = complete
     ? (payload.boundaries.slice(0, payload.segmentCount + 1) as number[])
@@ -51,9 +60,17 @@ export function LigneDuTempsFrisePicker({ payload, onPickLetter, density = "defa
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-sm font-semibold text-deep">{NR_LIGNE_TEMPS_SELECT_CORRECT_TITLE}</h3>
+        <h3 className="text-sm font-semibold text-deep">
+          {interactive
+            ? NR_LIGNE_TEMPS_SELECT_CORRECT_TITLE
+            : NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_LEAD}
+        </h3>
       </div>
-      <p className="text-xs text-muted">{NR_LIGNE_TEMPS_SELECT_CORRECT_HELP}</p>
+      {interactive ? (
+        <p className="text-xs text-muted">{NR_LIGNE_TEMPS_SELECT_CORRECT_HELP}</p>
+      ) : (
+        <p className="text-xs text-muted">{NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_HINT}</p>
+      )}
       <div
         className={cn(
           "rounded-lg border border-border bg-panel p-3",
@@ -62,7 +79,12 @@ export function LigneDuTempsFrisePicker({ payload, onPickLetter, density = "defa
       >
         {nums ? (
           <>
-            <TimeLine dates={nums} selectedSegment={selectedSegment} onSelect={onPickLetter} />
+            <TimeLine
+              dates={nums}
+              selectedSegment={selectedSegment}
+              onSelect={onPickLetter}
+              interactive={interactive}
+            />
             {!complete ? (
               <p className="mt-2 text-xs text-muted" role="status">
                 {NR_LIGNE_TEMPS_TIMELINE_PARTIAL_HINT}

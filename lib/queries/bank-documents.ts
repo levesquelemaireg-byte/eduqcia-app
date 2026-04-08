@@ -1,7 +1,9 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
 import type { Database } from "@/lib/types/database";
+import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
 
 type Client = SupabaseClient<Database>;
 
@@ -13,6 +15,7 @@ export type BankDocumentListRow = {
   created_at: string;
   image_url: string | null;
   image_legende: string | null;
+  type_iconographique: string | null;
   niveaux_ids: number[];
   disciplines_ids: number[];
 };
@@ -22,6 +25,7 @@ export type BankDocumentFilters = {
   disciplineId?: number;
   niveauId?: number;
   docType?: "textuel" | "iconographique";
+  iconoCategories?: DocumentTypeIconoSlug[];
 };
 
 /** Lien `/bank` onglet Documents avec les mêmes filtres. */
@@ -36,8 +40,28 @@ export function serializeBankDocumentsQueryForHref(
   if (filters.disciplineId != null) u.set("discipline", String(filters.disciplineId));
   if (filters.niveauId != null) u.set("niveau", String(filters.niveauId));
   if (filters.docType) u.set("dtype", filters.docType);
+  if (filters.iconoCategories && filters.iconoCategories.length > 0) {
+    for (const c of filters.iconoCategories) {
+      u.append("icat", c);
+    }
+  }
   if (page > 0) u.set("page", String(page));
   return `/bank?${u.toString()}`;
+}
+
+/** Paramètres `icat` répétés (cases à cocher banque). */
+export function parseBankDocumentIconoCategories(
+  sp: Record<string, string | string[] | undefined>,
+): DocumentTypeIconoSlug[] {
+  const raw = sp.icat;
+  if (!raw) return [];
+  const list = Array.isArray(raw) ? raw : [raw];
+  const out: DocumentTypeIconoSlug[] = [];
+  for (const x of list) {
+    const p = parseTypeIconographique(x);
+    if (p) out.push(p);
+  }
+  return out;
 }
 
 const BANK_DOCUMENTS_SELECT = `
@@ -48,6 +72,7 @@ const BANK_DOCUMENTS_SELECT = `
       created_at,
       image_url,
       image_legende,
+      type_iconographique,
       niveaux_ids,
       disciplines_ids
     `;
@@ -77,6 +102,13 @@ function bankDocumentsFilteredQuery(
   if (filters.docType) {
     q = q.eq("type", filters.docType);
   }
+  if (
+    filters.docType !== "textuel" &&
+    filters.iconoCategories &&
+    filters.iconoCategories.length > 0
+  ) {
+    q = q.in("type_iconographique", filters.iconoCategories);
+  }
   return q;
 }
 
@@ -89,6 +121,7 @@ function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
     created_at: string;
     image_url: string | null;
     image_legende: string | null;
+    type_iconographique: string | null;
     niveaux_ids: number[] | null;
     disciplines_ids: number[] | null;
   };
@@ -101,6 +134,7 @@ function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
     created_at: row.created_at,
     image_url: row.image_url,
     image_legende: row.image_legende,
+    type_iconographique: row.type_iconographique ?? null,
     niveaux_ids: row.niveaux_ids ?? [],
     disciplines_ids: row.disciplines_ids ?? [],
   }));

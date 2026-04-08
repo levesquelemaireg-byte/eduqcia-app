@@ -1,0 +1,1170 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fiche TAÉ — maquette (fiche remplie)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-25..200&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ================================================================
+         FICHE MAQUETTE FINALE — Design unifié P0 / teal #229bc3
+         Standalone — aucune dépendance externe
+         ================================================================ */
+
+      :root {
+        --accent: #229bc3;
+        --accent-deep: hsl(195, 75%, 30%);
+        --accent-soft: hsla(195, 70%, 45%, 0.08);
+        --accent-ring: hsla(195, 70%, 45%, 0.22);
+        --accent-pulse: hsla(195, 70%, 45%, 0.4);
+
+        --ink: #0f172a;
+        --body: #334155;
+        --muted: #64748b;
+        --subtle: #94a3b8;
+        --border: #e2e8f0;
+        --border-hover: #cbd5e1;
+        --card: #fff;
+        --page-bg: #f1f5f9;
+        --hairline: hsl(0, 0%, 85%);
+        --hairline-pad: 8px;
+        --corrige: #d32f2f;
+
+        --font: Manrope, system-ui, sans-serif;
+        --radius: 18px;
+        --radius-sm: 8px;
+        --radius-pill: 999px;
+        --px: 1.25rem;
+        --py: 1rem;
+        --icon-offset: calc(1rem + 0.4rem);
+
+        --mat-wght: 300;
+        --mat-grad: 200;
+        --mat-opsz: 48;
+        --glyph-size: clamp(2.5rem, 4.25vmin, 3.35rem);
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 2rem clamp(1rem, 4vw, 2.5rem) 4rem;
+        font-family: var(--font);
+        font-size: 16px;
+        line-height: 1.5;
+        background: var(--page-bg);
+        color: var(--ink);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* --- Page chrome --- */
+      .page-intro {
+        max-width: 720px;
+        margin-bottom: 2rem;
+      }
+      .page-intro h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+      }
+      .page-intro p {
+        margin: 0 0 0.75rem;
+        font-size: 0.9375rem;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+      .page-intro code {
+        font-size: 0.8125rem;
+        background: rgba(15, 23, 42, 0.06);
+        padding: 1px 5px;
+        border-radius: 4px;
+      }
+      .section-label {
+        margin: 3rem 0 1rem;
+        font-size: 1.125rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .section-label .tag {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        padding: 2px 8px;
+        border-radius: var(--radius-pill);
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+
+      /* ================================================================
+         MATERIAL SYMBOLS
+         ================================================================ */
+      .mat-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        line-height: 1;
+        user-select: none;
+        font-variation-settings:
+          "FILL" 0,
+          "wght" var(--mat-wght),
+          "GRAD" var(--mat-grad),
+          "opsz" var(--mat-opsz);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ================================================================
+         FICHE — CONTAINER
+         ================================================================ */
+      .fiche {
+        max-width: 1040px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-left: 2px solid var(--accent);
+        border-radius: 0 var(--radius) var(--radius) 0;
+        overflow: hidden;
+      }
+
+      /* ================================================================
+         HEADER — style thumbnail P0
+         ================================================================ */
+      .fiche__header {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        align-items: stretch;
+      }
+      .fiche__glyph {
+        grid-column: 1;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 4px;
+        position: relative;
+      }
+      .fiche__glyph::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        top: var(--hairline-pad);
+        bottom: var(--hairline-pad);
+        width: 1px;
+        background: var(--hairline);
+      }
+      .fiche__glyph .mat-icon {
+        font-size: var(--glyph-size);
+        color: var(--accent);
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 300,
+          "GRAD" 200,
+          "opsz" 48;
+        opacity: 0.88;
+      }
+
+      .fiche__head-body {
+        grid-column: 2;
+        grid-row: 1;
+        padding: 1.35rem var(--px) 1.35rem 1rem;
+      }
+
+      .fiche__kicker {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin-bottom: 0.5rem;
+      }
+      .fiche__kicker-icon {
+        font-size: 1.1875rem;
+        width: 1.1875rem;
+        height: 1.1875rem;
+        color: var(--accent);
+      }
+      .fiche__eyebrow {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .fiche__consigne {
+        margin: 0 0 1.2rem;
+        font-size: 1.625rem;
+        font-weight: 600;
+        line-height: 1.34;
+        letter-spacing: -0.028em;
+        color: var(--ink);
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+      }
+
+      .fiche__pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .fiche__pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.28rem;
+        padding: 5px 10px;
+        background: #f8fafc;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        color: var(--body);
+        transition: background 0.2s ease;
+      }
+      .fiche__pill .mat-icon {
+        font-size: 1.05rem;
+        color: var(--accent);
+      }
+      .fiche__pill--oi {
+        font-weight: 600;
+        color: var(--body);
+      }
+
+      /* Bouton grille de correction (entre OI et Niveau) */
+      .fiche__pill-grille {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        border: none;
+        border-radius: 6px;
+        background: #f8fafc;
+        color: var(--accent);
+        cursor: pointer;
+        transition:
+          background 0.15s ease,
+          color 0.15s ease;
+      }
+      .fiche__pill-grille .mat-icon {
+        font-size: 1.1rem;
+      }
+      .fiche__pill-grille:hover {
+        background: var(--accent-soft);
+        color: var(--accent-deep);
+      }
+      .fiche--thumb .fiche__pill-grille {
+        display: none;
+      }
+
+      /* ================================================================
+         BODY — 60 / 40
+         ================================================================ */
+      .fiche__body {
+        display: grid;
+        grid-template-columns: 6fr 4fr;
+        position: relative;
+      }
+      .fiche__body::before {
+        content: "";
+        position: absolute;
+        left: var(--hairline-pad);
+        right: var(--hairline-pad);
+        top: 0;
+        height: 1px;
+        background: var(--hairline);
+        z-index: 1;
+      }
+      @media (max-width: 800px) {
+        .fiche__body {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .fiche__main {
+        min-width: 0;
+        background: var(--card);
+      }
+      .fiche__side {
+        min-width: 0;
+        background: var(--card);
+        position: relative;
+      }
+      .fiche__side::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: var(--hairline-pad);
+        bottom: var(--hairline-pad);
+        width: 1px;
+        background: var(--hairline);
+      }
+      @media (max-width: 800px) {
+        .fiche__side::before {
+          left: var(--hairline-pad);
+          right: var(--hairline-pad);
+          top: 0;
+          bottom: auto;
+          width: auto;
+          height: 1px;
+        }
+      }
+
+      /* --- Section title (teal) --- */
+      .fiche__stitle {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin: 0 0 0.65rem;
+      }
+      .fiche__stitle .mat-icon {
+        font-size: 1rem;
+        color: var(--accent);
+        opacity: 0.8;
+      }
+
+      /* --- Section content alignment (aligned to title text, not icon) --- */
+      .fiche__section-content {
+        padding-left: var(--icon-offset);
+      }
+
+      /* --- Hairline separator between sections --- */
+      .fiche__section + .fiche__section {
+        position: relative;
+      }
+      .fiche__section + .fiche__section::before {
+        content: "";
+        position: absolute;
+        left: var(--hairline-pad);
+        right: var(--hairline-pad);
+        top: 0;
+        height: 1px;
+        background: var(--hairline);
+        z-index: 1;
+      }
+
+      /* --- Corrigé --- */
+      .fiche__corrige {
+        padding: var(--py) var(--px);
+      }
+      .fiche__corrige-text {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 1.62;
+        color: var(--corrige);
+      }
+
+      /* --- Documents --- */
+      .fiche__docs {
+        padding: var(--py) var(--px);
+      }
+      .fiche__docs-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 0.65rem;
+      }
+      .fiche__doc {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.85rem;
+        padding: 14px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        box-shadow: 0 1px 2px rgba(15, 18, 30, 0.03);
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .fiche__doc:hover {
+        border-color: var(--border-hover);
+        box-shadow: 0 4px 16px rgba(15, 18, 30, 0.07);
+      }
+      .fiche__doc--text {
+        display: block;
+      }
+      .fiche__doc-icono-placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 118px;
+        min-height: 90px;
+        background: #f8fafc;
+        border: 2px dashed var(--border);
+        border-radius: 6px;
+        flex-shrink: 0;
+      }
+      .fiche__doc-icono-placeholder .mat-icon {
+        font-size: 2.5rem;
+        color: var(--subtle);
+        opacity: 0.55;
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 200,
+          "GRAD" 0,
+          "opsz" 48;
+      }
+      .fiche__doc-content {
+        flex: 1;
+        min-width: 0;
+      }
+      .fiche__doc-title {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: var(--ink);
+        margin: 0 0 0.3rem;
+      }
+      .fiche__doc-body {
+        font-size: 15px;
+        line-height: 1.55;
+        margin: 0 0 0.35rem;
+        color: var(--body);
+      }
+      .fiche__doc-source {
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--muted);
+        margin: 0;
+      }
+
+      /* --- Sidebar sections --- */
+      .fiche__guidage,
+      .fiche__competence,
+      .fiche__connaissances {
+        padding: var(--py) var(--px);
+      }
+
+      .fiche__guidage-text {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.58;
+        color: var(--body);
+      }
+
+      /* ================================================================
+         TREE — arbre hiérarchique
+         ================================================================ */
+      .fiche__tree {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.55;
+        color: var(--body);
+      }
+      .fiche__tree li {
+        position: relative;
+        margin: 0;
+      }
+      .fiche__tree-node {
+        display: block;
+        padding: 2px 0;
+      }
+      .fiche__tree-node--root {
+        font-weight: 700;
+        color: var(--ink);
+        font-size: 13.5px;
+        letter-spacing: -0.01em;
+      }
+      .fiche__tree ul {
+        list-style: none;
+        margin: 0;
+        padding-left: 1rem;
+        position: relative;
+      }
+      .fiche__tree ul::before {
+        content: "";
+        position: absolute;
+        left: 0.35rem;
+        top: 0;
+        bottom: 0.6em;
+        width: 1px;
+        background: var(--hairline);
+      }
+      .fiche__tree ul > li {
+        position: relative;
+        padding-left: 0.75rem;
+      }
+      .fiche__tree ul > li::before {
+        content: "";
+        position: absolute;
+        left: -0.65rem;
+        top: 0.7em;
+        width: 0.55rem;
+        height: 1px;
+        background: var(--hairline);
+      }
+      .fiche__tree-leaf {
+        font-weight: 500;
+        color: var(--body);
+        font-size: 13px;
+        line-height: 1.35;
+      }
+      .fiche__tree-leaf--checked {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .fiche__tree-leaf--checked::after {
+        content: "check";
+        font-family: "Material Symbols Outlined";
+        font-size: 0.85rem;
+        color: var(--accent);
+        margin-left: 0.3rem;
+        vertical-align: -1px;
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 20;
+      }
+
+      /* ================================================================
+         FOOTER — Manrope partout
+         ================================================================ */
+      .fiche__footer {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.65rem 1.15rem;
+        padding: 11px var(--px) 12px;
+        font-family: var(--font);
+        font-size: 12px;
+        font-weight: 500;
+        letter-spacing: -0.01em;
+        background: var(--card);
+        position: relative;
+      }
+      .fiche__footer::before {
+        content: "";
+        position: absolute;
+        left: var(--hairline-pad);
+        right: var(--hairline-pad);
+        top: 0;
+        height: 1px;
+        background: var(--hairline);
+        z-index: 1;
+      }
+      .fiche__footer-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        color: var(--muted);
+        border-radius: 4px;
+        transition: background 0.2s ease;
+      }
+      .fiche__footer-item .mat-icon {
+        font-size: 0.95rem;
+        color: var(--subtle);
+      }
+      .fiche__author {
+        color: var(--body);
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .fiche__author:hover {
+        color: var(--accent);
+      }
+      .fiche__author-sep {
+        color: var(--subtle);
+        margin: 0 0.05rem;
+      }
+      .fiche__lines {
+        color: var(--body);
+      }
+
+      .fiche__status {
+        margin-left: auto;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 3px 10px;
+        border-radius: var(--radius-pill);
+        border: 1px solid rgba(15, 23, 42, 0.1);
+        background: var(--card);
+        font-family: var(--font);
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .fiche__status::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        flex-shrink: 0;
+        background: var(--subtle);
+        box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+      }
+      .fiche__status--published {
+        border-color: hsla(195, 70%, 45%, 0.35);
+        background: hsla(195, 70%, 45%, 0.07);
+        color: var(--accent);
+      }
+      .fiche__status--published::before {
+        background: var(--accent);
+        box-shadow: 0 0 0 2px hsla(195, 70%, 45%, 0.2);
+      }
+
+      /* ================================================================
+         HIGHLIGHT — focus par bloc (data-hl)
+         ================================================================ */
+      @keyframes fiche-pulse {
+        0% {
+          box-shadow: 0 0 0 0 var(--accent-pulse);
+        }
+        60% {
+          box-shadow: 0 0 0 8px hsla(195, 70%, 45%, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 hsla(195, 70%, 45%, 0);
+        }
+      }
+
+      .fiche__section[data-hl],
+      .fiche__pill[data-hl],
+      .fiche__footer-item[data-hl],
+      .fiche__kicker[data-hl],
+      .fiche__consigne[data-hl] {
+        transition:
+          background 0.25s ease,
+          box-shadow 0.25s ease;
+      }
+
+      /* Body sections — background + left inset bar (rectangulaire) */
+      .fiche--focus-bloc-3 .fiche__section[data-hl~="b3"],
+      .fiche--focus-bloc-4 .fiche__section[data-hl~="b4"],
+      .fiche--focus-bloc-5 .fiche__section[data-hl~="b5"],
+      .fiche--focus-bloc-6 .fiche__section[data-hl~="b6"] {
+        background: var(--accent-soft);
+        box-shadow: inset 2px 0 0 0 var(--accent);
+        animation: fiche-pulse 600ms ease-out forwards;
+      }
+
+      /* Header glyph — bloc 2 (OI) */
+      .fiche--focus-bloc-2 .fiche__glyph[data-hl~="b2"] {
+        background: var(--accent-soft);
+        animation: fiche-pulse 600ms ease-out forwards;
+      }
+
+      /* Header pills + grille */
+      .fiche--focus-bloc-2 .fiche__pill[data-hl~="b2"],
+      .fiche--focus-bloc-2 .fiche__pill-grille[data-hl~="b2"],
+      .fiche--focus-bloc-3 .fiche__pill[data-hl~="b3"] {
+        background: hsla(195, 70%, 45%, 0.12);
+        animation: fiche-pulse 600ms ease-out forwards;
+      }
+
+      /* Header kicker line */
+      .fiche--focus-bloc-3 .fiche__kicker[data-hl~="b3"] {
+        background: var(--accent-soft);
+        border-radius: 4px;
+        padding: 4px 8px;
+        margin: -4px -8px 0.5rem;
+        animation: fiche-pulse 600ms ease-out forwards;
+      }
+
+      /* Header consigne text */
+      .fiche--focus-bloc-3 .fiche__consigne[data-hl~="b3"] {
+        background: var(--accent-soft);
+        border-radius: 6px;
+        padding: 6px 10px;
+        margin: -6px -10px calc(1.2rem - 6px);
+        animation: fiche-pulse 600ms ease-out forwards;
+      }
+
+      /* Footer items */
+      .fiche--focus-bloc-1 .fiche__footer-item[data-hl~="b1"],
+      .fiche--focus-bloc-2 .fiche__footer-item[data-hl~="b2"] {
+        background: var(--accent-soft);
+        padding: 3px 8px;
+        margin: -3px -8px;
+        animation: fiche-pulse 600ms ease-out forwards;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .fiche[class*="focus-bloc"] [data-hl] {
+          animation: none !important;
+        }
+      }
+
+      /* ================================================================
+         FOCUS SWITCHER — barre de simulation
+         ================================================================ */
+      .focus-switcher {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.35rem;
+        margin: 0.75rem 0 1rem;
+      }
+      .focus-switcher__label {
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--muted);
+        margin-right: 0.25rem;
+      }
+      .focus-switcher__btn {
+        font-family: var(--font);
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 5px 12px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-pill);
+        background: var(--card);
+        color: var(--muted);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .focus-switcher__btn:hover {
+        border-color: var(--border-hover);
+        color: var(--body);
+      }
+      .focus-switcher__btn--active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      .focus-switcher__btn--active:hover {
+        background: var(--accent-deep);
+        border-color: var(--accent-deep);
+        color: #fff;
+      }
+
+      /* ================================================================
+         SKELETON — fiche vide
+         ================================================================ */
+      .skel-line {
+        display: block;
+        height: 3px;
+        border-radius: 2px;
+        background: rgba(15, 23, 42, 0.08);
+      }
+      .skel-line + .skel-line {
+        margin-top: 8px;
+      }
+      .skel-line--thick {
+        height: 8px;
+        border-radius: 3px;
+      }
+      .skel-line--w100 {
+        width: 100%;
+      }
+      .skel-line--w90 {
+        width: 90%;
+      }
+      .skel-line--w70 {
+        width: 70%;
+      }
+      .skel-line--w65 {
+        width: 65%;
+      }
+      .skel-line--w55 {
+        width: 55%;
+      }
+      .skel-line--w40 {
+        width: 40%;
+      }
+
+      .skel-tag {
+        display: inline-block;
+        height: 2px;
+        width: 7em;
+        border-radius: 2px;
+        background: rgba(15, 23, 42, 0.08);
+      }
+
+      .skel-doc {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 14px;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+      }
+      .skel-doc--media .skel-doc__figure {
+        width: 100px;
+        min-height: 76px;
+        flex-shrink: 0;
+        border: 2px dashed var(--border);
+        border-radius: 6px;
+      }
+      .skel-doc--text {
+        display: block;
+      }
+
+      /* Skeleton tree — flat indented bars */
+      .skel-tree {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+      }
+      .skel-tree__bar {
+        height: 3px;
+        border-radius: 2px;
+        background: rgba(15, 23, 42, 0.08);
+      }
+      .skel-tree__bar--root {
+        height: 4px;
+        width: 55%;
+      }
+      .skel-tree__bar--l1 {
+        margin-left: 1rem;
+        width: 60%;
+      }
+      .skel-tree__bar--l2 {
+        margin-left: 2rem;
+        width: 70%;
+      }
+      .skel-tree__bar--l3 {
+        margin-left: 3rem;
+        width: 65%;
+      }
+
+      /* Glyph placeholder — cercle dashed */
+      .fiche__glyph-placeholder {
+        width: 56px;
+        height: 56px;
+        border: 2px dashed var(--border);
+        border-radius: 50%;
+      }
+
+      .fiche--empty .fiche__eyebrow {
+        opacity: 0.5;
+      }
+      .fiche--empty .fiche__consigne {
+        display: none;
+      }
+
+      /* ================================================================
+         THUMBNAIL — carte miniature (même largeur que la fiche)
+         ================================================================ */
+      .fiche--thumb .fiche__body {
+        display: none;
+      }
+      .fiche--thumb .fiche__pill--oi {
+        font-weight: 600;
+        color: var(--body);
+      }
+
+      /* Consigne tronquée + chevron inline */
+      .fiche--thumb .fiche__consigne-wrap {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.35rem;
+        margin: 0 0 1.2rem;
+      }
+      .fiche--thumb .fiche__consigne {
+        margin: 0;
+      }
+      .fiche__consigne--full {
+        display: none;
+      }
+      .fiche__consigne--short.is-hidden {
+        display: none;
+      }
+      .fiche__consigne--full.is-visible {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+      }
+      .fiche__ellipsis {
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      .fiche__consigne-toggle {
+        display: none;
+        flex-shrink: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        color: var(--muted);
+        padding: 2px 0 0;
+        margin: 0;
+        transition: color 0.15s ease;
+      }
+      .fiche__consigne-toggle:hover {
+        color: var(--accent);
+      }
+      .fiche__consigne-toggle .mat-icon {
+        font-size: 1.25rem;
+      }
+      .fiche--thumb .fiche__consigne-toggle {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="fiche" aria-label="Fiche TAÉ remplie">
+      <!-- HEADER P0 -->
+      <header class="fiche__header">
+        <div class="fiche__glyph" data-hl="b2">
+          <span class="material-symbols-outlined mat-icon" aria-hidden="true">hourglass</span>
+        </div>
+        <div class="fiche__head-body">
+          <div class="fiche__kicker" data-hl="b3">
+            <span class="material-symbols-outlined mat-icon fiche__kicker-icon" aria-hidden="true"
+              >quiz</span
+            >
+            <span class="fiche__eyebrow">Consigne</span>
+          </div>
+          <p class="fiche__consigne" data-hl="b3">
+            À partir des documents fournis, situez chronologiquement les faits présentés et
+            expliquez comment ils s'enchaînent dans le contexte de la conquête du pouvoir par les
+            Britanniques.
+          </p>
+          <div class="fiche__pills">
+            <span class="fiche__pill fiche__pill--oi" data-hl="b2">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true">psychology</span>
+              Situer dans le temps
+            </span>
+            <button
+              class="fiche__pill-grille"
+              data-hl="b2"
+              title="Voir la grille de correction"
+              aria-label="Voir la grille de correction"
+            >
+              <span class="material-symbols-outlined mat-icon">table_eye</span>
+            </button>
+            <span class="fiche__pill" data-hl="b2">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true">school</span>
+              Secondaire 4
+            </span>
+            <span class="fiche__pill" data-hl="b2">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true">menu_book</span>
+              Histoire du Québec et du Canada
+            </span>
+            <span class="fiche__pill" data-hl="b3">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true"
+                >deployed_code</span
+              >
+              Politique, Territorial
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <!-- BODY 60/40 -->
+      <div class="fiche__body">
+        <!-- MAIN : Corrigé + Documents -->
+        <div class="fiche__main">
+          <div class="fiche__section fiche__corrige" data-hl="b3">
+            <h2 class="fiche__stitle">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true"
+                >check_circle</span
+              >
+              Corrigé
+            </h2>
+            <div class="fiche__section-content">
+              <p class="fiche__corrige-text">
+                Ordre attendu : traité de Paris (1763) → Proclamation royale → Acte de Québec
+                (1774), avec justification brève du lien causal entre chaque étape. L'élève doit
+                démontrer une compréhension de la séquence temporelle et de ses implications
+                politiques sur l'organisation territoriale de la Nouvelle-France devenue Province of
+                Quebec.
+              </p>
+            </div>
+          </div>
+
+          <div class="fiche__section fiche__docs" data-hl="b4">
+            <h2 class="fiche__stitle">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true">description</span>
+              Document(s)
+            </h2>
+            <div class="fiche__section-content">
+              <div class="fiche__docs-stack">
+                <article class="fiche__doc fiche__doc--text">
+                  <div class="fiche__doc-content">
+                    <h3 class="fiche__doc-title">
+                      Document 1 — Texte : Proclamation royale de 1763 (extrait)
+                    </h3>
+                    <p class="fiche__doc-body">
+                      Extraits sur l'organisation provisoire des colonies dans les territoires cédés
+                      par la France après la guerre de Sept Ans, jusqu'à ce que le Parlement fixe
+                      des conditions de gouvernement stables pour le Québec, la Nouvelle-Écosse et
+                      d'autres dépendances.
+                    </p>
+                    <p class="fiche__doc-source">
+                      Source : George III, proclamation royale du 7 octobre 1763. Texte officiel —
+                      extrait restitué.
+                    </p>
+                  </div>
+                </article>
+                <article class="fiche__doc fiche__doc--text">
+                  <div class="fiche__doc-content">
+                    <h3 class="fiche__doc-title">
+                      Document 2 — Texte : Acte de Québec, 1774 (extrait)
+                    </h3>
+                    <p class="fiche__doc-body">
+                      Dispositions relatives au rétablissement des lois civiles françaises, à la
+                      liberté de culte catholique et à l'extension des frontières de la Province of
+                      Quebec vers les Grands Lacs et la vallée de l'Ohio.
+                    </p>
+                    <p class="fiche__doc-source">
+                      Source : Parlement de Westminster, Acte de Québec, 22 juin 1774. Texte
+                      officiel — extrait.
+                    </p>
+                  </div>
+                </article>
+                <article class="fiche__doc">
+                  <div class="fiche__doc-icono-placeholder">
+                    <span class="material-symbols-outlined mat-icon" aria-hidden="true">image</span>
+                  </div>
+                  <div class="fiche__doc-content">
+                    <h3 class="fiche__doc-title">
+                      Document 3 — Image : La signature du traité de Paris
+                    </h3>
+                    <p class="fiche__doc-source">
+                      Source : John Wollaston, <em>The Signature of the Treaty of Paris</em>, vers
+                      1763. Yale University Art Gallery (domaine public).
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR : Guidage + Compétence + Connaissances -->
+        <aside class="fiche__side">
+          <div class="fiche__section fiche__guidage" data-hl="b3">
+            <h2 class="fiche__stitle">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true">tooltip_2</span>
+              Guidage
+            </h2>
+            <div class="fiche__section-content">
+              <p class="fiche__guidage-text">
+                Repérez les dates clés dans chaque document avant de les classer. Utilisez la ligne
+                du temps du cahier comme repère.
+              </p>
+            </div>
+          </div>
+
+          <div class="fiche__section fiche__competence" data-hl="b5">
+            <h2 class="fiche__stitle">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true"
+                >workspace_premium</span
+              >
+              Compétence disciplinaire
+            </h2>
+            <div class="fiche__section-content">
+              <div class="fiche__tree" role="tree" aria-label="Arbre de compétence">
+                <ul>
+                  <li>
+                    <span class="fiche__tree-node fiche__tree-node--root"
+                      >Lire l'organisation d'une société</span
+                    >
+                    <ul>
+                      <li>
+                        <span class="fiche__tree-node"
+                          >Situer des faits dans le temps et dans l'espace</span
+                        >
+                        <ul>
+                          <li>
+                            <span class="fiche__tree-leaf fiche__tree-leaf--checked"
+                              >Exactitude de la localisation spatiale et temporelle</span
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="fiche__section fiche__connaissances" data-hl="b6">
+            <h2 class="fiche__stitle">
+              <span class="material-symbols-outlined mat-icon" aria-hidden="true">lightbulb</span>
+              Connaissances
+            </h2>
+            <div class="fiche__section-content">
+              <div class="fiche__tree" role="tree" aria-label="Arbre de connaissances">
+                <ul>
+                  <li>
+                    <span class="fiche__tree-node fiche__tree-node--root"
+                      >Économie et développement</span
+                    >
+                    <ul>
+                      <li>
+                        <span class="fiche__tree-node">Agriculture et seigneurie</span>
+                        <ul>
+                          <li>
+                            <span class="fiche__tree-node">Le régime seigneurial</span>
+                            <ul>
+                              <li>
+                                <span class="fiche__tree-leaf fiche__tree-leaf--checked"
+                                  >L'élève décrit l'organisation du système seigneurial.</span
+                                >
+                              </li>
+                              <li>
+                                <span class="fiche__tree-leaf fiche__tree-leaf--checked"
+                                  >L'élève situe les seigneuries sur le territoire laurentien.</span
+                                >
+                              </li>
+                            </ul>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      <!-- FOOTER -->
+      <footer class="fiche__footer">
+        <span class="fiche__footer-item" data-hl="b1">
+          <span class="material-symbols-outlined mat-icon" aria-hidden="true">person</span>
+          <a href="#" class="fiche__author">Jean Lavoie</a
+          ><span class="fiche__author-sep">&middot;</span
+          ><a href="#" class="fiche__author">Stéphane Pelletier</a>
+        </span>
+        <span class="fiche__footer-item">
+          <span class="material-symbols-outlined mat-icon" aria-hidden="true">calendar_month</span>
+          <time datetime="2026-03-11">11 mars 2026</time>
+        </span>
+        <span class="fiche__footer-item" data-hl="b2">
+          <span class="material-symbols-outlined mat-icon" aria-hidden="true"
+            >format_line_spacing</span
+          >
+          <span class="fiche__lines">8 lignes</span>
+        </span>
+        <span class="fiche__status fiche__status--published">Publiée</span>
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+@keyframes stepDocLegendReveal {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.legendReveal {
+  animation: stepDocLegendReveal 150ms ease-out forwards;
+}

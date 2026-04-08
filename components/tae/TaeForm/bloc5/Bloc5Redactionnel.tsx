@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { SimpleRichEditor } from "@/components/tae/TaeForm/tiptap/SimpleRichEditor";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { RequiredMark } from "@/components/ui/RequiredMark";
@@ -56,12 +56,14 @@ export default function Bloc5Redactionnel({ state, dispatch }: Bloc5Props) {
         </div>
         <p className="text-xs text-muted">{BLOC5_REDACTIONNEL_HELP}</p>
         <p className="text-xs italic text-muted">{BLOC5_REDACTIONNEL_PLACEHOLDER}</p>
-        <SimpleRichEditor
+        <RichTextEditor
           id="corrige-bloc5"
+          instanceId="corrige-bloc5"
+          className="mt-2"
           value={state.bloc5.corrige}
           onChange={setCorrige}
           autosaveKey="eduqcia-tae-corrige-new"
-          minHeightClass="min-h-[100px]"
+          minHeight={100}
         />
       </section>
     </div>

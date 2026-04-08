@@ -5,7 +5,17 @@
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import { buildCollaborateursUserIdsForPayload } from "@/lib/tae/collaborateur-user-ids";
 import { getSlotData, isPublicHttpUrl } from "@/lib/tae/document-helpers";
+import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
 import type { PublishTaeFailureCode, PublishTaeRpcPayload } from "@/lib/tae/publish-tae-types";
+import {
+  buildAvantApresConsigneHtml,
+  buildAvantApresCorrigeHtml,
+  buildAvantApresGuidageHtml,
+  isAvantApresPayloadConsistentWithDocuments,
+  isAvantApresStep3ThemeComplete,
+  isAvantApresStep5OptionsComplete,
+  normalizeAvantApresPayload,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
 import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
@@ -19,12 +29,17 @@ import {
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import {
+  isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
+import {
+  nonRedactionAvantApresPayload,
+  nonRedactionLignePayload,
+  nonRedactionOrdrePayload,
+} from "@/lib/tae/wizard-state-nr";
 
 function aspectsToPgArray(state: TaeFormState): string[] {
   const out: string[] = [];
@@ -53,22 +68,39 @@ export function buildPublishPayload(
   const ordrePayload = isActiveOrdreChronologiqueVariant(state) && ordreNorm ? ordreNorm : null;
   const ligneNorm = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
   const lignePayload = isActiveLigneDuTempsVariant(state) && ligneNorm ? ligneNorm : null;
+  const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+  const avantReady =
+    isActiveAvantApresVariant(state) &&
+    avantNorm !== null &&
+    isAvantApresStep3ThemeComplete(avantNorm) &&
+    isAvantApresStep5OptionsComplete(avantNorm) &&
+    isAvantApresPayloadConsistentWithDocuments(
+      avantNorm,
+      state.bloc2.documentSlots.map((s) => s.slotId),
+      state.bloc4.documents,
+    );
 
-  const consigneTae = ordrePayload
-    ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
-    : lignePayload
-      ? buildLigneDuTempsConsigneHtml(lignePayload)
-      : state.bloc3.consigne;
-  const guidageTae = ordrePayload
-    ? buildOrdreChronologiqueGuidageHtml()
-    : lignePayload
-      ? buildLigneDuTempsGuidageHtml()
-      : state.bloc3.guidage;
-  const corrigeTae = ordrePayload
-    ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
-    : lignePayload
-      ? buildLigneDuTempsCorrigeHtml(lignePayload)
-      : state.bloc5.corrige;
+  const consigneTae = avantReady
+    ? buildAvantApresConsigneHtml(avantNorm)
+    : ordrePayload
+      ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
+      : lignePayload
+        ? buildLigneDuTempsConsigneHtml(lignePayload)
+        : state.bloc3.consigne;
+  const guidageTae = avantReady
+    ? buildAvantApresGuidageHtml()
+    : ordrePayload
+      ? buildOrdreChronologiqueGuidageHtml()
+      : lignePayload
+        ? buildLigneDuTempsGuidageHtml()
+        : state.bloc3.guidage;
+  const corrigeTae = avantReady
+    ? buildAvantApresCorrigeHtml(avantNorm)
+    : ordrePayload
+      ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
+      : lignePayload
+        ? buildLigneDuTempsCorrigeHtml(lignePayload)
+        : state.bloc5.corrige;
 
   for (const { slotId } of state.bloc2.documentSlots) {
     const slot = getSlotData(state.bloc4.documents, slotId);
@@ -107,6 +139,10 @@ export function buildPublishPayload(
       slot.annee_normalisee != null && Number.isFinite(slot.annee_normalisee)
         ? slot.annee_normalisee
         : null;
+    const typeIconoPayload: { type_iconographique?: DocumentTypeIconoSlug | null } =
+      slot.type === "iconographique" && slot.type_iconographique != null
+        ? { type_iconographique: slot.type_iconographique }
+        : {};
     documentsNew.push({
       titre: slot.titre.trim(),
       type: slot.type,
@@ -121,6 +157,7 @@ export function buildPublishPayload(
       connaissances_ids: ctx.connIds,
       repere_temporel: rt.length > 0 ? rt : null,
       annee_normalisee: annee,
+      ...typeIconoPayload,
     });
     slots.push({
       slot: slotId,
@@ -150,6 +187,12 @@ export function buildPublishPayload(
       niveau_id: ctx.niveauId,
       discipline_id: ctx.disciplineId,
       aspects_societe: aspectsPg,
+      ...(isActiveAvantApresVariant(state)
+        ? {
+            non_redaction_data:
+              avantReady && avantNorm ? { type: "avant-apres" as const, payload: avantNorm } : null,
+          }
+        : {}),
     },
     documents_new: documentsNew,
     slots,

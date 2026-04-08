@@ -1,0 +1,175 @@
+/**
+ * Utilitaires purs pour le système de perspectives (OI3 · 3.3–3.5).
+ *
+ * Spec : docs/SPEC-TEMPLATES-CONSIGNE.md
+ */
+
+import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
+import type { DocumentSlotData } from "@/lib/tae/document-helpers";
+import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
+import type {
+  MomentData,
+  PerspectiveData,
+  PerspectiveLetter,
+  PerspectiveTypePerspectives,
+} from "@/lib/tae/oi-perspectives/perspectives-types";
+
+// ---------------------------------------------------------------------------
+// Fabriques
+// ---------------------------------------------------------------------------
+
+export function emptyPerspective(): PerspectiveData {
+  return { acteur: "", contenu: "", source: "", type: "textuel" };
+}
+
+export function emptyPerspectives(count: 2 | 3): PerspectiveData[] {
+  return Array.from({ length: count }, () => emptyPerspective());
+}
+
+// ---------------------------------------------------------------------------
+// Labels perspectives — déduits du type et de la lettre
+// ---------------------------------------------------------------------------
+
+const LETTERS: PerspectiveLetter[] = ["A", "B", "C"];
+
+/** Retourne « Perspective A », « Perspective B », « Perspective C ». */
+export function perspectiveSectionLabel(index: number): string {
+  return `Perspective ${LETTERS[index] ?? String(index + 1)}`;
+}
+
+/** Retourne la lettre de perspective pour un index (0 → "A", 1 → "B", 2 → "C"). */
+export function perspectiveLetterAt(index: number): PerspectiveLetter {
+  const letter = LETTERS[index];
+  if (!letter) throw new Error(`Index de perspective hors limites : ${index}`);
+  return letter;
+}
+
+// ---------------------------------------------------------------------------
+// Labels acteur/historien — consigne et corrigé
+// ---------------------------------------------------------------------------
+
+/** Singulier : « acteur » ou « historien ». */
+export function perspectiveTypeSingulier(t: PerspectiveTypePerspectives): string {
+  return t === "acteurs" ? "acteur" : "historien";
+}
+
+/** Pluriel : « acteurs » ou « historiens ». */
+export function perspectiveTypePluriel(t: PerspectiveTypePerspectives): string {
+  return t === "acteurs" ? "acteurs" : "historiens";
+}
+
+/** « deux autres acteurs » ou « autres historiens » (formule 3.5). */
+export function perspectiveTypeAutres(t: PerspectiveTypePerspectives): string {
+  return t === "acteurs" ? "deux autres acteurs" : "autres historiens";
+}
+
+/** « d'acteurs » ou « d'historiens ». */
+export function perspectiveTypePartitif(t: PerspectiveTypePerspectives): string {
+  return t === "acteurs" ? "d'acteurs" : "d'historiens";
+}
+
+// ---------------------------------------------------------------------------
+// Déduction des noms pour les radios Bloc 5 intrus
+// ---------------------------------------------------------------------------
+
+/** Extrait le label radio intrus depuis les perspectives du Bloc 4 (nom de l'acteur/historien). */
+export function intrusRadioLabels(
+  perspectives: PerspectiveData[],
+): { letter: PerspectiveLetter; label: string }[] {
+  return perspectives.map((p, i) => ({
+    letter: perspectiveLetterAt(i),
+    label: p.acteur.trim() || `Perspective ${LETTERS[i]}`,
+  }));
+}
+
+// ---------------------------------------------------------------------------
+// Migration groupé ↔ séparé
+// ---------------------------------------------------------------------------
+
+const SLOT_IDS: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
+
+/** Groupé → Séparé : transfère les perspectives dans des slots documents indépendants. */
+export function migratePerspectivesToSlots(
+  perspectives: PerspectiveData[],
+): Partial<Record<DocumentSlotId, DocumentSlotData>> {
+  const result: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
+  for (let i = 0; i < perspectives.length; i++) {
+    const slotId = SLOT_IDS[i];
+    if (!slotId) break;
+    const p = perspectives[i]!;
+    result[slotId] = {
+      ...emptyDocumentSlot(),
+      mode: "create",
+      type: p.type,
+      titre: p.acteur,
+      contenu: p.contenu,
+      source_citation: p.source,
+    };
+  }
+  return result;
+}
+
+/** Séparé → Groupé : transfère les slots documents dans des perspectives. */
+export function migrateSlotsToPerpsectives(
+  slots: Partial<Record<DocumentSlotId, DocumentSlotData>>,
+  count: 2 | 3,
+): PerspectiveData[] {
+  return SLOT_IDS.slice(0, count).map((slotId) => {
+    const slot = slots[slotId];
+    if (!slot) return emptyPerspective();
+    return {
+      acteur: slot.titre,
+      contenu: slot.contenu,
+      source: slot.source_citation,
+      type: slot.type,
+    };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Moments (OI6)
+// ---------------------------------------------------------------------------
+
+export function emptyMoment(): MomentData {
+  return { titre: "", contenu: "", source: "" };
+}
+
+export function emptyMoments(count: 2): MomentData[] {
+  return Array.from({ length: count }, () => emptyMoment());
+}
+
+/** Groupé → Séparé : transfère les moments dans des slots documents. */
+export function migrateMomentsToSlots(
+  moments: MomentData[],
+): Partial<Record<DocumentSlotId, DocumentSlotData>> {
+  const result: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
+  for (let i = 0; i < moments.length; i++) {
+    const slotId = SLOT_IDS[i];
+    if (!slotId) break;
+    const m = moments[i]!;
+    result[slotId] = {
+      ...emptyDocumentSlot(),
+      mode: "create",
+      titre: m.titre,
+      contenu: m.contenu,
+      source_citation: m.source,
+    };
+  }
+  return result;
+}
+
+/** Séparé → Groupé : transfère les slots documents dans des moments. */
+export function migrateSlotsToMoments(
+  slots: Partial<Record<DocumentSlotId, DocumentSlotData>>,
+  count: 2,
+): MomentData[] {
+  return SLOT_IDS.slice(0, count).map((slotId) => {
+    const slot = slots[slotId];
+    if (!slot) return emptyMoment();
+    return {
+      titre: slot.titre,
+      contenu: slot.contenu,
+      source: slot.source_citation,
+    };
+  });
+}

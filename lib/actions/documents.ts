@@ -1,5 +1,7 @@
 "use server";
 
+import "server-only";
+
 import { randomUUID } from "node:crypto";
 
 import {

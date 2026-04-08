@@ -27,9 +27,11 @@ type Props = {
   dates: number[];
   selectedSegment: TimeLineSegmentLetter | null;
   onSelect: (letter: TimeLineSegmentLetter) => void;
+  /** Si false : frise en lecture seule (aperçu Bloc 3). */
+  interactive?: boolean;
 };
 
-export function TimeLine({ dates, selectedSegment, onSelect }: Props) {
+export function TimeLine({ dates, selectedSegment, onSelect, interactive = true }: Props) {
   const layout = useMemo(() => ligneDuTempsRibbonFriseLayoutFromDates(dates), [dates]);
   const rawId = useId();
   const clipId = `lt-clip-${rawId.replace(/:/g, "")}`;
@@ -149,30 +151,32 @@ export function TimeLine({ dates, selectedSegment, onSelect }: Props) {
         </text>
       ))}
 
-      <g clipPath={`url(#${clipId})`}>
-        {segments.map((seg) => (
-          <rect
-            key={`hit-${seg.letter}`}
-            x={seg.x0}
-            y={0}
-            width={seg.x1 - seg.x0}
-            height={LIGNE_TEMPS_RIBBON_RIBBON_H}
-            fill="transparent"
-            className="ligne-temps-ribbon-hit"
-            role="button"
-            tabIndex={0}
-            aria-pressed={selectedSegment === seg.letter}
-            aria-label={`Sélectionner la période ${seg.letter}`}
-            onClick={() => onSelect(seg.letter as TimeLineSegmentLetter)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onSelect(seg.letter as TimeLineSegmentLetter);
-              }
-            }}
-          />
-        ))}
-      </g>
+      {interactive ? (
+        <g clipPath={`url(#${clipId})`}>
+          {segments.map((seg) => (
+            <rect
+              key={`hit-${seg.letter}`}
+              x={seg.x0}
+              y={0}
+              width={seg.x1 - seg.x0}
+              height={LIGNE_TEMPS_RIBBON_RIBBON_H}
+              fill="transparent"
+              className="ligne-temps-ribbon-hit"
+              role="button"
+              tabIndex={0}
+              aria-pressed={selectedSegment === seg.letter}
+              aria-label={`Sélectionner la période ${seg.letter}`}
+              onClick={() => onSelect(seg.letter as TimeLineSegmentLetter)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelect(seg.letter as TimeLineSegmentLetter);
+                }
+              }}
+            />
+          ))}
+        </g>
+      ) : null}
     </svg>
   );
 }

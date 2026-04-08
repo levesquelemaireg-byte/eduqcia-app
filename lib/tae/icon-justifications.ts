@@ -13,6 +13,8 @@ export const MATERIAL_ICON_TOOLTIP: Record<string, string> = {
     "Un cube à cinq faces — chaque aspect (économique, politique, social, culturel, territorial) est une perspective différente sur une même réalité sociale.",
   task_alt:
     "Le corrigé est la tâche accomplie, la réponse validée. L'icône évoque la complétion et le critère atteint.",
+  list_alt_check:
+    "Les options de réponse sont une liste de propositions parmi lesquelles l'élève choisit — vérification et bonne réponse attendue.",
   tooltip_2:
     "Le guidage est une bulle d'aide contextuelle — une indication qui soutient sans s'imposer.",
   license:

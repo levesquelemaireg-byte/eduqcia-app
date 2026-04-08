@@ -8,13 +8,13 @@ import { useCallback, useId, useMemo } from "react";
 import { CollaborateurSearchField } from "@/components/tae/TaeForm/CollaborateurSearchField";
 import { BLOC1_STEPPER_ICONS } from "@/components/tae/TaeForm/bloc1-stepper-icons";
 import { useTaeForm } from "@/components/tae/TaeForm/FormState";
+import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { CollaborateurProfileSearchRow } from "@/lib/queries/collaborateur-profile-search";
 
 export function Bloc1AuteursTache() {
   const { state, dispatch } = useTaeForm();
   const { modeConception, collaborateurs } = state.bloc1;
-  const modeGroupId = useId();
   const collabInputId = useId();
 
   const setMode = useCallback(
@@ -39,60 +39,28 @@ export function Bloc1AuteursTache() {
 
   return (
     <div className="space-y-8">
-      <fieldset className="border-0 p-0">
-        <legend className="text-sm font-semibold text-deep">
-          Mode de conception <RequiredMark />
-        </legend>
-        <div
-          className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2"
-          role="radiogroup"
-          aria-labelledby={modeGroupId}
-          aria-required
-        >
-          <span id={modeGroupId} className="sr-only">
-            Mode de conception
-          </span>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={modeConception === "seul"}
-            onClick={() => setMode("seul")}
-            className={`flex min-h-[7.5rem] flex-col items-start gap-3 rounded-xl border-2 p-5 text-left shadow-sm transition-all ${
-              modeConception === "seul"
-                ? "border-accent bg-accent/10 ring-2 ring-accent/25"
-                : "border-border bg-panel hover:border-border hover:bg-panel-alt"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[2rem] text-accent" aria-hidden="true">
-              person
-            </span>
-            <span className="text-base font-semibold text-deep">Seul</span>
-            <span className="text-sm leading-relaxed text-muted">
-              Vous êtes l&apos;unique auteur de cette tâche.
-            </span>
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={modeConception === "equipe"}
-            onClick={() => setMode("equipe")}
-            className={`flex min-h-[7.5rem] flex-col items-start gap-3 rounded-xl border-2 p-5 text-left shadow-sm transition-all ${
-              modeConception === "equipe"
-                ? "border-accent bg-accent/10 ring-2 ring-accent/25"
-                : "border-border bg-panel hover:border-border hover:bg-panel-alt"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[2rem] text-accent" aria-hidden="true">
-              {BLOC1_STEPPER_ICONS[1]}
-            </span>
-            <span className="text-base font-semibold text-deep">En équipe</span>
-            <span className="flex flex-col gap-1 text-sm leading-relaxed text-muted">
-              <span>Vous avez conçu cette tâche avec un ou plusieurs collègues.</span>
-              <span>Ajoutez leurs noms ci-dessous pour les inclure comme collaborateurs.</span>
-            </span>
-          </button>
-        </div>
-      </fieldset>
+      <RadioCardGroup
+        name="modeConception"
+        label="Mode de conception"
+        required
+        options={[
+          {
+            value: "seul",
+            label: "Seul",
+            icon: "person",
+            description: "Vous êtes l'unique auteur de cette tâche.",
+          },
+          {
+            value: "equipe",
+            label: "En équipe",
+            icon: BLOC1_STEPPER_ICONS[1],
+            description:
+              "Vous avez conçu cette tâche avec un ou plusieurs collègues. Ajoutez leurs noms ci-dessous pour les inclure comme collaborateurs.",
+          },
+        ]}
+        value={modeConception || ""}
+        onChange={(v) => setMode(v as "seul" | "equipe")}
+      />
 
       {modeConception === "equipe" ? (
         <div className="space-y-4 rounded-xl border border-border bg-panel-alt/50 p-4 shadow-sm sm:p-5">

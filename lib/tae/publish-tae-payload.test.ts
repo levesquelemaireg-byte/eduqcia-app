@@ -2,6 +2,10 @@ import { describe, expect, it } from "vitest";
 import { buildPublishPayload } from "@/lib/tae/publish-tae-payload";
 import type { DocumentSlotData } from "@/lib/tae/document-helpers";
 import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
+import {
+  initialAvantApresPayload,
+  runAvantApresGeneration,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
 import { initialTaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 
@@ -11,6 +15,26 @@ const ctx = {
   cdId: 30 as number | null,
   connIds: [100, 101],
 };
+
+function avantApresFourDocSlots(): Record<string, DocumentSlotData> {
+  const d = (y: number): DocumentSlotData => ({
+    ...emptyDocumentSlot(),
+    mode: "create",
+    type: "textuel",
+    titre: "t",
+    contenu: "<p>c</p>",
+    source_citation: "s",
+    source_type: "secondaire",
+    repere_temporel: String(y),
+    annee_normalisee: y,
+  });
+  return {
+    doc_A: d(1900),
+    doc_B: d(1910),
+    doc_C: d(1920),
+    doc_D: d(1930),
+  };
+}
 
 function assertPayload(
   r: ReturnType<typeof buildPublishPayload>,
@@ -32,6 +56,7 @@ describe("buildPublishPayload", () => {
     expect(r.tae.cd_id).toBe(30);
     expect(r.tae.connaissances_ids).toEqual([100, 101]);
     expect(r.collaborateurs_user_ids).toEqual([]);
+    expect(r.tae).not.toHaveProperty("non_redaction_data");
   });
 
   it("slot idle → validation", () => {
@@ -225,5 +250,83 @@ describe("buildPublishPayload", () => {
       image_legende: "Légende courte",
       image_legende_position: "bas_droite",
     });
+  });
+
+  it("avant-après sans options générées : non_redaction_data null", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc1.modeConception = "seul";
+    state.bloc2.oiId = "OI1";
+    state.bloc2.comportementId = "1.3";
+    state.bloc2.nbLignes = 0;
+    state.bloc2.nbDocuments = 4;
+    state.bloc2.documentSlots = [
+      { slotId: "doc_A" },
+      { slotId: "doc_B" },
+      { slotId: "doc_C" },
+      { slotId: "doc_D" },
+    ];
+    state.bloc4.documents = avantApresFourDocSlots();
+    state.bloc7.aspects.economique = true;
+    state.bloc5.nonRedaction = {
+      type: "avant-apres",
+      payload: { ...initialAvantApresPayload(), theme: "Thème", repere: "Repère" },
+    };
+    const r = buildPublishPayload("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", state, ctx);
+    assertPayload(r);
+    expect(r.tae.non_redaction_data).toBeNull();
+  });
+
+  it("avant-après complet : non_redaction_data union typée", () => {
+    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    state.bloc1.modeConception = "seul";
+    state.bloc2.oiId = "OI1";
+    state.bloc2.comportementId = "1.3";
+    state.bloc2.nbLignes = 0;
+    state.bloc2.nbDocuments = 4;
+    state.bloc2.documentSlots = [
+      { slotId: "doc_A" },
+      { slotId: "doc_B" },
+      { slotId: "doc_C" },
+      { slotId: "doc_D" },
+    ];
+    state.bloc4.documents = avantApresFourDocSlots();
+    state.bloc7.aspects.economique = true;
+
+    const base = {
+      ...initialAvantApresPayload(),
+      theme: "Thème",
+      repere: "Repère",
+      anneeRepere: 1915,
+    };
+    let i = 0;
+    const seq = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.11, 0.12, 0.13];
+    const rng = () => {
+      const v = seq[i] ?? 0.5;
+      i += 1;
+      return v;
+    };
+    const gen = runAvantApresGeneration(
+      base,
+      ["doc_A", "doc_B", "doc_C", "doc_D"],
+      state.bloc4.documents,
+      rng,
+    );
+    expect(gen.errorCode).toBeNull();
+
+    state.bloc5.nonRedaction = { type: "avant-apres", payload: gen.payload };
+
+    const r = buildPublishPayload("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", state, ctx);
+    assertPayload(r);
+    expect(r.tae.non_redaction_data).toEqual(
+      expect.objectContaining({
+        type: "avant-apres",
+        payload: expect.objectContaining({
+          theme: "Thème",
+          repere: "Repère",
+          anneeRepere: 1915,
+          generated: true,
+        }),
+      }),
+    );
   });
 });

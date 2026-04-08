@@ -14,7 +14,6 @@ export function isActiveLigneDuTempsVariant(state: TaeFormState): boolean {
   return getVariantSlugForComportementId(state.bloc2.comportementId) === "ligne-du-temps";
 }
 
-/** Sommaire wizard : pas de pastille « aspects » pour les parcours à consigne ministérielle structurée. */
-export function isActiveNonRedactionSommaireHideAspectsVariant(state: TaeFormState): boolean {
-  return isActiveOrdreChronologiqueVariant(state) || isActiveLigneDuTempsVariant(state);
+export function isActiveAvantApresVariant(state: TaeFormState): boolean {
+  return getVariantSlugForComportementId(state.bloc2.comportementId) === "avant-apres";
 }

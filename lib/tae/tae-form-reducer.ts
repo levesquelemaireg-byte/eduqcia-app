@@ -5,9 +5,23 @@ import {
   type NiveauCode,
 } from "@/lib/tae/blueprint-helpers";
 import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
+import {
+  emptyMoments,
+  emptyPerspectives,
+  migrateMomentsToSlots,
+  migratePerspectivesToSlots,
+  migrateSlotsToMoments,
+  migrateSlotsToPerpsectives,
+} from "@/lib/tae/oi-perspectives/perspectives-helpers";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
 import { initialCdFormSlice, sanitizeCdFormSlice } from "@/lib/tae/cd-helpers";
 import { sanitizeConnaissances } from "@/lib/tae/connaissances-helpers";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import {
+  initialAvantApresPayload,
+  mergeAvantApresPayload,
+  clearedAvantApresOptionsPatch,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
 import {
   initialLigneDuTempsPayload,
   mergeLigneDuTempsPayload,
@@ -35,6 +49,9 @@ function initialNonRedactionForSlug(
   }
   if (slug === "ligne-du-temps") {
     return { type: "ligne-du-temps", payload: initialLigneDuTempsPayload() };
+  }
+  if (slug === "avant-apres") {
+    return { type: "avant-apres", payload: initialAvantApresPayload() };
   }
   return null;
 }
@@ -68,7 +85,13 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
     case "HYDRATE":
       return {
         ...action.state,
-        bloc4: { documents: action.state.bloc4?.documents ?? {} },
+        bloc4: {
+          documents: action.state.bloc4?.documents ?? {},
+          perspectives: action.state.bloc4?.perspectives ?? null,
+          perspectivesTitre: action.state.bloc4?.perspectivesTitre ?? "",
+          moments: action.state.bloc4?.moments ?? null,
+          momentsTitre: action.state.bloc4?.momentsTitre ?? "",
+        },
         bloc6: { cd: sanitizeCdFormSlice(action.state.bloc6?.cd) },
         bloc7: {
           aspects: action.state.bloc7?.aspects ?? initialBloc7.aspects,
@@ -77,6 +100,7 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         bloc5: {
           corrige: action.state.bloc5?.corrige ?? "",
           nonRedaction: action.state.bloc5?.nonRedaction ?? null,
+          intrus: action.state.bloc5?.intrus ?? null,
         },
       };
     case "SET_STEP":
@@ -128,7 +152,7 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         ...state,
         bloc2: b,
         bloc3: disciplineChanged ? initialBloc3 : state.bloc3,
-        bloc4: { documents: {} },
+        bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
         bloc5: initialBloc5,
         bloc6: { cd: initialCdFormSlice },
         bloc7: { ...initialBloc7, connaissances: [] },
@@ -144,7 +168,7 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         ...state,
         bloc2: b,
         bloc3: disciplineChanged ? initialBloc3 : state.bloc3,
-        bloc4: { documents: {} },
+        bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
         bloc5: initialBloc5,
         bloc6: { cd: initialCdFormSlice },
         bloc7: { ...initialBloc7, connaissances: [] },
@@ -174,12 +198,13 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
           documentSlots: documentSlotsFromCount(action.nbDocuments),
           nbLignes: action.nbLignes,
         },
-        bloc4: { documents: {} },
+        bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
         bloc5: {
           corrige: state.bloc5.corrige,
           nonRedaction,
+          intrus: null,
         },
-        bloc3: { ...state.bloc3, guidage: "" },
+        bloc3: { ...state.bloc3, guidage: "", perspectivesMode: null, perspectivesType: "acteurs", perspectivesContexte: "", oi6Enjeu: "", oi7EnjeuGlobal: "", oi7Element1: "", oi7Element2: "", oi7Element3: "", consigneMode: "gabarit" },
       };
     }
     case "LOCK_BLUEPRINT":
@@ -217,6 +242,17 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
       };
     case "UPDATE_DOCUMENT_SLOT": {
       const prev = state.bloc4.documents[action.slotId] ?? emptyDocumentSlot();
+      const nr = state.bloc5.nonRedaction;
+      let bloc5 = state.bloc5;
+      if (nr?.type === "avant-apres" && nr.payload.generated) {
+        bloc5 = {
+          ...state.bloc5,
+          nonRedaction: {
+            type: "avant-apres",
+            payload: mergeAvantApresPayload(nr.payload, clearedAvantApresOptionsPatch()),
+          },
+        };
+      }
       return {
         ...state,
         bloc4: {
@@ -224,7 +260,12 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
             ...state.bloc4.documents,
             [action.slotId]: { ...prev, ...action.patch },
           },
+          perspectives: state.bloc4.perspectives,
+          perspectivesTitre: state.bloc4.perspectivesTitre,
+          moments: state.bloc4.moments,
+          momentsTitre: state.bloc4.momentsTitre,
         },
+        bloc5,
       };
     }
     case "SET_CD_SELECTION":
@@ -288,6 +329,118 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
             payload: mergeLigneDuTempsPayload(nr.payload, action.patch),
           },
         },
+      };
+    }
+    case "NON_REDACTION_PATCH_AVANT_APRES": {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "avant-apres") return state;
+      return {
+        ...state,
+        bloc5: {
+          ...state.bloc5,
+          nonRedaction: {
+            type: "avant-apres",
+            payload: mergeAvantApresPayload(nr.payload, action.patch),
+          },
+        },
+      };
+    }
+    case "SET_OI6_ENJEU":
+      return { ...state, bloc3: { ...state.bloc3, oi6Enjeu: action.value } };
+    case "SET_OI7_ENJEU_GLOBAL":
+      return { ...state, bloc3: { ...state.bloc3, oi7EnjeuGlobal: action.value } };
+    case "SET_OI7_ELEMENT_1":
+      return { ...state, bloc3: { ...state.bloc3, oi7Element1: action.value } };
+    case "SET_OI7_ELEMENT_2":
+      return { ...state, bloc3: { ...state.bloc3, oi7Element2: action.value } };
+    case "SET_OI7_ELEMENT_3":
+      return { ...state, bloc3: { ...state.bloc3, oi7Element3: action.value } };
+    case "SET_CONSIGNE_MODE":
+      return { ...state, bloc3: { ...state.bloc3, consigneMode: action.value } };
+    case "SET_PERSPECTIVES_TYPE":
+      return { ...state, bloc3: { ...state.bloc3, perspectivesType: action.value } };
+    case "SET_PERSPECTIVES_CONTEXTE":
+      return { ...state, bloc3: { ...state.bloc3, perspectivesContexte: action.value } };
+    case "SET_PERSPECTIVES_TITRE":
+      return { ...state, bloc4: { ...state.bloc4, perspectivesTitre: action.value } };
+    case "UPDATE_PERSPECTIVE": {
+      const prev = state.bloc4.perspectives;
+      if (!prev) return state;
+      const updated = prev.map((p, i) =>
+        i === action.index ? { ...p, ...action.patch } : p,
+      );
+      return {
+        ...state,
+        bloc4: { ...state.bloc4, perspectives: updated },
+      };
+    }
+    case "UPDATE_MOMENT": {
+      const prev = state.bloc4.moments;
+      if (!prev) return state;
+      const updated = prev.map((m, i) =>
+        i === action.index ? { ...m, ...action.patch } : m,
+      );
+      return { ...state, bloc4: { ...state.bloc4, moments: updated } };
+    }
+    case "SET_MOMENTS_TITRE":
+      return { ...state, bloc4: { ...state.bloc4, momentsTitre: action.value } };
+    case "SET_INTRUS_LETTER": {
+      const prev = state.bloc5.intrus ?? { intrusLetter: "", explicationDifference: "", pointCommun: "" };
+      return { ...state, bloc5: { ...state.bloc5, intrus: { ...prev, intrusLetter: action.value } } };
+    }
+    case "SET_INTRUS_EXPLICATION": {
+      const prev = state.bloc5.intrus ?? { intrusLetter: "", explicationDifference: "", pointCommun: "" };
+      return { ...state, bloc5: { ...state.bloc5, intrus: { ...prev, explicationDifference: action.value } } };
+    }
+    case "SET_INTRUS_POINT_COMMUN": {
+      const prev = state.bloc5.intrus ?? { intrusLetter: "", explicationDifference: "", pointCommun: "" };
+      return { ...state, bloc5: { ...state.bloc5, intrus: { ...prev, pointCommun: action.value } } };
+    }
+    case "SET_PERSPECTIVES_MODE_WITH_MIGRATION": {
+      const prev = state.bloc3.perspectivesMode;
+      const next = action.value;
+      if (prev === next) return state;
+
+      const cfg = getWizardBlocConfig(state.bloc2.comportementId);
+      const isMoments = cfg?.bloc4.type === "moments";
+      const emptyBloc4 = { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" };
+
+      if (isMoments) {
+        // OI6 — moments
+        if (prev === "groupe" && next === "separe") {
+          const migratedDocs = state.bloc4.moments ? migrateMomentsToSlots(state.bloc4.moments) : {};
+          return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, documents: migratedDocs } };
+        }
+        if (prev === "separe" && next === "groupe") {
+          const migratedMom = migrateSlotsToMoments(state.bloc4.documents, 2);
+          return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, moments: migratedMom, momentsTitre: state.bloc4.momentsTitre } };
+        }
+        // Premier choix
+        return {
+          ...state,
+          bloc3: { ...state.bloc3, perspectivesMode: next },
+          bloc4: next === "groupe"
+            ? { ...emptyBloc4, moments: emptyMoments(2), momentsTitre: state.bloc4.momentsTitre }
+            : emptyBloc4,
+        };
+      }
+
+      // OI3 — perspectives
+      if (prev === "groupe" && next === "separe") {
+        const migratedDocs = state.bloc4.perspectives ? migratePerspectivesToSlots(state.bloc4.perspectives) : {};
+        return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, documents: migratedDocs } };
+      }
+      if (prev === "separe" && next === "groupe") {
+        const migratedPersp = migrateSlotsToPerpsectives(state.bloc4.documents, action.count);
+        return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, perspectives: migratedPersp, perspectivesTitre: state.bloc4.perspectivesTitre } };
+      }
+      // Premier choix
+      return {
+        ...state,
+        bloc3: { ...state.bloc3, perspectivesMode: next },
+        bloc4: next === "groupe"
+          ? { ...emptyBloc4, perspectives: emptyPerspectives(action.count), perspectivesTitre: state.bloc4.perspectivesTitre }
+          : emptyBloc4,
       };
     }
     default:

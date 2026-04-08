@@ -1,5 +1,6 @@
 import { SkeletonAspectPills } from "@/components/tae/TaeForm/sommaire/SommaireSkeletons";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
+import { BLOC7_ASPECTS_LABEL } from "@/lib/ui/ui-copy";
 
 type Props = {
   /** Libellés français des aspects cochés. */
@@ -20,7 +21,7 @@ export function SommaireFicheAspects({ selectedLabels }: Props) {
         >
           deployed_code
         </span>
-        Aspects de société
+        {BLOC7_ASPECTS_LABEL}
       </h4>
       {selectedLabels.length > 0 ? (
         <div className="mt-2 flex flex-wrap gap-1.5">

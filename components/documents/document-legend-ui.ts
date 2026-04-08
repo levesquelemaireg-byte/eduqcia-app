@@ -1,6 +1,6 @@
 import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
 
-/** Grille 4 coins — alignée `docs/DECISIONS.md` § Étape 4 · Légende. */
+/** Quatre coins (ordre = rangée UI gauche → droite) — aligné `docs/DECISIONS.md` § Étape 4 · Légende. */
 export const LEGEND_POSITION_GRID: {
   value: DocumentLegendPosition;
   glyph: string;

@@ -47,16 +47,17 @@ export const PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE = TOAST_PUBLICATION_DOCUMENT_IM
 
 /** Module documents / Bloc 4 — `docs/UI-COPY.md` (Module, Étape 4) */
 export const DOCUMENT_MODULE_PAGE_TITLE = "Créer un document";
+export const DOCUMENT_MODULE_PAGE_TITLE_EDIT = "Modifier le document";
 export const DOCUMENT_MODULE_TITRE_LABEL = "Titre du document";
 
 /** Repère temporel — libellé, aide, champs (module documents, Bloc 4 TAÉ). */
 export const REPERE_TEMPOREL_LABEL = "Repère temporel";
 export const REPERE_TEMPOREL_MODAL_TITLE = "Repère temporel";
 export const REPERE_TEMPOREL_HELP =
-  "Indiquez une année, une période ou une date associée au document. Le système utilisera automatiquement l’année (4 chiffres) pour les exercices de classement. Pour les dates antérieures à l’an 1000, saisissez manuellement une année normalisée (négative autorisée). Cette donnée n’apparaît pas sur la fiche élève.";
+  "Indiquez une année, une période ou une date associée au document. Le système utilisera automatiquement l’année (4 chiffres) pour les exercices de classement. Pour les dates antérieures à l’an 1000, saisissez manuellement une année normalisée (négative autorisée). Cette donnée n’apparaît pas sur la copie de l'élève.";
 export const REPERE_TEMPOREL_PLACEHOLDER = "ex. 1837, vers 1760, juin 1834, années 1830";
 export const REPERE_TEMPOREL_MANUAL_PLACEHOLDER = "Année normalisée (ex. -30000)";
-export const REPERE_TEMPOREL_EXTRACTED_PREFIX = "Année extraite :";
+export const REPERE_TEMPOREL_EXTRACTED_PREFIX = "↳ Année extraite :";
 export const REPERE_TEMPOREL_MANUAL_HINT =
   "Saisissez une année normalisée (peut être négative) pour les comparaisons automatiques.";
 export const ERROR_ANNEE_NORMALISEE_RANGE =
@@ -181,6 +182,48 @@ export const TOAST_DOCUMENT_WIZARD_DRAFT_SAVED =
   "Brouillon du document enregistré dans ce navigateur.";
 export const DOCUMENT_WIZARD_PDF_LEGACY_PREVIEW =
   "Les fichiers PDF ne sont plus acceptés pour les documents iconographiques. Téléversez une image JPG, PNG ou WebP.";
+
+/** Wizard `/documents/new` — étape 1 : placeholders champs (refonte UI). */
+export const DOCUMENT_WIZARD_STEP1_PLACEHOLDER_TITRE = "Ex. : Carte de la Nouvelle-France, 1703";
+export const DOCUMENT_WIZARD_STEP1_PLACEHOLDER_REPERE = "Ex. : 1837 · vers 1760 · juin 1834";
+export const DOCUMENT_WIZARD_STEP1_PLACEHOLDER_LEGENDE =
+  "Décrivez brièvement le contexte de l'image…";
+export const DOCUMENT_WIZARD_STEP1_PLACEHOLDER_CONTENU =
+  "Saisissez ou collez le texte du document…";
+/** `aria-placeholder` éditeur source — pas de texte visible dans l’éditeur vide. */
+export const DOCUMENT_WIZARD_STEP1_SOURCE_ARIA_PLACEHOLDER =
+  "Laisser vide — l'éditeur riche parle de lui-même";
+
+export const DOCUMENT_WIZARD_STEP1_CONTENU_LABEL = "Contenu du document";
+
+/** Modales d’aide (texte intégral fourni produit — wizard document étape 1). */
+export const DOCUMENT_WIZARD_STEP1_HELP_FILE_TITLE = "Fichier du document";
+export const DOCUMENT_WIZARD_STEP1_HELP_FILE_BODY =
+  "Le fichier sera hébergé sur nos serveurs et associé à ce document. Les formats acceptés sont JPG, PNG et WebP, avec une taille maximale de 10 Mo. Si votre image dépasse 660 × 400 px, elle sera redimensionnée automatiquement pour l'impression et l'affichage sur la copie de l'élève, sans que vous ayez à la préparer à l'avance. Pour une bonne lisibilité en classe, privilégiez une image avec un bon contraste ; les documents numérisés en noir et blanc conviennent à condition que le texte ou les détails historiques (dates, lieux, personnages) restent visibles à petite taille.";
+
+export const DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_TITLE = "Légende";
+export const DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_BODY =
+  "La légende apparaît sur la copie de l'élève, en superposition sur l'image, dans le coin de votre choix. Elle remplit deux fonctions pédagogiques : contextualiser le document en donnant des repères (époque, auteur, lieu, événement) et étayer la compréhension de l'élève en fournissant un guidage complémentaire – une précision sur un détail, une question d'orientation, une courte mise en garde contre une interprétation erronée. La légende n'est pas un titre, mais une courte phrase qui ancre l'image dans son époque ou son sujet. Sa longueur est limitée à 50 mots. Elle est optionnelle, mais fortement recommandée pour tout document dont le sens n'est pas immédiat ou pour lequel un étayage est souhaitable.";
+
+export const DOCUMENT_WIZARD_STEP1_HELP_TYPE_ICONO_TITLE = "Catégorie iconographique";
+export const DOCUMENT_WIZARD_STEP1_HELP_TYPE_ICONO_BODY =
+  "Cette information sert au filtrage dans la banque collaborative, plus précisément dans l'onglet Documents. Elle n'apparaît pas sur la copie de l'élève et permet aux enseignants de trouver rapidement des types spécifiques de sources visuelles – une aide précieuse pour préparer des séquences sur la caricature politique, la cartographie historique ou la photographie d'archive. Choisissez la catégorie qui correspond le mieux à la nature visuelle du document. Si aucune catégorie ne convient, sélectionnez « Autre » ; la liste évoluera en fonction des usages observés.";
+
+export const DOCUMENT_WIZARD_STEP1_HELP_SOURCE_TITLE = "Source";
+export const DOCUMENT_WIZARD_STEP1_HELP_SOURCE_BODY =
+  "La source indique l'origine du document et apparaît sur la copie de l'élève, sous le contenu. En didactique de l'histoire, la mention de la source est essentielle pour former les élèves au travail de l'historien : elle leur apprend à situer un document dans son contexte de production et à en évaluer la fiabilité. Aucun format n'est imposé, mais nous recommandons de suivre la convention en usage dans votre établissement. Vous pouvez utiliser la mise en forme (gras, italique, listes) pour distinguer l'institution, le fonds d'archives ou les références bibliographiques.";
+
+export const DOCUMENT_WIZARD_STEP1_HELP_SOURCE_TYPE_TITLE = "Type de source";
+export const DOCUMENT_WIZARD_STEP1_HELP_SOURCE_TYPE_BODY =
+  "Cette distinction est fondamentale en histoire et en sciences humaines, car elle aide l'élève à comprendre la nature du document et à développer son sens critique. Une source primaire est un document produit à l'époque des événements étudiés, par un acteur ou un témoin direct. Une source secondaire est un document produit après les événements, par quelqu'un qui les analyse ou les synthétise. Savoir identifier la nature de la source permet à l'élève de mieux comprendre le point de vue qui s'exprime et d'en apprécier la portée. Certains documents peuvent être difficiles à classer ; dans le doute, choisissez la classification la plus utile pour vos élèves.";
+
+export const DOCUMENT_WIZARD_STEP1_HELP_REPERE_BODY =
+  "Le repère temporel n'est pas affiché sur la copie de l'élève. Il sert à l'application pour générer automatiquement des exercices de classement temporel, comme l'ordre chronologique des documents, leur positionnement sur une ligne du temps, ou la classification avant/après un repère. Vous pouvez entrer une date précise, une année seule, une période ou une expression floue. Si votre texte contient plusieurs années, c'est la première année détectée qui sera utilisée ; vous pourrez ajuster cette valeur si nécessaire. Si le document n'est pas daté, laissez ce champ vide : l'automatisation pour les exercices temporels ne pourra pas s'appliquer.";
+
+export const DOCUMENT_WIZARD_STEP1_HELP_CONTENU_TITLE = "Contenu du document";
+export const DOCUMENT_WIZARD_STEP1_HELP_CONTENU_BODY =
+  "Ici vous saisissez le texte intégral du document – ou un extrait, si l'original est trop long. En didactique, un extrait bien choisi permet de focaliser l'attention des élèves sur un passage clé, d'éviter la surcharge d'information et de favoriser une analyse plus précise. La mise en forme (gras, italique, listes) est conservée et affichée sur la copie de l'élève ; utilisez‑la pour mettre en évidence des passages clés. Si vous travaillez à partir d'un document numérisé, vous pouvez coller le texte depuis un logiciel de reconnaissance optique (OCR) ; vérifiez simplement les erreurs de lecture avant de sauvegarder. Il n'y a pas de limite de longueur, mais gardez en tête que les élèves lisent ce texte sur écran ou en impression. Un extrait bien choisi est souvent plus efficace qu'un document complet.";
+
 export const DOCUMENT_WIZARD_UPLOAD_INVALID =
   "Choisissez un fichier JPG, PNG ou WebP d’au plus 10 Mo.";
 export const DOCUMENT_FICHE_PDF_OPEN_NEW_TAB = "Ouvrir le fichier dans un nouvel onglet";
@@ -198,9 +241,63 @@ export const DOCUMENT_FICHE_TYPE_DOCUMENT = "Type de document";
 export const DOCUMENT_FICHE_EYEBROW = "Document historique";
 /** Lien retour banque — même libellé que fiche tâche (`FicheRetourLink`). */
 export const DOCUMENT_FICHE_RETOUR = "Retour";
+export const DOCUMENT_FICHE_EDIT = "Modifier";
 /** Colonne méta — titre de section (grille large). */
 export const DOCUMENT_FICHE_SECTION_INDEXATION = "Références et indexation";
+
+/** Slugs persistés en `documents.type_iconographique` — formulaires et banque. */
+export const DOCUMENT_TYPE_ICONO_SLUGS = [
+  "carte",
+  "photographie",
+  "peinture",
+  "dessin_gravure",
+  "affiche_caricature",
+  "planche_didactique",
+  "objet_artefact",
+  "autre",
+] as const;
+
+export type DocumentTypeIconoSlug = (typeof DOCUMENT_TYPE_ICONO_SLUGS)[number];
+
+export const DOCUMENT_TYPE_ICONO_CATEGORY_LABEL = "Catégorie iconographique";
+export const DOCUMENT_TYPE_ICONO_CATEGORY_HELP =
+  "Indiquez le type d’image (carte, peinture, etc.) pour faciliter la recherche. Cette information n’apparaît pas sur la copie de l'élève.";
+
+export const BANK_FILTER_ICONO_CATEGORY_LABEL = "Catégorie iconographique";
+
+export const DOCUMENT_TYPE_ICONO_LABEL: Record<DocumentTypeIconoSlug, string> = {
+  carte: "Carte",
+  photographie: "Photographie",
+  peinture: "Peinture",
+  dessin_gravure: "Dessin / gravure",
+  affiche_caricature: "Affiche / caricature",
+  planche_didactique: "Planche didactique",
+  objet_artefact: "Objet / artefact",
+  autre: "Autre",
+};
+
+/** Badges compacts (liste banque). */
+/** Libellé long pour fiche / filtres — `null` si inconnu. */
+export function documentTypeIconoLabel(slug: DocumentTypeIconoSlug | null): string | null {
+  if (!slug) return null;
+  return DOCUMENT_TYPE_ICONO_LABEL[slug];
+}
+
+export const DOCUMENT_TYPE_ICONO_BADGE_SHORT: Record<DocumentTypeIconoSlug, string> = {
+  carte: "Carte",
+  photographie: "Photo",
+  peinture: "Peinture",
+  dessin_gravure: "Dessin",
+  affiche_caricature: "Affiche",
+  planche_didactique: "Planche",
+  objet_artefact: "Objet",
+  autre: "Autre",
+};
+
+export const DOCUMENT_FICHE_TYPE_ICONO_LINE = "Catégorie";
 export const TOAST_DOCUMENT_CREATE_SUCCESS = "Document enregistré.";
+export const TOAST_DOCUMENT_UPDATE_SUCCESS = "Document mis à jour.";
+export const TOAST_DOCUMENT_EDIT_FORBIDDEN = "Vous ne pouvez pas modifier ce document.";
 /** Base distante sans colonnes PO documents — insert sans légende / champs optionnels après repli. */
 export const TOAST_DOCUMENT_CREATE_DEGRADED =
   "Document enregistré. La base Supabase n’a pas toutes les colonnes du dépôt (ex. légende) : appliquez les migrations `20250327140000_documents_source_type_legende_po.sql` et suivantes, puis rechargez le cache schéma si besoin.";
@@ -250,7 +347,29 @@ export const TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA = "Afficher l'aide sur cette é
 /** Wizard TAÉ — étape 3 — Bloc 3 (consigne + guidage) — `step-meta.ts` */
 export const BLOC3_TITRE = "Consigne et guidage complémentaire";
 export const BLOC3_DESCRIPTION =
-  "Rédigez la consigne destinée à l'élève et le guidage complémentaire pour l'enseignant.";
+  "Rédigez la consigne destinée à l'élève et, si nécessaire, le guidage complémentaire pour l'élève.";
+
+/** Wizard TAÉ — descriptions contextuelles par étape et comportement (StepHeader). */
+export const STEP_DESCRIPTIONS: Record<number, Record<string, string>> = {
+  2: {
+    "1.1": "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
+    "1.2": "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
+    "1.3": "Complétez le gabarit de consigne. La structure est prédéfinie selon le parcours choisi.",
+    default: "Rédigez la consigne de la tâche. L’appel documentaire (ex.\u00a0: « Consultez le document A. ») sera ajouté automatiquement au début.",
+  },
+};
+
+/** Wizard TAÉ — étape 3 — accès refusé tant que le blueprint (étape 2) n’est pas verrouillé */
+export const BLOC3_GATE_BLUEPRINT =
+  "Complétez d'abord l'étape « Paramètres de la tâche » (étape 2) et passez à l'étape suivante pour définir la consigne et le guidage complémentaire.";
+
+/** Wizard TAÉ — étape 4 (documents) — parcours rédactionnel : étapes 2–3 requises */
+export const BLOC4_GATE_WIZARD =
+  "Complétez d'abord les étapes « Paramètres de la tâche » et « Consigne et guidage complémentaire » (étapes 2 et 3) pour accéder aux documents historiques.";
+
+/** Wizard TAÉ — étape 6 (compétence disciplinaire) — prérequis étapes 2–5 */
+export const BLOC5_CD_GATE_WIZARD =
+  "Complétez d'abord les étapes « Paramètres de la tâche », « Consigne et guidage complémentaire », « Documents historiques » et « Corrigé et options » pour accéder à la compétence disciplinaire.";
 
 /** Wizard TAÉ — étape 4 — Bloc 4 — documents historiques */
 export const BLOC4_TITRE = "Documents historiques";
@@ -272,7 +391,7 @@ export const BLOC7_DESCRIPTION =
 
 /** Bloc 5 — rédactionnel — corrigé (`Bloc5Redactionnel`) */
 export const BLOC5_REDACTIONNEL_LABEL = "Production attendue";
-export const BLOC5_REDACTIONNEL_HELP = `Décrivez ce que l'élève doit produire pour répondre correctement à la tâche. Cette information apparaît dans le corrigé destiné à l'enseignant, jamais sur la feuille de l'élève.`;
+export const BLOC5_REDACTIONNEL_HELP = `Décrivez ce que l'élève doit produire pour répondre correctement à la tâche. Cette information apparaît dans le corrigé destiné à l'enseignant, jamais sur la copie de l'élève.`;
 export const BLOC5_REDACTIONNEL_PLACEHOLDER = `ex. L'élève doit identifier deux causes de la Rébellion des Patriotes et les mettre en relation avec le contexte politique de 1837.`;
 
 /** Bloc 5 — placeholders non rédactionnels */
@@ -292,6 +411,13 @@ export const BLOC7_ASPECTS_HELP = `Sélectionnez les aspects de société mobili
 export const BLOC7_CONNAISSANCES_LABEL = "Connaissances relatives";
 export const BLOC7_CONNAISSANCES_HELP = `Associez les connaissances du programme liées à cette tâche.`;
 export const BLOC7_CONNAISSANCES_EMPTY = "Aucune connaissance sélectionnée.";
+
+/** Wizard TAÉ — étape 7 — prérequis étapes 1–6 */
+export const BLOC7_GATE =
+  "Complétez d'abord les étapes « Paramètres de la tâche », « Consigne et guidage complémentaire », « Documents historiques », « Corrigé et options » et « Compétence disciplinaire » pour accéder à l'indexation.";
+
+/** Wizard TAÉ — étape 7 — bouton vider les sélections Miller */
+export const BLOC7_CONNAISSANCES_RESET = "Réinitialiser";
 
 /** Navigation wizard — libellés boutons (stepper / pied de page) */
 export const WIZARD_BTN_SUIVANT = "Suivant";
@@ -445,10 +571,14 @@ export const WIZARD_PUBLISH_CTA = "Publier";
 /** CTA footer wizard — édition (`docs/UI-COPY.md` — Boutons wizard) */
 export const WIZARD_EDIT_SAVE_CTA = "Enregistrer les modifications";
 
+/** Page `/questions/new` — sous-titre sous le h1 (`docs/UI-COPY.md`) */
+export const PAGE_CREER_UNE_TACHE_SUBTITLE =
+  "Complétez les sept (7) étapes pour créer une tâche complète, alignée sur les prescriptions ministérielles.";
+
 /** Page `/questions/[id]/edit` (`docs/UI-COPY.md` — Édition guidée) */
 export const PAGE_MODIFIER_UNE_TACHE_TITLE = "Modifier une tâche";
 export const PAGE_MODIFIER_UNE_TACHE_SUBTITLE =
-  "Reprenez les six (6) étapes pour mettre à jour votre tâche, alignée sur les prescriptions ministérielles.";
+  "Reprenez les sept (7) étapes pour mettre à jour votre tâche, alignée sur les prescriptions ministérielles.";
 
 /** Page « Mes tâches » — modale suppression (`docs/UI-COPY.md`) */
 export const MY_QUESTIONS_DELETE_MODAL_TITLE = "Supprimer cette tâche ?";
@@ -466,6 +596,15 @@ export const MY_QUESTIONS_WIZARD_DELETE_MODAL_BODY =
 
 export const MY_QUESTIONS_DELETE_BLOCKED_IN_EVALUATION =
   "Impossible de supprimer cette tâche : elle figure dans une ou plusieurs épreuves. Retirez-la des épreuves concernées, puis réessayez.";
+
+/** Page `/questions/[id]/edit` — modale confirmation modification majeure (`docs/UI-COPY.md` — Édition guidée) */
+export const EDIT_MAJOR_VERSION_MODAL_TITLE = "Modification importante détectée";
+export const EDIT_MAJOR_VERSION_MODAL_BODY_P1 =
+  "Vous avez modifié des éléments structurants de cette tâche (opération intellectuelle, documents, compétence disciplinaire ou connaissances relatives). Cette modification créera une nouvelle version de la tâche et archivera les votes reçus jusqu'ici.";
+export const EDIT_MAJOR_VERSION_MODAL_BODY_P2 =
+  "Les enseignants qui utilisent cette tâche dans une épreuve recevront une notification.";
+export const EDIT_MAJOR_VERSION_MODAL_CONFIRM = "Enregistrer la nouvelle version";
+export const EDIT_MAJOR_VERSION_MODAL_CANCEL = "Annuler";
 
 export const TOAST_MES_QUESTIONS_DELETED = "La tâche a été supprimée.";
 export const TOAST_MES_QUESTIONS_DELETE_FAILED = "Impossible de supprimer la tâche. Réessayez.";
@@ -496,6 +635,7 @@ export const PAGE_BANK_DOCUMENTS_FILTER_TYPE = "Type de document";
 export const PAGE_BANK_DOCUMENTS_FILTER_TYPE_ALL = "Tous";
 export const PAGE_BANK_DOCUMENTS_FILTER_TYPE_TEXT = DOCUMENT_MODULE_TYPE_TEXT;
 export const PAGE_BANK_DOCUMENTS_FILTER_TYPE_IMAGE = DOCUMENT_MODULE_TYPE_IMAGE;
+export const PAGE_BANK_DOCUMENTS_FILTER_ICONO_ALL = "Toutes";
 export const BANK_DOCUMENT_FILTER_SUBMIT = "Filtrer";
 export const BANK_DOCUMENT_FILTER_RESET = "Réinitialiser";
 export const BANK_DOCUMENT_LINK_FICHE = "Voir la fiche";
@@ -677,7 +817,7 @@ export const NR_ORDRE_GUIDAGE_INFO_MODAL_BODY =
 export const NR_ORDRE_OPTIONS_SECTION_TITLE = "Options de réponse";
 export const NR_ORDRE_OPTIONS_LABEL = "Options de réponse";
 export const NR_ORDRE_OPTIONS_HELP =
-  "Saisissez la bonne séquence chronologique (étape 1), puis générez les quatre options. Une seule option doit correspondre à l'ordre chronologique exact.";
+  "La bonne séquence est calculée à partir des années normalisées des quatre documents (étape « Documents historiques »). En cas d’égalité d’années entre deux documents, vous saisissez la séquence correcte en cases (étape 1), puis vous générez les options. Une seule option correspond à l’ordre chronologique exact.";
 export const NR_ORDRE_OPTION_A_LABEL = "Option A";
 export const NR_ORDRE_OPTION_B_LABEL = "Option B";
 export const NR_ORDRE_OPTION_C_LABEL = "Option C";
@@ -697,8 +837,11 @@ export function NR_ORDRE_PIN_CELL_ARIA(optionLabel: string, positionOneBased: nu
 
 /** Générateur de suites — étape 1 (séquence correcte). */
 export const NR_ORDRE_SEQ_STEP1_TITLE = "Étape 1 — Saisir la bonne séquence";
+export const NR_ORDRE_SEQ_STEP1_TITLE_AUTO = "Étape 1 — Séquence chronologique retenue";
 export const NR_ORDRE_SEQ_STEP1_DESCRIPTION =
   "Entrez l'ordre chronologique correct des 4 documents. Chaque chiffre de 1 à 4 doit être utilisé une seule fois. L'outil génère ensuite trois distracteurs aléatoires, mélange les quatre options et identifie automatiquement la lettre correspondant à la bonne réponse.";
+export const NR_ORDRE_SEQ_STEP1_DESCRIPTION_AUTO =
+  "Ordre calculé automatiquement à partir des années normalisées des documents (1 à 4 = ordre de saisie dans le dossier). Vous pouvez générer les quatre options dès que les années sont distinctes.";
 export const NR_ORDRE_SEQ_STEP1_HINT =
   "Exemple : si le document 3 vient en premier, suivi du 1, du 4 puis du 2, entrez 3 – 1 – 4 – 2.";
 export const NR_ORDRE_SEQ_VALIDATION_ERROR =
@@ -726,7 +869,10 @@ export const NR_ORDRE_SEQ_RESET = "Saisir une nouvelle séquence";
 
 export const NR_ORDRE_GENERATE_CTA = "Générer les options A B C D";
 export const NR_ORDRE_GENERATE_HELP =
-  "À partir de la séquence saisie à l’étape 1, l’outil choisit trois suites incorrectes (sans remise parmi les permutations possibles), mélange les quatre options sous les lettres A à D et indique le corrigé. Vous pouvez regénérer tant que la séquence est valide, ou repartir de zéro avec « Saisir une nouvelle séquence ».";
+  "À partir de la bonne séquence (calculée depuis les années des documents, ou saisie manuellement en cas d’égalité d’années), l’outil choisit trois suites incorrectes (sans remise parmi les permutations possibles), mélange les quatre options sous les lettres A à D et indique le corrigé. Utilisez « Régénérer les distracteurs » pour conserver la bonne réponse et tirer de nouveaux distracteurs.";
+export const NR_ORDRE_REGENERATE_CTA = "Régénérer les distracteurs";
+export const NR_ORDRE_REGENERATE_HELP =
+  "La bonne séquence et la justification restent les mêmes ; seuls les trois distracteurs et le mélange des lettres A à D changent.";
 export const NR_ORDRE_CORRECT_LABEL = "Corrigé — Lettre exacte";
 export const NR_ORDRE_CORRECT_HELP =
   "Après génération des options, la lettre du corrigé est déterminée automatiquement et affichée à l’étape 2.";
@@ -737,7 +883,29 @@ export const NR_ORDRE_BLOC4_INFO =
 export const NR_ORDRE_GATE_PRE_DOCS =
   "Complétez d'abord les étapes « Paramètres de la tâche » et « Consigne et production attendue » (étapes 2 et 3) pour accéder au dossier documentaire.";
 export const NR_ORDRE_GATE_BLOC3 =
-  "Complétez et verrouillez l'étape « Paramètres de la tâche » (étape 2) pour rédiger la consigne et les options.";
+  "Complétez et verrouillez l'étape « Paramètres de la tâche » (étape 2) pour rédiger la consigne (étape 3).";
+/** Étape 5 ordre chronologique — prérequis étape 3 (thème consigne). */
+export const NR_ORDRE_GATE_BLOC5_PRE_CONSIGNE =
+  "Complétez d'abord l'étape « Consigne et guidage complémentaire » (thème de la consigne obligatoire).";
+/** Étape 5 ordre chronologique — prérequis étape 4 (dossier documentaire rempli). */
+export const NR_ORDRE_GATE_BLOC5_OPTIONS =
+  "Complétez l'étape « Documents historiques » : tous les champs obligatoires pour chaque document avant de générer les options A–D.";
+/** Étape 5 — année normalisée manquante sur au moins un document. */
+export const NR_ORDRE_GATE_BLOC5_ANNEES =
+  "Pour chaque document, renseignez une année valide (année normalisée ou repère temporel permettant de la déduire) à l'étape « Documents historiques ». Le corrigé est calculé à partir de ces années.";
+export const NR_ORDRE_BLOC5_YEARS_READY_BADGE = "Prêt — années distinctes";
+export const NR_ORDRE_BLOC5_AUTO_SEQUENCE_LEAD =
+  "Bon ordre chronologique (documents numérotés 1 à 4 selon l’ordre de saisie) :";
+export const NR_ORDRE_BLOC5_YEAR_TIE_WARNING =
+  "Deux documents ou plus partagent la même année normalisée. Saisissez ci-dessous la bonne séquence chronologique (une case par position), puis générez les options.";
+export const NR_ORDRE_JUSTIFICATION_LABEL = "Justification";
+export function NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(letters: ("A" | "B" | "C" | "D")[]): string {
+  if (letters.length === 0) {
+    return "Année manquante pour au moins un document.";
+  }
+  const joined = letters.join(", ");
+  return `Année manquante ou invalide pour le ou les documents : ${joined}.`;
+}
 export const NR_ORDRE_STEP4_TITLE = "Étape 4 · Dossier documentaire";
 export const NR_ORDRE_STEP4_DESCRIPTION =
   "Ajoutez quatre documents historiques : pour chacun, le titre, le contenu (texte ou image), la source et le type de source. L’élève repère le temps à partir du document.";
@@ -811,6 +979,11 @@ export const NR_LIGNE_TEMPS_DATE_END = "Date de fin";
 export const NR_LIGNE_TEMPS_DATE_CHAINED_HINT =
   "La date de fin d’une période est automatiquement la date de début de la suivante.";
 export const NR_LIGNE_TEMPS_TIMELINE_PREVIEW_TITLE = "Ligne du temps";
+/** Bloc 3 — titre au-dessus de la frise (sans choix du segment). */
+export const NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_LEAD = "Aperçu de la frise";
+/** Bloc 3 — texte sous le titre (segment corrigé à l’étape 5). */
+export const NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_HINT =
+  "Le segment correspondant à la période du document cible est choisi à l’étape « Corrigé et options de réponse » (étape 5).";
 export const NR_LIGNE_TEMPS_SELECT_CORRECT_TITLE = "Bonne réponse sur la frise";
 export const NR_LIGNE_TEMPS_SELECT_CORRECT_HELP =
   "Cliquez sur le segment correspondant à la période des faits du document cible. La lettre du corrigé est enregistrée automatiquement.";
@@ -818,6 +991,38 @@ export const NR_LIGNE_TEMPS_SELECT_CORRECT_MISSING =
   "Sélectionnez le segment correct sur la frise.";
 export const NR_LIGNE_TEMPS_CORRECT_PREFIX = "Lettre correcte : ";
 export const NR_LIGNE_TEMPS_PERIOD_PREFIX = "Période ";
+
+/** Bloc 5 — ligne du temps : corrigé et segment. */
+export const NR_LIGNE_TEMPS_BLOC5_TITLE = "Corrigé et segment sur la frise";
+export const NR_LIGNE_TEMPS_BLOC5_FRISE_RECAP_TITLE = "Récapitulatif de la frise";
+export const NR_LIGNE_TEMPS_BLOC5_INTRO =
+  "Renseignez le segment qui correspond à la période des faits du document cible. Une proposition peut être calculée à partir de l’année normalisée du document (ou de l’année extraite du repère temporel).";
+export const NR_LIGNE_TEMPS_BLOC5_GATE =
+  "Complétez d’abord la frise à l’étape 3 et le document cible à l’étape 4.";
+export const NR_LIGNE_TEMPS_BLOC5_SEGMENTS_LABEL = "Segment correct (réponse)";
+export const NR_LIGNE_TEMPS_BLOC5_SEGMENT_SUMMARY_PREFIX = "Période ";
+export const NR_LIGNE_TEMPS_BLOC5_NO_YEAR =
+  "Aucune année renseignée – veuillez choisir le segment correct manuellement.";
+
+export function NR_LIGNE_TEMPS_BLOC5_SEGMENT_AUTO(
+  letter: string,
+  startYear: number,
+  endYear: number,
+): string {
+  return `Segment proposé automatiquement : ${letter} (${startYear}–${endYear})`;
+}
+
+export function NR_LIGNE_TEMPS_BLOC5_YEAR_OUTSIDE(year: number): string {
+  return `L’année du document (${year}) ne se situe dans aucun segment de la frise. Veuillez vérifier la frise ou choisir un segment manuellement.`;
+}
+
+export function NR_LIGNE_TEMPS_BLOC5_SEGMENT_RADIO_ARIA(
+  letter: string,
+  startYear: number,
+  endYear: number,
+): string {
+  return `Segment ${letter}, années ${startYear} à ${endYear}`;
+}
 
 /** Frise SVG (wizard) — dates incomplètes ou non strictement croissantes. */
 export const NR_LIGNE_TEMPS_TIMELINE_EMPTY =
@@ -835,6 +1040,187 @@ export function NR_LIGNE_TEMPS_TIMELINE_SEGMENT_ARIA(
 ): string {
   return `Sélectionner le segment ${letter} (${startYear}–${endYear}) comme bonne réponse`;
 }
+
+/**
+ * Wizard TAÉ — parcours avant / après (non rédactionnel, OI1 · comportement 1.3).
+ * Spec : `docs/wizard-oi-non-redactionnelle.md`.
+ */
+export const NR_AVANT_APRES_STUDENT_GUIDAGE =
+  "Pour chaque option, comparez quels documents se situent avant le repère commun et lesquels s’y situent après, au regard des dates (ou de l’année extraite du repère temporel) par rapport à l’année du repère.";
+export const NR_AVANT_APRES_GUIDAGE_FORM_LEAD =
+  "Ce guidage est prédéterminé pour ce parcours. Il ne peut pas être modifié et sera affiché aux mêmes endroits que pour les autres tâches (fiche, feuille élève selon les options d’impression).";
+export const NR_AVANT_APRES_GUIDAGE_INFO_MODAL_BODY =
+  "Pour classer des faits avant ou après un repère, le guidage élève est identique pour toutes les tâches de ce type.";
+export const NR_AVANT_APRES_THEME_LABEL = "Thème ou objet d’étude";
+export const NR_AVANT_APRES_THEME_HELP =
+  "Partie éditable de la consigne : les documents et le repère sont insérés automatiquement à la publication.";
+export const NR_AVANT_APRES_THEME_PLACEHOLDER = "objet d’étude ou réalité sociale visée";
+export const NR_AVANT_APRES_REPERE_LABEL = "Libellé du repère temporel";
+export const NR_AVANT_APRES_REPERE_HELP =
+  "Texte affiché comme repère commun au centre du tableau (ex. : une date, un événement).";
+export const NR_AVANT_APRES_REPERE_PLACEHOLDER = "ex. : Déclaration de Balfour";
+export const NR_AVANT_APRES_ANNEE_LABEL = "Année ou période du repère";
+export const NR_AVANT_APRES_ANNEE_HELP =
+  "Une année (AAAA) ou une période fermée (AAAA–AAAA, tiret ou tiret cadratin). Comparaison : strictement avant le début → avant le repère ; strictement après la fin → après ; années entre les deux bornes (incluses) → indiquez avant ou après pour chaque document concerné à l’étape suivante.";
+export const NR_AVANT_APRES_OVERRIDE_SECTION_TITLE = "Repère sur une année ou une période";
+export const NR_AVANT_APRES_OVERRIDE_SECTION_HELP =
+  "Si l’année d’un document coïncide avec l’année pivot, ou se situe dans la période début–fin du repère, indiquez s’il doit être traité comme antérieur ou postérieur pour constituer la partition correcte 2 / 2.";
+export const NR_AVANT_APRES_OVERRIDE_SLOT_LABEL = "Document {{letter}}";
+export const NR_AVANT_APRES_OVERRIDE_AVANT = "Avant le repère";
+export const NR_AVANT_APRES_OVERRIDE_APRES = "Après le repère";
+export const NR_AVANT_APRES_BLOC5_TITLE = "Corrigé et options de réponse (tableau 4 × 3)";
+export const NR_AVANT_APRES_BLOC5_HELP =
+  "Générez quatre options (A à D) : une partition correcte et trois distracteurs. Régénérer produit de nouvelles combinaisons.";
+export const NR_AVANT_APRES_GENERATE_CTA = "Générer les options A à D";
+export const NR_AVANT_APRES_REGENERATE_CTA = "Régénérer les distracteurs";
+export const NR_AVANT_APRES_GATE_PRE_DOCS =
+  "Complétez d’abord les étapes « Paramètres de la tâche » et « Consigne et production attendue » (étapes 2 et 3).";
+export const NR_AVANT_APRES_GATE_BLOC3 = "Renseignez le thème, le repère et l’année du repère.";
+export const NR_AVANT_APRES_GATE_BLOC5 =
+  "Générez les options de réponse une fois les quatre documents complétés (repère temporel et année comparables).";
+export const NR_AVANT_APRES_GEN_ERROR_MISSING_YEAR =
+  "Chaque document doit avoir une année comparable (normalisée ou extraite du repère temporel).";
+export const NR_AVANT_APRES_GEN_ERROR_TIE =
+  "Pour toute année égale à celle du repère, choisissez « Avant » ou « Après » dans la section dédiée.";
+export const NR_AVANT_APRES_GEN_ERROR_PARTITION =
+  "La partition correcte doit comporter exactement deux documents avant le repère et deux après. Ajustez les documents ou les choix d’égalité.";
+export const NR_AVANT_APRES_STUDENT_SHEET_OPTIONS_GROUP_ARIA =
+  "Options de réponse : avant, repère, après";
+export const NR_AVANT_APRES_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
+/** En-têtes du tableau **feuille élève / impression** uniquement (pivot au centre, sans titre au milieu). */
+export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_AVANT = "Avant";
+export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES = "Après";
+/** Libellé masqué visuellement : colonne centrale du tableau (repère affiché dans les lignes). */
+export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR = "Repère de comparaison";
+export const NR_AVANT_APRES_PUBLISHED_INTRO_PREFIX =
+  "Les documents {{doc_A}}, {{doc_B}}, {{doc_C}} et {{doc_D}} font référence à ";
+export const NR_AVANT_APRES_PUBLISHED_INTRO_MIDDLE =
+  "{{theme}}. Les faits qui y sont présentés se déroulent avant ou après {{repere}} ({{annee}}). ";
+export const NR_AVANT_APRES_PUBLISHED_INTRO_SUFFIX =
+  "Quelle lettre (A, B, C ou D) présente les numéros des documents à l’endroit approprié ?";
+/** Wizard Bloc 5 — aperçu enseignant (libellés explicites). */
+export const NR_AVANT_APRES_TABLE_COL_AVANT = "Avant le repère";
+export const NR_AVANT_APRES_TABLE_COL_REPERE = "Repère";
+export const NR_AVANT_APRES_TABLE_COL_APRES = "Après le repère";
+export const NR_AVANT_APRES_JUSTIFICATION_AUTO =
+  "Réponse {{correctLetter}} : documents antérieurs au repère : {{avantDocs}} ; postérieurs : {{apresDocs}}.";
+export const NR_AVANT_APRES_BLOC4_INFO =
+  "Quatre documents sont requis, chacun avec un repère temporel permettant d’en extraire ou de renseigner l’année.";
+export const NR_AVANT_APRES_BLOC4_REMINDER_TITLE = "Rappel — repère et années";
+export const NR_AVANT_APRES_BLOC4_GATE_BLOC3 =
+  "Complétez d’abord le thème, le repère et l’année du repère à l’étape précédente.";
+export const NR_AVANT_APRES_STEP4_TITLE = "Étape 4 · Dossier documentaire";
+export const NR_AVANT_APRES_STEP4_DESCRIPTION =
+  "Complétez les quatre documents (titre, source, contenu, repère temporel, année si utile).";
+export const NR_AVANT_APRES_CONSIGNE_MINISTERIAL_BADGE = "Consigne structurée";
+export const NR_AVANT_APRES_CONSIGNE_INFO_MODAL_BODY =
+  "Le thème, le libellé du repère et l’année du repère structurent la consigne publiée ; le tableau des options est généré à l’étape 5.";
+export const TOAST_TAE_NR_AVANT_APRES_HYDRATE_INVALID =
+  "Les données structurées de cette tâche (avant / après) sont illisibles. Vous pouvez republier depuis le wizard.";
+
+// ---------------------------------------------------------------------------
+// Perspectives OI3 — docs/UI-COPY.md § Parcours perspectives
+// ---------------------------------------------------------------------------
+
+/** Bloc 3 — bouton barre TipTap (modèle souple 3.1, 3.2). */
+export const PERSP_BLOC3_TEMPLATE_BUTTON = "Utiliser un modèle de consigne";
+/** Bloc 3 — label radio type de perspectives (structuré 3.3/3.4, pur 3.5). */
+export const PERSP_BLOC3_TYPE_LABEL = "Type de perspectives";
+export const PERSP_BLOC3_TYPE_ACTEURS = "Acteurs de l'époque";
+export const PERSP_BLOC3_TYPE_HISTORIENS = "Historiens et historiennes";
+export const PERSP_BLOC3_CONTEXTE_LABEL = "Contexte";
+export const PERSP_BLOC3_CONTEXTE_PLACEHOLDER =
+  "Ex\u00a0: sur la lutte du Parti patriote en 1834";
+export const PERSP_BLOC3_CONTEXTE_PLACEHOLDER_COMPARE =
+  "Ex\u00a0: en 1775";
+export const PERSP_BLOC3_CONTEXTE_HINT =
+  "Décrivez brièvement l’enjeu historique et la période.";
+export const PERSP_BLOC4_ACTEUR_LABEL = "Acteur ou historien";
+export const PERSP_BLOC4_ACTEUR_PLACEHOLDER =
+  "Ex\u00a0: François de Lévis, général français";
+export const PERSP_BLOC4_EXTRAIT_LABEL = "Extrait";
+export const PERSP_BLOC4_SOURCE_LABEL = "Source";
+/** Bloc 5 — corrigé intrus (3.5). */
+export const PERSP_BLOC5_INTRUS_LABEL =
+  "Quel est l’acteur ou historien dont le point de vue est différent\u00a0?";
+export const PERSP_BLOC5_DIFFERENCE_LABEL = "Explication de la différence";
+export const PERSP_BLOC5_COMMUN_LABEL = "Point commun des deux autres";
+/** Bloc 3 — choix structure groupé/séparé (v2, 3.3/3.4/3.5). */
+export const PERSP_BLOC3_STRUCTURE_LABEL = "Structure documentaire";
+export const PERSP_BLOC3_STRUCTURE_GROUPE = "Un seul document (perspectives groupées)";
+export const PERSP_BLOC3_STRUCTURE_SEPARE = "Documents distincts";
+/** Modale migration groupé ↔ séparé. */
+export const PERSP_BLOC3_MIGRATION_TITLE = "Modifier la structure du document";
+export const PERSP_BLOC3_MIGRATION_BODY =
+  "Les contenus saisis (extraits, sources, acteurs) seront transférés dans la nouvelle structure.";
+export const PERSP_BLOC3_MIGRATION_SUBTITLE_GROUPE =
+  "Un seul document physique divisé en perspectives côte à côte.";
+export const PERSP_BLOC3_MIGRATION_SUBTITLE_SEPARE =
+  "Documents indépendants, réutilisables dans la banque.";
+export const PERSP_BLOC3_MIGRATION_CONFIRM = "Confirmer";
+export const PERSP_BLOC3_MIGRATION_CANCEL = "Annuler";
+/** Bloc 4 — statuts accordéon perspectives. */
+export const PERSP_BLOC4_STATUS_LOCKED = "Complétez la perspective précédente";
+export const PERSP_BLOC4_STATUS_AVAILABLE = "À compléter";
+export const PERSP_BLOC4_STATUS_OPEN = "En cours";
+export const PERSP_BLOC4_STATUS_COMPLETE = "Complété";
+/** Bloc 3 — modales info consigne par comportement perspectives. */
+export const BLOC3_MODAL_CONSIGNE_33_TITLE = "Consigne — désaccord";
+export const BLOC3_MODAL_CONSIGNE_33_BODY =
+  "La consigne est générée automatiquement selon le gabarit ministériel. Elle présente le document, identifie le type de sources et pose la question de divergence entre les deux points de vue.\n\nIndiquez d'abord si les deux perspectives proviennent du même document physique ou de deux documents distincts — ce choix détermine la formulation de la consigne générée.\n\nLe contexte est obligatoire\u00a0: saisissez une courte description qui complète naturellement « deux points de vue d'acteurs… » (ex\u00a0: « en 1775 », « extraits de pétitions adressées aux autorités britanniques »). Il s'insère automatiquement dans la consigne générée.";
+export const BLOC3_MODAL_CONSIGNE_34_TITLE = "Consigne — accord";
+export const BLOC3_MODAL_CONSIGNE_34_BODY =
+  "La consigne est générée automatiquement selon le gabarit ministériel. Elle présente le document, identifie le type de sources et pose la question de convergence entre les deux points de vue.\n\nIndiquez d'abord si les deux perspectives proviennent du même document physique ou de deux documents distincts — ce choix détermine la formulation de la consigne générée.\n\nLe contexte est obligatoire\u00a0: saisissez une courte description qui complète naturellement « deux points de vue d'acteurs… » (ex\u00a0: « en 1775 », « extraits de pétitions adressées aux autorités britanniques »). Il s'insère automatiquement dans la consigne générée.";
+export const BLOC3_MODAL_CONSIGNE_35_TITLE = "Consigne — trois points de vue";
+export const BLOC3_MODAL_CONSIGNE_35_BODY =
+  "La consigne est entièrement définie par le ministère pour ce comportement — elle ne peut pas être modifiée. Ce gabarit standardisé demande à l'élève d'identifier lequel des trois points de vue se distingue des deux autres, puis de justifier sa réponse par comparaison.\n\nVotre seule saisie ici est le contexte\u00a0: décrivez l'enjeu historique et la période concernée (ex\u00a0: « concernant la crise agricole au Bas-Canada au 19e siècle »). Ce contexte s'insère automatiquement dans la formule pour ancrer la question dans votre situation d'apprentissage.\n\nÀ l'étape suivante, vous saisirez les trois perspectives — regroupées dans un seul document ou réparties en documents distincts selon votre choix — chacune associée à son acteur ou historien, son extrait et sa source.";
+/** Bloc 3 — OI6·6.3 template pur (enjeu). */
+export const BLOC3_OI6_ENJEU_LABEL = "Réalité historique";
+export const BLOC3_OI6_ENJEU_PLACEHOLDER =
+  "Ex\u00a0: le mode de vie des Premières Nations";
+export const BLOC3_OI6_ENJEU_HINT =
+  "Décrivez la réalité historique dont l'élève devra évaluer le changement ou la continuité.";
+export const BLOC3_MODAL_CONSIGNE_63_TITLE = "Consigne — changement ou continuité";
+export const BLOC3_MODAL_CONSIGNE_63_BODY =
+  "La consigne est entièrement définie par le ministère pour ce comportement — elle ne peut pas être modifiée. Ce gabarit demande à l'élève de déterminer si la réalité historique présentée constitue un changement ou une continuité, de justifier sa réponse avec des faits précis et d'indiquer un repère de temps.\n\nVotre seule saisie ici est la réalité historique concernée (ex\u00a0: « le mode de vie des Premières Nations »). Elle s'insère automatiquement dans la formule ministérielle.\n\nÀ l'étape suivante, vous saisirez les deux états de cette réalité — avant et après — pour que l'élève puisse les comparer.";
+/** Bloc 3 — OI7·7.1 template pur (causalité). */
+export const BLOC3_OI7_ENJEU_GLOBAL_LABEL = "Réalité historique";
+export const BLOC3_OI7_ENJEU_GLOBAL_PLACEHOLDER =
+  "La réalité historique que l'élève devra expliquer";
+export const BLOC3_OI7_ENJEU_GLOBAL_HINT =
+  "Formulez une réalité qui suit naturellement « Expliquez comment ».";
+export const BLOC3_OI7_ELEMENT_LABEL = "Élément";
+export const BLOC3_OI7_ELEMENT_PLACEHOLDER_1 =
+  "Premier élément à préciser et à lier";
+export const BLOC3_OI7_ELEMENT_PLACEHOLDER_2 =
+  "Deuxième élément à préciser et à lier";
+export const BLOC3_OI7_ELEMENT_PLACEHOLDER_3 =
+  "Troisième élément à préciser et à lier";
+export const BLOC3_MODAL_CONSIGNE_71_TITLE = "Consigne — liens de causalité";
+export const BLOC3_MODAL_CONSIGNE_71_BODY =
+  "La consigne est entièrement définie par le ministère pour ce comportement — elle ne peut pas être modifiée. Ce gabarit demande à l'élève d'expliquer comment trois éléments historiques s'enchaînent et se causent mutuellement.\n\nSaisissez la réalité historique et les trois éléments à lier causalement. Ils s'insèrent automatiquement dans la formule ministérielle.\n\nChacun des trois documents saisis à l'étape suivante doit fournir la matière nécessaire pour l'un des trois éléments.";
+/** Bloc 3 — gabarit / consigne libre (OI7). */
+export const BLOC3_GABARIT_LABEL = "Gabarit de consigne";
+export const BLOC3_CONSIGNE_LIBRE_LABEL = "Consigne libre";
+export const BLOC3_REDIGER_LIBREMENT = "Rédiger librement";
+export const BLOC3_REVENIR_GABARIT = "Revenir au gabarit";
+export const BLOC3_COMPOSANTES_LABEL = "Composantes de la consigne";
+export const BLOC3_COMPOSANTES_DISABLED = "Composantes de la consigne — désactivées";
+export const BLOC3_BADGE_GABARIT = "Gabarit recommandé";
+export const BLOC4_MOMENTS_STRUCTURE_GROUPE =
+  "Un seul document (objets comparés groupés)";
+export const BLOC4_MOMENTS_STRUCTURE_SEPARE = "Documents distincts";
+/** Bloc 4 — Moments (OI6). */
+export const BLOC4_MOMENTS_TITRE_LABEL = "Titre";
+export const BLOC4_MOMENTS_TITRE_PLACEHOLDER =
+  "Ex\u00a0: Structure politique après Utrecht";
+export const BLOC4_MOMENTS_TITRE_HINT =
+  "Donnez un titre pour orienter l'élève — avec ou sans repère temporel.";
+export const BLOC4_MOMENTS_ETAT_A = "État A";
+export const BLOC4_MOMENTS_ETAT_B = "État B";
+export const PERSP_BLOC4_TITRE_LABEL = "Titre";
+export const PERSP_BLOC4_TITRE_PLACEHOLDER =
+  "Ex\u00a0: La capitulation de Montréal, 1760";
 
 /** Grille d’évaluation — `outil_evaluation` sans entrée dans `grilles-evaluation.json` (`docs/UI-COPY.md`). */
 export function copyGrilleAbsentePourOutil(outilId: string): string {

@@ -9,6 +9,8 @@ type Props = {
   showNext: boolean;
   onNext: () => void;
   nextDisabled: boolean;
+  /** Masquer le bouton brouillon (ex. édition document). */
+  showDraft?: boolean;
   onSaveDraft: () => void;
   draftSaving: boolean;
   /** Étape confirmation — soumission finale. */
@@ -27,6 +29,7 @@ export function DocumentWizardNavFooter({
   showNext,
   onNext,
   nextDisabled,
+  showDraft = true,
   onSaveDraft,
   draftSaving,
   showSubmit,
@@ -74,21 +77,23 @@ export function DocumentWizardNavFooter({
         ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
-        <button
-          type="button"
-          disabled={draftSaving}
-          onClick={onSaveDraft}
-          aria-busy={draftSaving}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <span
-            className={`material-symbols-outlined text-lg ${draftSaving ? "animate-pulse" : ""}`}
-            aria-hidden="true"
+        {showDraft ? (
+          <button
+            type="button"
+            disabled={draftSaving}
+            onClick={onSaveDraft}
+            aria-busy={draftSaving}
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-50"
           >
-            save
-          </span>
-          Sauvegarder le brouillon
-        </button>
+            <span
+              className={`material-symbols-outlined text-lg ${draftSaving ? "animate-pulse" : ""}`}
+              aria-hidden="true"
+            >
+              save
+            </span>
+            Sauvegarder le brouillon
+          </button>
+        ) : null}
       </div>
     </div>
   );

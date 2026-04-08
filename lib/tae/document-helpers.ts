@@ -1,6 +1,7 @@
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
+import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
 
 /** BLOC4-DOCUMENTS.md §14 — état sérialisable (pas de `File` ; prévisualisation = URL blob ou publique). */
 export type DocumentSlotMode = "idle" | "create" | "reuse";
@@ -52,6 +53,8 @@ export type DocumentSlotData = {
   repere_temporel: string;
   /** Année pour comparaisons automatiques ; prioritaire sur l’extraction depuis `repere_temporel`. */
   annee_normalisee: number | null;
+  /** Sous-type didactique — documents iconographiques uniquement. */
+  type_iconographique: DocumentTypeIconoSlug | null;
 };
 
 export type SlotUiStatus = "empty" | "in_progress" | "complete";
@@ -78,6 +81,7 @@ export function emptyDocumentSlot(): DocumentSlotData {
     imageUploadMeta: null,
     repere_temporel: "",
     annee_normalisee: null,
+    type_iconographique: null,
   };
 }
 

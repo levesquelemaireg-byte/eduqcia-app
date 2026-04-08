@@ -29,6 +29,7 @@ import {
   DOCUMENT_FICHE_SOURCE,
   DOCUMENT_FICHE_SOURCE_TYPE,
   DOCUMENT_FICHE_TYPE_DOCUMENT,
+  DOCUMENT_FICHE_TYPE_ICONO_LINE,
   DOCUMENT_WIZARD_PDF_LEGACY_PREVIEW,
   FICHE_SECTION_TITLE_DOCUMENT,
 } from "@/lib/ui/ui-copy";
@@ -52,6 +53,8 @@ export type DocumentFicheReadProps = {
   imageUrl: string | null;
   legendText: string;
   legendPosition: DocumentLegendPosition | null;
+  /** Libellé (ex. Carte) — document iconographique ; optionnel. */
+  iconoCategoryLabel?: string | null;
 };
 
 function MetaRow({ label, value }: { label: string; value: string }) {
@@ -81,6 +84,7 @@ export function DocumentFicheRead(props: DocumentFicheReadProps) {
     imageUrl,
     legendText,
     legendPosition,
+    iconoCategoryLabel,
   } = props;
 
   const typeLabel = docType === "textuel" ? DOCUMENT_MODULE_TYPE_TEXT : DOCUMENT_MODULE_TYPE_IMAGE;
@@ -119,6 +123,12 @@ export function DocumentFicheRead(props: DocumentFicheReadProps) {
           <h1 className="mt-2 text-xl font-bold tracking-tight text-deep sm:text-2xl">{titre}</h1>
           <div className="mt-3 flex flex-wrap gap-2">
             <MetaPill icon="category" label={`${DOCUMENT_FICHE_TYPE_DOCUMENT} — ${typeLabel}`} />
+            {docType === "iconographique" && iconoCategoryLabel ? (
+              <MetaPill
+                icon="style"
+                label={`${DOCUMENT_FICHE_TYPE_ICONO_LINE} : ${iconoCategoryLabel}`}
+              />
+            ) : null}
             <MetaPill
               icon="bookmark"
               label={`${DOCUMENT_FICHE_SOURCE_TYPE} — ${sourceTypeLabel}`}

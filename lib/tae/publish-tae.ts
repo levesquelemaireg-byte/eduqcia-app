@@ -15,15 +15,18 @@ import {
   resolveConnaissanceIds,
 } from "@/lib/tae/publish-tae-lookups";
 import { classifyPublishRpcError } from "@/lib/tae/publish-tae-rpc-errors";
-import type { PublishTaeResult } from "@/lib/tae/publish-tae-types";
+import type { PublishTaeResult, TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 import { isWizardPublishReady } from "@/lib/tae/wizard-publish-guards";
+import { detectVersionTrigger } from "@/lib/tae/publish-tae-version";
 
 export type {
   PublishTaeFailureCode,
   PublishTaeResult,
   PublishTaeRpcPayload,
+  TaeVersionSnapshot,
 } from "@/lib/tae/publish-tae-types";
+export { detectVersionTrigger } from "@/lib/tae/publish-tae-version";
 
 /**
  * Crée la TAÉ publiée et les liaisons documents dans une transaction Postgres (RPC).
@@ -77,6 +80,7 @@ export async function publishTaeFromFormState(
     ok: true,
     taeId,
     unpublishedDocumentsCreated: payload.documents_new.length > 0,
+    wasMajorBump: false,
   };
 }
 
@@ -116,6 +120,34 @@ export async function updateTaeFromFormState(
 
   const payload = built;
 
+  // Snapshot des champs majeurs avant mise à jour — pour calculer wasMajorBump
+  let snapshot: TaeVersionSnapshot | null = null;
+  const { data: taeRow } = await supabase
+    .from("tae")
+    .select("oi_id, comportement_id, cd_id, connaissances_ids, niveau_id, discipline_id")
+    .eq("id", taeId)
+    .single();
+  const { data: docRows } = await supabase
+    .from("tae_documents")
+    .select("document_id")
+    .eq("tae_id", taeId);
+  if (taeRow) {
+    snapshot = {
+      oi_id: taeRow.oi_id ?? null,
+      comportement_id: taeRow.comportement_id ?? null,
+      cd_id: taeRow.cd_id ?? null,
+      connaissances_ids: taeRow.connaissances_ids ?? [],
+      niveau_id: taeRow.niveau_id ?? null,
+      discipline_id: taeRow.discipline_id ?? null,
+      documentIds: (docRows ?? []).map((r) => r.document_id),
+      // Champs frontend — non utilisés par detectVersionTrigger (backend path)
+      niveauCode: "",
+      disciplineCode: "",
+      connRowIds: [],
+      cdCritereId: null,
+    };
+  }
+
   const { data: outId, error: rpcErr } = await supabase.rpc("update_tae_transaction", {
     p_tae_id: taeId,
     p_payload: payload as unknown as Json,
@@ -130,9 +162,15 @@ export async function updateTaeFromFormState(
     return { ok: false, code: "tae_insert" };
   }
 
+  const wasMajorBump =
+    snapshot !== null
+      ? detectVersionTrigger(snapshot, payload) === "major_bump"
+      : false;
+
   return {
     ok: true,
     taeId: outId,
     unpublishedDocumentsCreated: payload.documents_new.length > 0,
+    wasMajorBump,
   };
 }

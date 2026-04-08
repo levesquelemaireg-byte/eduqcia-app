@@ -34,6 +34,7 @@ import {
   ligneDuTempsRibbonFriseLayoutFromDates,
   ligneDuTempsRibbonSegmentFillU,
 } from "@/lib/tae/non-redaction/ligne-du-temps-ribbon-layout";
+import { prepareAvantApresConsigneForTeacherDisplay } from "@/lib/tae/non-redaction/avant-apres-payload";
 import { prepareOrdreChronologiqueConsigneForTeacherDisplay } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 
 export type { LigneDuTempsSegmentCount };
@@ -162,8 +163,16 @@ export function isLigneDuTempsCorrectLetterValid(p: LigneDuTempsPayload): boolea
   return letters.includes(p.correctLetter);
 }
 
+/**
+ * Étape 3 wizard : consigne + frise (dates aux séparateurs). Le **segment corrigé** se choisit à l’**étape 5** (`isLigneDuTempsStep5SegmentComplete`).
+ */
 export function isLigneDuTempsStep3Complete(p: LigneDuTempsPayload): boolean {
-  return ligneDuTempsBoundariesNumericComplete(p) && isLigneDuTempsCorrectLetterValid(p);
+  return ligneDuTempsBoundariesNumericComplete(p);
+}
+
+/** Étape 5 wizard : lettre du segment correct (corrigé questionnaire). */
+export function isLigneDuTempsStep5SegmentComplete(p: LigneDuTempsPayload): boolean {
+  return isLigneDuTempsCorrectLetterValid(p);
 }
 
 /** Intro HTML — consigne fixe ; `{{doc_A}}` résolu à l’affichage / impression. */
@@ -298,9 +307,11 @@ export function prepareLigneDuTempsConsigneForTeacherDisplay(consigne: string): 
   );
 }
 
-/** Chaîne affichée fiche / sommaire : applique ordre puis ligne du temps. */
+/** Chaîne affichée fiche / sommaire : applique ordre puis ligne du temps puis avant / après. */
 export function prepareNonRedactionConsigneForTeacherDisplay(consigne: string): string {
-  return prepareLigneDuTempsConsigneForTeacherDisplay(
-    prepareOrdreChronologiqueConsigneForTeacherDisplay(consigne),
+  return prepareAvantApresConsigneForTeacherDisplay(
+    prepareLigneDuTempsConsigneForTeacherDisplay(
+      prepareOrdreChronologiqueConsigneForTeacherDisplay(consigne),
+    ),
   );
 }

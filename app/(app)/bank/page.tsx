@@ -3,7 +3,10 @@ import { BankDocumentsPanel } from "@/components/bank/BankDocumentsPanel";
 import { BankEvaluationsPanel } from "@/components/bank/BankEvaluationsPanel";
 import { BankOnglets } from "@/components/bank/BankOnglets";
 import { BankTasksPanel } from "@/components/bank/BankTasksPanel";
-import type { BankDocumentFilters } from "@/lib/queries/bank-documents";
+import {
+  parseBankDocumentIconoCategories,
+  type BankDocumentFilters,
+} from "@/lib/queries/bank-documents";
 import {
   parseBankListPage,
   parseBankOnglet,
@@ -38,6 +41,8 @@ export default async function BankPage({ searchParams }: PageProps) {
   const niv = Number(sp.niveau);
   if (Number.isFinite(niv) && niv > 0) docFilters.niveauId = niv;
   if (sp.dtype === "textuel" || sp.dtype === "iconographique") docFilters.docType = sp.dtype;
+  const icats = parseBankDocumentIconoCategories(sp);
+  if (icats.length > 0) docFilters.iconoCategories = icats;
 
   const evalQ = typeof sp.q === "string" ? sp.q : "";
 

@@ -14,6 +14,13 @@ import {
   type AspectSocieteKey,
   type RedactionSlice,
 } from "@/lib/tae/redaction-helpers";
+import type {
+  IntrusPayload,
+  MomentData,
+  PerspectiveData,
+  PerspectiveLetter,
+} from "@/lib/tae/oi-perspectives/perspectives-types";
+import type { AvantApresPayload } from "@/lib/tae/non-redaction/avant-apres-payload";
 import type { LigneDuTempsPayload } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import type { OrdreChronologiquePayload } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 
@@ -52,10 +59,23 @@ export type ConceptionSlice = {
 export type Bloc3Slice = {
   consigne: string;
   guidage: string;
+  perspectivesMode: "groupe" | "separe" | null;
+  perspectivesType: "acteurs" | "historiens";
+  perspectivesContexte: string;
+  oi6Enjeu: string;
+  oi7EnjeuGlobal: string;
+  oi7Element1: string;
+  oi7Element2: string;
+  oi7Element3: string;
+  consigneMode: "gabarit" | "personnalisee";
 };
 
 export type Bloc4Slice = {
   documents: Partial<Record<DocumentSlotId, DocumentSlotData>>;
+  perspectives: PerspectiveData[] | null;
+  perspectivesTitre: string;
+  moments: MomentData[] | null;
+  momentsTitre: string;
 };
 
 /**
@@ -64,11 +84,13 @@ export type Bloc4Slice = {
 export type NonRedactionData =
   | { type: "placeholder" }
   | { type: "ordre-chronologique"; payload: OrdreChronologiquePayload }
-  | { type: "ligne-du-temps"; payload: LigneDuTempsPayload };
+  | { type: "ligne-du-temps"; payload: LigneDuTempsPayload }
+  | { type: "avant-apres"; payload: AvantApresPayload };
 
 export type Bloc5Slice = {
   corrige: string;
   nonRedaction: NonRedactionData | null;
+  intrus: IntrusPayload | null;
 };
 
 export type Bloc6Slice = {
@@ -130,7 +152,24 @@ export type TaeFormAction =
   | { type: "CLEAR_CONNAISSANCES" }
   | { type: "REMOVE_CONNAISSANCE_BY_ROW_ID"; rowId: string }
   | { type: "NON_REDACTION_PATCH_ORDRE_CHRONO"; patch: Partial<OrdreChronologiquePayload> }
-  | { type: "NON_REDACTION_PATCH_LIGNE_TEMPS"; patch: Partial<LigneDuTempsPayload> };
+  | { type: "NON_REDACTION_PATCH_LIGNE_TEMPS"; patch: Partial<LigneDuTempsPayload> }
+  | { type: "NON_REDACTION_PATCH_AVANT_APRES"; patch: Partial<AvantApresPayload> }
+  | { type: "SET_PERSPECTIVES_MODE_WITH_MIGRATION"; value: "groupe" | "separe"; count: 2 | 3 }
+  | { type: "UPDATE_PERSPECTIVE"; index: number; patch: Partial<PerspectiveData> }
+  | { type: "SET_PERSPECTIVES_TYPE"; value: "acteurs" | "historiens" }
+  | { type: "SET_PERSPECTIVES_CONTEXTE"; value: string }
+  | { type: "SET_PERSPECTIVES_TITRE"; value: string }
+  | { type: "SET_OI6_ENJEU"; value: string }
+  | { type: "SET_OI7_ENJEU_GLOBAL"; value: string }
+  | { type: "SET_OI7_ELEMENT_1"; value: string }
+  | { type: "SET_OI7_ELEMENT_2"; value: string }
+  | { type: "SET_OI7_ELEMENT_3"; value: string }
+  | { type: "SET_CONSIGNE_MODE"; value: "gabarit" | "personnalisee" }
+  | { type: "UPDATE_MOMENT"; index: number; patch: Partial<MomentData> }
+  | { type: "SET_MOMENTS_TITRE"; value: string }
+  | { type: "SET_INTRUS_LETTER"; value: PerspectiveLetter | "" }
+  | { type: "SET_INTRUS_EXPLICATION"; value: string }
+  | { type: "SET_INTRUS_POINT_COMMUN"; value: string };
 
 export const initialBlueprint: BlueprintSlice = {
   niveau: "",
@@ -152,11 +191,21 @@ export const initialConception: ConceptionSlice = {
 export const initialBloc3: Bloc3Slice = {
   consigne: "",
   guidage: "",
+  perspectivesMode: null,
+  perspectivesType: "acteurs",
+  perspectivesContexte: "",
+  oi6Enjeu: "",
+  oi7EnjeuGlobal: "",
+  oi7Element1: "",
+  oi7Element2: "",
+  oi7Element3: "",
+  consigneMode: "gabarit",
 };
 
 export const initialBloc5: Bloc5Slice = {
   corrige: "",
   nonRedaction: null,
+  intrus: null,
 };
 
 export const initialBloc7: Bloc7Slice = {
@@ -169,7 +218,7 @@ export const initialTaeFormState: TaeFormState = {
   bloc1: initialConception,
   bloc2: initialBlueprint,
   bloc3: initialBloc3,
-  bloc4: { documents: {} },
+  bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
   bloc5: initialBloc5,
   bloc6: { cd: initialCdFormSlice },
   bloc7: initialBloc7,

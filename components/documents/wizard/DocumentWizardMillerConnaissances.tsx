@@ -145,7 +145,7 @@ function DocumentWizardMillerConnaissancesLoaded({
 }
 
 /**
- * Colonnes Miller — même module que l’étape 6 du wizard « Créer une tâche » (`Bloc6ConnaissancesRelatives`).
+ * Colonnes Miller — même module que l’étape 7 du wizard « Créer une tâche » (`Bloc7Indexation`).
  */
 export function DocumentWizardMillerConnaissances({ niveauCode, disciplineCode }: Props) {
   const { setValue } = useFormContext<AutonomousDocumentFormValues>();

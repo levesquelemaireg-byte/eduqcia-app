@@ -7,12 +7,13 @@ import { Bloc2ParametresTache } from "@/components/tae/TaeForm/Bloc2ParametresTa
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneProduction";
 import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4DocumentsHistoriques";
 import { Bloc5CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc5CompetenceDisciplinaire";
-import { Bloc6ConnaissancesRelatives } from "@/components/tae/TaeForm/Bloc6ConnaissancesRelatives";
+import { Bloc7Indexation } from "@/components/tae/TaeForm/Bloc7Indexation";
 import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
 import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
 import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
 import { FicheSommaireColumn } from "@/components/tae/TaeForm/sommaire";
 import { Stepper } from "@/components/tae/TaeForm/Stepper";
+import { StepHeader } from "@/components/tae/TaeForm/StepHeader";
 import { StepperNavFooter } from "@/components/tae/TaeForm/StepperNavFooter";
 import { WizardDraftBanners } from "@/components/tae/TaeForm/WizardDraftBanners";
 import { WizardDraftObsoleteToast } from "@/components/tae/TaeForm/WizardDraftObsoleteToast";
@@ -28,11 +29,15 @@ import {
 import { TAE_FORM_STEPS } from "@/components/tae/TaeForm/step-meta";
 import { resolveWizardBlocComponent } from "@/components/tae/TaeForm/wizardBlocResolver";
 import type { WizardFichePreviewMeta } from "@/lib/tae/fiche-helpers";
+import type { TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
 import {
+  isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
 import {
+  NR_AVANT_APRES_STEP4_DESCRIPTION,
+  NR_AVANT_APRES_STEP4_TITLE,
   NR_LIGNE_TEMPS_STEP4_DESCRIPTION,
   NR_LIGNE_TEMPS_STEP4_TITLE,
   NR_ORDRE_STEP4_DESCRIPTION,
@@ -47,7 +52,7 @@ const BLOC_COMPONENTS = [
   Bloc4DocumentsHistoriques,
   Bloc5,
   Bloc5CompetenceDisciplinaire,
-  Bloc6ConnaissancesRelatives,
+  Bloc7Indexation,
 ] as const satisfies readonly ComponentType[];
 
 type TaeFormInnerProps = {
@@ -80,7 +85,13 @@ function TaeFormInner({
             label: NR_LIGNE_TEMPS_STEP4_TITLE,
             description: NR_LIGNE_TEMPS_STEP4_DESCRIPTION,
           }
-        : stepBase;
+        : isActiveAvantApresVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+          ? {
+              ...stepBase,
+              label: NR_AVANT_APRES_STEP4_TITLE,
+              description: NR_AVANT_APRES_STEP4_DESCRIPTION,
+            }
+          : stepBase;
   const blocType: ComponentType =
     state.currentStep === TAE_REDACTION_STEP_INDEX || state.currentStep === TAE_DOCUMENTS_STEP_INDEX
       ? (resolveWizardBlocComponent(state.currentStep, state) ?? BLOC_COMPONENTS[state.currentStep])
@@ -127,17 +138,12 @@ function TaeFormInner({
                 </p>
               </div>
             ) : (
-              <>
-                <h2
-                  id="tae-step-heading"
-                  className="text-xl font-semibold tracking-tight text-deep"
-                >
-                  {step.label}
-                </h2>
-                <p className="mt-2 max-w-none text-sm leading-relaxed text-muted">
-                  {step.description}
-                </p>
-              </>
+              <StepHeader
+                stepLabel={step.label}
+                stepIndex={state.currentStep}
+                comportementId={state.bloc2.comportementId || null}
+                defaultDescription={step.description}
+              />
             )}
 
             <div className="mt-6">{createElement(blocType)}</div>
@@ -174,6 +180,8 @@ type TaeFormProps = {
   serverInitialState?: TaeFormState | null;
   /** Si défini, enregistrement via `update_tae_transaction`. */
   editingTaeId?: string | null;
+  /** Snapshot des champs majeurs — détection version avant soumission (`/questions/[id]/edit`). */
+  versionSnapshot?: TaeVersionSnapshot | null;
   /** `auth.users.id` — recherche collaborateurs Bloc 1. */
   currentUserId?: string | null;
   /** En-tête page (titre, intro) — rendu en tête de colonne édition. */
@@ -187,6 +195,7 @@ export function TaeForm({
   serverDraftObsolete = false,
   serverInitialState = null,
   editingTaeId = null,
+  versionSnapshot = null,
   currentUserId = null,
   children,
   wizardPreviewMeta,
@@ -200,6 +209,7 @@ export function TaeForm({
         editingTaeId: editingTaeId ?? null,
         persistSessionDraft,
         currentUserId: currentUserId ?? null,
+        versionSnapshot: versionSnapshot ?? null,
       }}
     >
       <TaeFormProvider

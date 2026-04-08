@@ -7,6 +7,7 @@ import {
   PrintableGrilleSection,
   PrintableHtml,
 } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
+import { AvantApresPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/AvantApresPrintableQuestionnaireCore";
 import { LigneDuTempsPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore";
 import { OrdreChronologiquePrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore";
 import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
@@ -19,6 +20,7 @@ import {
   rewriteTaeHtmlDocRefsForEvaluationPrint,
 } from "@/lib/evaluations/evaluation-print-doc-map";
 import { shouldShowGuidageOnStudentSheet } from "@/lib/tae/consigne-helpers";
+import { parseAvantApresConsigneForStudentPrint } from "@/lib/tae/non-redaction/avant-apres-payload";
 import { parseLigneDuTempsConsigneForStudentPrint } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import type { TaeFicheData } from "@/lib/types/fiche";
@@ -44,7 +46,9 @@ function PrintableEvaluationQuestionBlock({
   const guidageHtml = rewriteTaeHtmlDocRefsForEvaluationPrint(tae.guidage, taeIndex, fiches);
   const ordreChronoAnchored = parseOrdreChronologiqueConsigneForStudentPrint(consigneHtml) !== null;
   const ligneTempsAnchored = parseLigneDuTempsConsigneForStudentPrint(consigneHtml) !== null;
-  const structuredNonRedactionQuestionnaire = ordreChronoAnchored || ligneTempsAnchored;
+  const avantApresAnchored = parseAvantApresConsigneForStudentPrint(consigneHtml) !== null;
+  const structuredNonRedactionQuestionnaire =
+    ordreChronoAnchored || ligneTempsAnchored || avantApresAnchored;
 
   return (
     <div className={cn(styles.postDocumentsPrintGroup, "print:break-inside-avoid")}>
@@ -64,6 +68,13 @@ function PrintableEvaluationQuestionBlock({
           />
         ) : ligneTempsAnchored ? (
           <LigneDuTempsPrintableQuestionnaireCore
+            consigneHtml={consigneHtml}
+            guidageHtml={guidageHtml}
+            documentSlotCount={tae.documents.length}
+            showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
+          />
+        ) : avantApresAnchored ? (
+          <AvantApresPrintableQuestionnaireCore
             consigneHtml={consigneHtml}
             guidageHtml={guidageHtml}
             documentSlotCount={tae.documents.length}

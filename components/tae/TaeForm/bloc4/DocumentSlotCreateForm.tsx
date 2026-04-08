@@ -2,9 +2,12 @@
 
 import type { RefObject } from "react";
 import { useId } from "react";
-import { DocumentSourceRichEditor } from "@/components/documents/DocumentSourceRichEditor";
+import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { DocumentLegendPositionGrid } from "@/components/documents/DocumentLegendPositionGrid";
 import { RequiredMark } from "@/components/ui/RequiredMark";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { Textarea } from "@/components/ui/Textarea";
 import { DocumentSlotImageField } from "@/components/tae/TaeForm/bloc4/DocumentSlotImageField";
 import { DocumentSlotLegendBlock } from "@/components/tae/TaeForm/bloc4/DocumentSlotLegendBlock";
 import { DocumentSlotSourceTypeFieldset } from "@/components/tae/TaeForm/bloc4/DocumentSlotSourceTypeFieldset";
@@ -18,8 +21,6 @@ import {
   DOCUMENT_MODULE_TYPE_TEXT,
   DOCUMENT_WIZARD_TYPE_DOC_LABEL,
 } from "@/lib/ui/ui-copy";
-import { cn } from "@/lib/utils/cn";
-
 type Props = {
   slot: DocumentSlotData;
   letter: string;
@@ -48,7 +49,29 @@ export function DocumentSlotCreateForm({
   legendError = null,
 }: Props) {
   const typeDocGroupId = useId();
+  const iconoCategoryId = useId();
   const sourceHintId = `${sourceId}-hint`;
+
+  const docTypeOptions = [
+    {
+      value: "textuel",
+      label: DOCUMENT_MODULE_TYPE_TEXT,
+      icon: (
+        <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
+          docs
+        </span>
+      ),
+    },
+    {
+      value: "iconographique",
+      label: DOCUMENT_MODULE_TYPE_IMAGE,
+      icon: (
+        <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
+          image
+        </span>
+      ),
+    },
+  ] as const;
 
   return (
     <div className="space-y-5 px-4 pb-5 pt-4 sm:px-5">
@@ -56,38 +79,18 @@ export function DocumentSlotCreateForm({
         <p id={typeDocGroupId} className="text-sm font-semibold text-deep">
           {DOCUMENT_WIZARD_TYPE_DOC_LABEL} <RequiredMark />
         </p>
-        <div className="flex flex-wrap gap-2" role="group" aria-labelledby={typeDocGroupId}>
-          <button
-            type="button"
-            onClick={() => patch({ type: "textuel", printImpressionScale: 1 })}
-            className={cn(
-              "flex min-h-11 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ring-1 transition-colors",
-              slot.type === "textuel"
-                ? "bg-accent/10 text-accent ring-accent/30"
-                : "bg-panel text-muted ring-border/60 hover:ring-accent/35",
-            )}
-          >
-            <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-              docs
-            </span>
-            {DOCUMENT_MODULE_TYPE_TEXT}
-          </button>
-          <button
-            type="button"
-            onClick={() => patch({ type: "iconographique" })}
-            className={cn(
-              "flex min-h-11 items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium ring-1 transition-colors",
-              slot.type === "iconographique"
-                ? "bg-accent/10 text-accent ring-accent/30"
-                : "bg-panel text-muted ring-border/60 hover:ring-accent/35",
-            )}
-          >
-            <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-              image
-            </span>
-            {DOCUMENT_MODULE_TYPE_IMAGE}
-          </button>
-        </div>
+        <SegmentedControl
+          aria-labelledby={typeDocGroupId}
+          value={slot.type}
+          onChange={(v) => {
+            if (v === "textuel") {
+              patch({ type: "textuel", printImpressionScale: 1, type_iconographique: null });
+            } else if (v === "iconographique") {
+              patch({ type: "iconographique" });
+            }
+          }}
+          options={[...docTypeOptions]}
+        />
       </div>
 
       <div className="space-y-2">
@@ -117,17 +120,21 @@ export function DocumentSlotCreateForm({
           <label htmlFor={contenuId} className="text-sm font-semibold text-deep">
             Contenu (texte) <RequiredMark />
           </label>
-          <textarea
+          <Textarea
             id={contenuId}
             value={slot.contenu}
             onChange={(e) => patch({ contenu: e.target.value })}
             placeholder="Saisir le contenu textuel du document…"
             rows={6}
-            className="w-full resize-y rounded-lg border border-border bg-panel px-3 py-2.5 text-sm text-deep placeholder:text-muted"
           />
         </div>
       ) : (
         <div className="space-y-4">
+          <DocumentTypeIconographiqueSelect
+            id={iconoCategoryId}
+            value={slot.type_iconographique ?? ""}
+            onChange={(v) => patch({ type_iconographique: v === "" ? null : v })}
+          />
           <div className="space-y-2">
             <p className="text-sm font-semibold text-deep">
               Image du document <RequiredMark />
@@ -160,10 +167,13 @@ export function DocumentSlotCreateForm({
         <p id={sourceHintId} className="text-xs text-muted">
           {DOCUMENT_MODULE_SOURCE_PLACEHOLDER} {DOCUMENT_MODULE_SOURCE_FORMAT_HINT}
         </p>
-        <DocumentSourceRichEditor
+        <RichTextEditor
           id={sourceId}
+          instanceId={sourceId}
           value={slot.source_citation}
           onChange={(html) => patch({ source_citation: html })}
+          minHeight={88}
+          toolbarAriaLabel="Mise en forme de la source"
           aria-describedby={sourceHintId}
         />
       </div>

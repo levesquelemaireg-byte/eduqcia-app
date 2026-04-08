@@ -1,6 +1,6 @@
 "use client";
 
-import { SimpleRichEditor } from "@/components/tae/TaeForm/tiptap/SimpleRichEditor";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 
@@ -39,12 +39,14 @@ export function SectionGuidage({ value, onChange, onInfoClick }: Props) {
         Ajoutez, au besoin, des indications supplémentaires pour soutenir l&apos;élève dans la
         compréhension de la tâche.
       </p>
-      <SimpleRichEditor
+      <RichTextEditor
         id="guidage"
+        instanceId="guidage"
+        className="mt-2"
         value={value}
         onChange={onChange}
         autosaveKey="eduqcia-tae-guidage-new"
-        minHeightClass="min-h-[88px]"
+        minHeight={88}
       />
     </section>
   );

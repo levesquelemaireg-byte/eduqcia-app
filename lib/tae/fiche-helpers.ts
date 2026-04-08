@@ -16,6 +16,12 @@ import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import { sortAuteursByFamilyName } from "@/lib/tae/auteur-display-sort";
 import {
+  buildAvantApresConsigneHtml,
+  buildAvantApresCorrigeHtml,
+  buildAvantApresGuidageHtml,
+  normalizeAvantApresPayload,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
+import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
   buildLigneDuTempsGuidageHtml,
@@ -28,11 +34,16 @@ import {
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import {
+  isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
   isActiveNonRedactionVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
-import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
+import {
+  nonRedactionAvantApresPayload,
+  nonRedactionLignePayload,
+  nonRedactionOrdrePayload,
+} from "@/lib/tae/wizard-state-nr";
 
 /**
  * Détermine si une section HTML a du contenu textuel significatif.
@@ -121,22 +132,30 @@ export function formStateToTae(
   const ordrePayload = isActiveOrdreChronologiqueVariant(state) && ordreNorm ? ordreNorm : null;
   const ligneNorm = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
   const lignePayload = isActiveLigneDuTempsVariant(state) && ligneNorm ? ligneNorm : null;
+  const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+  const avantPayload = isActiveAvantApresVariant(state) && avantNorm ? avantNorm : null;
 
-  const consignePublished = ordrePayload
-    ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
-    : lignePayload
-      ? buildLigneDuTempsConsigneHtml(lignePayload)
-      : redactionPreview.consigne;
-  const guidagePublished = ordrePayload
-    ? buildOrdreChronologiqueGuidageHtml()
-    : lignePayload
-      ? buildLigneDuTempsGuidageHtml()
-      : redactionPreview.guidage;
-  const corrigePublished = ordrePayload
-    ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
-    : lignePayload
-      ? buildLigneDuTempsCorrigeHtml(lignePayload)
-      : redactionPreview.corrige;
+  const consignePublished = avantPayload
+    ? buildAvantApresConsigneHtml(avantPayload)
+    : ordrePayload
+      ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
+      : lignePayload
+        ? buildLigneDuTempsConsigneHtml(lignePayload)
+        : redactionPreview.consigne;
+  const guidagePublished = avantPayload
+    ? buildAvantApresGuidageHtml()
+    : ordrePayload
+      ? buildOrdreChronologiqueGuidageHtml()
+      : lignePayload
+        ? buildLigneDuTempsGuidageHtml()
+        : redactionPreview.guidage;
+  const corrigePublished = avantPayload
+    ? buildAvantApresCorrigeHtml(avantPayload)
+    : ordrePayload
+      ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
+      : lignePayload
+        ? buildLigneDuTempsCorrigeHtml(lignePayload)
+        : redactionPreview.corrige;
 
   return {
     id: "draft",

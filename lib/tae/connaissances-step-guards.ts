@@ -2,7 +2,7 @@ import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
 import { isCdStepComplete, isCdStepGateOk } from "@/lib/tae/cd-step-guards";
 
-/** Accès Bloc 6 : même base que Bloc 5 + étape compétence disciplinaire complète. */
+/** Accès étape indexation (Bloc 7) : même base que Bloc 5 + étape compétence disciplinaire complète. */
 export function isConnaissancesStepGateOk(state: TaeFormState): boolean {
   if (!isCdStepGateOk(state)) return false;
   return isCdStepComplete(state);

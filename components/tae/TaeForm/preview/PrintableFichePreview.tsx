@@ -27,8 +27,10 @@ import { shouldPrintDocumentFullWidth } from "@/lib/tae/print-document-full-widt
 import { cn } from "@/lib/utils/cn";
 import { GrilleEvalTable } from "@/components/tae/grilles/GrilleEvalTable";
 import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImageLegendOverlay";
+import { AvantApresPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/AvantApresPrintableQuestionnaireCore";
 import { LigneDuTempsPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore";
 import { OrdreChronologiquePrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore";
+import { parseAvantApresConsigneForStudentPrint } from "@/lib/tae/non-redaction/avant-apres-payload";
 import { parseLigneDuTempsConsigneForStudentPrint } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 
@@ -196,7 +198,9 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
   const showAnswerLines = tae.showStudentAnswerLines !== false;
   const ordreChronoAnchored = parseOrdreChronologiqueConsigneForStudentPrint(tae.consigne) !== null;
   const ligneTempsAnchored = parseLigneDuTempsConsigneForStudentPrint(tae.consigne) !== null;
-  const structuredNonRedactionQuestionnaire = ordreChronoAnchored || ligneTempsAnchored;
+  const avantApresAnchored = parseAvantApresConsigneForStudentPrint(tae.consigne) !== null;
+  const structuredNonRedactionQuestionnaire =
+    ordreChronoAnchored || ligneTempsAnchored || avantApresAnchored;
 
   return (
     <div className={styles.postDocumentsPrintGroup}>
@@ -213,6 +217,13 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
           />
         ) : ligneTempsAnchored ? (
           <LigneDuTempsPrintableQuestionnaireCore
+            consigneHtml={tae.consigne}
+            guidageHtml={tae.guidage}
+            documentSlotCount={tae.documents.length}
+            showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
+          />
+        ) : avantApresAnchored ? (
+          <AvantApresPrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}
             documentSlotCount={tae.documents.length}

@@ -1,6 +1,10 @@
 import { isDocumentsStepComplete } from "@/lib/tae/document-helpers";
 import type { ComportementConfig } from "@/lib/tae/behaviours/types";
 import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
+import {
+  isAvantApresBloc5CompleteForNext,
+  isAvantApresRedactionStepCompleteForNext,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 
 function isBloc6Complete(state: TaeFormState): boolean {
@@ -18,17 +22,24 @@ function isBloc7Complete(state: TaeFormState): boolean {
   return state.bloc7.connaissances.length >= 1;
 }
 
-/** Placeholder — comportement non sélectionnable en production tant que `nb_documents` est null. */
 export const avantApresConfig: ComportementConfig = {
   slug: "avant-apres",
   label: "Avant / après",
   isRedactionnel: false,
   bloc3: { hasGuidage: true },
-  bloc4: { documentCount: null, requiresRepereTemporel: true },
+  bloc4: { documentCount: 4, requiresRepereTemporel: true },
   completionCriteria: {
-    bloc3: () => false,
+    bloc3: (state) => {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "avant-apres") return false;
+      return isAvantApresRedactionStepCompleteForNext(nr.payload);
+    },
     bloc4: (state) => isDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents),
-    bloc5: (state) => state.bloc5.nonRedaction?.type === "placeholder",
+    bloc5: (state) => {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "avant-apres") return false;
+      return isAvantApresBloc5CompleteForNext(nr.payload);
+    },
     bloc6: (state) => isBloc6Complete(state),
     bloc7: (state) => isBloc7Complete(state),
   },

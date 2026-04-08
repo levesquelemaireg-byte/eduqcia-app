@@ -1,5 +1,5 @@
 /**
- * Glyphes des sections du bloc 3 — docs/WORKFLOWS.md (ordre : consigne → aspects → corrigé → guidage).
+ * Glyphes des sections du bloc 3 — ordre : consigne → guidage (corrigé et aspects : autres étapes).
  * Le stepper importe ce module.
  */
 export const BLOC3_SECTION_ICON = {
@@ -11,7 +11,5 @@ export const BLOC3_SECTION_ICON = {
 
 export const BLOC3_STEPPER_ICONS = [
   BLOC3_SECTION_ICON.consigne,
-  BLOC3_SECTION_ICON.aspects,
-  BLOC3_SECTION_ICON.corrige,
   BLOC3_SECTION_ICON.guidage,
 ] as const;

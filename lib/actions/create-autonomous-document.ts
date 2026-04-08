@@ -59,6 +59,7 @@ async function insertAutonomousDocumentRow(
       "source_type",
       "repere_temporel",
       "annee_normalisee",
+      "type_iconographique",
     ]),
   ];
 
@@ -140,6 +141,9 @@ export async function createAutonomousDocumentAction(
       ? (v.image_legende_position ?? null)
       : null;
 
+  const typeIcono =
+    v.doc_type === "iconographique" && v.type_iconographique != null ? v.type_iconographique : null;
+
   const fullRow: DocumentInsertPayload = {
     auteur_id: user.id,
     titre: v.titre,
@@ -160,6 +164,7 @@ export async function createAutonomousDocumentAction(
       v.annee_normalisee != null && Number.isFinite(v.annee_normalisee)
         ? Math.trunc(v.annee_normalisee)
         : null,
+    type_iconographique: typeIcono,
   };
 
   const inserted = await insertAutonomousDocumentRow(supabase, fullRow);

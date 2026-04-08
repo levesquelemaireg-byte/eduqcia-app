@@ -34,7 +34,7 @@ export const ligneDuTempsConfig: ComportementConfig = {
   label: "Ligne du temps",
   isRedactionnel: false,
   bloc3: { hasGuidage: true },
-  bloc4: { documentCount: 1, requiresRepereTemporel: true },
+  bloc4: { documentCount: 1, requiresRepereTemporel: false },
   completionCriteria: {
     bloc3: (state) => {
       const p = lignePayload(state);

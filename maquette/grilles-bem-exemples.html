@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Grilles d'évaluation – Exemples BEM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --grid-font-family: Arial, Helvetica, sans-serif;
+        --grid-font-size: 14px;
+        --grid-line-height: 1.2;
+
+        --grid-col-rubrique: 200px;
+        --grid-col-cond: 240px;
+        --grid-col-detail: auto;
+        --grid-col-points: 120px;
+
+        --grid-border-color: #000;
+        --grid-border-width: 1px;
+        --grid-padding-y: 6px;
+        --grid-padding-x: 10px;
+      }
+
+      body {
+        margin: 0;
+        padding: 24px;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Arial,
+          sans-serif;
+        background: #0b0f16;
+        color: #e5e7eb;
+      }
+
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .page__title {
+        font-size: 20px;
+        font-weight: 700;
+        margin: 0 0 16px;
+      }
+
+      .page__lead {
+        font-size: 13px;
+        color: #9ca3af;
+        margin: 0 0 24px;
+      }
+
+      .grid-example {
+        margin-bottom: 40px;
+        background: #111827;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        overflow: hidden;
+      }
+
+      .grid-example__head {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        align-items: baseline;
+      }
+
+      .grid-example__title {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 650;
+      }
+
+      .grid-example__meta {
+        font-size: 11px;
+        color: #9ca3af;
+        white-space: nowrap;
+      }
+
+      .grid-example__body {
+        padding: 16px;
+        background: #0f172a;
+      }
+
+      /* BEM block: eval-grid */
+
+      .eval-grid {
+        width: 100%;
+        border-collapse: collapse;
+        background: #fff;
+        color: #000;
+        font-family: var(--grid-font-family);
+        font-size: var(--grid-font-size);
+        line-height: var(--grid-line-height);
+        /* contour noir + bleed blanc 1px tout autour (effet PDF) */
+        border: var(--grid-border-width) solid var(--grid-border-color);
+        outline: 1px solid #fff;
+        outline-offset: 0;
+      }
+
+      .eval-grid__col--rubrique {
+        width: var(--grid-col-rubrique);
+      }
+
+      .eval-grid__col--cond {
+        width: var(--grid-col-cond);
+      }
+
+      .eval-grid__col--detail {
+        width: var(--grid-col-detail);
+      }
+
+      .eval-grid__col--points {
+        width: var(--grid-col-points);
+      }
+
+      .eval-grid__cell {
+        border: var(--grid-border-width) solid var(--grid-border-color);
+        padding: var(--grid-padding-y) var(--grid-padding-x);
+        vertical-align: middle;
+        text-align: center;
+      }
+
+      .eval-grid__cell--rubrique {
+        font-weight: 700;
+      }
+
+      .eval-grid__cell--cond {
+        font-weight: 700;
+      }
+
+      .eval-grid__cell--detail {
+        text-align: center;
+      }
+
+      .eval-grid__cell--detail-left {
+        text-align: left;
+      }
+
+      .eval-grid__cell--points {
+        font-weight: 750;
+        white-space: nowrap;
+      }
+
+      /* Modifiers: séparateurs plus épais */
+
+      .eval-grid__row--separator > .eval-grid__cell {
+        border-top-width: 2px;
+      }
+
+      .eval-grid__row--double-separator > .eval-grid__cell {
+        border-bottom: 4px double var(--grid-border-color);
+      }
+
+      /* --- Exemple simple (pattern commun) ---------------------------- */
+
+      .grid-example--simple .eval-grid__row--head > .eval-grid__cell {
+        font-weight: 750;
+      }
+
+      /* --- Exemple OI3_SO5 -------------------------------------------- */
+
+      .grid-example--oi3 .eval-grid__cell--detail {
+        text-align: left;
+      }
+
+      .grid-example--oi3 .eval-grid__cell--detail strong {
+        font-weight: 700;
+      }
+
+      .grid-example--oi3 .eval-grid__cell--detail--footer {
+        border-bottom: 4px double var(--grid-border-color);
+      }
+
+      /* --- Exemple OI6_SO3 -------------------------------------------- */
+
+      .grid-example--oi6 .eval-grid__cell--detail {
+        text-align: left;
+      }
+
+      .grid-example--oi6 .eval-grid__cell--detail--top-reset {
+        border-top-width: 0;
+      }
+
+      .grid-example--oi6 .eval-grid__row--double-bottom > .eval-grid__cell {
+        border-bottom: 4px double var(--grid-border-color);
+      }
+
+      .grid-example--oi6 .eval-grid__note {
+        border-top: none;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      /* --- Exemple OI7_SO1 -------------------------------------------- */
+
+      .grid-example--oi7 .eval-grid__cell--detail {
+        text-align: left;
+      }
+
+      .grid-example--oi7 .eval-grid__row--double-bottom > .eval-grid__cell {
+        border-bottom: 4px double var(--grid-border-color);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <h1 class="page__title">Grilles d'évaluation – Exemples BEM-ready</h1>
+      <p class="page__lead">
+        Bloc unique <code>.eval-grid</code> + modifiers. Chaque exemple ci-dessous montre une
+        variante structurelle en restant compatible avec une implémentation BEM (colonnes nommées,
+        lignes modifiées, pas de styles inline).
+      </p>
+
+      <!-- Exemple 1 : pattern simple, utilisable pour toutes les grilles "classiques" -->
+      <section class="grid-example grid-example--simple">
+        <header class="grid-example__head">
+          <h2 class="grid-example__title">
+            Exemple simple – Déterminer des causes et des conséquences
+          </h2>
+          <div class="grid-example__meta">Pattern commun 2 / 1 / 0 point</div>
+        </header>
+        <div class="grid-example__body">
+          <table class="eval-grid" aria-label="Grille simple d'exemple">
+            <colgroup>
+              <col class="eval-grid__col--rubrique" />
+              <col class="eval-grid__col--detail" />
+              <col class="eval-grid__col--detail" />
+              <col class="eval-grid__col--detail" />
+            </colgroup>
+            <tr class="eval-grid__row eval-grid__row--head">
+              <th class="eval-grid__cell eval-grid__cell--rubrique" rowspan="2">
+                Déterminer des causes et des conséquences
+              </th>
+              <th class="eval-grid__cell">2 points</th>
+              <th class="eval-grid__cell">1 point</th>
+              <th class="eval-grid__cell">0 point</th>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                L’élève détermine correctement le facteur explicatif.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                L’élève détermine plus ou moins correctement le facteur explicatif.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                L’élève détermine incorrectement le facteur explicatif ou ne le détermine pas.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- Exemple 2 : OI3_SO5 – Comparer des points de vue -->
+      <section class="grid-example grid-example--oi3">
+        <header class="grid-example__head">
+          <h2 class="grid-example__title">OI3_SO5 — Comparer des points de vue</h2>
+          <div class="grid-example__meta">
+            Structure hiérarchique, conditions + cas particuliers
+          </div>
+        </header>
+        <div class="grid-example__body">
+          <table class="eval-grid" aria-label="Grille OI3_SO5">
+            <colgroup>
+              <col class="eval-grid__col--rubrique" />
+              <col class="eval-grid__col--cond" />
+              <col class="eval-grid__col--detail" />
+              <col class="eval-grid__col--points" />
+            </colgroup>
+            <tr class="eval-grid__row">
+              <th class="eval-grid__cell eval-grid__cell--rubrique" rowspan="5">
+                Dégager des différences et des similitudes
+              </th>
+              <th class="eval-grid__cell eval-grid__cell--cond" rowspan="4">
+                L’élève nomme correctement l’acteur qui présente une position différente
+              </th>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente correctement les deux positions.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">3 points</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente correctement une position et plus ou moins correctement l’autre
+                position.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">2 points</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente plus ou moins correctement les deux positions.
+                <br />
+                <strong>ou</strong>
+                <br />
+                et présente correctement une position et incorrectement l’autre position ou ne la
+                présente pas.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">1 point</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente tout au plus une seule position plus ou moins correctement.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">0 point</td>
+            </tr>
+            <tr class="eval-grid__row eval-grid__row--double-separator">
+              <td
+                class="eval-grid__cell eval-grid__cell--detail eval-grid__cell--detail-left"
+                colspan="2"
+              >
+                L’élève nomme incorrectement l’acteur qui présente une position différente ou ne le
+                nomme pas.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">0 point</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- Exemple 3 : OI6_SO3 — Déterminer des changements et des continuités -->
+      <section class="grid-example grid-example--oi6">
+        <header class="grid-example__head">
+          <h2 class="grid-example__title">OI6_SO3 — Montrer transformation ou maintien</h2>
+          <div class="grid-example__meta">Deux grands blocs + note étoilée</div>
+        </header>
+        <div class="grid-example__body">
+          <table class="eval-grid" aria-label="Grille OI6_SO3">
+            <colgroup>
+              <col class="eval-grid__col--rubrique" />
+              <col class="eval-grid__col--cond" />
+              <col class="eval-grid__col--detail" />
+              <col class="eval-grid__col--points" />
+            </colgroup>
+            <tr class="eval-grid__row">
+              <th class="eval-grid__cell eval-grid__cell--rubrique" rowspan="6">
+                Déterminer des changements et des continuités
+              </th>
+              <th class="eval-grid__cell eval-grid__cell--cond" rowspan="3">
+                L’élève indique s’il y a changement ou continuité
+              </th>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente des faits qui le montrent correctement.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">3 points (ou 2 points*)</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente des faits qui le montrent plus ou moins correctement.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">2 points (ou 1 point*)</td>
+            </tr>
+            <tr class="eval-grid__row eval-grid__row--double-separator">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente des faits qui le montrent incorrectement ou n’en présente pas.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">0 point</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <th class="eval-grid__cell eval-grid__cell--cond" rowspan="3">
+                L’élève n’indique pas s’il y a changement ou continuité
+              </th>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                mais présente des faits exacts.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">2 points (ou 1 point*)</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                mais présente des faits plus ou moins exacts.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">1 point (ou 0 point*)</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et présente des faits inexacts ou n’en présente pas.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">0 point</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail eval-grid__note" colspan="4">
+                * L’élève présente un repère de temps plus ou moins exact ou inexact, ou n’en
+                présente pas.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </section>
+
+      <!-- Exemple 4 : OI7_SO1 — Établir des liens de causalité -->
+      <section class="grid-example grid-example--oi7">
+        <header class="grid-example__head">
+          <h2 class="grid-example__title">OI7_SO1 — Enchaînement logique</h2>
+          <div class="grid-example__meta">
+            Deux blocs (3 éléments / 2 éléments) + cas de 0 point
+          </div>
+        </header>
+        <div class="grid-example__body">
+          <table class="eval-grid" aria-label="Grille OI7_SO1">
+            <colgroup>
+              <col class="eval-grid__col--rubrique" />
+              <col class="eval-grid__col--cond" />
+              <col class="eval-grid__col--detail" />
+              <col class="eval-grid__col--points" />
+            </colgroup>
+            <tr class="eval-grid__row">
+              <th class="eval-grid__cell eval-grid__cell--rubrique" rowspan="6">
+                Établir des liens de causalité
+              </th>
+              <th class="eval-grid__cell eval-grid__cell--cond" rowspan="3">
+                L’élève précise les trois éléments
+              </th>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et établit correctement deux liens de causalité.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">3 points</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et établit correctement un lien de causalité.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">2 points</td>
+            </tr>
+            <tr class="eval-grid__row eval-grid__row--double-separator">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                mais n’établit correctement aucun lien de causalité.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">1 point</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <th class="eval-grid__cell eval-grid__cell--cond" rowspan="2">
+                L’élève précise deux éléments
+              </th>
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                et établit correctement un lien de causalité.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">2 points</td>
+            </tr>
+            <tr class="eval-grid__row eval-grid__row--double-separator">
+              <td class="eval-grid__cell eval-grid__cell--detail">
+                mais n’établit correctement aucun lien de causalité.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">1 point</td>
+            </tr>
+            <tr class="eval-grid__row">
+              <td
+                class="eval-grid__cell eval-grid__cell--detail eval-grid__cell--detail-left"
+                colspan="2"
+              >
+                L’élève précise un seul élément ou n’en précise pas.
+              </td>
+              <td class="eval-grid__cell eval-grid__cell--points">0 point</td>
+            </tr>
+          </table>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import {
   DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_BODY,
@@ -22,12 +23,20 @@ type Props = {
 
 type HelpKey = "primaire" | "secondaire";
 
+const SOURCE_OPTIONS = [
+  { value: "primaire", label: DOCUMENT_MODULE_SOURCE_PRIMAIRE },
+  { value: "secondaire", label: DOCUMENT_MODULE_SOURCE_SECONDAIRE },
+] as const;
+
 /**
- * Type de source — radios + aide (i) → `SimpleModal` (même pattern que le wizard TAÉ, `LabelWithInfo` / Bloc 3).
+ * Type de source — `SegmentedControl` + aides (i) → `SimpleModal` (Bloc 4 / aligné wizard document).
  */
 export function SourceTypeRadiosWithTooltips({ value, onChange, errorMessage }: Props) {
-  const groupId = useId();
+  const legendId = useId();
   const [helpOpen, setHelpOpen] = useState<HelpKey | null>(null);
+
+  const resolved =
+    value === "primaire" || value === "secondaire" ? value : "secondaire";
 
   return (
     <>
@@ -53,7 +62,7 @@ export function SourceTypeRadiosWithTooltips({ value, onChange, errorMessage }: 
       </SimpleModal>
 
       <fieldset className="space-y-2">
-        <legend className="text-sm font-semibold text-deep">
+        <legend id={legendId} className="text-sm font-semibold text-deep">
           {DOCUMENT_MODULE_SOURCE_TYPE_LABEL} <RequiredMark />
         </legend>
         {errorMessage ? (
@@ -61,29 +70,29 @@ export function SourceTypeRadiosWithTooltips({ value, onChange, errorMessage }: 
             {errorMessage}
           </p>
         ) : null}
-        <div className="flex flex-wrap gap-4" role="presentation">
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-deep">
-            <input
-              type="radio"
-              name={groupId}
-              checked={value === "primaire"}
-              onChange={() => onChange("primaire")}
-              className="h-4 w-4 shrink-0 border-border"
+        <SegmentedControl
+          aria-labelledby={legendId}
+          options={[...SOURCE_OPTIONS]}
+          value={resolved}
+          onChange={(v) => {
+            if (v === "primaire" || v === "secondaire") onChange(v);
+          }}
+        />
+        <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted">
+          <span className="inline-flex items-center gap-1">
+            <FieldHelpModalButton
+              ariaLabel={DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_TITLE}
+              onClick={() => setHelpOpen("primaire")}
             />
-            {DOCUMENT_MODULE_SOURCE_PRIMAIRE}
-            <FieldHelpModalButton onClick={() => setHelpOpen("primaire")} />
-          </label>
-          <label className="flex cursor-pointer items-center gap-2 text-sm text-deep">
-            <input
-              type="radio"
-              name={groupId}
-              checked={value === "secondaire"}
-              onChange={() => onChange("secondaire")}
-              className="h-4 w-4 shrink-0 border-border"
+            <span>{DOCUMENT_MODULE_SOURCE_PRIMAIRE}</span>
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <FieldHelpModalButton
+              ariaLabel={DOCUMENT_MODULE_MODAL_SOURCE_SECONDAIRE_TITLE}
+              onClick={() => setHelpOpen("secondaire")}
             />
-            {DOCUMENT_MODULE_SOURCE_SECONDAIRE}
-            <FieldHelpModalButton onClick={() => setHelpOpen("secondaire")} />
-          </label>
+            <span>{DOCUMENT_MODULE_SOURCE_SECONDAIRE}</span>
+          </span>
         </div>
       </fieldset>
     </>

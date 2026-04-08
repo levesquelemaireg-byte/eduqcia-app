@@ -25,7 +25,28 @@ export const initialRedactionSlice: RedactionSlice = {
 
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 
-/** docs/WORKFLOWS.md §4.1 + docs/WORKFLOWS.md §10 — HTML TipTap pour consigne / corrigé. */
+/**
+ * Parcours rédactionnel — prérequis **étape 4 (documents)** : consigne (étape 3) uniquement.
+ * Aspects (étape 7) et corrigé (étape 5) ne sont pas exigés avant le dossier documentaire.
+ */
+export function isRedactionSliceConsigneReady(r: RedactionSlice): boolean {
+  return htmlHasMeaningfulText(r.consigne);
+}
+
+/**
+ * Parcours rédactionnel — prérequis **étape 6 (compétence disciplinaire)** : consigne + corrigé.
+ * Les aspects de société sont traités à l’étape 7 (indexation).
+ */
+export function isRedactionSliceReadyForCdGate(r: RedactionSlice): boolean {
+  if (!htmlHasMeaningfulText(r.consigne)) return false;
+  if (!htmlHasMeaningfulText(r.corrige)) return false;
+  return true;
+}
+
+/**
+ * Validation **publication** : consigne + au moins un aspect + corrigé (référentiel complet).
+ * Aligné wizard 7 étapes : étapes 3, 5 et 7 pour la partie « rédaction / indexation ».
+ */
 export function isRedactionStepComplete(r: RedactionSlice): boolean {
   if (!htmlHasMeaningfulText(r.consigne)) return false;
   if (!Object.values(r.aspects).some(Boolean)) return false;

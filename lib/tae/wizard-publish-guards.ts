@@ -12,7 +12,15 @@ import {
   isDocumentsStepPublishable,
 } from "@/lib/tae/document-helpers";
 import {
+  isAvantApresDocumentsPublishable,
+  isAvantApresDocumentsStepComplete,
+  isAvantApresPayloadCompleteForCdGate,
+  isAvantApresPayloadConsistentWithDocuments,
+  normalizeAvantApresPayload,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
+import {
   isLigneDuTempsStep3Complete,
+  isLigneDuTempsStep5SegmentComplete,
   normalizeLigneDuTempsPayload,
 } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import {
@@ -22,12 +30,17 @@ import {
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import {
+  isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
 import { isRedactionStepComplete } from "@/lib/tae/redaction-helpers";
 import { getRedactionSliceForPreview } from "@/lib/tae/tae-form-state-types";
-import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
+import {
+  nonRedactionAvantApresPayload,
+  nonRedactionLignePayload,
+  nonRedactionOrdrePayload,
+} from "@/lib/tae/wizard-state-nr";
 
 /** Même règle que `FormState.isConceptionStepComplete` — évite d’importer le module client depuis `lib/`. */
 function conceptionOkForPublish(c: TaeFormState["bloc1"]): boolean {
@@ -59,6 +72,9 @@ function documentsStepOkForPublish(state: TaeFormState): boolean {
   if (isActiveLigneDuTempsVariant(state)) {
     return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
   }
+  if (isActiveAvantApresVariant(state)) {
+    return isAvantApresDocumentsPublishable(b.documentSlots, state.bloc4.documents);
+  }
   return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
 }
 
@@ -73,6 +89,12 @@ function documentsCompleteButUrlsBlocked(state: TaeFormState): boolean {
   if (isActiveLigneDuTempsVariant(state)) {
     return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
   }
+  if (isActiveAvantApresVariant(state)) {
+    return (
+      isAvantApresDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
+      !isAvantApresDocumentsPublishable(b.documentSlots, state.bloc4.documents)
+    );
+  }
   return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
 }
 
@@ -83,6 +105,23 @@ export function isWizardPublishReady(state: TaeFormState): boolean {
   if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
   if (!redactionStepOkForPublish(state)) return false;
   if (!documentsStepOkForPublish(state)) return false;
+  if (isActiveLigneDuTempsVariant(state)) {
+    const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+    if (p === null || !isLigneDuTempsStep5SegmentComplete(p)) return false;
+  }
+  if (isActiveAvantApresVariant(state)) {
+    const p = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+    if (p === null) return false;
+    if (
+      !isAvantApresPayloadConsistentWithDocuments(
+        p,
+        state.bloc2.documentSlots.map((s) => s.slotId),
+        state.bloc4.documents,
+      )
+    ) {
+      return false;
+    }
+  }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;
   return true;
@@ -95,6 +134,23 @@ export function isPublishBlockedOnlyByIconographicUrls(state: TaeFormState): boo
   if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
   if (!redactionStepOkForPublish(state)) return false;
   if (!documentsCompleteButUrlsBlocked(state)) return false;
+  if (isActiveLigneDuTempsVariant(state)) {
+    const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+    if (p === null || !isLigneDuTempsStep5SegmentComplete(p)) return false;
+  }
+  if (isActiveAvantApresVariant(state)) {
+    const p = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+    if (p === null) return false;
+    if (
+      !isAvantApresPayloadConsistentWithDocuments(
+        p,
+        state.bloc2.documentSlots.map((s) => s.slotId),
+        state.bloc4.documents,
+      )
+    ) {
+      return false;
+    }
+  }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;
   return true;

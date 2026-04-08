@@ -14,6 +14,12 @@ import { cdSelectionToFicheSlice } from "@/lib/tae/cd-helpers";
 import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import {
+  buildAvantApresConsigneHtml,
+  buildAvantApresCorrigeHtml,
+  buildAvantApresGuidageHtml,
+  normalizeAvantApresPayload,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
+import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
   buildLigneDuTempsGuidageHtml,
@@ -26,12 +32,16 @@ import {
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import {
+  isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
-  isActiveNonRedactionSommaireHideAspectsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
-import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
+import {
+  nonRedactionAvantApresPayload,
+  nonRedactionLignePayload,
+  nonRedactionOrdrePayload,
+} from "@/lib/tae/wizard-state-nr";
 
 export function SommaireFiche() {
   const { state, dispatch } = useTaeForm();
@@ -49,22 +59,30 @@ export function SommaireFiche() {
   const ordrePayload = isActiveOrdreChronologiqueVariant(state) && ordreNorm ? ordreNorm : null;
   const ligneNorm = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
   const lignePayload = isActiveLigneDuTempsVariant(state) && ligneNorm ? ligneNorm : null;
+  const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+  const avantPayload = isActiveAvantApresVariant(state) && avantNorm ? avantNorm : null;
 
-  const consigneHtml = ordrePayload
-    ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
-    : lignePayload
-      ? buildLigneDuTempsConsigneHtml(lignePayload)
-      : r.consigne;
-  const corrigeHtml = ordrePayload
-    ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
-    : lignePayload
-      ? buildLigneDuTempsCorrigeHtml(lignePayload)
-      : r.corrige;
-  const guidageHtml = ordrePayload
-    ? buildOrdreChronologiqueGuidageHtml()
-    : lignePayload
-      ? buildLigneDuTempsGuidageHtml()
-      : r.guidage;
+  const consigneHtml = avantPayload
+    ? buildAvantApresConsigneHtml(avantPayload)
+    : ordrePayload
+      ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
+      : lignePayload
+        ? buildLigneDuTempsConsigneHtml(lignePayload)
+        : r.consigne;
+  const corrigeHtml = avantPayload
+    ? buildAvantApresCorrigeHtml(avantPayload)
+    : ordrePayload
+      ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
+      : lignePayload
+        ? buildLigneDuTempsCorrigeHtml(lignePayload)
+        : r.corrige;
+  const guidageHtml = avantPayload
+    ? buildAvantApresGuidageHtml()
+    : ordrePayload
+      ? buildOrdreChronologiqueGuidageHtml()
+      : lignePayload
+        ? buildLigneDuTempsGuidageHtml()
+        : r.guidage;
 
   return (
     <div className="mt-6 space-y-6 border-t border-border pt-6">
@@ -72,9 +90,7 @@ export function SommaireFiche() {
         consigneHtml={consigneHtml}
         documentSlotCount={state.bloc2.documentSlots.length}
       />
-      {isActiveNonRedactionSommaireHideAspectsVariant(state) ? null : (
-        <SommaireFicheAspects selectedLabels={selectedAspectLabels} />
-      )}
+      <SommaireFicheAspects selectedLabels={selectedAspectLabels} />
       <SommaireFicheCorrige corrigeHtml={corrigeHtml} />
       <SommaireFicheGuidage guidageHtml={guidageHtml} />
       <SommaireFicheDocuments

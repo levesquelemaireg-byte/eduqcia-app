@@ -159,7 +159,7 @@ CREATE TABLE comportements (
   id               TEXT PRIMARY KEY,   -- '0.1', '3.1', ..., '7.1'
   oi_id            TEXT NOT NULL REFERENCES oi(id) ON DELETE RESTRICT,
   enonce           TEXT NOT NULL,
-  nb_documents     INT NOT NULL CHECK (nb_documents BETWEEN 1 AND 3),
+  nb_documents     INT CHECK (nb_documents IS NULL OR nb_documents BETWEEN 1 AND 4),
   outil_evaluation TEXT NOT NULL,      -- ID du <template> HTML, ex: 'OI0_SO1'
   status           oi_status NOT NULL DEFAULT 'active',
   ordre            INT NOT NULL DEFAULT 0
@@ -209,6 +209,8 @@ CREATE TABLE tae (
   guidage            TEXT,   -- étayage optionnel, retiré pour éval sommative
   corrige            TEXT,   -- usage enseignant uniquement
   nb_lignes          INT,
+  -- Parcours NR structurés (1.3+), nullable pour 1.1/1.2 legacy
+  non_redaction_data JSONB,
   -- Recherche banque : texte sans balises HTML (généré) — docs/plan-banque-collaborative.md
   consigne_search_plain text GENERATED ALWAYS AS (
     trim(
@@ -302,6 +304,7 @@ CREATE TABLE documents (
   image_legende_position document_legend_position,
   repere_temporel    TEXT,
   annee_normalisee   INT,
+  type_iconographique TEXT,
 
   -- Métadonnées héritées cumulativement depuis les TAÉ parentes (DOMAIN §8.8)
   -- Uniquement sur le master (source_document_id IS NULL)
@@ -326,9 +329,11 @@ COMMENT ON COLUMN documents.image_legende IS
 COMMENT ON COLUMN documents.image_legende_position IS
   'Coin du bandeau de légende sur l''image ; NULL si pas de légende.';
 COMMENT ON COLUMN documents.repere_temporel IS
-  'Repère temporel (texte libre). Saisie par l''enseignant ; non affiché sur la fiche élève.';
+  'Repère temporel (texte libre). Saisie par l''enseignant ; non affiché sur la copie de l'élève.';
 COMMENT ON COLUMN documents.annee_normalisee IS
   'Année normalisée (entier, peut être négatif). Comparaisons parcours non rédactionnels OI1.';
+COMMENT ON COLUMN documents.type_iconographique IS
+  'Sous-type didactique pour documents iconographiques (carte, photographie, etc.) ; recherche banque ; non affiché sur la copie de l'élève.';
 
 -- Liaison TAÉ ↔ Documents avec slots doc_A–D (DOMAIN §4.2 ; D = parcours non rédactionnel)
 CREATE TABLE tae_documents (
@@ -470,7 +475,7 @@ INSERT INTO disciplines (code, label, cd_json_file, conn_json_file) VALUES
 -- Icônes = public/data/oi.json (Material Symbols — pas « link » pour OI7 : liste / enchaînement)
 INSERT INTO oi (id, titre, icone, status, ordre) VALUES
   ('OI0', 'Établir des faits',                             'document_search', 'active',      0),
-  ('OI1', 'Situer dans le temps',                          'hourglass',       'coming_soon', 1),
+  ('OI1', 'Situer dans le temps',                          'hourglass',       'active',      1),
   ('OI2', 'Situer dans l''espace',                         'map_search',      'coming_soon', 2),
   ('OI3', 'Dégager des différences et des similitudes',    'text_compare',    'active',      3),
   ('OI4', 'Déterminer des causes et des conséquences',     'manufacturing',   'active',      4),
@@ -478,9 +483,12 @@ INSERT INTO oi (id, titre, icone, status, ordre) VALUES
   ('OI6', 'Déterminer des changements et des continuités', 'alt_route',       'active',      6),
   ('OI7', 'Établir des liens de causalité',                'list',            'active',      7);
 
--- 14 comportements : 0.1 actif, 4.3 et 4.4 coming_soon
+-- 17 comportements : 0.1 actif ; OI1 : 1.1–1.3 (non rédactionnel, nb_documents aligné oi.json) ; 4.3 et 4.4 coming_soon
 INSERT INTO comportements (id, oi_id, enonce, nb_documents, outil_evaluation, status, ordre) VALUES
   ('0.1', 'OI0', 'Établir un fait à partir d''un document historique',                                                                                        1, 'OI0_SO1', 'active',      0),
+  ('1.1', 'OI1', 'Ordonner chronologiquement des faits en tenant compte de repères de temps',                                                                   4, 'OI1_SO1', 'active',      0),
+  ('1.2', 'OI1', 'Situer des faits sur une ligne du temps',                                                                                                     1, 'OI1_SO2', 'active',      1),
+  ('1.3', 'OI1', 'Classer des faits selon qu''ils sont antérieurs ou postérieurs à un repère de temps',                                                         4, 'OI1_SO3', 'active',      2),
   ('3.1', 'OI3', 'Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison',                                                          1, 'OI3_SO1', 'active',      0),
   ('3.2', 'OI3', 'Indiquer ce qui est semblable par rapport à un ou plusieurs objets de comparaison',                                                          1, 'OI3_SO2', 'active',      1),
   ('3.3', 'OI3', 'Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence)',                                            2, 'OI3_SO3', 'active',      2),
@@ -521,6 +529,8 @@ CREATE INDEX idx_tae_version          ON tae (id, version);
 
 -- Filtres banque documents (DOMAIN §8.7)
 CREATE INDEX idx_doc_type             ON documents (type);
+CREATE INDEX idx_doc_type_iconographique ON documents (type_iconographique)
+  WHERE type = 'iconographique'::doc_type AND type_iconographique IS NOT NULL;
 CREATE INDEX idx_doc_niveaux          ON documents USING GIN (niveaux_ids);
 CREATE INDEX idx_doc_disciplines      ON documents USING GIN (disciplines_ids);
 CREATE INDEX idx_doc_aspects          ON documents USING GIN (aspects_societe);
@@ -836,9 +846,21 @@ CREATE POLICY "tae_docs_select"
     AND tae_user_can_access_for_document_link(tae_id)
   );
 
-CREATE POLICY "tae_docs_write"
-  ON tae_documents FOR ALL
+CREATE POLICY "tae_docs_insert"
+  ON tae_documents FOR INSERT
+  WITH CHECK (auth_can_edit_tae(tae_id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
+
+CREATE POLICY "tae_docs_update"
+  ON tae_documents FOR UPDATE
   USING (auth_can_edit_tae(tae_id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
+
+-- DELETE : auteur uniquement — DOMAIN §11.4 (collaborateur interdit)
+CREATE POLICY "tae_docs_delete"
+  ON tae_documents FOR DELETE
+  USING (
+    EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    OR auth_role() = 'admin'
+  );
 
 -- -------------------------------------------------------
 -- RLS : documents
@@ -1407,6 +1429,7 @@ BEGIN
       image_legende_position,
       repere_temporel,
       annee_normalisee,
+      type_iconographique,
       niveaux_ids,
       disciplines_ids,
       aspects_societe,
@@ -1452,6 +1475,11 @@ BEGIN
         WHEN TRIM(v_elem->>'annee_normalisee') ~ '^-?[0-9]+$' THEN TRIM(v_elem->>'annee_normalisee')::int
         ELSE NULL::int
       END,
+      CASE
+        WHEN (v_elem->>'type') = 'iconographique' THEN
+          NULLIF(TRIM(COALESCE(v_elem->>'type_iconographique', '')), '')
+        ELSE NULL
+      END,
       COALESCE(
         ARRAY(SELECT (jsonb_array_elements(v_elem->'niveaux_ids'))::text::int),
         ARRAY[]::int[]
@@ -1487,6 +1515,7 @@ BEGIN
     guidage,
     corrige,
     nb_lignes,
+    non_redaction_data,
     niveau_id,
     discipline_id,
     aspects_societe,
@@ -1509,6 +1538,11 @@ BEGIN
       WHEN NOT (p_payload->'tae' ? 'nb_lignes') THEN NULL
       WHEN jsonb_typeof(p_payload->'tae'->'nb_lignes') = 'null' THEN NULL
       ELSE (p_payload->'tae'->'nb_lignes')::text::int
+    END,
+    CASE
+      WHEN NOT (p_payload->'tae' ? 'non_redaction_data') THEN NULL
+      WHEN jsonb_typeof(p_payload->'tae'->'non_redaction_data') = 'null' THEN NULL
+      ELSE (p_payload->'tae'->'non_redaction_data')::jsonb
     END,
     (p_payload->'tae'->>'niveau_id')::int,
     (p_payload->'tae'->>'discipline_id')::int,
@@ -1589,6 +1623,16 @@ DECLARE
   j int;
   v_len int;
   v_nb int;
+  -- Versioning (DOMAIN §9.1/9.2)
+  v_major_trigger  TEXT    := NULL;
+  v_cur_oi         TEXT;
+  v_cur_comp       TEXT;
+  v_cur_cd         INT;
+  v_cur_conn       INT[];
+  v_cur_niveau     INT;
+  v_cur_disc       INT;
+  v_cur_doc_ids    UUID[];
+  v_new_doc_ids    UUID[];
 BEGIN
   v_auteur := (p_payload->>'auteur_id')::uuid;
   IF v_auteur IS NULL OR v_auteur <> auth.uid() THEN
@@ -1622,6 +1666,63 @@ BEGIN
     ELSE (p_payload->'tae'->'cd_id')::text::int
   END;
 
+  -- --------------------------------------------------------
+  -- Détection d'une modification majeure (DOMAIN §9.1/9.2)
+  -- Champs majeurs : oi_id, comportement_id, cd_id,
+  --   connaissances_ids, niveau_id, discipline_id, documents
+  -- --------------------------------------------------------
+  SELECT oi_id, comportement_id, cd_id, connaissances_ids, niveau_id, discipline_id
+  INTO v_cur_oi, v_cur_comp, v_cur_cd, v_cur_conn, v_cur_niveau, v_cur_disc
+  FROM tae WHERE id = p_tae_id;
+
+  IF v_cur_oi IS DISTINCT FROM (p_payload->'tae'->>'oi_id') THEN
+    v_major_trigger := 'oi_id';
+  ELSIF v_cur_comp IS DISTINCT FROM (p_payload->'tae'->>'comportement_id') THEN
+    v_major_trigger := 'comportement_id';
+  ELSIF v_cur_cd IS DISTINCT FROM v_cd_id THEN
+    v_major_trigger := 'cd_id';
+  ELSIF v_cur_niveau IS DISTINCT FROM (p_payload->'tae'->>'niveau_id')::int THEN
+    v_major_trigger := 'niveau_id';
+  ELSIF v_cur_disc IS DISTINCT FROM (p_payload->'tae'->>'discipline_id')::int THEN
+    v_major_trigger := 'discipline_id';
+  ELSIF
+    ARRAY(SELECT unnest(v_cur_conn) ORDER BY 1)
+    IS DISTINCT FROM
+    ARRAY(
+      SELECT (jsonb_array_elements(p_payload->'tae'->'connaissances_ids'))::text::int
+      ORDER BY 1
+    )
+  THEN
+    v_major_trigger := 'connaissances_ids';
+  END IF;
+
+  -- Documents : nouveau document créé OU remplacement d'un slot existant
+  IF v_major_trigger IS NULL THEN
+    IF EXISTS (
+      SELECT 1 FROM jsonb_array_elements(p_payload->'slots') s
+      WHERE s->>'mode' = 'create'
+    ) THEN
+      v_major_trigger := 'documents';
+    ELSE
+      v_cur_doc_ids := ARRAY(
+        SELECT document_id FROM tae_documents WHERE tae_id = p_tae_id ORDER BY document_id
+      );
+      v_new_doc_ids := ARRAY(
+        SELECT (s->>'document_id')::uuid
+        FROM jsonb_array_elements(p_payload->'slots') s
+        WHERE s->>'mode' = 'reuse'
+        ORDER BY (s->>'document_id')::uuid
+      );
+      IF v_cur_doc_ids IS DISTINCT FROM v_new_doc_ids THEN
+        v_major_trigger := 'documents';
+      END IF;
+    END IF;
+  END IF;
+
+  IF v_major_trigger IS NOT NULL THEN
+    PERFORM bump_tae_version(p_tae_id, v_major_trigger);
+  END IF;
+
   v_len := COALESCE(jsonb_array_length(p_payload->'documents_new'), 0);
   FOR i IN 0..GREATEST(v_len - 1, -1) LOOP
     v_elem := p_payload->'documents_new'->i;
@@ -1639,6 +1740,7 @@ BEGIN
       image_legende_position,
       repere_temporel,
       annee_normalisee,
+      type_iconographique,
       niveaux_ids,
       disciplines_ids,
       aspects_societe,
@@ -1684,6 +1786,11 @@ BEGIN
         WHEN TRIM(v_elem->>'annee_normalisee') ~ '^-?[0-9]+$' THEN TRIM(v_elem->>'annee_normalisee')::int
         ELSE NULL::int
       END,
+      CASE
+        WHEN (v_elem->>'type') = 'iconographique' THEN
+          NULLIF(TRIM(COALESCE(v_elem->>'type_iconographique', '')), '')
+        ELSE NULL
+      END,
       COALESCE(
         ARRAY(SELECT (jsonb_array_elements(v_elem->'niveaux_ids'))::text::int),
         ARRAY[]::int[]
@@ -1724,6 +1831,11 @@ BEGIN
       WHEN NOT (p_payload->'tae' ? 'nb_lignes') THEN NULL
       WHEN jsonb_typeof(p_payload->'tae'->'nb_lignes') = 'null' THEN NULL
       ELSE (p_payload->'tae'->'nb_lignes')::text::int
+    END,
+    non_redaction_data = CASE
+      WHEN p_payload->'tae' ? 'non_redaction_data'
+      THEN (p_payload->'tae'->'non_redaction_data')::jsonb
+      ELSE tae.non_redaction_data
     END,
     niveau_id = (p_payload->'tae'->>'niveau_id')::int,
     discipline_id = (p_payload->'tae'->>'discipline_id')::int,

@@ -25,6 +25,12 @@ type Props = {
   errorAnnee?: string;
   required?: boolean;
   className?: string;
+  /** Remplace le corps de la modale d’aide (ex. wizard document étape 1). */
+  helpModalBodyOverride?: string;
+  /** Remplace le placeholder du champ texte principal. */
+  textInputPlaceholder?: string;
+  /** Masque libellé + bouton (i) + modale intégrés — aide gérée par le parent. */
+  suppressLabelAndHelp?: boolean;
 };
 
 export function RepereTemporelField({
@@ -36,6 +42,9 @@ export function RepereTemporelField({
   errorAnnee,
   required = false,
   className,
+  helpModalBodyOverride,
+  textInputPlaceholder,
+  suppressLabelAndHelp = false,
 }: Props) {
   const [helpOpen, setHelpOpen] = useState(false);
   const textId = useId();
@@ -60,32 +69,38 @@ export function RepereTemporelField({
 
   return (
     <div className={cn("flex flex-col gap-[var(--space-2)]", className)}>
-      <div className="flex flex-wrap items-center gap-1.5">
-        <label htmlFor={textId} className="text-sm font-semibold text-deep">
-          {REPERE_TEMPOREL_LABEL}
-          {required ? (
-            <>
-              {" "}
-              <RequiredMark />
-            </>
-          ) : null}
-        </label>
-        <FieldHelpModalButton onClick={() => setHelpOpen(true)} />
-      </div>
-      <SimpleModal
-        open={helpOpen}
-        onClose={() => setHelpOpen(false)}
-        title={REPERE_TEMPOREL_MODAL_TITLE}
-        titleStyle="info-help"
-      >
-        <p className="text-sm leading-relaxed text-deep">{REPERE_TEMPOREL_HELP}</p>
-      </SimpleModal>
+      {suppressLabelAndHelp ? null : (
+        <>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <label htmlFor={textId} className="text-sm font-semibold text-deep">
+              {REPERE_TEMPOREL_LABEL}
+              {required ? (
+                <>
+                  {" "}
+                  <RequiredMark />
+                </>
+              ) : null}
+            </label>
+            <FieldHelpModalButton onClick={() => setHelpOpen(true)} />
+          </div>
+          <SimpleModal
+            open={helpOpen}
+            onClose={() => setHelpOpen(false)}
+            title={REPERE_TEMPOREL_MODAL_TITLE}
+            titleStyle="info-help"
+          >
+            <p className="text-sm leading-relaxed text-deep">
+              {helpModalBodyOverride ?? REPERE_TEMPOREL_HELP}
+            </p>
+          </SimpleModal>
+        </>
+      )}
       <input
         id={textId}
         type="text"
         value={repereTemporelValue}
         onChange={(e) => onRepereTemporelChange?.(e.target.value)}
-        placeholder={REPERE_TEMPOREL_PLACEHOLDER}
+        placeholder={textInputPlaceholder ?? REPERE_TEMPOREL_PLACEHOLDER}
         autoComplete="off"
         aria-invalid={errorRepere ? true : undefined}
         aria-describedby={
@@ -99,13 +114,13 @@ export function RepereTemporelField({
         )}
       />
       {extractedYear != null ? (
-        <div className="icon-text text-xs text-muted">
+        <div className="icon-text text-xs text-success">
           <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
             calendar_today
           </span>
           <span>
             {REPERE_TEMPOREL_EXTRACTED_PREFIX}{" "}
-            <strong className="text-deep">{extractedYear}</strong>
+            <strong className="text-success">{extractedYear}</strong>
           </span>
         </div>
       ) : null}

@@ -12,9 +12,16 @@ type Props = {
   consigneHtml: string;
   onConsigneChange: (html: string) => void;
   onInfoClick: () => void;
+  templateButton?: { label: string; onClick: () => void };
 };
 
-export function SectionConsigne({ blueprint, consigneHtml, onConsigneChange, onInfoClick }: Props) {
+export function SectionConsigne({
+  blueprint,
+  consigneHtml,
+  onConsigneChange,
+  onInfoClick,
+  templateButton,
+}: Props) {
   const nb = blueprint.nbDocuments ?? 0;
   const slotIds = blueprint.documentSlots.map((s) => s.slotId) as DocumentSlotId[];
   const editorKey = `${blueprint.comportementId}-${nb}`;
@@ -43,22 +50,13 @@ export function SectionConsigne({ blueprint, consigneHtml, onConsigneChange, onI
           </span>
         </button>
       </div>
-      <div className="space-y-1 text-xs">
-        <p className="text-muted">
-          Rédigez votre consigne en commençant par un verbe d&apos;action.
-        </p>
-        <p className="text-steel">
-          Cliquez sur un badge pour insérer une référence au document à l&apos;endroit souhaité dans
-          votre consigne.
-        </p>
-      </div>
-
       <ConsigneTipTapEditor
         key={editorKey}
         value={consigneHtml}
         onChange={onConsigneChange}
         nbDocuments={nb}
         documentSlotIds={slotIds}
+        templateButton={templateButton}
       />
     </section>
   );

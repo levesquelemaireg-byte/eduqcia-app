@@ -1,4 +1,6 @@
 import { mergeAttributes, Node } from "@tiptap/core";
+import { ReactNodeViewRenderer } from "@tiptap/react";
+import { DocRefNodeView } from "@/components/tae/TaeForm/tiptap/DocRefNodeView";
 
 /**
  * Nœud atomique inline — placeholder document `{{doc_A}}` (CONSIGNE-EDITOR.md §4).
@@ -32,6 +34,10 @@ export const DocRef = Node.create({
         }),
       },
     ];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(DocRefNodeView);
   },
 
   renderHTML({ node, HTMLAttributes }) {

@@ -4,7 +4,7 @@ ALTER TABLE documents
   ADD COLUMN IF NOT EXISTS repere_temporel TEXT;
 
 COMMENT ON COLUMN documents.repere_temporel IS
-  'Repère temporel (texte libre). Saisie par l''enseignant ; non affiché sur la fiche élève.';
+  'Repère temporel (texte libre). Saisie par l''enseignant ; non affiché sur la copie de l'élève.';
 
 ALTER TABLE documents
   ADD COLUMN IF NOT EXISTS annee_normalisee INTEGER;

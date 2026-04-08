@@ -12,11 +12,16 @@ import {
   BANK_DOCUMENT_FILTER_RESET,
   BANK_DOCUMENT_FILTER_SUBMIT,
   BANK_DOCUMENT_LINK_FICHE,
+  BANK_FILTER_ICONO_CATEGORY_LABEL,
   BANK_TASK_LOAD_MORE,
+  DOCUMENT_TYPE_ICONO_BADGE_SHORT,
+  DOCUMENT_TYPE_ICONO_LABEL,
+  DOCUMENT_TYPE_ICONO_SLUGS,
   PAGE_BANK_DOCUMENTS_CTA_INTRO,
   PAGE_BANK_DOCUMENTS_CTA_LINK,
   PAGE_BANK_DOCUMENTS_EMPTY,
   PAGE_BANK_DOCUMENTS_FILTER_DISCIPLINE,
+  PAGE_BANK_DOCUMENTS_FILTER_ICONO_ALL,
   PAGE_BANK_DOCUMENTS_FILTER_NIVEAU,
   PAGE_BANK_DOCUMENTS_FILTER_TYPE,
   PAGE_BANK_DOCUMENTS_FILTER_TYPE_ALL,
@@ -26,6 +31,8 @@ import {
   DOCUMENT_MODULE_TYPE_IMAGE,
   DOCUMENT_MODULE_TYPE_TEXT,
 } from "@/lib/ui/ui-copy";
+import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
+import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
 import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
 import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/server";
@@ -52,6 +59,8 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
   const d = filters.disciplineId != null ? String(filters.disciplineId) : "";
   const n = filters.niveauId != null ? String(filters.niveauId) : "";
   const t = filters.docType ?? "";
+  const icatSet = new Set(filters.iconoCategories ?? []);
+  const showIconoCategoryFilter = t !== "textuel";
 
   return (
     <div className="mt-8 space-y-6">
@@ -137,6 +146,33 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
             <option value="iconographique">{PAGE_BANK_DOCUMENTS_FILTER_TYPE_IMAGE}</option>
           </select>
         </div>
+        {showIconoCategoryFilter ? (
+          <fieldset className="min-w-[12rem] space-y-2">
+            <legend className="text-xs font-semibold text-muted">
+              {BANK_FILTER_ICONO_CATEGORY_LABEL}
+            </legend>
+            <p className="text-[11px] leading-snug text-muted">
+              {PAGE_BANK_DOCUMENTS_FILTER_ICONO_ALL}
+            </p>
+            <div className="flex max-h-32 flex-col gap-1.5 overflow-y-auto rounded-lg border border-border bg-panel-alt p-2">
+              {DOCUMENT_TYPE_ICONO_SLUGS.map((slug: DocumentTypeIconoSlug) => (
+                <label
+                  key={slug}
+                  className="flex cursor-pointer items-center gap-2 text-xs text-deep"
+                >
+                  <input
+                    type="checkbox"
+                    name="icat"
+                    value={slug}
+                    defaultChecked={icatSet.has(slug)}
+                    className="h-4 w-4 rounded border-border text-accent"
+                  />
+                  <span>{DOCUMENT_TYPE_ICONO_LABEL[slug]}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
         <div className="flex gap-2">
           <button
             type="submit"
@@ -171,7 +207,17 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
                   className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
                   <div className="min-w-0 flex-1">
-                    <p className="font-semibold text-deep">{row.titre}</p>
+                    <p className="flex flex-wrap items-center gap-2 font-semibold text-deep">
+                      <span>{row.titre}</span>
+                      {(() => {
+                        const slug = parseTypeIconographique(row.type_iconographique);
+                        return slug ? (
+                          <span className="rounded-md bg-steel/20 px-1.5 py-0.5 text-[11px] font-medium text-muted">
+                            {DOCUMENT_TYPE_ICONO_BADGE_SHORT[slug]}
+                          </span>
+                        ) : null;
+                      })()}
+                    </p>
                     <p className="mt-1 text-xs text-muted">
                       {row.type === "textuel"
                         ? DOCUMENT_MODULE_TYPE_TEXT

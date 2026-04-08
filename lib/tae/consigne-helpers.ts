@@ -1,9 +1,9 @@
 /**
- * docs/WORKFLOWS.md + CONSIGNE-EDITOR.md — phrases d’intro, prévisualisation sommaire, validation texte HTML.
+ * docs/WORKFLOWS.md + CONSIGNE-EDITOR.md — amorce documentaire, prévisualisation sommaire, validation texte HTML.
  */
 
-/** docs/WORKFLOWS.md §4 — phrase d’introduction (italique sous le bandeau). */
-export function buildIntroPhrase(nbDocs: number): string {
+/** docs/WORKFLOWS.md §4 — amorce documentaire (italique sous le bandeau). */
+export function buildAmorceDocumentaire(nbDocs: number): string {
   if (nbDocs === 1) return "Consultez le document A.";
   if (nbDocs === 2) return "Consultez les documents A et B.";
   if (nbDocs === 3) return "Consultez les documents A, B et C.";
@@ -15,13 +15,13 @@ function escapeRegExp(s: string): string {
 }
 
 /**
- * Retire la phrase d’intro documents (WORKFLOWS / insertIntro) en tête du texte — pour cartes et listes seulement ;
+ * Retire l’amorce documentaire en tête du texte — pour cartes et listes seulement ;
  * la fiche lecture garde la consigne complète.
  */
-export function stripAutoIntroPhraseForMiniature(plainText: string): string {
+export function stripAmorceDocumentaireForMiniature(plainText: string): string {
   const s = plainText.trim();
   for (const n of [3, 2, 1] as const) {
-    const phrase = buildIntroPhrase(n);
+    const phrase = buildAmorceDocumentaire(n);
     const re = new RegExp(`^${escapeRegExp(phrase)}\\s*`);
     if (re.test(s)) return s.replace(re, "").trim();
   }
@@ -29,7 +29,7 @@ export function stripAutoIntroPhraseForMiniature(plainText: string): string {
 }
 
 /**
- * Texte brut pour aperçu carte / liste : refs doc → lettres / numéros, sans HTML, sans phrase d’intro automatique.
+ * Texte brut pour aperçu carte / liste : refs doc → lettres / numéros, sans HTML, sans amorce documentaire.
  * `nbDocuments` optionnel : résolution des `{{doc_*}}` (défaut 4 si absent).
  */
 export function plainConsigneForMiniature(
@@ -37,7 +37,7 @@ export function plainConsigneForMiniature(
   nbDocuments?: number,
 ): string {
   const s = html ?? "";
-  return stripAutoIntroPhraseForMiniature(stripHtml(resolveConsigneHtmlForDisplay(s, nbDocuments)));
+  return stripAmorceDocumentaireForMiniature(stripHtml(resolveConsigneHtmlForDisplay(s, nbDocuments)));
 }
 
 /** Texte brut sans balises — cartes, extraits (TaeCard). */

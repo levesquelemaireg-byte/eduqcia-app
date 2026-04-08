@@ -1,10 +1,16 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentBankCompletionCard } from "@/components/documents/DocumentBankCompletionCard";
 import { DocumentFicheRead } from "@/components/documents/DocumentFicheRead";
 import { DocumentFicheRetourLink } from "@/components/documents/DocumentFicheRetourLink";
+import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { createClient } from "@/lib/supabase/server";
 import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
-import { copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
+import {
+  DOCUMENT_FICHE_EDIT,
+  copyDocumentPublishedTaeUsageCount,
+  documentTypeIconoLabel,
+} from "@/lib/ui/ui-copy";
 import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
 
 type PageProps = {
@@ -68,6 +74,10 @@ export default async function DocumentReadPage({ params }: PageProps) {
   const legendText = typeof doc.image_legende === "string" ? doc.image_legende.trim() : "";
   const legendPos = parseDocumentLegendPosition(doc.image_legende_position);
 
+  const iconoSlug =
+    doc.type === "iconographique" ? parseTypeIconographique(doc.type_iconographique) : null;
+  const iconoCategoryLabel = documentTypeIconoLabel(iconoSlug);
+
   const sourceType =
     doc.source_type === "primaire" || doc.source_type === "secondaire"
       ? doc.source_type
@@ -75,7 +85,17 @@ export default async function DocumentReadPage({ params }: PageProps) {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6">
-      <DocumentFicheRetourLink />
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <DocumentFicheRetourLink />
+        {isAuthor ? (
+          <Link
+            href={`/documents/${id}/edit`}
+            className="text-sm font-semibold text-accent underline-offset-2 hover:underline"
+          >
+            {DOCUMENT_FICHE_EDIT}
+          </Link>
+        ) : null}
+      </div>
       {showBankCompletion ? (
         <DocumentBankCompletionCard
           documentId={doc.id}
@@ -103,6 +123,7 @@ export default async function DocumentReadPage({ params }: PageProps) {
         imageUrl={doc.type === "iconographique" ? doc.image_url : null}
         legendText={legendText}
         legendPosition={legendPos}
+        iconoCategoryLabel={iconoCategoryLabel}
       />
     </div>
   );

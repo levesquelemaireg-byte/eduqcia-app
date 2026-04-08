@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm, type Resolver } from "react-hook-form";
 import { toast } from "sonner";
 import { createAutonomousDocumentAction } from "@/lib/actions/create-autonomous-document";
+import { updateAutonomousDocumentAction } from "@/lib/actions/update-autonomous-document";
 import {
   DOCUMENT_WIZARD_STEP_METAS,
   DOCUMENT_WIZARD_STEPS_FOR_STEPPER,
@@ -33,12 +34,15 @@ import {
 import { initialAspects } from "@/lib/tae/redaction-helpers";
 import {
   DOCUMENT_MODULE_PAGE_TITLE,
+  DOCUMENT_MODULE_PAGE_TITLE_EDIT,
   DOCUMENT_WIZARD_INTRO,
   DOCUMENT_WIZARD_PREVIEW_HEADING,
   TOAST_DOCUMENT_CREATE_AUTH,
   TOAST_DOCUMENT_CREATE_FAILED,
   TOAST_DOCUMENT_CREATE_DEGRADED,
   TOAST_DOCUMENT_CREATE_SUCCESS,
+  TOAST_DOCUMENT_EDIT_FORBIDDEN,
+  TOAST_DOCUMENT_UPDATE_SUCCESS,
   TOAST_DOCUMENT_WIZARD_DRAFT_SAVED,
   TOAST_DRAFT_SAVE_FAILED,
 } from "@/lib/ui/ui-copy";
@@ -47,6 +51,10 @@ import { WizardStepper } from "@/components/wizard/WizardStepper";
 type Props = {
   niveaux: NiveauOption[];
   disciplines: DisciplineOption[];
+  /** Édition `/documents/[id]/edit` — pas de brouillon session, soumission = mise à jour. */
+  mode?: "create" | "edit";
+  documentId?: string;
+  initialValues?: AutonomousDocumentFormValues;
 };
 
 function defaultFormValues(): AutonomousDocumentFormValues {
@@ -67,11 +75,18 @@ function defaultFormValues(): AutonomousDocumentFormValues {
     image_legende_position: null,
     repere_temporel: "",
     annee_normalisee: null,
+    type_iconographique: null,
     legal_accepted: false,
   };
 }
 
-export function AutonomousDocumentWizard({ niveaux, disciplines }: Props) {
+export function AutonomousDocumentWizard({
+  niveaux,
+  disciplines,
+  mode = "create",
+  documentId,
+  initialValues,
+}: Props) {
   const router = useRouter();
   const [step, setStep] = useState<DocumentWizardStepIndex>(0);
   const [printOpen, setPrintOpen] = useState(false);
@@ -104,6 +119,11 @@ export function AutonomousDocumentWizard({ niveaux, disciplines }: Props) {
   }, [niveauId, filteredDisciplines, getValues, setValue]);
 
   useEffect(() => {
+    if (mode === "edit" && initialValues) {
+      reset({ ...defaultFormValues(), ...initialValues, legal_accepted: true });
+      draftHydrated.current = true;
+      return;
+    }
     if (draftHydrated.current) return;
     draftHydrated.current = true;
     try {
@@ -128,7 +148,7 @@ export function AutonomousDocumentWizard({ niveaux, disciplines }: Props) {
     } catch {
       /* ignore */
     }
-  }, [reset]);
+  }, [reset, mode, initialValues]);
 
   const clearDraft = useCallback(() => {
     try {
@@ -188,6 +208,26 @@ export function AutonomousDocumentWizard({ niveaux, disciplines }: Props) {
   };
 
   const onValid = async (data: AutonomousDocumentFormValues) => {
+    if (mode === "edit" && documentId) {
+      const r = await updateAutonomousDocumentAction({ ...data, document_id: documentId });
+      if (r.ok === false) {
+        if (r.code === "auth") toast.error(TOAST_DOCUMENT_CREATE_AUTH);
+        else if (r.code === "forbidden") toast.error(TOAST_DOCUMENT_EDIT_FORBIDDEN);
+        else if (r.fieldErrors) {
+          for (const msg of Object.values(r.fieldErrors)) {
+            toast.error(msg);
+          }
+        } else if (r.code === "db" && r.message) {
+          toast.error(r.message);
+        } else toast.error(TOAST_DOCUMENT_CREATE_FAILED);
+        return;
+      }
+      toast.success(TOAST_DOCUMENT_UPDATE_SUCCESS);
+      router.push(`/documents/${documentId}`);
+      router.refresh();
+      return;
+    }
+
     const r = await createAutonomousDocumentAction(data);
     if (r.ok === false) {
       if (r.code === "auth") toast.error(TOAST_DOCUMENT_CREATE_AUTH);
@@ -227,7 +267,7 @@ export function AutonomousDocumentWizard({ niveaux, disciplines }: Props) {
         <div className="tae-wizard-editor-column min-w-0 bg-[var(--color-panel)] px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
           <header className="max-w-2xl">
             <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
-              {DOCUMENT_MODULE_PAGE_TITLE}
+              {mode === "edit" ? DOCUMENT_MODULE_PAGE_TITLE_EDIT : DOCUMENT_MODULE_PAGE_TITLE}
             </h1>
             <p className="mt-2 max-w-none text-sm text-muted md:text-base">
               {DOCUMENT_WIZARD_INTRO}
@@ -273,6 +313,7 @@ export function AutonomousDocumentWizard({ niveaux, disciplines }: Props) {
               nextDisabled={false}
               onSaveDraft={saveDraft}
               draftSaving={draftSaving}
+              showDraft={mode !== "edit"}
               showSubmit={showSubmit}
               onSubmit={() => void handleSubmit(onValid)()}
               submitDisabled={!legalAccepted}

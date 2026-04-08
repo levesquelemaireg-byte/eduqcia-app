@@ -39,7 +39,7 @@
       {
         "id": "1.3",
         "enonce": "Classer des faits selon qu'ils sont antérieurs ou postérieurs à un repère de temps",
-        "nb_documents": null,
+        "nb_documents": 4,
         "nb_lignes": 0,
         "outil_evaluation": "OI1_SO3",
         "variant_slug": "avant-apres"
@@ -209,7 +209,7 @@
       {
         "id": "6.3",
         "enonce": "Montrer qu'une réalité historique se transforme ou se maintient",
-        "nb_documents": 3,
+        "nb_documents": 2,
         "nb_lignes": 5,
         "outil_evaluation": "OI6_SO3"
       }

@@ -13,3 +13,9 @@ export function nonRedactionLignePayload(state: TaeFormState): unknown {
   if (nr?.type !== "ligne-du-temps") return null;
   return nr.payload;
 }
+
+export function nonRedactionAvantApresPayload(state: TaeFormState): unknown {
+  const nr = state.bloc5.nonRedaction;
+  if (nr?.type !== "avant-apres") return null;
+  return nr.payload;
+}

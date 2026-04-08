@@ -1,3 +1,5 @@
+import "server-only";
+
 import sharp from "sharp";
 
 import { UPLOAD_IMAGE_MAX_HEIGHT, UPLOAD_IMAGE_MAX_WIDTH } from "@/lib/images/upload-image-max-box";

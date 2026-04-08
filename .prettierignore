@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+build
+coverage
+package-lock.json
+next-env.d.ts
+.vercel
+*.min.js
+*.min.css
+public/data
+maquette/grilles-etalon-lab/dist
+test-results

@@ -23,6 +23,7 @@ import {
   type OrdreOptionRow,
   type OrdrePermutation,
 } from "@/lib/tae/non-redaction/ordre-chronologique-permutations";
+import { getAnneePourComparaison } from "@/lib/tae/document-annee";
 import {
   computeSlotStatus,
   getSlotData,
@@ -98,6 +99,10 @@ export type OrdreChronologiquePayload = {
   optionC: OrdreOptionRow;
   optionD: OrdreOptionRow;
   correctLetter: "" | "A" | "B" | "C" | "D";
+  /** Justification automatique (corrigé enseignant / publication). */
+  optionsJustification: string;
+  /** Si deux documents ont la même année : séquence correcte saisie manuellement avant génération. */
+  manualTieBreakSequence: OrdrePermutation | null;
 };
 
 export type { OrdreOptionRow, OrdrePermutation };
@@ -118,6 +123,15 @@ function coerceOptionRowField(v: unknown): OrdreOptionRow {
 function coerceCorrectLetter(v: unknown): OrdreChronologiquePayload["correctLetter"] {
   if (v === "A" || v === "B" || v === "C" || v === "D") return v;
   return "";
+}
+
+function coerceManualTieBreak(v: unknown): OrdrePermutation | null {
+  const row = coerceOptionRowField(v);
+  return isCompleteOrdrePermutation(row) ? row : null;
+}
+
+function coerceOptionsJustification(v: unknown): string {
+  return typeof v === "string" ? v : "";
 }
 
 /**
@@ -159,6 +173,8 @@ export function normalizeOrdreChronologiquePayload(raw: unknown): OrdreChronolog
     optionC: coerceOptionRowField(o.optionC),
     optionD: coerceOptionRowField(o.optionD),
     correctLetter: coerceCorrectLetter(o.correctLetter),
+    optionsJustification: coerceOptionsJustification(o.optionsJustification),
+    manualTieBreakSequence: coerceManualTieBreak(o.manualTieBreakSequence),
   };
 }
 
@@ -171,13 +187,21 @@ export function initialOrdreChronologiquePayload(): OrdreChronologiquePayload {
     optionC: empty,
     optionD: empty,
     correctLetter: "",
+    optionsJustification: "",
+    manualTieBreakSequence: null,
   };
 }
 
 /** Vide les options A–D et la lettre du corrigé (générateur : reset, dirty, échec défensif). */
 export function clearedOrdreOptionsPatch(): Pick<
   OrdreChronologiquePayload,
-  "optionA" | "optionB" | "optionC" | "optionD" | "correctLetter"
+  | "optionA"
+  | "optionB"
+  | "optionC"
+  | "optionD"
+  | "correctLetter"
+  | "optionsJustification"
+  | "manualTieBreakSequence"
 > {
   const empty = emptyOrdreOptionRow();
   return {
@@ -186,6 +210,8 @@ export function clearedOrdreOptionsPatch(): Pick<
     optionC: empty,
     optionD: empty,
     correctLetter: "",
+    optionsJustification: "",
+    manualTieBreakSequence: null,
   };
 }
 
@@ -232,6 +258,11 @@ export function mergeOrdreChronologiquePayload(
     optionC: patch.optionC ?? base.optionC,
     optionD: patch.optionD ?? base.optionD,
     correctLetter: patch.correctLetter ?? base.correctLetter,
+    optionsJustification: patch.optionsJustification ?? base.optionsJustification,
+    manualTieBreakSequence:
+      patch.manualTieBreakSequence !== undefined
+        ? patch.manualTieBreakSequence
+        : base.manualTieBreakSequence,
   };
 }
 
@@ -261,9 +292,21 @@ export function hasCompleteOrdreOptionsOnly(
   );
 }
 
-export function isOrdreChronologiqueStep3Complete(p: OrdreChronologiquePayload): boolean {
-  if (!nonEmpty(p.consigneTheme)) return false;
+/** Étape 3 wizard — thème de consigne (template ministériel) obligatoire ; options A–D à l’étape 5. */
+export function isOrdreChronologiqueStep3ConsigneComplete(p: OrdreChronologiquePayload): boolean {
+  return nonEmpty(p.consigneTheme);
+}
+
+/** Étape 5 wizard — options de réponse (PIN + génération). */
+export function isOrdreChronologiqueStep5OptionsComplete(p: OrdreChronologiquePayload): boolean {
   return hasCompleteOrdreOptionsOnly(p);
+}
+
+/** Publication / prérequis fin de parcours : thème + options complètes. */
+export function isOrdreChronologiqueStep3Complete(p: OrdreChronologiquePayload): boolean {
+  return (
+    isOrdreChronologiqueStep3ConsigneComplete(p) && isOrdreChronologiqueStep5OptionsComplete(p)
+  );
 }
 
 export function isOrdreChronologiqueSlotComplete(slot: DocumentSlotData): boolean {
@@ -277,6 +320,21 @@ export function isOrdreChronologiqueDocumentsStepComplete(
   if (documentSlots.length === 0) return true;
   for (const { slotId } of documentSlots) {
     if (!isOrdreChronologiqueSlotComplete(getSlotData(documents, slotId))) return false;
+  }
+  return true;
+}
+
+/** Prérequis Bloc 5 : chaque document a une année comparable (persistée ou extraite du repère) — aligné `getAnneePourComparaison`. */
+export function areOrdreChronologiqueDocumentYearsComplete(
+  documentSlots: { slotId: DocumentSlotId }[],
+  documents: Partial<Record<DocumentSlotId, DocumentSlotData>>,
+): boolean {
+  if (documentSlots.length === 0) return true;
+  for (const { slotId } of documentSlots) {
+    const slot = getSlotData(documents, slotId);
+    if (getAnneePourComparaison(slot) === null) {
+      return false;
+    }
   }
   return true;
 }
@@ -356,7 +414,10 @@ export function buildOrdreChronologiqueCorrigeHtml(p: OrdreChronologiquePayload)
   ) {
     return "";
   }
-  return `<p>${escapeHtml(buildOrdreChronologiqueCorrigeText(p))}</p>`;
+  const lead = `<p>${escapeHtml(buildOrdreChronologiqueCorrigeText(p))}</p>`;
+  const j = p.optionsJustification.trim();
+  if (!j) return lead;
+  return `${lead}<p class="ordre-chrono-corrige-justification">${escapeHtml(j)}</p>`;
 }
 
 /** HTML — `tae.guidage` : guidage **élève**, fixe (non modifiable par l’enseignant). */

@@ -10,7 +10,7 @@ import { SectionConnaissances } from "@/components/tae/fiche/SectionConnaissance
 import { FicheFooter } from "@/components/tae/fiche/FicheFooter";
 import type { ConnaissanceSelectionWithIds } from "@/lib/tae/connaissances-helpers";
 import type { TaeFicheData } from "@/lib/types/fiche";
-import { formatFicheDate } from "@/lib/tae/fiche-helpers";
+import { formatFicheDate, hasFicheContent } from "@/lib/tae/fiche-helpers";
 import {
   FICHE_BODY_SECTION_PB,
   FICHE_BODY_SECTION_PT,
@@ -63,7 +63,7 @@ export function FicheTache({ tae, mode, userId, connaissancesSommaire = null }: 
 
         <div className={FICHE_HAIRLINE_RULE} aria-hidden="true" />
 
-        <div className="relative grid min-w-0 grid-cols-1 min-[800px]:grid-cols-[minmax(0,6fr)_minmax(0,4fr)]">
+        <div className="relative grid min-w-0 grid-cols-1 items-start min-[800px]:grid-cols-[minmax(0,6fr)_minmax(0,4fr)]">
           {/* Pas de pr/pl sur les colonnes : le `px-5` des `SECTION_SHELL` gère le texte ; sinon les hairlines s’arrêtent loin du filet vertical (double gouttière). */}
           <div className="min-w-0">
             <div className={SECTION_SHELL}>
@@ -83,10 +83,14 @@ export function FicheTache({ tae, mode, userId, connaissancesSommaire = null }: 
               )}
               aria-hidden="true"
             />
-            <div className={SECTION_SHELL}>
-              <SectionGuidage guidage={tae.guidage} />
-            </div>
-            <div className={FICHE_HAIRLINE_RULE} aria-hidden="true" />
+            {hasFicheContent(tae.guidage) ? (
+              <>
+                <div className={SECTION_SHELL}>
+                  <SectionGuidage guidage={tae.guidage} />
+                </div>
+                <div className={FICHE_HAIRLINE_RULE} aria-hidden="true" />
+              </>
+            ) : null}
             <div className={SECTION_SHELL}>
               <SectionCD cd={tae.cd} />
             </div>

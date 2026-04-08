@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { ListboxField } from "@/components/ui/ListboxField";
 import { PasswordField } from "@/components/ui/PasswordField";
+import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
 
@@ -222,35 +223,24 @@ export function RegisterForm({ cssEcoles }: Props) {
         {...register("password_confirm")}
       />
 
-      <fieldset className="flex flex-col gap-[var(--space-3)] border-0 p-0">
-        <legend className="text-sm font-semibold text-deep">Profil</legend>
-        <div className="flex flex-col gap-[var(--space-2)]">
-          <div className="flex items-center gap-[var(--space-2)] text-sm font-medium text-steel">
-            <input
-              id="register-profile-enseignant"
-              type="radio"
-              value="enseignant"
-              className="size-4 shrink-0 border-border"
-              {...register("profile_type")}
-            />
-            <label htmlFor="register-profile-enseignant" className="cursor-pointer">
-              Enseignant(e)
-            </label>
-          </div>
-          <div className="flex items-center gap-[var(--space-2)] text-sm font-medium text-steel">
-            <input
-              id="register-profile-conseiller"
-              type="radio"
-              value="conseiller"
-              className="size-4 shrink-0 border-border"
-              {...register("profile_type")}
-            />
-            <label htmlFor="register-profile-conseiller" className="cursor-pointer">
-              Conseiller(ère) pédagogique
-            </label>
-          </div>
-        </div>
-      </fieldset>
+      <Controller
+        name="profile_type"
+        control={control}
+        render={({ field }) => (
+          <RadioCardGroup
+            name="profile_type"
+            label="Profil"
+            required
+            columns={1}
+            options={[
+              { value: "enseignant", label: "Enseignant(e)" },
+              { value: "conseiller", label: "Conseiller(ère) pédagogique" },
+            ]}
+            value={field.value ?? ""}
+            onChange={field.onChange}
+          />
+        )}
+      />
 
       <div className="flex flex-col gap-[var(--space-2)]">
         <label htmlFor="css" className="text-sm font-medium text-deep">

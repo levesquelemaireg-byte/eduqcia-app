@@ -11,7 +11,8 @@ import { DocumentSlotsAccordionSync } from "@/components/tae/TaeForm/bloc4/Docum
 import { getRedactionSliceForPreview, useTaeForm } from "@/components/tae/TaeForm/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
-import { isRedactionStepComplete } from "@/lib/tae/redaction-helpers";
+import { isRedactionSliceConsigneReady } from "@/lib/tae/redaction-helpers";
+import { BLOC4_GATE_WIZARD } from "@/lib/ui/ui-copy";
 
 export function Bloc4DocumentsHistoriques() {
   const { state } = useTaeForm();
@@ -22,15 +23,10 @@ export function Bloc4DocumentsHistoriques() {
   const orderedIds = useMemo(() => slots.map((s) => s.slotId) as DocumentSlotId[], [slots]);
 
   const blueprintGate = isBlueprintFieldsComplete(b) && b.blueprintLocked;
-  const redactionOk = isRedactionStepComplete(getRedactionSliceForPreview(state));
+  const redactionOk = isRedactionSliceConsigneReady(getRedactionSliceForPreview(state));
 
   if (!blueprintGate || !redactionOk) {
-    return (
-      <p className="text-sm leading-relaxed text-muted">
-        Complétez d&apos;abord les étapes « Paramètres de la tâche » et « Consigne et production
-        attendue » (étapes 2 et 3) pour accéder aux documents historiques.
-      </p>
-    );
+    return <p className="text-sm leading-relaxed text-muted">{BLOC4_GATE_WIZARD}</p>;
   }
 
   if (nb == null || slots.length === 0) {

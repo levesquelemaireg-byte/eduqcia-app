@@ -20,27 +20,44 @@ import { isCdStepComplete } from "@/lib/tae/cd-step-guards";
 import { isDocumentsStepComplete } from "@/lib/tae/document-helpers";
 import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
 import {
+  isAvantApresBloc5CompleteForNext,
+  isAvantApresDocumentsStepComplete,
+  isAvantApresRedactionStepCompleteForNext,
+  normalizeAvantApresPayload,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
+import {
   isLigneDuTempsStep3Complete,
+  isLigneDuTempsStep5SegmentComplete,
   normalizeLigneDuTempsPayload,
 } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import {
   isOrdreChronologiqueDocumentsStepComplete,
-  isOrdreChronologiqueStep3Complete,
+  isOrdreChronologiqueStep3ConsigneComplete,
+  isOrdreChronologiqueStep5OptionsComplete,
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import {
+  isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
   isActiveNonRedactionVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
-import { nonRedactionLignePayload, nonRedactionOrdrePayload } from "@/lib/tae/wizard-state-nr";
+import {
+  nonRedactionAvantApresPayload,
+  nonRedactionLignePayload,
+  nonRedactionOrdrePayload,
+} from "@/lib/tae/wizard-state-nr";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import {
   isPublishBlockedOnlyByIconographicUrls,
   isWizardPublishReady,
 } from "@/lib/tae/wizard-publish-guards";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
+import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { PublishTaeFailureCode } from "@/lib/tae/publish-tae";
+import { detectMajorChangeFromFormState } from "@/lib/tae/publish-tae-version";
 import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tae/tae-draft-storage-key";
+import { WarningModal } from "@/components/ui/WarningModal";
 import {
   PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE,
   TOAST_DRAFT_SAVE_FAILED,
@@ -60,7 +77,63 @@ import {
   TOAST_TAE_PUBLISH_UNPUBLISHED_DOCS,
   WIZARD_EDIT_SAVE_CTA,
   WIZARD_PUBLISH_CTA,
+  EDIT_MAJOR_VERSION_MODAL_TITLE,
+  EDIT_MAJOR_VERSION_MODAL_BODY_P1,
+  EDIT_MAJOR_VERSION_MODAL_BODY_P2,
+  EDIT_MAJOR_VERSION_MODAL_CONFIRM,
+  EDIT_MAJOR_VERSION_MODAL_CANCEL,
 } from "@/lib/ui/ui-copy";
+
+/** Guard Bloc 5 intrus — vérifie que l'intrus est sélectionné et les champs remplis. */
+function isBloc5IntrusActive(state: TaeFormState): boolean {
+  const config = getWizardBlocConfig(state.bloc2.comportementId);
+  return config?.bloc5?.type === "intrus";
+}
+
+function isBloc5IntrusCompleteForNext(state: TaeFormState): boolean {
+  const intrus = state.bloc5.intrus;
+  if (!intrus) return false;
+  if (intrus.intrusLetter === "") return false;
+  if (!htmlHasMeaningfulText(intrus.explicationDifference)) return false;
+  if (!htmlHasMeaningfulText(intrus.pointCommun)) return false;
+  return true;
+}
+
+/** Guard Bloc 3 templates structurés et purs. */
+function isBloc3PerspectivesReadyForNext(state: TaeFormState): boolean {
+  const config = getWizardBlocConfig(state.bloc2.comportementId);
+  if (!config) return true;
+  if (config.bloc3.type === "structure") {
+    if (state.bloc3.perspectivesMode === null) return false;
+    if (state.bloc3.perspectivesContexte.trim().length === 0) return false;
+    return true;
+  }
+  if (config.bloc3.type === "pur") {
+    if (config.bloc3.variante === "oi6") {
+      // OI6·6.3 : perspectivesMode + enjeu obligatoires
+      if (state.bloc3.perspectivesMode === null) return false;
+      if (state.bloc3.oi6Enjeu.trim().length === 0) return false;
+      return true;
+    }
+    if (config.bloc3.variante === "oi7") {
+      if (state.bloc3.consigneMode === "personnalisee") {
+        // Mode libre : consigne non vide suffit
+        return htmlHasMeaningfulText(state.bloc3.consigne);
+      }
+      // Mode gabarit : 4 champs obligatoires
+      if (state.bloc3.oi7EnjeuGlobal.trim().length === 0) return false;
+      if (state.bloc3.oi7Element1.trim().length === 0) return false;
+      if (state.bloc3.oi7Element2.trim().length === 0) return false;
+      if (state.bloc3.oi7Element3.trim().length === 0) return false;
+      return true;
+    }
+    // OI3·3.5 (triple) : perspectives mode + contexte obligatoire
+    if (state.bloc3.perspectivesMode === null) return false;
+    if (state.bloc3.perspectivesContexte.trim().length === 0) return false;
+    return true;
+  }
+  return true;
+}
 
 const PUBLISH_FAILURE_TOAST: Record<PublishTaeFailureCode, string> = {
   validation: TOAST_PUBLICATION_VALIDATION,
@@ -81,9 +154,10 @@ const PUBLISH_FAILURE_TOAST: Record<PublishTaeFailureCode, string> = {
 export function StepperNavFooter() {
   const router = useRouter();
   const { state, dispatch } = useTaeForm();
-  const { editingTaeId, persistSessionDraft } = useWizardSession();
+  const { editingTaeId, persistSessionDraft, versionSnapshot } = useWizardSession();
   const [draftSaving, setDraftSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [majorConfirmOpen, setMajorConfirmOpen] = useState(false);
   const canPrev = state.currentStep > 0;
   const canNext = state.currentStep < TAE_FORM_STEP_COUNT - 1;
 
@@ -107,7 +181,7 @@ export function StepperNavFooter() {
       }
       if (isActiveOrdreChronologiqueVariant(state)) {
         const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
-        if (!p || !isOrdreChronologiqueStep3Complete(p)) {
+        if (!p || !isOrdreChronologiqueStep3ConsigneComplete(p)) {
           toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
           return;
         }
@@ -117,13 +191,45 @@ export function StepperNavFooter() {
           toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
           return;
         }
+      } else if (isActiveAvantApresVariant(state)) {
+        const p = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+        if (!p || !isAvantApresRedactionStepCompleteForNext(p)) {
+          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+          return;
+        }
+      } else if (!isBloc3PerspectivesReadyForNext(state)) {
+        toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+        return;
       } else if (!htmlHasMeaningfulText(state.bloc3.consigne)) {
         toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
         return;
       }
     }
     if (state.currentStep === TAE_BLOC5_STEP_INDEX) {
-      if (!isActiveNonRedactionVariant(state)) {
+      if (isActiveOrdreChronologiqueVariant(state)) {
+        const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
+        if (!p || !isOrdreChronologiqueStep5OptionsComplete(p)) {
+          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+          return;
+        }
+      } else if (isActiveLigneDuTempsVariant(state)) {
+        const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+        if (!p || !isLigneDuTempsStep5SegmentComplete(p)) {
+          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+          return;
+        }
+      } else if (isActiveAvantApresVariant(state)) {
+        const p = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+        if (!p || !isAvantApresBloc5CompleteForNext(p)) {
+          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+          return;
+        }
+      } else if (isBloc5IntrusActive(state)) {
+        if (!isBloc5IntrusCompleteForNext(state)) {
+          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
+          return;
+        }
+      } else if (!isActiveNonRedactionVariant(state)) {
         if (!htmlHasMeaningfulText(state.bloc5.corrige)) {
           toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
           return;
@@ -143,6 +249,11 @@ export function StepperNavFooter() {
         }
       } else if (isActiveLigneDuTempsVariant(state)) {
         if (!isDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents)) {
+          toast.error("Tous les documents doivent être complétés avant de continuer.");
+          return;
+        }
+      } else if (isActiveAvantApresVariant(state)) {
+        if (!isAvantApresDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents)) {
           toast.error("Tous les documents doivent être complétés avant de continuer.");
           return;
         }
@@ -183,8 +294,7 @@ export function StepperNavFooter() {
   const canPublish = isWizardPublishReady(state);
   const publishTitleImageOnly = isPublishBlockedOnlyByIconographicUrls(state);
 
-  const handlePublish = async () => {
-    if (!canPublish || publishing) return;
+  const doPublish = async () => {
     setPublishing(true);
     try {
       const result = await publishTaeAction(state, editingTaeId ?? null);
@@ -217,7 +327,47 @@ export function StepperNavFooter() {
     }
   };
 
+  const handlePublish = () => {
+    if (!canPublish || publishing) return;
+    // En mode édition, détecter une modification majeure → modale de confirmation
+    if (editingTaeId && versionSnapshot && detectMajorChangeFromFormState(versionSnapshot, state)) {
+      setMajorConfirmOpen(true);
+      return;
+    }
+    doPublish();
+  };
+
   return (
+    <>
+    <WarningModal
+      open={majorConfirmOpen}
+      title={EDIT_MAJOR_VERSION_MODAL_TITLE}
+      onClose={() => setMajorConfirmOpen(false)}
+      footer={
+        <div className="flex items-center justify-end gap-3">
+          <button
+            type="button"
+            onClick={() => setMajorConfirmOpen(false)}
+            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
+          >
+            {EDIT_MAJOR_VERSION_MODAL_CANCEL}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMajorConfirmOpen(false);
+              doPublish();
+            }}
+            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95"
+          >
+            {EDIT_MAJOR_VERSION_MODAL_CONFIRM}
+          </button>
+        </div>
+      }
+    >
+      <p className="leading-relaxed">{EDIT_MAJOR_VERSION_MODAL_BODY_P1}</p>
+      <p className="mt-3 leading-relaxed">{EDIT_MAJOR_VERSION_MODAL_BODY_P2}</p>
+    </WarningModal>
     <div className="mt-6 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-2 sm:gap-3">
         <button
@@ -279,5 +429,6 @@ export function StepperNavFooter() {
         </button>
       </div>
     </div>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 /**
  * Associe les lignes `connaissances` (Supabase) aux entrées du JSON Miller (ids string)
- * pour la réhydratation du wizard — voir Bloc 6 (`selectedIds.has(r.id)`).
+ * pour la réhydratation du wizard — voir étape indexation (`selectedIds.has(r.id)`).
  */
 
 import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";

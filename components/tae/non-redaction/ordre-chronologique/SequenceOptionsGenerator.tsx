@@ -1,40 +1,59 @@
 "use client";
 
-import { useCallback, useEffect, startTransition, useState } from "react";
+import { useCallback, useEffect, useMemo, startTransition, useState } from "react";
+import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { OrdreChronoCorrectSequencePinRow } from "@/components/tae/non-redaction/ordre-chronologique/OrdreChronoCorrectSequencePinRow";
 import { OrdreChronoOptionPinRow } from "@/components/tae/non-redaction/ordre-chronologique/OrdreChronoOptionPinRow";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
+import type { DocumentSlotData } from "@/lib/tae/document-helpers";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import {
   emptyOrdreOptionRow,
+  formatOrdreOptionRowDisplay,
   generateShuffledOrdreOptionsGuarded,
   isCompleteOrdrePermutation,
   type OrdreOptionRow,
+  type OrdrePermutation,
   type ShuffledOrdreOptionsData,
 } from "@/lib/tae/non-redaction/ordre-chronologique-permutations";
 import {
   getOrdreOptionRowForLetter,
   hasCompleteOrdreOptionsOnly,
+  ordreChronologiqueCorrectPermutation,
   type OrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+import {
+  buildOrdreJustificationText,
+  computeOrdreSequenceFromYears,
+  resolveOrdreBaseSequenceForGeneration,
+} from "@/lib/tae/non-redaction/ordre-chronologique-years";
 import { cn } from "@/lib/utils/cn";
 import {
+  NR_ORDRE_BLOC5_AUTO_SEQUENCE_LEAD,
+  NR_ORDRE_BLOC5_YEAR_TIE_WARNING,
+  NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL,
+  NR_ORDRE_BLOC5_YEARS_READY_BADGE,
   NR_ORDRE_GENERATE_CTA,
   NR_ORDRE_GENERATE_HELP,
+  NR_ORDRE_JUSTIFICATION_LABEL,
   NR_ORDRE_OPTION_A_LABEL,
   NR_ORDRE_OPTION_B_LABEL,
   NR_ORDRE_OPTION_C_LABEL,
   NR_ORDRE_OPTION_D_LABEL,
   NR_ORDRE_PIN_HELP,
+  NR_ORDRE_REGENERATE_CTA,
+  NR_ORDRE_REGENERATE_HELP,
   NR_ORDRE_SEQ_CORRECT_BADGE,
   NR_ORDRE_SEQ_CORRIGE_SUMMARY_LABEL,
   NR_ORDRE_SEQ_CORRIGE_VALUE,
   NR_ORDRE_SEQ_RESET,
   NR_ORDRE_SEQ_STEP1_DESCRIPTION,
+  NR_ORDRE_SEQ_STEP1_DESCRIPTION_AUTO,
   NR_ORDRE_SEQ_STEP1_HINT,
   NR_ORDRE_SEQ_STEP1_TITLE,
+  NR_ORDRE_SEQ_STEP1_TITLE_AUTO,
   NR_ORDRE_SEQ_STEP2_DESCRIPTION,
   NR_ORDRE_SEQ_STEP2_TITLE,
 } from "@/lib/ui/ui-copy";
@@ -43,7 +62,13 @@ const noopOrdreRow = (_next: OrdreOptionRow) => {};
 
 export type SequenceOptionsGeneratorValue = Pick<
   OrdreChronologiquePayload,
-  "optionA" | "optionB" | "optionC" | "optionD" | "correctLetter"
+  | "optionA"
+  | "optionB"
+  | "optionC"
+  | "optionD"
+  | "correctLetter"
+  | "optionsJustification"
+  | "manualTieBreakSequence"
 >;
 
 function optionLabel(letter: "A" | "B" | "C" | "D"): string {
@@ -80,56 +105,111 @@ function valueToResult(v: SequenceOptionsGeneratorValue): ShuffledOrdreOptionsDa
   };
 }
 
+function toPayloadForPerm(v: SequenceOptionsGeneratorValue): OrdreChronologiquePayload {
+  return {
+    consigneTheme: "",
+    optionA: v.optionA,
+    optionB: v.optionB,
+    optionC: v.optionC,
+    optionD: v.optionD,
+    correctLetter: v.correctLetter,
+    optionsJustification: v.optionsJustification ?? "",
+    manualTieBreakSequence: v.manualTieBreakSequence ?? null,
+  };
+}
+
 type Props = {
   value: SequenceOptionsGeneratorValue;
   onChange: (patch: SequenceOptionsGeneratorValue | null) => void;
+  orderedSlotIds: DocumentSlotId[];
+  documents: Partial<Record<DocumentSlotId, DocumentSlotData>>;
 };
 
-export function SequenceOptionsGenerator({ value, onChange }: Props) {
+export function SequenceOptionsGenerator({ value, onChange, orderedSlotIds, documents }: Props) {
   const [seqInput, setSeqInput] = useState(emptyOrdreOptionRow);
   const [displayResult, setDisplayResult] = useState<ShuffledOrdreOptionsData | null>(null);
   const [generateHelpOpen, setGenerateHelpOpen] = useState(false);
+  const [regenerateHelpOpen, setRegenerateHelpOpen] = useState(false);
+
+  const syncedFromValue = useMemo(() => valueToResult(value), [value]);
+  const showStep2 = displayResult !== null || syncedFromValue !== null;
+  const activeResult = displayResult ?? syncedFromValue;
+
+  const yearRes = useMemo(
+    () => computeOrdreSequenceFromYears(orderedSlotIds, documents),
+    [orderedSlotIds, documents],
+  );
 
   useEffect(() => {
     const synced = valueToResult(value);
     startTransition(() => {
       if (synced) {
         setDisplayResult(synced);
-        setSeqInput(getOrdreOptionRowForLetter(value, synced.correctLetter));
+        if (yearRes.kind === "tie") {
+          setSeqInput(getOrdreOptionRowForLetter(value, synced.correctLetter));
+        }
       } else {
         setDisplayResult(null);
+        if (
+          value.manualTieBreakSequence &&
+          isCompleteOrdrePermutation(value.manualTieBreakSequence)
+        ) {
+          setSeqInput(value.manualTieBreakSequence);
+        }
       }
     });
-  }, [value]);
+  }, [value, yearRes.kind]);
 
   const handleSeqChange = useCallback(
     (next: OrdreOptionRow) => {
-      if (displayResult !== null) {
+      if (displayResult !== null || syncedFromValue !== null) {
         setDisplayResult(null);
         onChange(null);
       }
       setSeqInput(next);
     },
-    [displayResult, onChange],
+    [displayResult, onChange, syncedFromValue],
+  );
+
+  const applyGeneration = useCallback(
+    (base: OrdrePermutation) => {
+      const gen = generateShuffledOrdreOptionsGuarded(base);
+      if (!gen.ok) {
+        setDisplayResult(null);
+        onChange(null);
+        return;
+      }
+      const L = gen.data.correctLetter;
+      const justification = buildOrdreJustificationText(base, orderedSlotIds, documents, L);
+      setDisplayResult(gen.data);
+      onChange({
+        optionA: gen.data.optionA,
+        optionB: gen.data.optionB,
+        optionC: gen.data.optionC,
+        optionD: gen.data.optionD,
+        correctLetter: L,
+        optionsJustification: justification,
+        manualTieBreakSequence: yearRes.kind === "tie" ? base : null,
+      });
+    },
+    [documents, onChange, orderedSlotIds, yearRes.kind],
   );
 
   const handleGenerate = useCallback(() => {
-    if (!isCompleteOrdrePermutation(seqInput)) return;
-    const gen = generateShuffledOrdreOptionsGuarded(seqInput);
-    if (!gen.ok) {
-      setDisplayResult(null);
-      onChange(null);
-      return;
-    }
-    setDisplayResult(gen.data);
-    onChange({
-      optionA: gen.data.optionA,
-      optionB: gen.data.optionB,
-      optionC: gen.data.optionC,
-      optionD: gen.data.optionD,
-      correctLetter: gen.data.correctLetter,
-    });
-  }, [seqInput, onChange]);
+    const base = resolveOrdreBaseSequenceForGeneration(
+      yearRes,
+      value.manualTieBreakSequence,
+      seqInput,
+    );
+    if (!base) return;
+    applyGeneration(base);
+  }, [applyGeneration, seqInput, value.manualTieBreakSequence, yearRes]);
+
+  const handleRegenerate = useCallback(() => {
+    const correct = ordreChronologiqueCorrectPermutation(toPayloadForPerm(value));
+    if (!correct) return;
+    applyGeneration(correct);
+  }, [applyGeneration, value]);
 
   const handleReset = useCallback(() => {
     setSeqInput(emptyOrdreOptionRow());
@@ -137,12 +217,15 @@ export function SequenceOptionsGenerator({ value, onChange }: Props) {
     onChange(null);
   }, [onChange]);
 
-  const canGenerate = isCompleteOrdrePermutation(seqInput);
-  const showStep2 = displayResult !== null;
+  const baseReady = useMemo(() => {
+    return resolveOrdreBaseSequenceForGeneration(yearRes, value.manualTieBreakSequence, seqInput);
+  }, [yearRes, value.manualTieBreakSequence, seqInput]);
+
+  const canGenerate = baseReady !== null;
 
   const correctRow =
-    showStep2 && displayResult
-      ? getOrdreOptionRowForLetter(displayResult, displayResult.correctLetter)
+    showStep2 && activeResult
+      ? getOrdreOptionRowForLetter(activeResult, activeResult.correctLetter)
       : null;
 
   const letters = ["A", "B", "C", "D"] as const;
@@ -160,20 +243,83 @@ export function SequenceOptionsGenerator({ value, onChange }: Props) {
     }
   }
 
-  return (
-    <div className="space-y-6">
-      <div className="space-y-3 rounded-lg border border-border bg-panel-alt/30 p-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-deep">
-          {NR_ORDRE_SEQ_STEP1_TITLE}
-        </h3>
-        <p className="text-sm leading-relaxed text-deep">{NR_ORDRE_SEQ_STEP1_DESCRIPTION}</p>
-        <OrdreChronoCorrectSequencePinRow
-          row={seqInput}
-          onChange={handleSeqChange}
-          groupAriaLabel={NR_ORDRE_SEQ_STEP1_TITLE}
-        />
-        <p className="text-xs text-muted">{NR_ORDRE_SEQ_STEP1_HINT}</p>
+  const step1Block = (() => {
+    if (yearRes.kind === "missing_years") {
+      return (
+        <div className="space-y-2 rounded-lg border border-warning/30 bg-warning/6 p-4">
+          <p className="text-sm leading-relaxed text-deep">
+            {NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(yearRes.slotLetters)}
+          </p>
+        </div>
+      );
+    }
 
+    if (yearRes.kind === "tie") {
+      return (
+        <div className="space-y-3 rounded-lg border border-border bg-panel-alt/30 p-4">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-deep">
+            {NR_ORDRE_SEQ_STEP1_TITLE}
+          </h3>
+          <p className="text-sm leading-relaxed text-warning">{NR_ORDRE_BLOC5_YEAR_TIE_WARNING}</p>
+          <p className="text-sm leading-relaxed text-deep">{NR_ORDRE_SEQ_STEP1_DESCRIPTION}</p>
+          <OrdreChronoCorrectSequencePinRow
+            row={seqInput}
+            onChange={handleSeqChange}
+            groupAriaLabel={NR_ORDRE_SEQ_STEP1_TITLE}
+          />
+          <p className="text-xs text-muted">{NR_ORDRE_SEQ_STEP1_HINT}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <SimpleModal
+              open={generateHelpOpen}
+              title={NR_ORDRE_GENERATE_CTA}
+              onClose={() => setGenerateHelpOpen(false)}
+              titleStyle="info-help"
+            >
+              <p className="text-sm leading-relaxed text-deep">{NR_ORDRE_GENERATE_HELP}</p>
+            </SimpleModal>
+            <button
+              type="button"
+              disabled={!canGenerate}
+              onClick={handleGenerate}
+              className={cn(
+                "inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors",
+                canGenerate ? "hover:bg-panel-alt" : "cursor-not-allowed opacity-50",
+              )}
+            >
+              <span
+                className="material-symbols-outlined text-[1em]"
+                aria-hidden="true"
+                title={materialIconTooltip("shuffle")}
+              >
+                shuffle
+              </span>
+              {NR_ORDRE_GENERATE_CTA}
+            </button>
+            <FieldHelpModalButton onClick={() => setGenerateHelpOpen(true)} />
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-3 rounded-lg border border-border bg-panel-alt/30 p-4">
+        <div className="flex flex-wrap items-center gap-2">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-deep">
+            {NR_ORDRE_SEQ_STEP1_TITLE_AUTO}
+          </h3>
+          <span className="rounded-md bg-success/15 px-2 py-0.5 text-xs font-semibold text-success">
+            {NR_ORDRE_BLOC5_YEARS_READY_BADGE}
+          </span>
+        </div>
+        <p className="text-sm leading-relaxed text-deep">{NR_ORDRE_SEQ_STEP1_DESCRIPTION_AUTO}</p>
+        <div className="rounded-md border border-border bg-panel px-3 py-2">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+            {NR_ORDRE_BLOC5_AUTO_SEQUENCE_LEAD}
+          </p>
+          <p className="mt-1 font-mono text-sm font-medium text-deep">
+            {formatOrdreOptionRowDisplay(yearRes.sequence)}
+          </p>
+        </div>
         <div className="flex flex-wrap items-center gap-2">
           <SimpleModal
             open={generateHelpOpen}
@@ -204,8 +350,14 @@ export function SequenceOptionsGenerator({ value, onChange }: Props) {
           <FieldHelpModalButton onClick={() => setGenerateHelpOpen(true)} />
         </div>
       </div>
+    );
+  })();
 
-      {showStep2 && displayResult ? (
+  return (
+    <div className="space-y-6">
+      {!showStep2 ? step1Block : null}
+
+      {showStep2 && activeResult ? (
         <div className="space-y-4">
           <div className="space-y-2">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-deep">
@@ -217,7 +369,7 @@ export function SequenceOptionsGenerator({ value, onChange }: Props) {
 
           <div className="space-y-4">
             {letters.map((L) => {
-              const res = displayResult;
+              const res = activeResult;
               const isCorrect = res.correctLetter === L;
               return (
                 <div
@@ -263,7 +415,7 @@ export function SequenceOptionsGenerator({ value, onChange }: Props) {
                   </p>
                   <p className="mt-1 text-sm font-medium text-deep">
                     {NR_ORDRE_SEQ_CORRIGE_VALUE(
-                      displayResult.correctLetter,
+                      activeResult.correctLetter,
                       correctRow[0],
                       correctRow[1],
                       correctRow[2],
@@ -275,13 +427,49 @@ export function SequenceOptionsGenerator({ value, onChange }: Props) {
             </div>
           ) : null}
 
-          <button
-            type="button"
-            onClick={handleReset}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
-          >
-            {NR_ORDRE_SEQ_RESET}
-          </button>
+          {value.optionsJustification.trim() ? (
+            <div className="rounded-md border border-border bg-panel-alt/40 px-3 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted">
+                {NR_ORDRE_JUSTIFICATION_LABEL}
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-deep">
+                {value.optionsJustification.trim()}
+              </p>
+            </div>
+          ) : null}
+
+          <div className="flex flex-wrap items-center gap-2">
+            <SimpleModal
+              open={regenerateHelpOpen}
+              title={NR_ORDRE_REGENERATE_CTA}
+              onClose={() => setRegenerateHelpOpen(false)}
+              titleStyle="info-help"
+            >
+              <p className="text-sm leading-relaxed text-deep">{NR_ORDRE_REGENERATE_HELP}</p>
+            </SimpleModal>
+            <button
+              type="button"
+              onClick={handleRegenerate}
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
+            >
+              <span
+                className="material-symbols-outlined text-[1em]"
+                aria-hidden="true"
+                title={materialIconTooltip("shuffle")}
+              >
+                shuffle
+              </span>
+              {NR_ORDRE_REGENERATE_CTA}
+            </button>
+            <FieldHelpModalButton onClick={() => setRegenerateHelpOpen(true)} />
+            <button
+              type="button"
+              onClick={handleReset}
+              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
+            >
+              {NR_ORDRE_SEQ_RESET}
+            </button>
+          </div>
         </div>
       ) : null}
     </div>

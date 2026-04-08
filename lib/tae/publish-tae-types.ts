@@ -1,4 +1,29 @@
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
+import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import type { Json } from "@/lib/types/database";
+
+/**
+ * Snapshot des champs majeurs d'une TAÉ avant édition.
+ * Utilisé par `detectVersionTrigger` pour identifier une modification majeure (DOMAIN §9.1/9.2).
+ */
+export type TaeVersionSnapshot = {
+  // Champs numériques — comparaison backend (detectVersionTrigger / SQL)
+  oi_id: string | null;
+  comportement_id: string | null;
+  cd_id: number | null;
+  connaissances_ids: number[];
+  niveau_id: number | null;
+  discipline_id: number | null;
+  /** UUID des documents actuellement liés (`tae_documents.document_id`). */
+  documentIds: string[];
+  // Champs codes/strings — comparaison frontend (detectMajorChangeFromFormState)
+  niveauCode: string;
+  disciplineCode: string;
+  /** rowId JSON des connaissances sélectionnées — équivalent set-based de `connaissances_ids`. */
+  connRowIds: string[];
+  /** `critereId` JSON de la CD sélectionnée (`CdSelectionWithIds.critereId`), ou `null`. */
+  cdCritereId: string | null;
+};
 
 export type PublishTaeFailureCode =
   | "validation"
@@ -20,7 +45,7 @@ export type PublishTaeFailureCode =
   | "tae_locked_evaluation";
 
 export type PublishTaeResult =
-  | { ok: true; taeId: string; unpublishedDocumentsCreated: boolean }
+  | { ok: true; taeId: string; unpublishedDocumentsCreated: boolean; wasMajorBump: boolean }
   | { ok: false; code: PublishTaeFailureCode };
 
 /** Payload JSON pour `publish_tae_transaction` (voir docs/ARCHITECTURE.md). */
@@ -39,6 +64,8 @@ export type PublishTaeRpcPayload = {
     niveau_id: number;
     discipline_id: number;
     aspects_societe: string[];
+    /** Présent pour les parcours NR structurés (ex. 1.3) ; omis pour les autres. */
+    non_redaction_data?: Json | null;
   };
   documents_new: Array<{
     titre: string;
@@ -57,6 +84,7 @@ export type PublishTaeRpcPayload = {
     image_legende_position?: "haut_gauche" | "haut_droite" | "bas_gauche" | "bas_droite" | null;
     repere_temporel?: string | null;
     annee_normalisee?: number | null;
+    type_iconographique?: DocumentTypeIconoSlug | null;
   }>;
   slots: Array<{
     slot: DocumentSlotId;

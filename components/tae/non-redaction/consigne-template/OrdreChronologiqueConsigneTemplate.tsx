@@ -1,6 +1,7 @@
 "use client";
 
 import { useId } from "react";
+import { LimitCounterPill } from "@/components/ui/LimitCounterPill";
 import { ConsigneTemplateCard } from "@/components/tae/non-redaction/consigne-template/ConsigneTemplateCard";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import {
@@ -46,7 +47,6 @@ export function OrdreChronologiqueConsigneTemplate({
   const legendId = useId();
   const fullDescribedBy = `${describedByIds} ${legendId}`.trim();
   const tokenLabel = formatOrdreWizardDocTokenLabel(docCount);
-  const counterWarn = value.length > ORDRE_CONSIGNE_THEME_WARN_LEN;
 
   return (
     <div className="space-y-2">
@@ -109,15 +109,15 @@ export function OrdreChronologiqueConsigneTemplate({
         }
         infoNote={<p className="m-0">{NR_ORDRE_TEMPLATE_RENUMBER_NOTE}</p>}
       />
-      <p
-        className={cn(
-          "m-0 text-xs tabular-nums text-muted",
-          counterWarn ? "font-medium text-warning" : null,
-        )}
-        aria-live="polite"
-      >
-        {value.length} / {ORDRE_CONSIGNE_THEME_MAX_LEN}
-      </p>
+      <div className="flex justify-end">
+        <LimitCounterPill
+          current={value.length}
+          max={ORDRE_CONSIGNE_THEME_MAX_LEN}
+          warningAfter={ORDRE_CONSIGNE_THEME_WARN_LEN}
+          unit="characters"
+          showDangerAtMax={false}
+        />
+      </div>
     </div>
   );
 }

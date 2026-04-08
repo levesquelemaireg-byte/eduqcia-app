@@ -9,7 +9,7 @@ import {
 } from "@/lib/tae/publish-tae";
 
 export type PublishTaeActionResult =
-  | { ok: true; taeId: string; unpublishedDocumentsCreated?: boolean }
+  | { ok: true; taeId: string; unpublishedDocumentsCreated?: boolean; wasMajorBump?: boolean }
   | { ok: false; code: "auth" | "validation" }
   | { ok: false; code: "publish"; failure: PublishTaeFailureCode };
 
@@ -56,19 +56,14 @@ export async function publishTaeAction(
         ok: true,
         taeId: editId,
         unpublishedDocumentsCreated: updateResult.unpublishedDocumentsCreated,
+        wasMajorBump: updateResult.wasMajorBump,
       };
     }
 
     const result = await publishTaeFromFormState(supabase, user.id, state);
     if (!result.ok) return { ok: false, code: "publish", failure: result.code };
 
-    const { error: draftDeleteError } = await supabase
-      .from("tae_wizard_drafts")
-      .delete()
-      .eq("user_id", user.id);
-    if (draftDeleteError) {
-      console.error("clear wizard draft after publish:", draftDeleteError.message);
-    }
+    // Suppression brouillon : assurée par la RPC publish_tae_transaction (atomique).
 
     return {
       ok: true,

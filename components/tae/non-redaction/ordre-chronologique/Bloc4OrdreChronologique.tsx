@@ -8,7 +8,7 @@ import { useTaeForm } from "@/components/tae/TaeForm/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import {
-  isOrdreChronologiqueStep3Complete,
+  isOrdreChronologiqueStep3ConsigneComplete,
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import { OrdreChronologiqueBloc4SequenceReminder } from "@/components/tae/non-redaction/ordre-chronologique/OrdreChronologiqueBloc4SequenceReminder";
@@ -25,7 +25,7 @@ export function Bloc4OrdreChronologique() {
 
   const blueprintGate = isBlueprintFieldsComplete(b) && b.blueprintLocked;
   const np = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
-  const bloc3Ok = np !== null && isOrdreChronologiqueStep3Complete(np);
+  const bloc3Ok = np !== null && isOrdreChronologiqueStep3ConsigneComplete(np);
 
   if (!blueprintGate || !bloc3Ok) {
     return <p className="text-sm leading-relaxed text-muted">{NR_ORDRE_GATE_PRE_DOCS}</p>;

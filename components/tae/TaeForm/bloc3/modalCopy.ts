@@ -12,4 +12,4 @@ export const BLOC3_MODAL_CORRIGE_BODY =
 
 export const BLOC3_MODAL_GUIDAGE_TITLE = "Guidage complémentaire";
 export const BLOC3_MODAL_GUIDAGE_BODY =
-  "Le guidage complémentaire permet de préciser certains éléments de la tâche sans modifier la consigne principale. À l'impression, en évaluation formative, il est affiché automatiquement par défaut, tandis qu'en évaluation sommative, il demeure toujours masqué.";
+  "Le guidage complémentaire aide l'élève à comprendre et planifier la tâche — sans faire le travail à sa place.\n\nIl peut prendre la forme de pistes de réflexion, d'étapes suggérées, de définitions ou de rappels de notions. À l'impression, il apparaît automatiquement sur la copie de l'élève en évaluation formative sous la consigne en italique. En évaluation sommative, il est masqué par défaut — vous pourrez choisir de l'afficher ou non au moment de générer le PDF de votre épreuve.\n\nLe guidage est enregistré avec la tâche et réutilisable dans toutes vos épreuves.";

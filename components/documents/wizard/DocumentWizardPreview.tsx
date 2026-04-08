@@ -88,9 +88,16 @@ export function DocumentWizardPreview({ className, compact }: Props) {
               )
             ) : null}
             {docType === "textuel" ? (
-              <div className={cn(styles.htmlFlow, "whitespace-pre-wrap wrap-break-word")}>
-                {contenu?.trim() ? contenu : PRINTABLE_FICHE_SECTION_COPY.emptySlot}
-              </div>
+              contenu?.trim() ? (
+                <div
+                  className={cn(styles.htmlFlow, "wrap-break-word")}
+                  dangerouslySetInnerHTML={{
+                    __html: sourceCitationDisplayHtml(contenu),
+                  }}
+                />
+              ) : (
+                PRINTABLE_FICHE_SECTION_COPY.emptySlot
+              )
             ) : null}
           </div>
           {htmlHasMeaningfulText(source || "") ? (

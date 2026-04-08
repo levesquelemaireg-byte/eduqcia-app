@@ -32,7 +32,9 @@ import {
   type AspectSocieteKey,
   type RedactionSlice,
 } from "@/lib/tae/redaction-helpers";
+import { nonRedactionFromDbColumn } from "@/lib/tae/non-redaction/non-redaction-edit-hydrate";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
 
 type TaeEditRow = {
   id: string;
@@ -49,6 +51,7 @@ type TaeEditRow = {
   niveau_id: number | null;
   discipline_id: number | null;
   aspects_societe: string[] | null;
+  non_redaction_data: unknown | null;
 };
 
 function asNiveauCode(code: string): NiveauCode | null {
@@ -125,14 +128,17 @@ function slotDataForReuse(doc: {
   };
 }
 
+export type TaeEditResult = { state: TaeFormState; snapshot: TaeVersionSnapshot };
+
 /**
- * Charge et mappe une TAÉ existante vers l’état wizard. Retourne `null` si accès refusé ou données insuffisantes.
+ * Charge et mappe une TAÉ existante vers l’état wizard + snapshot de version.
+ * Retourne `null` si accès refusé ou données insuffisantes.
  */
 export async function fetchTaeFormStateForEdit(
   supabase: SupabaseClient,
   taeId: string,
   userId: string,
-): Promise<TaeFormState | null> {
+): Promise<TaeEditResult | null> {
   const { data: rawTae, error: taeErr } = await supabase
     .from("tae")
     .select(
@@ -151,6 +157,7 @@ export async function fetchTaeFormStateForEdit(
         "niveau_id",
         "discipline_id",
         "aspects_societe",
+        "non_redaction_data",
       ].join(", "),
     )
     .eq("id", taeId)
@@ -349,7 +356,7 @@ export async function fetchTaeFormStateForEdit(
     if (!documents[slotId]) return null;
   }
 
-  return {
+  const state: TaeFormState = {
     currentStep: 0,
     bloc1: {
       modeConception,
@@ -369,13 +376,39 @@ export async function fetchTaeFormStateForEdit(
     bloc3: {
       consigne: t.consigne ?? "",
       guidage: t.guidage ?? "",
+      perspectivesMode: null,
+      perspectivesType: "acteurs",
+      perspectivesContexte: "",
+      oi6Enjeu: "",
+      oi7EnjeuGlobal: "",
+      oi7Element1: "",
+      oi7Element2: "",
+      oi7Element3: "",
+      consigneMode: "gabarit",
     },
-    bloc4: { documents },
+    bloc4: { documents, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
     bloc5: {
       corrige: t.corrige ?? "",
-      nonRedaction: null,
+      nonRedaction: nonRedactionFromDbColumn(t.comportement_id ?? "", t.non_redaction_data),
+      intrus: null,
     },
     bloc6: { cd: cdSlice },
     bloc7: { aspects: aspectsResolved, connaissances },
   };
+
+  const snapshot: TaeVersionSnapshot = {
+    oi_id: t.oi_id,
+    comportement_id: t.comportement_id,
+    cd_id: t.cd_id ?? null,
+    connaissances_ids: t.connaissances_ids ?? [],
+    niveau_id: t.niveau_id,
+    discipline_id: t.discipline_id,
+    documentIds: (links ?? []).map((l) => l.document_id),
+    niveauCode: niveau,
+    disciplineCode: discipline,
+    connRowIds: connaissances.map((c) => c.rowId),
+    cdCritereId: cdSlice.selection?.critereId ?? null,
+  };
+
+  return { state, snapshot };
 }

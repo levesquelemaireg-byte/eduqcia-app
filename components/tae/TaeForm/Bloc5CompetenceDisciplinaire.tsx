@@ -10,9 +10,13 @@ import {
   parseCdJsonArray,
   type CdCompetenceNode,
 } from "@/lib/tae/cd-helpers";
-import { WIZARD_REFERENTIEL_CD_INDISPO, WIZARD_REFERENTIEL_LOAD_FAILED } from "@/lib/ui/ui-copy";
+import {
+  BLOC5_CD_GATE_WIZARD,
+  WIZARD_REFERENTIEL_CD_INDISPO,
+  WIZARD_REFERENTIEL_LOAD_FAILED,
+} from "@/lib/ui/ui-copy";
 /**
- * Étape 5 — Compétence disciplinaire — BLOC5-CD.md
+ * Étape 6 — Compétence disciplinaire — BLOC5-CD.md (`state.bloc6.cd`)
  */
 export function Bloc5CompetenceDisciplinaire() {
   const { state, dispatch } = useTaeForm();
@@ -45,12 +49,7 @@ export function Bloc5CompetenceDisciplinaire() {
   }, [dataUrl]);
 
   if (!gateOk) {
-    return (
-      <p className="text-sm leading-relaxed text-muted">
-        Complétez d&apos;abord les étapes « Paramètres de la tâche », « Consigne et production
-        attendue » et « Documents historiques » pour accéder à la compétence disciplinaire.
-      </p>
-    );
+    return <p className="text-sm leading-relaxed text-muted">{BLOC5_CD_GATE_WIZARD}</p>;
   }
 
   if (discipline === "geo") {

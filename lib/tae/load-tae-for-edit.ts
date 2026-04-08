@@ -26,7 +26,9 @@ import {
   rowToSelectionWithIds,
   type ConnRawRow,
 } from "@/lib/tae/connaissances-helpers";
+import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tae/document-helpers";
+import { nonRedactionFromDbColumn } from "@/lib/tae/non-redaction/non-redaction-edit-hydrate";
 import { initialAspects, type AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 
 const ASPECT_DB_TO_KEY: Record<string, AspectSocieteKey> = {
@@ -114,7 +116,7 @@ export async function loadTaeFormStateForEdit(
 
   if (!niveauCode || !discipline) return null;
 
-  const compData = compRes.data as { nb_documents: number; outil_evaluation: string } | null;
+  const compData = compRes.data as { nb_documents: number | null; outil_evaluation: string } | null;
   const nbDocuments = compData?.nb_documents ?? null;
   const outilEvaluation = compData?.outil_evaluation ?? null;
 
@@ -180,6 +182,7 @@ export async function loadTaeFormStateForEdit(
         typeof d.annee_normalisee === "number" && Number.isFinite(d.annee_normalisee)
           ? Math.trunc(d.annee_normalisee)
           : null;
+      const typeIcono = parseTypeIconographique(d.type_iconographique);
       if (sourceId) {
         documents[slotId] = {
           ...emptyDocumentSlot(),
@@ -200,6 +203,7 @@ export async function loadTaeFormStateForEdit(
           image_legende_position: imageLegendePosition,
           repere_temporel: repereT,
           annee_normalisee: anneeN,
+          type_iconographique: typeIcono,
         };
       } else {
         documents[slotId] = {
@@ -221,6 +225,7 @@ export async function loadTaeFormStateForEdit(
           image_legende_position: imageLegendePosition,
           repere_temporel: repereT,
           annee_normalisee: anneeN,
+          type_iconographique: typeIcono,
         };
       }
     }
@@ -320,11 +325,24 @@ export async function loadTaeFormStateForEdit(
     bloc3: {
       consigne: typeof row.consigne === "string" ? row.consigne : "",
       guidage: typeof row.guidage === "string" ? row.guidage : "",
+      perspectivesMode: null,
+      perspectivesType: "acteurs",
+      perspectivesContexte: "",
+      oi6Enjeu: "",
+      oi7EnjeuGlobal: "",
+      oi7Element1: "",
+      oi7Element2: "",
+      oi7Element3: "",
+      consigneMode: "gabarit",
     },
-    bloc4: { documents },
+    bloc4: { documents, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
     bloc5: {
       corrige: typeof row.corrige === "string" ? row.corrige : "",
-      nonRedaction: null,
+      nonRedaction: nonRedactionFromDbColumn(
+        typeof row.comportement_id === "string" ? row.comportement_id : "",
+        row.non_redaction_data,
+      ),
+      intrus: null,
     },
     bloc6: { cd: { selection: cdSelection } },
     bloc7: { aspects, connaissances },

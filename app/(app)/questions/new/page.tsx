@@ -1,7 +1,7 @@
 import { TaeForm } from "@/components/tae/TaeForm";
 import { getWizardDraftForUser } from "@/lib/queries/tae-draft";
 import { createClient } from "@/lib/supabase/server";
-import { CTA_CREER_UNE_TACHE } from "@/lib/ui/ui-copy";
+import { CTA_CREER_UNE_TACHE, PAGE_CREER_UNE_TACHE_SUBTITLE } from "@/lib/ui/ui-copy";
 import { redirect } from "next/navigation";
 
 export default async function NewQuestionPage() {
@@ -40,8 +40,7 @@ export default async function NewQuestionPage() {
           {CTA_CREER_UNE_TACHE}
         </h1>
         <p className="mt-2 max-w-none text-sm text-muted md:text-base">
-          Complétez les six (6) étapes pour créer une tâche complète, alignée sur les prescriptions
-          ministérielles.
+          {PAGE_CREER_UNE_TACHE_SUBTITLE}
         </p>
       </header>
     </TaeForm>

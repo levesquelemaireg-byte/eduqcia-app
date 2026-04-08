@@ -25,8 +25,9 @@ export default async function EditQuestionPage({ params }: PageProps) {
   if (error || !tae) notFound();
   if (tae.auteur_id !== user.id) redirect(`/questions/${id}`);
 
-  const initialState = await fetchTaeFormStateForEdit(supabase, id, user.id);
-  if (!initialState) notFound();
+  const editResult = await fetchTaeFormStateForEdit(supabase, id, user.id);
+  if (!editResult) notFound();
+  const { state: initialState, snapshot: versionSnapshot } = editResult;
 
   let authorFullName = "—";
   const { data: profile } = await supabase
@@ -46,6 +47,7 @@ export default async function EditQuestionPage({ params }: PageProps) {
     <TaeForm
       editingTaeId={id}
       serverInitialState={initialState}
+      versionSnapshot={versionSnapshot}
       savedServerDraft={null}
       wizardPreviewMeta={wizardPreviewMeta}
       currentUserId={user.id}

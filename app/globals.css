@@ -1,7 +1,9 @@
+@import "material-symbols/outlined.css";
+@import "@fontsource-variable/manrope";
 @import "tailwindcss";
 
 /*
- * Material Symbols Outlined — Google Fonts (app/layout.tsx), pas les icônes Material legacy.
+ * Material Symbols Outlined — npm `material-symbols` (import ci-dessus), pas les icônes Material legacy.
  * Règle : glyphe = 1em, espacement = em, alignement via flex + gap (pas d’offsets px arbitraires).
  * Voir DESIGN-SYSTEM.md §1.4.
  */
@@ -81,6 +83,8 @@
 
 /* DESIGN-SYSTEM.md §1 — fondations (tokens globaux, pas de HSL en dur ailleurs) */
 :root {
+  --font-manrope: "Manrope Variable", "Manrope", sans-serif;
+
   --color-deep: hsl(220, 40%, 18%);
   --color-steel: hsl(215, 30%, 35%);
   --color-surface: hsl(210, 20%, 96%);
@@ -97,6 +101,16 @@
   --color-bg: hsl(210, 25%, 98%);
   --color-panel: hsl(0, 0%, 100%);
   --color-panel-alt: hsl(210, 20%, 96%);
+  /* Alias formulaires / badges (compteur légende, etc.) */
+  --color-background-secondary: var(--color-panel-alt);
+  --color-tertiary: var(--color-muted);
+  /* SegmentedControl actif (info / accent institutionnel) — inactif = text-secondary */
+  --color-text-secondary: var(--color-steel);
+  --color-background-info: color-mix(in srgb, var(--color-accent) 15%, var(--color-panel-alt));
+  --color-text-info: var(--color-accent);
+  --color-border-info: var(--color-accent);
+  /* Toolbar éditeur riche — séparateurs */
+  --color-border-tertiary: color-mix(in srgb, var(--color-muted) 28%, var(--color-border-secondary));
 
   /* Frise ligne du temps (TimeLine) — alias explicites pour fond / bordures */
   --color-background-primary: var(--color-panel);
@@ -272,6 +286,13 @@
   --color-bg: hsl(210 25% 98%);
   --color-panel: hsl(0 0% 100%);
   --color-panel-alt: hsl(210 20% 96%);
+  --color-background-secondary: var(--color-panel-alt);
+  --color-tertiary: var(--color-muted);
+  --color-text-secondary: var(--color-steel);
+  --color-background-info: color-mix(in srgb, var(--color-accent) 15%, var(--color-panel-alt));
+  --color-text-info: var(--color-accent);
+  --color-border-info: var(--color-accent);
+  --color-border-tertiary: color-mix(in srgb, var(--color-muted) 28%, var(--color-border-secondary));
 
   --shadow-sm: 0 1px 3px hsl(220 30% 10% / 0.08);
   --shadow-md: 0 4px 12px hsl(220 30% 10% / 0.12);
@@ -644,6 +665,111 @@ body {
 }
 
 /*
+ * Avant / après (1.3) — feuille élève : intro + tableau + « Réponse » ; guidage entre intro et tableau (`avant-apres-payload.ts`).
+ */
+[data-avant-apres-student="true"] .avant-apres-student-root {
+  margin-top: 0.15rem;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-intro {
+  margin: 0 0 0.65rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-guidage {
+  margin: 0 0 1rem;
+  line-height: 1.45;
+  color: var(--color-steel);
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-guidage p {
+  margin: 0;
+}
+
+[data-avant-apres-student="true"] .avant-apres-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-table {
+  width: 100%;
+  max-width: 100%;
+  border-collapse: collapse;
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-table th,
+[data-avant-apres-student="true"] .avant-apres-student-table td {
+  border: 1px solid var(--color-border);
+  padding: 0.4rem 0.5rem;
+  vertical-align: middle;
+}
+
+/* Colonne des lettres A–D : hors du quadrillage principal (feuille ministérielle). */
+[data-avant-apres-student="true"] .avant-apres-student-th-letter,
+[data-avant-apres-student="true"] .avant-apres-student-letter-cell {
+  border: none;
+  font-weight: 700;
+  text-align: right;
+  padding-right: 0.45rem;
+  padding-left: 0;
+  color: var(--color-deep);
+  vertical-align: middle;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-col-avant,
+[data-avant-apres-student="true"] .avant-apres-student-col-apres,
+[data-avant-apres-student="true"] .avant-apres-student-cell-avant,
+[data-avant-apres-student="true"] .avant-apres-student-cell-apres {
+  text-align: center;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-th-repere-empty {
+  position: relative;
+  border-bottom: 1px solid var(--color-border);
+  background-color: transparent;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-cell-repere {
+  text-align: center;
+  font-weight: 600;
+  background-color: var(--color-surface);
+  color: var(--color-deep);
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-reponse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  margin-top: 0.25rem;
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-reponse-label {
+  font-weight: 600;
+  color: var(--color-deep);
+}
+
+[data-avant-apres-student="true"] .avant-apres-student-reponse-box {
+  display: inline-block;
+  width: 2.1rem;
+  height: 2.1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  flex-shrink: 0;
+}
+
+/*
  * Ligne du temps (1.2) — feuille élève (sommaire, aperçu impression, `/questions/[id]/print`).
  * Intro + frise + « Réponse » dans `consigne` ; guidage injecté entre intro et frise — `ligne-du-temps-payload.ts`.
  */
@@ -748,5 +874,22 @@ body {
     font-weight: 500;
     box-shadow: var(--shadow-md);
     pointer-events: none;
+  }
+}
+
+/* Gabarit consigne — valeur soulignée teal */
+.pill-field {
+  border-bottom: 1px solid #229bc3;
+}
+
+/* RadioCardGroup — checkmark animation */
+@keyframes radio-check {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

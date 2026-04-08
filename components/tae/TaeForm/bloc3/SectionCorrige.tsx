@@ -1,6 +1,6 @@
 "use client";
 
-import { SimpleRichEditor } from "@/components/tae/TaeForm/tiptap/SimpleRichEditor";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
@@ -39,12 +39,14 @@ export function SectionCorrige({ value, onChange, onInfoClick }: Props) {
       <p className="text-xs text-muted">
         Fournissez un exemple de réponse complète illustrant la production attendue.
       </p>
-      <SimpleRichEditor
+      <RichTextEditor
         id="corrige"
+        instanceId="corrige"
+        className="mt-2"
         value={value}
         onChange={onChange}
         autosaveKey="eduqcia-tae-corrige-new"
-        minHeightClass="min-h-[100px]"
+        minHeight={100}
       />
     </section>
   );

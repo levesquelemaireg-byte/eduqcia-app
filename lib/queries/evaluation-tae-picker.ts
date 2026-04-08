@@ -33,7 +33,7 @@ type JoinRow = {
   oi: { titre: string } | { titre: string }[] | null;
   niveaux: { label: string } | { label: string }[] | null;
   disciplines: { label: string } | { label: string }[] | null;
-  comportements: { nb_documents: number } | { nb_documents: number }[] | null;
+  comportements: { nb_documents: number | null } | { nb_documents: number | null }[] | null;
 };
 
 function mapJoinRow(row: JoinRow, source: EvaluationPickerSource): EvaluationPickerRow {

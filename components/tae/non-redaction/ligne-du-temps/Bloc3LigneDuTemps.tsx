@@ -3,12 +3,8 @@
 import { useCallback, useId, useLayoutEffect, useMemo, useState } from "react";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import { SectionAspects } from "@/components/tae/TaeForm/bloc3/SectionAspects";
-import {
-  BLOC3_MODAL_ASPECTS_BODY,
-  BLOC3_MODAL_ASPECTS_TITLE,
-} from "@/components/tae/TaeForm/bloc3/modalCopy";
 import { BLOC3_MODAL_GUIDAGE_TITLE } from "@/components/tae/TaeForm/bloc3/modalCopy";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
 import { OrdreChronologiqueConsigneMinisterialBadge } from "@/components/tae/non-redaction/consigne-template/OrdreChronologiqueConsigneTemplate";
@@ -23,7 +19,6 @@ import {
   type LigneDuTempsPayload,
 } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import {
   NR_LIGNE_TEMPS_DATE_CHAINED_HINT,
@@ -36,14 +31,10 @@ import {
   NR_LIGNE_TEMPS_OPTION_4,
   NR_LIGNE_TEMPS_PERIOD_PREFIX,
   NR_LIGNE_TEMPS_SEGMENT_COUNT_LABEL,
-  NR_LIGNE_TEMPS_SELECT_CORRECT_MISSING,
   NR_LIGNE_TEMPS_TIMELINE_PREVIEW_TITLE,
-  NR_LIGNE_TEMPS_CORRECT_PREFIX,
   NR_ORDRE_CONSIGNE_HELP,
   NR_ORDRE_CONSIGNE_LABEL,
-  NR_ORDRE_SEQ_CORRIGE_SUMMARY_LABEL,
 } from "@/lib/ui/ui-copy";
-import { cn } from "@/lib/utils/cn";
 import { LigneDuTempsFrisePicker } from "@/components/tae/non-redaction/ligne-du-temps/LigneDuTempsFrisePicker";
 import { resolveConsigneHtmlForDisplay } from "@/lib/tae/consigne-helpers";
 import { nonRedactionLignePayload } from "@/lib/tae/wizard-state-nr";
@@ -52,7 +43,6 @@ export function Bloc3LigneDuTemps() {
   const { state, dispatch } = useTaeForm();
   const b = state.bloc2;
   const r = getRedactionSliceForPreview(state);
-  const [modalAspects, setModalAspects] = useState(false);
   const [modalGuidage, setModalGuidage] = useState(false);
   const [consigneHelpOpen, setConsigneHelpOpen] = useState(false);
   const segFieldId = useId();
@@ -92,17 +82,6 @@ export function Bloc3LigneDuTemps() {
       dispatch({ type: "NON_REDACTION_PATCH_LIGNE_TEMPS", patch: partial });
     },
     [dispatch],
-  );
-
-  const toggleAspect = useCallback(
-    (aspect: AspectSocieteKey) => {
-      dispatch({
-        type: "SET_ASPECT",
-        aspect,
-        value: !r.aspects[aspect],
-      });
-    },
-    [dispatch, r.aspects],
   );
 
   const introPreviewHtml = useMemo(
@@ -148,15 +127,6 @@ export function Bloc3LigneDuTemps() {
         </p>
       </SimpleModal>
 
-      <SimpleModal
-        open={modalAspects}
-        title={BLOC3_MODAL_ASPECTS_TITLE}
-        onClose={() => setModalAspects(false)}
-        titleStyle="info-help"
-      >
-        <p className="text-sm leading-relaxed text-deep">{BLOC3_MODAL_ASPECTS_BODY}</p>
-      </SimpleModal>
-
       <div className="space-y-3">
         <SimpleModal
           open={consigneHelpOpen}
@@ -194,36 +164,19 @@ export function Bloc3LigneDuTemps() {
         <legend id={segFieldId} className="text-sm font-semibold text-deep">
           {NR_LIGNE_TEMPS_SEGMENT_COUNT_LABEL} <RequiredMark />
         </legend>
-        <div className="flex flex-wrap gap-4" role="radiogroup" aria-labelledby={segFieldId}>
-          {(
-            [
-              [3, NR_LIGNE_TEMPS_OPTION_3],
-              [4, NR_LIGNE_TEMPS_OPTION_4],
-            ] as const
-          ).map(([n, label]) => (
-            <label
-              key={n}
-              className={cn(
-                "flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm",
-                p.segmentCount === n
-                  ? "border-accent bg-accent/10 text-deep"
-                  : "border-border text-steel",
-              )}
-            >
-              <input
-                type="radio"
-                name="ligne-temps-segments"
-                checked={p.segmentCount === n}
-                onChange={() => {
-                  const base = mergeLigneDuTempsPayload(p, { segmentCount: n });
-                  patch({ segmentCount: n, boundaries: base.boundaries, correctLetter: "" });
-                }}
-                className="accent-accent"
-              />
-              {label}
-            </label>
-          ))}
-        </div>
+        <SegmentedControl
+          aria-labelledby={segFieldId}
+          options={[
+            { value: "3", label: NR_LIGNE_TEMPS_OPTION_3 },
+            { value: "4", label: NR_LIGNE_TEMPS_OPTION_4 },
+          ]}
+          value={String(p.segmentCount)}
+          onChange={(v) => {
+            const n = v === "4" ? 4 : 3;
+            const base = mergeLigneDuTempsPayload(p, { segmentCount: n });
+            patch({ segmentCount: n, boundaries: base.boundaries, correctLetter: "" });
+          }}
+        />
         <p className="text-xs text-muted">{NR_LIGNE_TEMPS_DATE_CHAINED_HINT}</p>
 
         <div className="space-y-4">
@@ -281,43 +234,7 @@ export function Bloc3LigneDuTemps() {
 
       <section className="space-y-3 border-t border-border pt-4">
         <p className="text-sm font-semibold text-deep">{NR_LIGNE_TEMPS_TIMELINE_PREVIEW_TITLE}</p>
-        <LigneDuTempsFrisePicker
-          payload={p}
-          onPickLetter={(letter) => patch({ correctLetter: letter })}
-        />
-      </section>
-
-      <section
-        className="rounded-md border border-accent/40 bg-panel px-3 py-3"
-        role="status"
-        aria-live="polite"
-      >
-        <div className="flex gap-2">
-          <span
-            className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-accent"
-            aria-hidden="true"
-            title={materialIconTooltip(BLOC3_SECTION_ICON.corrige) ?? undefined}
-          >
-            {BLOC3_SECTION_ICON.corrige}
-          </span>
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted">
-              {NR_ORDRE_SEQ_CORRIGE_SUMMARY_LABEL}
-            </p>
-            <p className="mt-1 text-sm font-medium text-deep">
-              {p.correctLetter ? (
-                <>
-                  {NR_LIGNE_TEMPS_CORRECT_PREFIX}
-                  {p.correctLetter}
-                </>
-              ) : (
-                <span className="font-normal text-muted">
-                  {NR_LIGNE_TEMPS_SELECT_CORRECT_MISSING}
-                </span>
-              )}
-            </p>
-          </div>
-        </div>
+        <LigneDuTempsFrisePicker payload={p} onPickLetter={() => {}} interactive={false} />
       </section>
 
       <section className="space-y-2 border-t border-border pt-5">
@@ -339,12 +256,6 @@ export function Bloc3LigneDuTemps() {
           dangerouslySetInnerHTML={{ __html: fixedGuidageHtml }}
         />
       </section>
-
-      <SectionAspects
-        aspects={r.aspects}
-        onToggle={toggleAspect}
-        onInfoClick={() => setModalAspects(true)}
-      />
     </div>
   );
 }

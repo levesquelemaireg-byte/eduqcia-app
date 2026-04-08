@@ -68,7 +68,7 @@ export async function getEvaluationEditBundle(
   type TRow = {
     id: string;
     consigne: string | null;
-    comportements: { nb_documents: number } | { nb_documents: number }[] | null;
+    comportements: { nb_documents: number | null } | { nb_documents: number | null }[] | null;
   };
 
   const byId = new Map<string, TRow>();
@@ -134,7 +134,7 @@ export async function getTaeMetaForEvaluationCart(taeId: string): Promise<TaeCar
     is_archived: boolean;
     is_published: boolean;
     auteur_id: string;
-    comportements: { nb_documents: number } | { nb_documents: number }[] | null;
+    comportements: { nb_documents: number | null } | { nb_documents: number | null }[] | null;
   };
 
   const row = data as unknown as R;

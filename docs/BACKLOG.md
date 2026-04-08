@@ -1,0 +1,420 @@
+# Backlog, dette technique et pilotage
+
+Roadmap, état « produit abouti », backlog technique, règles anti-dette et exigences de documentation après livraison. Compléments : [ARCHITECTURE.md](./ARCHITECTURE.md) (déploiement, RLS), [FEATURES.md](./FEATURES.md) (métier), [WORKFLOWS.md](./WORKFLOWS.md) (implémentation wizard).
+
+## Documentation et traçabilité
+
+**Agents (Cursor, etc.) :** cette section est la **checklist normative** après chaque lot livré — voir aussi `.cursor/rules/eduqcia.mdc` (**Obligation — documentation de progression**). Ne pas attendre un rappel utilisateur.
+
+Une livraison qui modifie le comportement utilisateur, les routes ou l’exploitation n’est **pas terminée** tant que les documents concernés ne sont pas alignés (exception : correctif urgent — PROVISOIRE + ticket, doc suivie).
+
+| Après quoi ?                    | Mettre à jour                                                               |
+| ------------------------------- | --------------------------------------------------------------------------- |
+| Feature / lot visible           | Ce fichier (§ Produit abouti), [FEATURES.md](./FEATURES.md) si règle métier |
+| Ticket backlog technique        | Section « Backlog technique détaillé » ci-dessous                           |
+| Env, CI, RLS, schéma            | [ARCHITECTURE.md](./ARCHITECTURE.md)                                        |
+| Nouvelle convention de dossiers | [ARCHITECTURE.md](./ARCHITECTURE.md)                                        |
+| Copy UI                         | [UI-COPY.md](./UI-COPY.md) (et `lib/ui/ui-copy.ts`)                         |
+| Chronologie des livraisons      | [BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md) (ligne en tête du tableau)       |
+
+Ne pas fusionner une PR significative sans cette synchro (ou issue doc explicitement assignée).
+
+---
+
+## Anti-dette technique
+
+Limiter la dette **à l’entrée** ; extraire par petits pas quand on ouvre un fichier. **Normes détaillées :** [DECISIONS.md](./DECISIONS.md) (règles absolues, checklists), [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) §12 (Tailwind, `className`), `.cursor/rules/eduqcia.mdc`. **Hiérarchie produit :** [DECISIONS.md](./DECISIONS.md) → [UI-COPY.md](./UI-COPY.md) → [FEATURES.md](./FEATURES.md).
+
+| Thème                | Exigence                                                                                                                |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| TypeScript / données | Pas de `any` ; pas d’appel Supabase depuis un Client Component ; réutiliser Zod / types (`lib/schemas/`, `lib/types/`). |
+| UI                   | Tokens ; `cn()` ; textes et couleurs depuis [UI-COPY.md](./UI-COPY.md) — pas d’invention.                               |
+| Composants           | ~une responsabilité par fichier (~200 lignes → découper) ; pas de god component ; **FormState** wizard = source unique. |
+| Formulaires / listes | [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires) ; `ListboxField` / `formSelectClasses.ts`.                           |
+| Provisoire           | `PROVISOIRE — …` + référence.                                                                                           |
+| SQL / RLS            | `supabase/schema.sql` + [ARCHITECTURE.md](./ARCHITECTURE.md) ; [RLS-CHECKLIST.md](./RLS-CHECKLIST.md) si besoin.        |
+
+**Avant merge :** `npm run format:check`, `npm run lint` (0 erreur), idéalement `npm run ci` ; pas de logs de debug ; livraison significative → doc alignée ([DECISIONS.md](./DECISIONS.md#protocole-de-maintenance-documentaire) — produit abouti, backlog technique, archi).
+
+---
+
+# Produit abouti
+
+> **Document vivant** : écart entre l’état actuel et un **produit abouti** (CI verte ne suffit pas).
+>
+> **Dernière passe doc (31 mars 2026) :** primitives UI (`Textarea`, `SegmentedControl`, `LimitCounterPill`), wizard document étape 1, radios position légende, doc NR **1.3** ; lots mars : `RichTextEditor` unifié, `non_redaction_data`, catégorie iconographique, OI1 en base, ligne du temps, ordre chrono, banque `/bank`, composition épreuve. **Chronologie détaillée :** [BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md). **Macro :** tableau **§2** (PDF épreuve §10.3 manquant, RLS partiel, storage F4, etc.).
+>
+> **Références :** [FEATURES.md](./FEATURES.md) §1.1, [DECISIONS.md](./DECISIONS.md#priorité-features-rappel-métier), [WORKFLOWS.md](./WORKFLOWS.md#fiche-lecture) ; backlog technique ci-dessous ; [ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité). **Discipline :** livraison visible → **§2**, **§4**, backlog technique, **[BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md)** (ligne en tête du tableau si chronologie), et specs selon [DECISIONS.md](./DECISIONS.md#protocole-de-maintenance-documentaire) — _merge sans doc = dette de pilotage._
+
+---
+
+## 1. Définition « produit abouti » (cible)
+
+Un produit **abouti** pour ce dépôt implique au minimum :
+
+1. **Création** : parcours wizard 7 étapes **fiable** (données, copy validée, pas de `PROVISOIRE` bloquant), **édition** des tâches existantes.
+2. **Diffusion** : **liste** et **fiche** utilisables ; **liste « Mes tâches »** et **« Mes épreuves »** complètes (filtres, actions prévues dans la copy où applicable).
+3. **Classe** : **export PDF** d’épreuve (dossier documentaire + questionnaire, renumérotation `{{doc_*}}`) — cœur du livrable [FEATURES.md](./FEATURES.md) §10.3.
+4. **Communauté** : **banque collaborative** (recherche, filtres, cartes) + **votes / commentaires / favoris** selon [FEATURES.md](./FEATURES.md) §8.
+5. **Exploitation** : **Supabase** + **Vercel** (ou équivalent) configurés, **RLS** validées, **stockage** fichiers si documents iconographiques en prod.
+
+Tant que **1** et **3** ne sont pas réalisés pour un parcours enseignant → élève, le produit reste **partiel** même si la CI est verte.
+
+---
+
+## 2. Synthèse d’avancement (état au dernier passage)
+
+| Domaine                               | État         | Commentaire court                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| ------------------------------------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Auth (login, inscription, lien)       | **Fait**     | Server Actions, pages `(auth)`                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Layout app + dashboard stats          | **Fait**     | Widgets ; listes détaillées encore partielles                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Module création documents historiques | **Fait**     | Wizard `/documents/new` (3 étapes), fiche `/documents/[id]`, banque onglet Documents + CTA ; voir [FEATURES.md](./FEATURES.md) §13.1, [WORKFLOWS.md](./WORKFLOWS.md), `components/documents/`, `lib/actions/create-autonomous-document.ts` — **F4** storage si icono prod                                                                                                                                                                           |
+| Wizard création (7 étapes)            | **Avancé**   | Branché ; finitions, copy, `PROVISOIRE` ; Bloc 4 modale « Parcourir la banque » = **données réelles** (`listBankDocumentsPickerAction`) — filtres avancés / pagination : voir C5 **Partiel** et backlog technique « Banque Bloc 4 — recherche avancée »                                                                                                                                                                                             |
+| Parcours NR OI1 · 1.3 (avant/après)   | **Fait**     | Slug `avant-apres`, 4 documents, repère obligatoire ; persistance **`non_redaction_data`** ; fiche / épreuve depuis **HTML** publié (comme 1.1 / 1.2) — [FEATURES.md](./FEATURES.md) §2.2, [WORKFLOWS.md](./WORKFLOWS.md#tae-stepper), [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) § Parcours 3. **Harmonisation** 1.1 / 1.2 → même colonne JSON : voir backlog technique « NR — harmonisation `non_redaction_data` ».     |
+| Brouillon serveur + session           | **Fait**     | `tae_wizard_drafts` ; reset après publication (serveur + `sessionStorage`)                                                                                                                                                                                                                                                                                                                                                                          |
+| Publication TAÉ                       | **Avancé**   | RPC `publish_tae_transaction` ; versioning métier à valider de bout en bout                                                                                                                                                                                                                                                                                                                                                                         |
+| Liste « Mes tâches »                  | **Partiel**  | Filtres + **Voir** + **Supprimer** ; **Modifier** → wizard sur `/questions/[id]/edit` (réhydratation + RPC mise à jour) — versioning métier / cas limites §4.2 C1                                                                                                                                                                                                                                                                                   |
+| Fiche lecture `/questions/[id]`       | **Fait**     | `FicheTache` + agrégation                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| Mode édition tâche                    | **Avancé**   | `/questions/[id]/edit` + `fetchTaeFormStateForEdit` ; blocage RPC si `evaluation_tae` ; pas de brouillon serveur dédié par tâche                                                                                                                                                                                                                                                                                                                    |
+| Liste « Mes épreuves »                | **Avancé**   | Liste réelle ; **création / édition composition** (`/evaluations/new`, `/evaluations/[id]/edit`, RPC `save_evaluation_composition`) ; **export PDF** §10.3 : manquant                                                                                                                                                                                                                                                                               |
+| Banque collaborative                  | **Avancé**   | `/bank` : onglets ; **Tâches** — filtres §8.2, tri, recherche `consigne_search_plain`, pagination 20 (`getBankPublishedTaePage`, `BankTasksPanel`) ; **Documents** — pagination 20 + **Charger plus** ; **Épreuves** — liste publiée + recherche titre + pagination (`getBankPublishedEvaluationsPage`) ; **suite** : filtres épreuves dérivés (plan), favoris / cartes riches — [plan-banque-collaborative.md](./plan-banque-collaborative.md), §8 |
+| Export PDF                            | **Manquant** | Spec [FEATURES.md](./FEATURES.md) §10.3                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Votes / commentaires / favoris        | **Partiel**  | UI fiche partielle ; flux complet à finaliser                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Stockage images documents             | **Manquant** | Bucket + politiques ; voir la section « Backlog technique détaillé » de ce fichier critique                                                                                                                                                                                                                                                                                                                                                         |
+| Déploiement prod                      | **Partiel**  | Doc env + checklist RLS ([ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité)) ; secrets Vercel / validation manuelle F3 à l’équipe                                                                                                                                                                                                                                                                                                         |
+
+---
+
+## 3. Ordre prioritaire recommandé (risques, dépendances, maintenabilité)
+
+> Ce n’est **pas** un ordre marketing : c’est l’ordre qui **réduit fuites de données, dette et régressions** (Supabase, RLS, RPC, Server Actions).  
+> **Ordre métier de référence :** [DECISIONS.md](./DECISIONS.md) (ordre des features : … → **banque** → votes / commentaires → **épreuves complètes** → PDF). La **banque collaborative** est donc **avant** le module « créer une épreuve » sur le plan produit ; cette section **aligne** les paliers techniques sur cet enchaînement.
+
+### Palier A — Vérité commune et périmètre de confiance (bloquant)
+
+Sans cela, le reste peut être **vert en CI** mais **incorrect ou dangereux en prod**.
+
+| Priorité                                                    | Réf. §4 | État dépôt (maintenance)                                                                                                                                                                                                     | Pourquoi en premier                                                                         |
+| ----------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| **A1** Schéma DB appliqué + types régénérés                 | F1      | **Fait** (23 mars 2026)                                                                                                                                                                                                      | Une seule source de vérité : évite les écarts `FormState` / RPC / `database.ts`.            |
+| **A2** Variables d’environnement prod (local + hôte)        | F2      | **Fait** (doc + CI)                                                                                                                                                                                                          | Auth, callbacks, URLs : incohérences = sessions ou origines cassées.                        |
+| **A3** RLS + parcours critiques validés                     | F3      | **Partiel** (revue statique OK ; [RLS-CHECKLIST.md](./RLS-CHECKLIST.md) : **1–2 OK** ; **3–4 OK** (27 mars 2026, exécution locale deux comptes) ; **5–7** surtout **après banque** §4.4 B1 — à rejouer ou **N/A** documenté) | **Avant** go-live large ; **F3** clos seulement quand 5–7 testables sont OK ou N/A accepté. |
+| **A4** Storage + politiques si upload iconographique requis | F4      | Manquant                                                                                                                                                                                                                     | Dépend du bucket ; à faire **avec** RLS claire, pas « à l’aveugle ».                        |
+
+### Palier B — Stabiliser le cœur métier (création → publication)
+
+| Priorité                                                            | Réf. §4                                   | Pourquoi                                                                                       |
+| ------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| **B1** Finitions publication (versioning, erreurs métier, RPC)      | C6                                        | L’édition et les listes supposent un état publié **défini** ([FEATURES.md](./FEATURES.md) §9). |
+| **B2** Copy / retrait des `PROVISOIRE` ([UI-COPY.md](./UI-COPY.md)) | C4, Q1                                    | Moins d’écarts spec / UI, moins de bugs de compréhension.                                      |
+| **B3** Sauvegarde brouillon (feedback, erreurs réseau)              | Section backlog haute priorité ci-dessous | Réduit la perte de travail avant des flux plus complexes.                                      |
+
+### Palier C — Gestion du contenu existant (liste, actions, édition)
+
+| Priorité                                             | Réf. §4 | Pourquoi                                                                                                                                |
+| ---------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| **C1** Filtres + Modifier / Supprimer « Mes tâches » | C2, C3  | **Filtres** + **Supprimer** + **Modifier** + réhydratation wizard sur `/edit` (mars 2026) ; validation RLS **A3** en exécution = suite. |
+| **C2** Finitions **Bloc 4** « Parcourir la banque »  | C5      | Liste réelle **livrée** ; reste filtres métier / pagination / renommage composant — §4.2 **C5 Partiel** + backlog technique.            |
+| **C3** Route édition tâche (`/questions/[id]/edit`)  | C1      | Plus **coûteux** : réhydratation wizard ; après liste et publication stables.                                                           |
+
+### Palier D — Banque collaborative puis épreuves (livrable classe)
+
+Aligné [DECISIONS.md](./DECISIONS.md) : la **banque** (découverte des TAÉ publiées) précède logiquement la **composition d’épreuves** qui s’appuie sur ces contenus.
+
+| Étape                                        | Réf. §4     | Commentaire                                                                                                                                                                                                                                                                           |
+| -------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **D1** Banque collaborative (UI exploitable) | §4.4 **B1** | **`/bank` livré** (onglets, tâches avec filtres §8.2 + tri + pagination, documents paginés, épreuves listées + recherche + pagination) ; **suite** : filtres épreuves avancés, cartes / favoris / polish communauté — [plan-banque-collaborative.md](./plan-banque-collaborative.md). |
+| **D2** Épreuves **E1 → E2**                  | §4.3        | Création et modification (composition `evaluation_tae`).                                                                                                                                                                                                                              |
+| **D3** Export PDF **E3**                     | §4.3        | Après structure d’épreuve stable ; consomme `{{doc_*}}`.                                                                                                                                                                                                                              |
+
+### Palier E — Communauté étendue et polish
+
+Au-delà du **MVP banque** : commentaires riches, favoris complets, notifications détaillées, dashboard (**§4.4–4.5**) — peut **chevaucher D1** selon périmètre (ex. section votes sur fiche dès que la banque est livrée).
+
+### Règle pratique
+
+- Ne pas empiler des features sur un schéma ou des RLS non validés.
+- Ne pas traiter le PDF comme urgent si **E1** est encore placeholder.
+- **Ne pas prioriser E1 avant une banque au moins utilisable** si l’on suit l’ordre métier (banque → épreuves) — voir [DECISIONS.md](./DECISIONS.md).
+- `npm run ci` (Q2) : garde-fou **continue**, pas une étape unique en fin de projet.
+
+---
+
+## 4. Liste structurée — ce qui manque
+
+### 4.1 Fondations (sans quoi la prod casse)
+
+| #   | Statut      | Sujet                          | Détail / maintenance                                                                                                                                                                                                                                            |
+| --- | ----------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F1  | **Fait**    | Schéma + types TypeScript      | `supabase/schema.sql`, [ARCHITECTURE.md](./ARCHITECTURE.md#schéma-base-de-données) ; `npm run gen:types` → `lib/types/database.ts` (script `scripts/gen-database-types.cjs`). Après migration SQL : régénérer les types + `npm run ci`.                         |
+| F2  | **Fait**    | Variables d’environnement      | `.env.example` ; parité **Vercel** / local documentée dans [ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité) §3.                                                                                                                                     |
+| F3  | **Partiel** | **RLS** sur parcours critiques | Politiques dans `schema.sql`. **Revue statique** OK. **Exécution** [RLS-CHECKLIST.md](./RLS-CHECKLIST.md) : **1–2 OK** ; **3–4 OK** (27 mars 2026). **5–7** : surtout **après banque** §4.4 B1. **Clôture F3** : **5–7** testables OK ou N/A accepté par le PO. |
+| F4  | Manquant    | **Storage** + uploads          | Bucket + politiques ; `lib/actions/documents.ts`, `BLOC4-DOCUMENTS.md`                                                                                                                                                                                          |
+
+### 4.2 Parcours enseignant — création / gestion des tâches
+
+| #   | Statut      | Sujet                                                                                                                                                                                                                        | Détail / maintenance                                                                                                                                                                                                                                                                                |
+| --- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C1  | **Partiel** | **Édition** d’une tâche publiée ou brouillon                                                                                                                                                                                 | Route `questions/[id]/edit` + accès auteur ; **réhydratation `TaeFormState`** (`lib/queries/tae-for-edit.ts`) + `TaeForm` + `update_tae_transaction` ; reprise [FEATURES.md](./FEATURES.md) §9 (versioning / cas métier) — `[WORKFLOWS.md](./WORKFLOWS.md#mes-tâches-et-édition)`                   |
+| C2  | **Partiel** | **Liste « Mes tâches »** : filtres + **Voir**                                                                                                                                                                                | Filtres **Toutes / Brouillons / Publiées** : query `?filtre=` (`toutes`, `brouillons`, `publiees`) — `components/questions/MesQuestionsFiltres.tsx`, `parseMyTaeListFiltre` dans `lib/queries/user-content.ts`, `app/(app)/questions/page.tsx`. Copy : [UI-COPY.md](./UI-COPY.md#page--mes-tâches). |
+| C3  | **Partiel** | Actions **Modifier** / **Supprimer**                                                                                                                                                                                         | **Supprimer** : livré (modale, `deleteTaeAction`, blocage si `evaluation_tae`). **Modifier** : wizard sur `/questions/[id]/edit` ; mise à jour via RPC (blocage si `evaluation_tae`)                                                                                                                |
+| C4  | Manquant    | Retrait des **PROVISOIRE** et alignement **[UI-COPY.md](./UI-COPY.md)** / **[DECISIONS.md](./DECISIONS.md)**                                                                                                                 | Modales, erreurs, collaborateurs, etc.                                                                                                                                                                                                                                                              |
+| C5  | **Partiel** | **Banque documents** dans le Bloc 4 : liste **réelle** dans la modale (`listBankDocumentsPickerAction`, composant encore nommé `BanqueDocumentsStub.tsx`) — **manque** filtres métier avancés, pagination, renommage fichier | [WORKFLOWS.md](./WORKFLOWS.md#bloc-4--documents-historiques), entrée backlog technique « Banque Bloc 4 — recherche avancée »                                                                                                                                                                        |
+| C6  | Manquant    | Finitions **publication** (versioning majeur/mineur, erreurs métier)                                                                                                                                                         | [FEATURES.md](./FEATURES.md) §9, `publish-tae.ts`                                                                                                                                                                                                                                                   |
+
+### 4.3 Épreuves (regroupement de tâches + livrable classe)
+
+**Ordre produit :** après une **banque collaborative** au moins exploitable (**§4.4 B1**), sauf décision contraire — voir **§3 palier D** et [DECISIONS.md](./DECISIONS.md) (banque avant épreuves complètes).
+
+| #   | Manquant                             | Détail                                                                          |
+| --- | ------------------------------------ | ------------------------------------------------------------------------------- |
+| E1  | **Créer une épreuve** : flux complet | Titre, liste ordonnée de `tae_id`, persistance `evaluations` + `evaluation_tae` |
+| E2  | **Modifier une épreuve**             | Drag-and-drop ordre, ajout/retrait de tâches — [FEATURES.md](./FEATURES.md) §10 |
+| E3  | **Export PDF**                       | Dossier documentaire global + questionnaire, mapping `{{doc_*}}` — §10.3        |
+| E4  | Partage / visibilité banque          | Si dans le périmètre MVP                                                        |
+
+### 4.4 Communauté et découverte
+
+**Priorité :** **avant** le gros de **E1** si l’ordre produit banque → épreuves est suivi (**§3 palier D1**, [DECISIONS.md](./DECISIONS.md)).
+
+| #   | Sujet                                           | Détail                                                                                                                                                                                                                                                                                       |
+| --- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| B1  | **Banque collaborative** UI                     | **Livré (mars 2026, étendu) :** `/bank` — tâches (vue `banque_tae`, filtres §8.2, tri, **Charger plus**), documents (filtres + pagination), épreuves (liste publiée, recherche titre, **Charger plus**). **Suite :** filtres épreuves dérivés, cartes riches, favoris — `BANK.md` si présent |
+| B2  | **Votes** (conditions d’éligibilité, affichage) | [FEATURES.md](./FEATURES.md) §8.3, `SectionVotes.tsx`                                                                                                                                                                                                                                        |
+| B3  | **Commentaires**                                | §8.4                                                                                                                                                                                                                                                                                         |
+| B4  | **Favoris** (au-delà du compteur dashboard)     | §8.6                                                                                                                                                                                                                                                                                         |
+| B5  | **Profil public** enseignant                    | `/profile/[id]` enrichi — copy à valider                                                                                                                                                                                                                                                     |
+
+### 4.5 Tableau de bord et notifications
+
+| #   | Manquant                                           | Détail                                              |
+| --- | -------------------------------------------------- | --------------------------------------------------- |
+| D1  | Listes **cliquables** (TAÉ récentes, etc.)         | `DASHBOARD.md` — remplacer « arrive prochainement » |
+| D2  | **Notifications** : liste, lu/non lu, déclencheurs | `DASHBOARD.md`, handlers                            |
+
+### 4.6 Qualité produit transverse
+
+| #   | Manquant                                                            | Détail                                                       |
+| --- | ------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Q1  | **Copy** : tout texte utilisateur depuis [UI-COPY.md](./UI-COPY.md) | [Copy à valider](./UI-COPY.md#copy-à-valider--provisoire)    |
+| Q2  | `npm run ci` avant merge                                            | [DECISIONS.md](./DECISIONS.md#checklist-avant-livraison)     |
+| Q3  | Accessibilité / formulaires                                         | [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires) checklist |
+
+---
+
+## 5. Méthode de travail : protocole de décomposition
+
+Toute tâche qui traite un écart **Manquant**, **Partiel** ou **Avancé** (à finaliser) dans le **§2**, ou un item du **§4**, doit idéalement suivre ce **préalable** avant une grosse vague de génération de code. L’objectif est l’**intégrité architecturale**, la **limitation des régressions** et le respect des normes du dépôt ([DECISIONS.md](./DECISIONS.md), [ARCHITECTURE.md](./ARCHITECTURE.md), [BACKLOG.md](./BACKLOG.md#anti-dette-technique)).
+
+Ce protocole **ne remplace pas** les checklists détaillées ailleurs : il **cadre** l’ordre de réflexion. En cas de conflit, **[DECISIONS.md](./DECISIONS.md)**, **[UI-COPY.md](./UI-COPY.md)** (copy), [FEATURES.md](./FEATURES.md), [ARCHITECTURE.md](./ARCHITECTURE.md) font foi.
+
+### 5.1 Analyse d’impact (pré-vol)
+
+L’agent ou l’humain identifie d’abord :
+
+| Volet          | Questions                                                                                                                                                                                                                                                       |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Données**    | Quelles tables, vues, RPC ou buckets (`[ARCHITECTURE.md](./ARCHITECTURE.md#schéma-base-de-données)`, `supabase/schema.sql`) ? Une migration ou un alignement de types est-il nécessaire ? La **RLS** (et le **Storage**) couvrent-elles déjà le parcours ?      |
+| **Surface UI** | Quelles primitives (`components/ui/`) et quels modules métier existants (`components/tae/`, `components/layout/`, etc. — voir [ARCHITECTURE.md](./ARCHITECTURE.md)) sont **réutilisés ou étendus** ? Éviter un nouvel emplacement sans cohérence d’archi.       |
+| **Flux**       | Données en **Server Component**, interaction en **Client Component** (`'use client'` seulement si nécessaire), mutations via **Server Actions** : pas d’appel Supabase direct depuis un Client Component ([DECISIONS.md](./DECISIONS.md#règles-absolues-code)). |
+
+### 5.2 Plan d’implémentation découpé
+
+Découper le travail par **couches**, dans l’esprit du dépôt (une sous-tâche = un objectif vérifiable) :
+
+| Couche      | Contenu typique                                                                                                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Données** | `schema.sql`, [ARCHITECTURE.md](./ARCHITECTURE.md#schéma-base-de-données), régénération `lib/types/database.ts`, politiques **RLS** / **Storage**.                                 |
+| **Logique** | Server Actions, schémas **Zod** (`lib/schemas/`), fonctions pures dans `lib/` — pas dupliquer les schémas existants.                                                               |
+| **UI**      | Présentation : tokens, `cn()`, `DESIGN-SYSTEM.md` ; formulaires et retours d’erreur selon **[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires)** (toasts / inline, accessibilité). |
+| **Routage** | `app/`, layouts, `middleware.ts` — voir [ARCHITECTURE.md](./ARCHITECTURE.md) §6.                                                                                                   |
+
+### 5.3 Principes directeurs
+
+- **DRY** : réutiliser utilitaires, schémas et composants existants avant d’en ajouter.
+- **Responsabilité unique** : séparer par exemple « schéma Zod + action serveur » et « JSX + états UI », pas un seul bloc indivisible.
+- **Erreurs visibles** : pas d’échec silencieux ; alignement sur [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires) pour le feedback utilisateur.
+- **Copy immuable** : tout libellé utilisateur depuis **[UI-COPY.md](./UI-COPY.md)** ; texte absent ou ambigu → **ne pas inventer**, bloquer et faire valider.
+- **Qualité** : `npm run ci` avant merge ([DECISIONS.md](./DECISIONS.md#checklist-avant-livraison), `Q2` en §4.6).
+
+---
+
+## 6. Cartographie des documents
+
+| Document                                                             | Rôle                                                                                                       |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **[BACKLOG.md](./BACKLOG.md#produit-abouti)** (ce fichier)           | Vue **produit** : avancement + écarts vers la cible ; **à mettre à jour** après chaque livraison majeure.  |
+| **[BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md)**                       | **Chronologie** des livraisons documentées (tableau daté).                                                 |
+| la section « Backlog technique détaillé » de ce fichier              | Backlog **technique** détaillé (fichiers, specs).                                                          |
+| [ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité)         | CI, stack, **variables env** (§3), [checklist RLS](./ARCHITECTURE.md#checklist-rls-manuelle), déploiement. |
+| [DECISIONS.md](./DECISIONS.md#protocole-de-maintenance-documentaire) | **Documentation obligatoire** après livraison (quoi mettre à jour : produit, backlog, déploiement, archi). |
+| [DECISIONS.md](./DECISIONS.md#priorité-features-rappel-métier)       | Ordre de priorité officiel des features.                                                                   |
+
+---
+
+## 7. Comment tenir ce fichier à jour
+
+À chaque **livraison significative** (feature, lot, release) :
+
+1. Ajuster la **date** en tête du fichier ; si le lot est consigné en **chronologie**, une **ligne en tête** du tableau dans [BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md).
+2. Mettre à jour le **tableau §2** (lignes « Avancé / Partiel / Manquant »).
+3. Cocher ou retirer des lignes dans **§4** quand le sujet est **réellement** livré en prod (pas seulement en branche).
+4. Si la décision de périmètre change **(PO)** : refléter la nouvelle définition de « abouti » en **§1**.
+5. Vérifier que **§3** (ordre prioritaire) reste cohérent avec les risques réels (RLS, schéma, dépendances).
+6. Quand la **checklist RLS** ([RLS-CHECKLIST.md](./RLS-CHECKLIST.md)) est exécutée (passe **complète** ou **partielle** avec **N/A** documentés) : mettre à jour **§4.1 F3** et le palier **A3** (§3) — **partiel** tant que des scénarios restent N/A faute d’UI ; **fait** seulement si tous les scénarios testables sont OK et le reste est N/A accepté ou couvert.
+7. Pour les chantiers non triviaux : s’assurer que **§5** (protocole de décomposition) a été respecté ou documenter l’exception (ex. correctif d’urgence).
+8. Mettre à jour **la section « Backlog technique détaillé » de ce fichier** lorsqu’une ligne du backlog technique ou moyenne priorité est devenue obsolète ou partiellement résolue.
+9. Se référer à **[DECISIONS.md](./DECISIONS.md#protocole-de-maintenance-documentaire)** pour la liste complète des documents à synchroniser selon le type de changement (env, archi, specs).
+
+En cas de conflit entre ce fichier et **[DECISIONS.md](./DECISIONS.md)**, **[UI-COPY.md](./UI-COPY.md)** ou **[FEATURES.md](./FEATURES.md)** : **les docs normatives gagnent** ; mettre à jour ce document pour réaligner.
+
+---
+
+## 8. Historique des mises à jour
+
+Le **tableau chronologique** des livraisons documentées est dans **[BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md)**. Y ajouter une **ligne en tête** du tableau à chaque lot visible (juste sous l'en-tête des colonnes).
+
+---
+
+## Backlog technique détaillé
+
+> Dérivé de l’audit du dépôt (parcours réel vs specs).
+> Ne remplace pas un éventuel backlog historique hors dépôt (ex. WordPress) : pas de fusion ni de déduplication automatique avec d’anciens tickets.
+> **État déploiement / CI :** `[ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité)` (revue 23 mars 2026).
+> **Vue produit « abouti » :** `[BACKLOG.md](./BACKLOG.md#produit-abouti)`.
+
+---
+
+## Critique — bloque tout le reste
+
+| Item                        | Description                                                                                                                               | Fichier(s)                                        | Spec                                                                                                                                 |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Config Supabase & site      | Variables `NEXT_PUBLIC_SUPABASE_*`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_SITE_URL` cohérentes en local et en prod.                   | `lib/supabase/*.ts`, `.env.local` (non versionné) | `[ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité)`, `[DECISIONS.md](./DECISIONS.md#checklist--suivi-et-tâches-ouvertes)` |
+| Schéma DB & types           | Schéma SQL appliqué sur le projet Supabase, `lib/types/database.ts` aligné (`npm run gen:types` ou équivalent).                           | `supabase/schema.sql`, `lib/types/database.ts`    | `[ARCHITECTURE.md](./ARCHITECTURE.md#schéma-base-de-données)`                                                                        |
+| Stockage fichiers documents | Bucket Supabase Storage + politiques ; remplacer le rejet explicite dans l’action d’upload si l’upload iconographique est requis en prod. | `lib/actions/documents.ts`                        | `[WORKFLOWS.md](./WORKFLOWS.md#bloc-4--documents-historiques)`, `[ARCHITECTURE.md](./ARCHITECTURE.md#schéma-base-de-données)`        |
+
+**Suivi (mars 2026) :** parité des variables et procédure Vercel **documentées** dans [ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité) §3 ; types régénérés via `npm run gen:types` (`scripts/gen-database-types.cjs`). **RLS :** **1–2 OK** ; **3–4 OK** (27 mars 2026, fiche [RLS-CHECKLIST.md](./RLS-CHECKLIST.md)) ; **5–7** à enchaîner avec la **banque** ou noter **N/A**. Il reste à **renseigner les secrets sur l’hôte** pour la prod.
+
+---
+
+## Anomalies identifiées (audit avril 2026)
+
+| Anomalie | Statut | Détail |
+| --- | --- | --- |
+| Double suppression brouillon (RPC + TS) | **Corrigé** | Doublon TS retiré de `lib/actions/tae-publish.ts` — la RPC `publish_tae_transaction` reste le seul chemin (atomique) |
+| 6e aspect `scientifique_et_technologique` | **Rien à faire** | Zéro occurrence dans le code TS, SQL ou constantes — écart documentaire FEATURES.md uniquement |
+| `tae_docs_write` DELETE trop large | **Corrigé** | Migration `20260403130000` — politique éclatée : INSERT/UPDATE (auteur + collab), DELETE (auteur seul + admin) |
+| `inherit_metadata_to_source_doc` non câblé | **Identifié** | Fonction SQL existe mais n’est appelée ni dans les RPCs publish/update ni depuis le TS — héritage métadonnées banque inopérant |
+| Documents non publiés invisibles pour collaborateurs | **Identifié** | `documents_select` exige `is_published = TRUE OR auteur_id` — collaborateur TAÉ ne voit pas les docs créés par un autre auteur via la RPC |
+| Notifications cross-user impossibles | **Identifié** | RLS `notif_own` empêche toute insertion pour un autre `user_id` — pas de RPC SECURITY DEFINER pour les notifications système |
+| Sprint 1 SPEC-TEMPLATES-CONSIGNE | **Livré** | `lib/tae/wizard-bloc-config.ts`, `lib/tae/consigne-templates.ts`, `lib/tae/oi-perspectives/` (4 fichiers), `docs/UI-COPY.md` (18 entrées copy perspectives). Zéro fichier existant modifié hors UI-COPY.md |
+| Sprint 2 OI3 perspectives | **Livré** | `RadioCardGroup` primitif universel ; `Bloc3ModeleSouple`, `Bloc3TemplateStructure`, `Bloc3TemplatePur` (templates consigne) ; `Bloc4Perspectives` accordéon séquentiel groupé/séparé avec migration bidirectionnelle ; `Bloc5Intrus` (radios + explication + point commun) ; `PerspectivesPrintBlock` (impression 2-3 colonnes) ; `ComportementBreadcrumb` ; refactoring « amorce documentaire » ; wizard 7 étapes documenté ; guards Bloc 3 + Bloc 5 ; tooltips consigne par comportement ; `perspectivesMode`, `perspectivesType`, `perspectivesContexte`, `perspectivesTitre` dans le reducer |
+| Sprint 3 OI4 + OI6 | **Livré** | OI4·4.1/4.2 (`modele_souple` cause/conséquence) ; OI6·6.1/6.2 (`modele_souple` changement/continuité, Bloc 4 standard) ; OI6·6.3 (`pur` variante `oi6`, champ enjeu, formule groupé/séparé, `Bloc4Moments` accordéon États A/B avec migration bidirectionnelle, `MomentData`, `SET_OI6_ENJEU`, `UPDATE_MOMENT`, `SET_MOMENTS_TITRE`) ; guards enjeu + perspectivesMode ; resolver moments dans `wizardBlocResolver` |
+
+---
+
+## Haute priorité — parcours principal
+
+| Item                                | Description                                                                                                                                             | Fichier(s)                                                                                                | Spec                                                                                                                               |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Sauvegarde brouillon (UI → serveur) | Bouton « Sauvegarder le brouillon » : feedback utilisateur, gestion d’erreur réseau (toast) alignée [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires). | `StepperNavFooter`, `saveWizardDraftAction`                                                               | `[WORKFLOWS.md](./WORKFLOWS.md)`, `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires)`                                             |
+| Publication TAÉ — finitions         | `publishTaeAction` + RPC `publish_tae_transaction` : valider erreurs utilisateur, versioning majeur/mineur selon [FEATURES.md](./FEATURES.md) §9.       | `lib/tae/publish-tae.ts` (+ `publish-tae-*`), `lib/actions/tae-publish.ts`                                | `[FEATURES.md](./FEATURES.md)` §9, `[WORKFLOWS.md](./WORKFLOWS.md)`                                                                |
+| Banque Bloc 4 — recherche avancée   | Filtres métier dans la modale (discipline, niveau, etc.) au-delà de la liste récente ; pagination si volume élevé.                                      | `components/tae/TaeForm/bloc4/BanqueDocumentsStub.tsx`, `lib/actions/list-bank-documents-picker.ts`       | `[WORKFLOWS.md](./WORKFLOWS.md#bloc-4--documents-historiques)`, `[FEATURES.md](./FEATURES.md#13-banque-collaborative-vue-produit)` |
+| Copy & modales manquantes           | Retirer les `PROVISOIRE` / textes hors référence : libellés modales Bloc 2, blueprint verrouillé, chargement, collaborateurs.                           | `Bloc2GrilleAndModals.tsx`, `BlueprintLockedView.tsx`, `Bloc1AuteursTache.tsx`, `LabelWithInfo.tsx`, etc. | `[UI-COPY.md](./UI-COPY.md#copy-à-valider--provisoire)`, `[DECISIONS.md](./DECISIONS.md#règles-absolues-code)`                     |
+| Bloc5Redactionnel — routing templateKey | Étendre `Bloc5Redactionnel` pour lire `config.bloc5.templateKey` et pré-remplir le corrigé + notes du correcteur. Pour `accord-desaccord` (3.3/3.4) : noms d'acteurs depuis `state.bloc4.perspectives[0].acteur` / `[1].acteur`. Registres prêts : `lib/tae/bloc5/bloc5-templates.ts`, `bloc5-notes-templates.ts`. | `Bloc5Redactionnel.tsx`, `Bloc5.tsx`, `wizard-bloc-config.ts` | `[SPEC-BLOC5.md](./SPEC-BLOC5.md)` |
+| API modale unifiée (si adoptée)     | Remplacer `SimpleModal` / TODO par l’API décrite pour cohérence long terme.                                                                             | `components/ui/SimpleModal.tsx`, `Bloc3InfoModals.tsx`                                                    | `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#modales)`                                                                                   |
+
+---
+
+## Moyenne priorité — features importantes
+
+| Item                                         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                 | Fichier(s)                                                                                                  | Spec                                                                                                                                         |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pleine largeur document (print)              | Remplacer l’heuristique `shouldPrintDocumentFullWidth` (`lib/tae/print-document-full-width.ts`, PROVISOIRE) par un champ métier optionnel sur le document ou la TAÉ (`print_full_width` / `span_print`) + UI wizard si le produit l’exige.                                                                                                                                                                                                  | `PrintableFichePreview.tsx`, schéma / RPC futurs                                                            | `[FEATURES.md](./FEATURES.md)` §5, `[WORKFLOWS.md](./WORKFLOWS.md)`                                                                          |
+| Liste « Mes tâches » — actions               | **Supprimer** et **Modifier** livrés : **Modifier** → wizard sur `/questions/[id]/edit` (réhydratation, `publishTaeAction` + `update_tae_transaction`, blocage si `evaluation_tae`). Filtres + **Voir** déjà livrés. Reste polish / cas limites [FEATURES.md](./FEATURES.md) §9 vs implémentation.                                                                                                                                          | `app/(app)/questions/`, `MesQuestionsRow.tsx`, `tae-delete.ts`, `tae-publish.ts`, `tae-for-edit.ts`         | `[DECISIONS.md](./DECISIONS.md)`, `[WORKFLOWS.md](./WORKFLOWS.md#mes-tâches-et-édition)`                                                     |
+| Banque collaborative (UI)                    | **Fait :** onglets, liste tâches (dont **Ajouter à une épreuve** sur ligne TAÉ), liste documents (filtres, usages, lien fiche), CTA création document. **Reste :** onglet épreuves placeholder ; raffinages liste (cartes, pagination keyset côté UI si besoin).                                                                                                                                                                            | `app/(app)/bank/page.tsx`, `components/bank/`, `lib/queries/bank-tasks.ts`, `lib/queries/bank-documents.ts` | `[FEATURES.md](./FEATURES.md#13-banque-collaborative-vue-produit)`, `[FEATURES.md](./FEATURES.md)` §8                                        |
+| Modes d’impression (aperçu)                  | Panoplie dans **Aperçu avant impression** : formatif / sommatif / corrigé / épreuve (détail [FEATURES.md](./FEATURES.md) §10.5). État **local** à l’impression ; numérotation question surtout **épreuves** (composition) ; mode corrigé = texte sur lignes + traits conservés ; packaging « 3 cahiers » **TBD**.                                                                                                                           | `PrintPreviewModal.tsx`, `PrintableFichePreview.tsx`, route print, futur export épreuve                     | `[FEATURES.md](./FEATURES.md)` §10.5, `[WORKFLOWS.md](./WORKFLOWS.md)`                                                                       |
+| Supprimer `documents.print_impression_scale` | Colonne rendue obsolète par le redimensionnement automatique Sharp (lot upload image). **Prérequis avant migration `DROP COLUMN` :** `npm run ci` sans lecture ni écriture de cette colonne dans l’app ; aucun composant ne la référence ; migration dans `supabase/migrations/` ; mettre à jour `supabase/schema.sql` ; `npm run gen:types`.                                                                                               | Schéma `documents`, RPC publish/update si besoin                                                            | Aligné lot mars 2026 — réglage échelle retiré de l’UI.                                                                                       |
+| Profil public enseignant                     | Vue `/profile/[id]` enrichie (TAÉ publiées, métadonnées) — copy à valider où marqué placeholder dans la spec UI.                                                                                                                                                                                                                                                                                                                            | `app/(app)/profile/[id]/page.tsx`                                                                           | `[DECISIONS.md](./DECISIONS.md)`, `[FEATURES.md](./FEATURES.md#12-tableau-de-bord-et-profil-nextjs)`                                         |
+| Collaborateurs (page menu)                   | Remplacer le placeholder `/collaborateurs` (liste / annuaire produit). **Wizard Bloc 1** : recherche + persistance `tae_collaborateurs` — **fait** (voir [WORKFLOWS.md](./WORKFLOWS.md#bloc-1--recherche-collaborateurs)).                                                                                                                                                                                                                  | `app/(app)/collaborateurs/page.tsx`                                                                         | `[WORKFLOWS.md](./WORKFLOWS.md)`, `[FEATURES.md](./FEATURES.md)`                                                                             |
+| Route Handlers / API REST (si requis)        | Ajouter les endpoints décrits dans l’archi (export PDF, votes, etc.) si le produit sort du pur Server Actions.                                                                                                                                                                                                                                                                                                                              | `app/api/` (à créer)                                                                                        | `[ARCHITECTURE.md](./ARCHITECTURE.md)`, [DECISIONS.md](./DECISIONS.md#référence-historique--routes-wordpress) (routes WordPress historiques) |
+| NR — harmonisation **`non_redaction_data`**  | Remplir la colonne pour les parcours **1.1** / **1.2** (aujourd’hui **NULL**) : republication humaine, outil semi-auto ou heuristique — **pas** de promesse de conversion HTML → JSON 100 % fiable ; option fiche rendue depuis JSON unifié après stabilisation.                                                                                                                                                                            | `parseNonRedactionData`, `publish-tae-payload.ts`, schéma union NR                                          | Plan [.cursor/plans/parcours-1-3-avant-apres.plan.md](../.cursor/plans/parcours-1-3-avant-apres.plan.md) § BACKLOG harmonisation             |
+| Import JSON TAÉ (NotebookLM / outils)        | Parcours enseignant : dépôt fichier → validation → **rapport des lacunes** (images `image_url`, `repere_temporel` / `annee_normalisee`, connaissances, etc.) → complétion wizard ou champs dédiés → injection **`auteur_id`** puis RPC. Réf. bundle `public/data/import-tae-notebooklm-bundle.json` ; **pipeline amorcé** : `lib/tae/import/` (alias LLM, validation vs `oi.json`). Hors RPC : `connaissances_hors_rpc` résolu avant appel. | Route ou modale à définir ; `publish_tae_transaction` existant ; brancher l’UI sur `lib/tae/import/`        | [ARCHITECTURE.md](./ARCHITECTURE.md) (`public/data/`, `lib/tae/import/`), [BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md)                         |
+
+---
+
+## Basse priorité — polish et extras
+
+| Item                                                                               | Description                                                                                                                                                                             | Fichier(s)                                                                | Spec                                                                                                                                  |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Dashboard — listes détaillées                                                      | Remplacer « arrive prochainement » par listes cliquables (TAÉ récentes, etc.).                                                                                                          | `app/(app)/dashboard/page.tsx`                                            | `[FEATURES.md](./FEATURES.md#12-tableau-de-bord-et-profil-nextjs)`                                                                    |
+| Notifications riches                                                               | Au-delà du compteur : liste, lecture, realtime optionnel.                                                                                                                               | `lib/queries/dashboard.ts`, UI dashboard                                  | `[FEATURES.md](./FEATURES.md#12-tableau-de-bord-et-profil-nextjs)`, `[FEATURES.md](./FEATURES.md)`                                    |
+| Export PDF épreuves                                                                | Génération dossier documentaire + questionnaire, renumérotation `{{doc_*}}`.                                                                                                            | futurs `app/api/...`, `lib/utils/` (ex. `renumberDocs`)                   | `[FEATURES.md](./FEATURES.md)` §10.3                                                                                                  |
+| Votes & commentaires (flux complet)                                                | Finaliser interactions pair / affichage / modération selon DOMAIN.                                                                                                                      | `components/tae/fiche/SectionVotes.tsx`, actions dédiées                  | `[FEATURES.md](./FEATURES.md)` §8                                                                                                     |
+| Favoris (au-delà du compteur)                                                      | UI complète cohérente avec la banque.                                                                                                                                                   | dashboard, banque                                                         | `[FEATURES.md](./FEATURES.md)` §8.6                                                                                                   |
+| Grille **2 colonnes à l’intérieur** de la carte formulaire (par bloc / breakpoint) | Réduire le scroll vertical : placer des champs courts côte à côte (ex. Bloc 2) là où la spec le permet ; **ne pas** fragmenter consigne / TipTap / zones longues. Mobile : une colonne. | `Bloc2ParametresTache.tsx`, `Bloc2EditFields.tsx`, autres blocs concernés | `[WORKFLOWS.md](./WORKFLOWS.md)` §1.2, `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires)`, `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)` |
+
+---
+
+## Complété ✅
+
+| Domaine                                   | Description                                                                                                                                                                                                                                                    | Fichier(s) principal(aux)                                                                                                                                                                                                                                           | Spec                                                                                                                                                                                                                                                                |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Auth (connexion, inscription, activation) | Server Actions, formulaires, redirections, callback OAuth/magic link selon implémentation actuelle.                                                                                                                                                            | `lib/actions/auth.ts`, `app/(auth)/`, `app/auth/callback/route.ts`, `components/auth/*`                                                                                                                                                                             | `[ARCHITECTURE.md](./ARCHITECTURE.md#authentification-nextjs--supabase)`, `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires)`                                                                                                                                      |
+| Layout app connecté                       | Session, profil actif, coquille navigation, déconnexion.                                                                                                                                                                                                       | `app/(app)/layout.tsx`, `components/layout/*`                                                                                                                                                                                                                       | `[ARCHITECTURE.md](./ARCHITECTURE.md)`, `[FEATURES.md](./FEATURES.md#12-tableau-de-bord-et-profil-nextjs)`                                                                                                                                                          |
+| Middleware auth                           | Protection des préfixes principaux + `/collaborateurs` ; redirection login / dashboard.                                                                                                                                                                        | `middleware.ts`, `lib/supabase/middleware.ts`                                                                                                                                                                                                                       | `[ARCHITECTURE.md](./ARCHITECTURE.md)` §6                                                                                                                                                                                                                           |
+| Tableau de bord (stats)                   | Compteurs TAÉ publiées, épreuves, notifications non lues, favoris, indice de confiance.                                                                                                                                                                        | `app/(app)/dashboard/page.tsx`, `lib/queries/dashboard.ts`, `components/dashboard/DashboardWidget.tsx`                                                                                                                                                              | `[FEATURES.md](./FEATURES.md#12-tableau-de-bord-et-profil-nextjs)`                                                                                                                                                                                                  |
+| Wizard création — blocs 1 à 6             | Stepper, état formulaire, blocs 1–6 (paramètres, consigne TipTap, documents, CD, connaissances).                                                                                                                                                               | `components/tae/TaeForm/*`                                                                                                                                                                                                                                          | `[WORKFLOWS.md](./WORKFLOWS.md)`, `[WORKFLOWS.md](./WORKFLOWS.md#bloc-3--consigne-et-production-attendue)`, `[WORKFLOWS.md](./WORKFLOWS.md#tae-stepper)`                                                                                                            |
+| Brouillon wizard serveur                  | `saveWizardDraftAction` → table `tae_wizard_drafts`.                                                                                                                                                                                                           | `lib/actions/tae-draft.ts`, `lib/queries/tae-draft.ts`                                                                                                                                                                                                              | `[WORKFLOWS.md](./WORKFLOWS.md)`, `[ARCHITECTURE.md](./ARCHITECTURE.md#schéma-base-de-données)`                                                                                                                                                                     |
+| Publication TAÉ (chemin principal)        | `publishTaeAction` → `publishTaeFromFormState` / RPC `publish_tae_transaction` (incl. `collaborateurs_user_ids` si mode équipe — [ARCHITECTURE.md](./ARCHITECTURE.md)).                                                                                        | `lib/actions/tae-publish.ts`, `lib/tae/publish-tae.ts` (+ modules `publish-tae-*` — voir [ARCHITECTURE.md](./ARCHITECTURE.md))                                                                                                                                      | `[FEATURES.md](./FEATURES.md)`, `[WORKFLOWS.md](./WORKFLOWS.md)`, `[WORKFLOWS.md](./WORKFLOWS.md#bloc-1--recherche-collaborateurs)`                                                                                                                                 |
+| Wizard Bloc 1 — collaborateurs            | Recherche profils actifs, pas d’ids `local-*` en publication, lignes `tae_collaborateurs` via RPC ; affichage école JSON.                                                                                                                                      | `CollaborateurSearchField.tsx`, `collaborateur-profile-search.ts`, `search-collaborateurs-profiles.ts`, `collaborateur-user-ids.ts`, `school-json.ts`, migration `20250325200000_*.sql`                                                                             | `[WORKFLOWS.md](./WORKFLOWS.md#bloc-1--recherche-collaborateurs)`, `[UI-COPY.md](./UI-COPY.md#étape-1--auteurs-de-la-tâche)`                                                                                                                                        |
+| Édition TAÉ (wizard persisté)             | Route `/questions/[id]/edit` ; `fetchTaeFormStateForEdit` ; `publishTaeAction(state, taeId)` → `updateTaeFromFormState` / RPC `update_tae_transaction`. Migration SQL sur projets existants : `supabase/migrations/20250325180000_update_tae_transaction.sql`. | `app/(app)/questions/[id]/edit/`, `lib/queries/tae-for-edit.ts`, `TaeForm` / `StepperNavFooter`, `lib/tae/publish-tae.ts`                                                                                                                                           | `[FEATURES.md](./FEATURES.md#93-édition-dune-tâche-existante-wizard)`, `[WORKFLOWS.md](./WORKFLOWS.md#mes-tâches-et-édition)`, `[ARCHITECTURE.md](./ARCHITECTURE.md#rpc-update_tae_transaction)`                                                                    |
+| Sommaire (colonne droite)                 | Aperçu temps réel côté formulaire.                                                                                                                                                                                                                             | `components/tae/TaeForm/sommaire/*`                                                                                                                                                                                                                                 | `[WORKFLOWS.md](./WORKFLOWS.md)`                                                                                                                                                                                                                                    |
+| Lecture fiche TAÉ                         | Page `/questions/[id]` avec données Supabase agrégées.                                                                                                                                                                                                         | `app/(app)/questions/[id]/page.tsx`, `components/tae/FicheTache.tsx`, `lib/tae/server-fiche-map.ts`                                                                                                                                                                 | `[WORKFLOWS.md](./WORKFLOWS.md#fiche-lecture)`                                                                                                                                                                                                                      |
+| Liste « Mes tâches » (base)               | Liste des tâches auteur depuis Supabase, aperçu consigne, statut, lien **Voir**.                                                                                                                                                                               | `app/(app)/questions/page.tsx`, `lib/queries/user-content.ts`                                                                                                                                                                                                       | `[DECISIONS.md](./DECISIONS.md)`                                                                                                                                                                                                                                    |
+| Liste « Mes épreuves » (base)             | Liste des épreuves (`evaluations`) auteur depuis Supabase.                                                                                                                                                                                                     | `app/(app)/evaluations/page.tsx`, `lib/queries/user-content.ts`                                                                                                                                                                                                     | `[FEATURES.md](./FEATURES.md)` §10                                                                                                                                                                                                                                  |
+| Composition épreuve (création / édition)  | Panier TAÉ, picker Banque + Mes tâches, brouillon / publier, RPC `save_evaluation_composition`, lien **Modifier** ; banque **Ajouter à une épreuve**.                                                                                                          | `app/(app)/evaluations/new/page.tsx`, `app/(app)/evaluations/[id]/edit/page.tsx`, `components/evaluations/EvaluationCompositionEditor.tsx`, `lib/actions/evaluation-save.ts`, `lib/actions/evaluation-picker.ts`, `components/bank/BankAddToEvaluationLauncher.tsx` | `[FEATURES.md](./FEATURES.md)` §10.2.1, `[WORKFLOWS.md](./WORKFLOWS.md#création--édition-dépreuve-composition)`, `[UI-COPY.md](./UI-COPY.md#page--créer--modifier-une-épreuve-composition)`, `[ARCHITECTURE.md](./ARCHITECTURE.md#rpc-save_evaluation_composition)` |
+| Reset wizard après publication            | Suppression brouillon serveur + `sessionStorage` après publish réussi.                                                                                                                                                                                         | `lib/actions/tae-publish.ts`, `components/tae/TaeForm/Stepper.tsx`                                                                                                                                                                                                  | `[WORKFLOWS.md](./WORKFLOWS.md)`                                                                                                                                                                                                                                    |
+| Référentiels JSON & helpers               | Chargement OI, blueprint, documents, etc.                                                                                                                                                                                                                      | `public/data/*.json`, `lib/tae/*-helpers.ts` (ex. connaissances : barrel + sous-modules — [ARCHITECTURE.md](./ARCHITECTURE.md)), `components/tae/TaeForm/bloc2/useBloc2Data.ts`                                                                                     | `[FEATURES.md](./FEATURES.md)`, `[WORKFLOWS.md](./WORKFLOWS.md)`                                                                                                                                                                                                    |
+| UI primitives & design tokens             | Composants de base, formulaires, listbox, modale simple.                                                                                                                                                                                                       | `components/ui/*`, `app/globals.css`                                                                                                                                                                                                                                | `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)`, `[DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#formulaires)`                                                                                                                                                                      |
+| CI locale & GitHub Actions                | `npm run ci` ; workflow `lint` 0 erreur, `build` OK.                                                                                                                                                                                                           | `.github/workflows/ci.yml`, `package.json`                                                                                                                                                                                                                          | `[ARCHITECTURE.md](./ARCHITECTURE.md)` §13, `[ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité)`                                                                                                                                                          |
+
+---
+
+## Migration SQL PO documents (27 mars 2026)
+
+**Fichier versionné :** `supabase/migrations/20250327140000_documents_source_type_legende_po.sql` — appliquer sur Supabase (`db push` / SQL Editor), puis **`npm run gen:types`** (les colonnes sont déjà dans `supabase/schema.sql`). Tant que la migration n’est pas appliquée sur le projet distant, régénérer les types peut **écraser** `lib/types/database.ts` : réappliquer la migration distante ou fusionner manuellement les enums / colonnes `documents`.
+
+```sql
+CREATE TYPE document_source_type AS ENUM (
+  'primaire',
+  'secondaire'
+);
+
+CREATE TYPE document_legend_position AS ENUM (
+  'haut_gauche',
+  'haut_droite',
+  'bas_gauche',
+  'bas_droite'
+);
+
+ALTER TABLE documents
+  ADD COLUMN IF NOT EXISTS source_type document_source_type NOT NULL DEFAULT 'secondaire',
+  ADD COLUMN IF NOT EXISTS image_legende TEXT,
+  ADD COLUMN IF NOT EXISTS image_legende_position document_legend_position;
+
+COMMENT ON COLUMN documents.source_type IS
+  'Source primaire ou secondaire — choix obligatoire en UI pour les nouveaux formulaires ; défaut secondaire pour données existantes et inserts RPC tant que le payload n''envoie pas la valeur.';
+COMMENT ON COLUMN documents.image_legende IS
+  'Légende optionnelle (document iconographique) ; max 50 mots — validation application.';
+COMMENT ON COLUMN documents.image_legende_position IS
+  'Coin du bandeau de légende sur l''image ; NULL si pas de légende.';
+
+CREATE INDEX IF NOT EXISTS idx_doc_source_type ON documents (source_type);
+```
+
+**Suite technique :** étendre le payload `documents_new` / état wizard / RPC si l’on veut persister légende et `source_type` explicite au-delà du défaut SQL — voir backlog technique et Phase 4 du plan module.
+
+---
+
+_Document généré pour prioriser le travail ; ajuster les lignes au fil des livraisons._

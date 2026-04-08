@@ -30,6 +30,8 @@ type Props = {
   imageUnoptimized?: boolean;
   /** Appelé une fois par jeu de métadonnées distinct après succès serveur (optionnel). */
   onUploadSuccess?: (result: ImageUploadSuccessMeta) => void;
+  /** Masquer le paragraphe « Formats acceptés » sous la zone (wizard document — texte en modale). */
+  hideFormatsHint?: boolean;
 };
 
 /**
@@ -44,6 +46,7 @@ export function ImageUploadDropzone({
   uploadMeta,
   imageUnoptimized = false,
   onUploadSuccess,
+  hideFormatsHint = false,
 }: Props) {
   const lastMetaKey = useRef("");
   useEffect(() => {
@@ -103,7 +106,9 @@ export function ImageUploadDropzone({
             onChange={(e) => void onFile(e.target.files?.[0] ?? null)}
           />
         </div>
-        <p className="text-xs leading-relaxed text-muted">{IMAGE_UPLOAD_FORMATS_INFO}</p>
+        {hideFormatsHint ? null : (
+          <p className="text-xs leading-relaxed text-muted">{IMAGE_UPLOAD_FORMATS_INFO}</p>
+        )}
       </div>
     );
   }
@@ -176,7 +181,9 @@ export function ImageUploadDropzone({
           onChange={(e) => void onFile(e.target.files?.[0] ?? null)}
         />
       </div>
-      <p className="text-xs leading-relaxed text-muted">{IMAGE_UPLOAD_FORMATS_INFO}</p>
+      {hideFormatsHint ? null : (
+        <p className="text-xs leading-relaxed text-muted">{IMAGE_UPLOAD_FORMATS_INFO}</p>
+      )}
     </div>
   );
 }

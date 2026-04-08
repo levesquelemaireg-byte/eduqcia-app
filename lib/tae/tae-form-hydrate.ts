@@ -4,10 +4,12 @@
  * Partagé client / serveur — pas de `"use client"`.
  */
 
+import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tae/document-helpers";
 import { sanitizeCdFormSlice } from "@/lib/tae/cd-helpers";
 import { sanitizeConnaissances } from "@/lib/tae/connaissances-helpers";
+import { normalizeAvantApresPayload } from "@/lib/tae/non-redaction/avant-apres-payload";
 import { normalizeLigneDuTempsPayload } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import { normalizeOrdreChronologiquePayload } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import { initialAspects } from "@/lib/tae/redaction-helpers";
@@ -119,12 +121,13 @@ function sanitizeDocumentsSlice(raw: unknown): Partial<Record<DocumentSlotId, Do
         typeof s.annee_normalisee === "number" && Number.isFinite(s.annee_normalisee)
           ? Math.trunc(s.annee_normalisee)
           : null,
+      type_iconographique: parseTypeIconographique(s.type_iconographique),
     };
   }
   return out;
 }
 
-function parseNonRedactionData(raw: unknown): NonRedactionData | null {
+export function parseNonRedactionData(raw: unknown): NonRedactionData | null {
   if (raw === null || raw === undefined) return null;
   if (typeof raw !== "object" || raw === null) return null;
   const o = raw as Record<string, unknown>;
@@ -140,6 +143,11 @@ function parseNonRedactionData(raw: unknown): NonRedactionData | null {
     if (p) return { type: "ligne-du-temps", payload: p };
     return null;
   }
+  if (t === "avant-apres" && "payload" in o) {
+    const p = normalizeAvantApresPayload(o.payload);
+    if (p) return { type: "avant-apres", payload: p };
+    return null;
+  }
   return null;
 }
 
@@ -148,7 +156,11 @@ function sanitizeBloc5Slice(raw: unknown): Bloc5Slice {
   const b = raw as Record<string, unknown>;
   const corrige = typeof b.corrige === "string" ? b.corrige : "";
   const nr = parseNonRedactionData(b.nonRedaction);
-  return { corrige, nonRedaction: nr };
+  const intrus =
+    b.intrus && typeof b.intrus === "object"
+      ? (b.intrus as Bloc5Slice["intrus"])
+      : null;
+  return { corrige, nonRedaction: nr, intrus };
 }
 
 function sanitizeBloc7Slice(raw: unknown): Bloc7Slice {
@@ -231,9 +243,21 @@ export function sanitizeHydratedState(raw: unknown): TaeFormState | null {
   };
 
   const b3 = o.bloc3 as Record<string, unknown>;
+  const rawPerspMode = b3.perspectivesMode;
   const bloc3 = {
     consigne: typeof b3.consigne === "string" ? b3.consigne : "",
     guidage: typeof b3.guidage === "string" ? b3.guidage : "",
+    perspectivesMode: (
+      rawPerspMode === "groupe" || rawPerspMode === "separe" ? rawPerspMode : null
+    ) as "groupe" | "separe" | null,
+    perspectivesType: b3.perspectivesType === "historiens" ? "historiens" as const : "acteurs" as const,
+    perspectivesContexte: typeof b3.perspectivesContexte === "string" ? b3.perspectivesContexte : "",
+    oi6Enjeu: typeof b3.oi6Enjeu === "string" ? b3.oi6Enjeu : "",
+    oi7EnjeuGlobal: typeof b3.oi7EnjeuGlobal === "string" ? b3.oi7EnjeuGlobal : "",
+    oi7Element1: typeof b3.oi7Element1 === "string" ? b3.oi7Element1 : "",
+    oi7Element2: typeof b3.oi7Element2 === "string" ? b3.oi7Element2 : "",
+    oi7Element3: typeof b3.oi7Element3 === "string" ? b3.oi7Element3 : "",
+    consigneMode: b3.consigneMode === "personnalisee" ? "personnalisee" as const : "gabarit" as const,
   };
 
   const b4 = o.bloc4 as { documents?: unknown };
@@ -256,7 +280,7 @@ export function sanitizeHydratedState(raw: unknown): TaeFormState | null {
     bloc1,
     bloc2,
     bloc3,
-    bloc4: { documents },
+    bloc4: { documents, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
     bloc5,
     bloc6,
     bloc7,

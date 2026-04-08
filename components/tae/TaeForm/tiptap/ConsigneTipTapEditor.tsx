@@ -5,11 +5,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { consigneExtensions } from "@/components/tae/TaeForm/tiptap/baseExtensions";
 import {
-  buildIntroInlineContent,
-  insertIntroPhrase,
-} from "@/components/tae/TaeForm/tiptap/insertIntro";
-import { CONSIGNE_DOC_INSERT_BUTTON_CLASS } from "@/components/tae/TaeForm/tiptap/consigneDocBadgeStyles";
-import { RichEditorToolbar } from "@/components/tae/TaeForm/tiptap/RichEditorToolbar";
+  buildAmorceInlineContent,
+  insertAmorceDocumentaire,
+} from "@/components/tae/TaeForm/tiptap/insertAmorce";
+import { RichTextEditorShell } from "@/components/ui/RichTextEditorShell";
 import { getMissingDocLetters } from "@/lib/tae/consigne-helpers";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 
@@ -27,11 +26,18 @@ type Props = {
   onChange: (html: string) => void;
   nbDocuments: number;
   documentSlotIds: DocumentSlotId[];
+  templateButton?: { label: string; onClick: () => void };
 };
 
-export function ConsigneTipTapEditor({ value, onChange, nbDocuments, documentSlotIds }: Props) {
+export function ConsigneTipTapEditor({
+  value,
+  onChange,
+  nbDocuments,
+  documentSlotIds,
+  templateButton,
+}: Props) {
   const [restoreModalOpen, setRestoreModalOpen] = useState(false);
-  const introInsertedRef = useRef(false);
+  const amorceInsertedRef = useRef(false);
   const skipNextSyncRef = useRef(false);
 
   const editor = useEditor(
@@ -43,7 +49,7 @@ export function ConsigneTipTapEditor({ value, onChange, nbDocuments, documentSlo
       editorProps: {
         attributes: {
           class:
-            "ProseMirror min-h-[100px] px-4 py-2.5 text-sm leading-relaxed text-deep focus:outline-none [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:font-semibold [&_em]:italic [&_u]:underline",
+            "ProseMirror min-h-[100px] w-full min-w-0 text-[13px] leading-relaxed text-deep focus:outline-none [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:font-semibold [&_em]:italic [&_u]:underline",
         },
       },
       onUpdate: ({ editor: ed }) => {
@@ -68,14 +74,14 @@ export function ConsigneTipTapEditor({ value, onChange, nbDocuments, documentSlo
 
   useEffect(() => {
     if (!editor) return;
-    if (introInsertedRef.current) return;
+    if (amorceInsertedRef.current) return;
     if (!nbDocuments) return;
     if (!editor.isEmpty) {
-      introInsertedRef.current = true;
+      amorceInsertedRef.current = true;
       return;
     }
-    insertIntroPhrase(editor, nbDocuments);
-    introInsertedRef.current = true;
+    insertAmorceDocumentaire(editor, nbDocuments);
+    amorceInsertedRef.current = true;
   }, [editor, nbDocuments]);
 
   useEffect(() => {
@@ -93,7 +99,7 @@ export function ConsigneTipTapEditor({ value, onChange, nbDocuments, documentSlo
   const handleRestoreToolbar = useCallback(() => {
     if (!editor) return;
     if (editor.isEmpty) {
-      insertIntroPhrase(editor, nbDocuments);
+      insertAmorceDocumentaire(editor, nbDocuments);
       return;
     }
     setRestoreModalOpen(true);
@@ -101,61 +107,52 @@ export function ConsigneTipTapEditor({ value, onChange, nbDocuments, documentSlo
 
   const insertAtStart = useCallback(() => {
     if (!editor) return;
-    editor.chain().focus().insertContentAt(0, buildIntroInlineContent(nbDocuments)).run();
+    editor.chain().focus().insertContentAt(0, buildAmorceInlineContent(nbDocuments)).run();
     setRestoreModalOpen(false);
   }, [editor, nbDocuments]);
 
   const insertAtCursor = useCallback(() => {
     if (!editor) return;
-    editor.chain().focus().insertContent(buildIntroInlineContent(nbDocuments)).run();
+    editor.chain().focus().insertContent(buildAmorceInlineContent(nbDocuments)).run();
     setRestoreModalOpen(false);
   }, [editor, nbDocuments]);
 
   const html = editor?.getHTML() ?? value;
   const missing = getMissingDocLetters(html, nbDocuments);
 
+  const docInsertButtons = documentSlotIds.map((slotId) => {
+    const letter = slotIdToLetter(slotId);
+    return {
+      slot: slotId,
+      label: `Document ${letter}`,
+      onInsert: () => {
+        editor?.chain().focus().insertContent({ type: "docRef", attrs: { letter } }).run();
+      },
+    };
+  });
+
   return (
     <div className="mt-2 space-y-2">
-      <div
-        className="flex flex-wrap gap-2"
-        data-doc-badges
-        aria-label="Insérer une référence de document"
-      >
-        {documentSlotIds.map((slotId) => {
-          const letter = slotIdToLetter(slotId);
-          return (
-            <button
-              key={slotId}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => {
-                editor?.chain().focus().insertContent({ type: "docRef", attrs: { letter } }).run();
-              }}
-              className={CONSIGNE_DOC_INSERT_BUTTON_CLASS}
-            >
-              <span className="material-symbols-outlined text-[0.9em]" aria-hidden="true">
-                add
-              </span>
-              Doc {letter}
-            </button>
-          );
-        })}
-      </div>
+      {docInsertButtons.length > 0 ? (
+        <p className="mb-1.5 flex items-center gap-1 text-xs text-muted">
+          <span className="material-symbols-outlined text-[13px]" aria-hidden="true">
+            info
+          </span>
+          Placez votre curseur dans le texte, puis cliquez sur un document pour l&apos;y insérer.
+        </p>
+      ) : null}
 
-      <div>
-        <RichEditorToolbar
-          editor={editor}
-          editorId="consigne"
-          showRestoreIntro={nbDocuments > 0}
-          onRestoreIntro={handleRestoreToolbar}
-        />
-        <div
-          data-editor="consigne"
-          className="rounded-b-lg border border-t-0 border-border bg-panel focus-within:border-accent focus-within:ring-2 focus-within:ring-accent/20"
-        >
-          <EditorContent editor={editor} />
-        </div>
-      </div>
+      <RichTextEditorShell
+        editor={editor}
+        editorId="consigne"
+        toolbarAriaLabel="Mise en forme de la consigne"
+        showRestoreAmorce={nbDocuments > 0}
+        onRestoreAmorce={handleRestoreToolbar}
+        templateButton={templateButton}
+        docInsertButtons={docInsertButtons}
+      >
+        <EditorContent editor={editor} />
+      </RichTextEditorShell>
 
       {missing.length > 0 ? (
         <div
@@ -176,7 +173,7 @@ export function ConsigneTipTapEditor({ value, onChange, nbDocuments, documentSlo
 
       <SimpleModal
         open={restoreModalOpen}
-        title="Réinsérer la phrase d'introduction"
+        title="Réinsérer l'amorce documentaire"
         onClose={() => setRestoreModalOpen(false)}
         footer={
           <div className="flex flex-wrap justify-end gap-2">

@@ -30,7 +30,7 @@ import {
  */
 export const TAE_FORM_STEPS = [
   {
-    id: "conception",
+    id: "auteurs",
     number: 1,
     stepperLine: "Auteur(s) de la tâche",
     label: "Étape 1 — Auteur(s) de la tâche",
@@ -39,7 +39,7 @@ export const TAE_FORM_STEPS = [
     icons: BLOC1_STEPPER_ICONS,
   },
   {
-    id: "blueprint",
+    id: "parametres",
     number: 2,
     stepperLine: "Paramètres de la tâche",
     label: "Étape 2 — Paramètres de la tâche",
@@ -47,7 +47,7 @@ export const TAE_FORM_STEPS = [
     icons: BLOC2_STEPPER_ICONS,
   },
   {
-    id: "redaction",
+    id: "consigne",
     number: 3,
     stepperLine: BLOC3_TITRE,
     label: `Étape 3 · ${BLOC3_TITRE}`,
@@ -63,7 +63,7 @@ export const TAE_FORM_STEPS = [
     icons: BLOC4_STEPPER_ICONS,
   },
   {
-    id: "corrige-options",
+    id: "corrige",
     number: 5,
     stepperLine: BLOC5_TITRE,
     label: `Étape 5 · ${BLOC5_TITRE}`,
@@ -79,7 +79,7 @@ export const TAE_FORM_STEPS = [
     icons: BLOC6_CD_TAE_STEPPER_ICONS,
   },
   {
-    id: "indexation",
+    id: "connaissances",
     number: 7,
     stepperLine: BLOC7_TITRE,
     label: `Étape 7 · ${BLOC7_TITRE}`,
@@ -94,4 +94,4 @@ if (TAE_FORM_STEPS.length !== TAE_FORM_STEP_COUNT) {
   );
 }
 
-export type TaeFormStepId = (typeof TAE_FORM_STEPS)[number]["id"];
+
