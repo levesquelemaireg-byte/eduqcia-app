@@ -2,14 +2,12 @@ import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 
 /**
  * Slugs de comportement wizard — alignés sur `public/data/oi.json` (`variant_slug`) + `redactionnel`.
- * `test-scalability` : entrée réservée au test de scalabilité (aucun `comportement_id` réel).
  */
 export type ComportementSlug =
   | "redactionnel"
   | "ordre-chronologique"
   | "ligne-du-temps"
-  | "avant-apres"
-  | "test-scalability";
+  | "avant-apres";
 
 export interface ComportementConfig {
   slug: ComportementSlug;

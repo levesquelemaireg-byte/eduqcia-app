@@ -5,7 +5,6 @@ import { avantApresConfig } from "@/lib/tae/behaviours/avant-apres";
 import { ligneDuTempsConfig } from "@/lib/tae/behaviours/ligne-du-temps";
 import { ordreChronologiqueConfig } from "@/lib/tae/behaviours/ordre-chronologique";
 import { redactionnelConfig } from "@/lib/tae/behaviours/redactionnel";
-import { testScalabilityConfig } from "@/lib/tae/behaviours/test-scalability";
 import type { ComportementConfig, ComportementSlug } from "@/lib/tae/behaviours/types";
 
 const registry: Record<ComportementSlug, ComportementConfig> = {
@@ -13,7 +12,6 @@ const registry: Record<ComportementSlug, ComportementConfig> = {
   "ordre-chronologique": ordreChronologiqueConfig,
   "ligne-du-temps": ligneDuTempsConfig,
   "avant-apres": avantApresConfig,
-  "test-scalability": testScalabilityConfig,
 };
 
 export function getComportementConfig(slug: ComportementSlug): ComportementConfig {
@@ -41,10 +39,6 @@ export const BLOC5_DYNAMIC_BY_SLUG: Record<ComportementSlug, ComponentType<Bloc5
   ),
   "avant-apres": dynamic(
     () => import("@/components/tae/TaeForm/bloc5/non-redactionnel/Bloc5AvantApres"),
-    { ssr: false },
-  ),
-  "test-scalability": dynamic(
-    () => import("@/components/tae/TaeForm/bloc5/non-redactionnel/Bloc5TestScalability"),
     { ssr: false },
   ),
 };
