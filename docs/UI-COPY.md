@@ -315,8 +315,8 @@ Route `app/(app)/not-found.tsx` : affiché lorsque `notFound()` est invoqué (re
 
 #### Niveau scolaire
 
-- Liste déroulante native : Secondaire 1 à 5 ; **Secondaire 5** grisé et non sélectionnable.
-- Placeholder : « Sélectionner un niveau » (`BLOC2_NIVEAU_PLACEHOLDER`).
+- `ListboxField` : Secondaire 1 à 5 ; **Secondaire 5** grisé et non sélectionnable (option `disabled`).
+- Placeholder : « Sélectionner un niveau scolaire » (`SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE`).
 
 #### Discipline
 

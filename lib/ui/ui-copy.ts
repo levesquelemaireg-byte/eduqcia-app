@@ -154,7 +154,36 @@ export const DOCUMENT_WIZARD_STEP_CONFIRMATION_DESC =
   "Lisez le cadre légal et confirmez avant d’enregistrer le document.";
 /** Libellé visible au-dessus des boutons Textuel / Iconographique — astérisque via `RequiredMark` en UI. */
 export const DOCUMENT_WIZARD_TYPE_DOC_LABEL = "Type de document";
-export const DOCUMENT_WIZARD_LISTBOX_PLACEHOLDER = "Sélectionner";
+
+/**
+ * Fallback uniquement — tout usage réel doit fournir un placeholder spécifique
+ * via la règle 1 du `docs/DESIGN-SYSTEM.md` (« Sélectionner un/une [label] »).
+ * Ne pas l'utiliser directement dans un nouveau composant.
+ */
+export const LISTBOX_PLACEHOLDER_FALLBACK = "Sélectionner";
+
+/**
+ * Placeholders spécifiques — règle 1 du DESIGN-SYSTEM.md (champs de saisie obligatoires).
+ * Format : « Sélectionner un/une [label en minuscules] ».
+ */
+export const SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE = "Sélectionner un niveau scolaire";
+export const SELECT_PLACEHOLDER_DISCIPLINE = "Sélectionner une discipline";
+export const SELECT_PLACEHOLDER_OI = "Sélectionner une opération intellectuelle";
+export const SELECT_PLACEHOLDER_COMPORTEMENT = "Sélectionner un comportement attendu";
+export const SELECT_PLACEHOLDER_ECOLE = "Sélectionner une école secondaire";
+export const SELECT_PLACEHOLDER_CSS = "Sélectionner un centre de services scolaires";
+export const SELECT_PLACEHOLDER_CATEGORIE_TEXTUELLE = "Sélectionner une catégorie textuelle";
+export const SELECT_PLACEHOLDER_CATEGORIE_ICONOGRAPHIQUE =
+  "Sélectionner une catégorie iconographique";
+
+/**
+ * Libellés des options « tous les X » — règle 2 du DESIGN-SYSTEM.md (filtres de liste).
+ * Format : « Tous les [label pluriel] » ou « Toutes les [label pluriel] ».
+ */
+export const FILTER_LABEL_ALL_NIVEAUX = "Tous les niveaux";
+export const FILTER_LABEL_ALL_DISCIPLINES = "Toutes les disciplines";
+export const FILTER_LABEL_ALL_OIS = "Toutes les opérations intellectuelles";
+export const FILTER_LABEL_ALL_COMPORTEMENTS = "Tous les comportements";
 export const DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR =
   "Une ou plusieurs connaissances sélectionnées ne correspondent pas au référentiel. Modifiez la sélection puis réessayez.";
 export const DOCUMENT_WIZARD_IMAGE_FILE_LABEL = "Fichier du document";
@@ -441,14 +470,8 @@ export const BLOC2_LOADING_PARAMETERS = "Chargement des paramètres…";
 export const BLOC2_ERROR_OI_FETCH =
   "Impossible de charger les opérations intellectuelles. Réessayez.";
 
-/** Bloc 2 — niveau scolaire — option vide du `<select>` */
-export const BLOC2_NIVEAU_PLACEHOLDER = "Sélectionner un niveau";
-
 /** Bloc 2 — discipline — aide sous champ (sélection manuelle) */
 export const BLOC2_DISCIPLINE_HELP = "Choisissez la discipline associée au niveau sélectionné.";
-
-/** Bloc 2 — placeholders listbox (discipline, OI, comportement) */
-export const BLOC2_LISTBOX_PLACEHOLDER = "Sélectionner";
 
 /** Bloc 2 — discipline imposée (Sec 3 / 4) — libellé avec glyphe `settings` dans le JSX */
 export const BLOC2_DISCIPLINE_AUTO_ASSIGNED = "Assignée automatiquement";

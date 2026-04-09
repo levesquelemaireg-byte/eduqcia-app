@@ -14,6 +14,8 @@ import {
   BANK_DOCUMENT_LINK_FICHE,
   BANK_FILTER_ICONO_CATEGORY_LABEL,
   BANK_TASK_LOAD_MORE,
+  FILTER_LABEL_ALL_DISCIPLINES,
+  FILTER_LABEL_ALL_NIVEAUX,
   DOCUMENT_TYPE_ICONO_BADGE_SHORT,
   DOCUMENT_TYPE_ICONO_LABEL,
   DOCUMENT_TYPE_ICONO_SLUGS,
@@ -105,7 +107,7 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
             defaultValue={d}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
           >
-            <option value="">—</option>
+            <option value="">{FILTER_LABEL_ALL_DISCIPLINES}</option>
             {disciplines.map((x) => (
               <option key={x.id} value={String(x.id)}>
                 {x.label}
@@ -123,7 +125,7 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
             defaultValue={n}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
           >
-            <option value="">—</option>
+            <option value="">{FILTER_LABEL_ALL_NIVEAUX}</option>
             {niveaux.map((x) => (
               <option key={x.id} value={String(x.id)}>
                 {x.label}

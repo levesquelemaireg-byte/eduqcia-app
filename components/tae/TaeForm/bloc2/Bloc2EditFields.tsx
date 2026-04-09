@@ -20,8 +20,8 @@ import type { ComportementAttenduJson, OiEntryJson } from "@/lib/types/oi";
 import {
   BLOC2_DISCIPLINE_AUTO_ASSIGNED,
   BLOC2_DISCIPLINE_HELP,
-  BLOC2_LISTBOX_PLACEHOLDER,
-  BLOC2_NIVEAU_PLACEHOLDER,
+  SELECT_PLACEHOLDER_DISCIPLINE,
+  SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE,
 } from "@/lib/ui/ui-copy";
 
 type Props = {
@@ -85,20 +85,20 @@ export function Bloc2EditFields({
               Niveau scolaire <RequiredMark />
             </span>
           </label>
-          <select
+          <ListboxField
             id="tae-niveau"
             value={b.niveau}
-            onChange={(e) => onSetNiveau(e.target.value)}
-            className="auth-input min-h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
+            onChange={onSetNiveau}
+            allowEmpty
+            placeholder={SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE}
+            className="w-full"
             aria-required
-          >
-            <option value="">{BLOC2_NIVEAU_PLACEHOLDER}</option>
-            {NIVEAU_SELECT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value} disabled={opt.disabled}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
+            options={NIVEAU_SELECT_OPTIONS.map((opt) => ({
+              value: opt.value,
+              label: opt.label,
+              disabled: opt.disabled,
+            }))}
+          />
         </div>
 
         <div className="space-y-2">
@@ -139,7 +139,7 @@ export function Bloc2EditFields({
                 onChange={onSetDiscipline}
                 disabled={!b.niveau}
                 allowEmpty
-                placeholder={BLOC2_LISTBOX_PLACEHOLDER}
+                placeholder={SELECT_PLACEHOLDER_DISCIPLINE}
                 className="w-full"
                 aria-required={Boolean(b.niveau)}
                 options={disciplineOptions.map((d) => ({

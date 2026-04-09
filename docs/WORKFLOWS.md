@@ -36,7 +36,7 @@ Recherche d’enseignants **inscrits** (`profiles.status = active`) pour aliment
 ## Bloc 2 — Paramètres de la tâche (étape 2)
 
 - **Intro longue :** plus de paragraphe sous le titre — texte dans l’**infobulle** du bouton `info` à côté du `h2` (`TAE_BLUEPRINT_STEP_DESCRIPTION`, `TaeForm/index.tsx`).
-- **Niveau :** `<select>` natif ; options Secondaire 1 à 5, **Sec 5** non sélectionnable ; placeholder `BLOC2_NIVEAU_PLACEHOLDER`.
+- **Niveau :** `ListboxField` ; options Secondaire 1 à 5, **Sec 5** non sélectionnable (option `disabled`) ; placeholder `SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE`.
 - **Discipline :** même ligne que le niveau (`grid` deux colonnes à partir de `sm`). Secondaire **3 et 4** : une seule discipline possible → **assignation automatique** (reducer `SET_NIVEAU`) + affichage **lecture seule** avec glyphe **`settings`** et « Assignée automatiquement ». Secondaire **1 et 2** : `ListboxField` filtrée par niveau (`disciplinesForNiveau`).
 - **Ordre des champs :** niveau + discipline → opération intellectuelle (`OiPicker`) → comportement attendu (`ComportementPicker`) → **Voir la grille de correction** (`Bloc2VoirGrilleCorrectionCta`) → **Espace de production** (`Bloc2EspaceProductionReadonly`, visible dès qu’un comportement est choisi).
 - **`nb_lignes` :** lu depuis **`public/data/oi.json`** pour le comportement sélectionné (`nbLignesFromComportementJson`) ; poussé dans le blueprint au **`SET_COMPORTEMENT`** ; publié dans `tae.nb_lignes` (`buildPublishPayload`). **Plus de curseur** ni d’action `SET_NB_LIGNES`.

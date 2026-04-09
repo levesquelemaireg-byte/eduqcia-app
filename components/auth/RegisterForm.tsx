@@ -20,6 +20,11 @@ import { PasswordField } from "@/components/ui/PasswordField";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
+import {
+  SELECT_PLACEHOLDER_CSS,
+  SELECT_PLACEHOLDER_ECOLE,
+  SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE,
+} from "@/lib/ui/ui-copy";
 
 const REGISTER_DRAFT_KEY = "eduqcia-register-draft-v1";
 
@@ -257,7 +262,7 @@ export function RegisterForm({ cssEcoles }: Props) {
               onChange={field.onChange}
               onBlur={field.onBlur}
               allowEmpty
-              placeholder="— Choisir —"
+              placeholder={SELECT_PLACEHOLDER_CSS}
               error={!!errors.css}
               aria-invalid={errors.css ? true : undefined}
               aria-describedby={errors.css ? "css-error" : undefined}
@@ -291,7 +296,7 @@ export function RegisterForm({ cssEcoles }: Props) {
                   onBlur={field.onBlur}
                   disabled={!css}
                   allowEmpty
-                  placeholder="— Choisir —"
+                  placeholder={SELECT_PLACEHOLDER_ECOLE}
                   error={!!errors.school}
                   aria-invalid={errors.school ? true : undefined}
                   aria-describedby={errors.school ? "school-error" : undefined}
@@ -321,7 +326,7 @@ export function RegisterForm({ cssEcoles }: Props) {
                   onChange={field.onChange}
                   onBlur={field.onBlur}
                   allowEmpty
-                  placeholder="— Choisir —"
+                  placeholder={SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE}
                   error={!!errors.niveau}
                   aria-invalid={errors.niveau ? true : undefined}
                   aria-describedby={errors.niveau ? "niveau-error" : undefined}

@@ -13,7 +13,7 @@ import type { ComportementAttenduJson } from "@/lib/types/oi";
 import {
   BLOC2_COMPORTEMENT_FIELD_HELP,
   BLOC2_COMPORTEMENT_PREREQ_OI,
-  BLOC2_LISTBOX_PLACEHOLDER,
+  SELECT_PLACEHOLDER_COMPORTEMENT,
 } from "@/lib/ui/ui-copy";
 
 const LABEL_ID = "tae-comportement-label";
@@ -75,8 +75,12 @@ export function ComportementPicker({
           onClick={() => setMenuOpen((o) => !o)}
           className={listboxFieldClassName({ className: "mt-2 max-w-2xl" })}
         >
-          <span className="min-w-0 flex-1 whitespace-normal wrap-break-word leading-snug text-deep">
-            {selected ? selected.enonce : BLOC2_LISTBOX_PLACEHOLDER}
+          <span
+            className={`min-w-0 flex-1 whitespace-normal wrap-break-word leading-snug ${
+              selected ? "text-deep" : "text-muted"
+            }`}
+          >
+            {selected ? selected.enonce : SELECT_PLACEHOLDER_COMPORTEMENT}
           </span>
           <span className="material-symbols-outlined mt-0.5 shrink-0 text-muted" aria-hidden="true">
             expand_more

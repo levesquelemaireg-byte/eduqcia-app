@@ -21,6 +21,10 @@ import {
   BANK_TASK_SORT_POPULAR,
   BANK_TASK_SORT_RECENT,
   DOCUMENT_MODULE_ASPECTS_LABEL,
+  FILTER_LABEL_ALL_COMPORTEMENTS,
+  FILTER_LABEL_ALL_DISCIPLINES,
+  FILTER_LABEL_ALL_NIVEAUX,
+  FILTER_LABEL_ALL_OIS,
 } from "@/lib/ui/ui-copy";
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import { cn } from "@/lib/utils/cn";
@@ -84,7 +88,7 @@ export function BankTaskFilters({ refs, query }: Props) {
             defaultValue={filters.oiId ?? ""}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
           >
-            <option value="">—</option>
+            <option value="">{FILTER_LABEL_ALL_OIS}</option>
             {refs.ois.map((o) => (
               <option key={o.id} value={o.id}>
                 {o.titre}
@@ -107,7 +111,7 @@ export function BankTaskFilters({ refs, query }: Props) {
               (!filters.oiId || refs.comportements.length === 0) && "opacity-60",
             )}
           >
-            <option value="">—</option>
+            <option value="">{FILTER_LABEL_ALL_COMPORTEMENTS}</option>
             {refs.comportements.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.enonce}
@@ -129,7 +133,7 @@ export function BankTaskFilters({ refs, query }: Props) {
             defaultValue={filters.niveauId != null ? String(filters.niveauId) : ""}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
           >
-            <option value="">—</option>
+            <option value="">{FILTER_LABEL_ALL_NIVEAUX}</option>
             {refs.niveaux.map((n) => (
               <option key={n.id} value={String(n.id)}>
                 {n.label}
@@ -148,7 +152,7 @@ export function BankTaskFilters({ refs, query }: Props) {
             defaultValue={filters.disciplineId != null ? String(filters.disciplineId) : ""}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
           >
-            <option value="">—</option>
+            <option value="">{FILTER_LABEL_ALL_DISCIPLINES}</option>
             {refs.disciplines.map((d) => (
               <option key={d.id} value={String(d.id)}>
                 {d.label}

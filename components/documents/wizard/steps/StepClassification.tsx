@@ -19,7 +19,8 @@ import {
   DOCUMENT_MODULE_INDEX_DISCIPLINE,
   DOCUMENT_MODULE_INDEX_NIVEAU,
   DOCUMENT_WIZARD_CONN_HELP,
-  DOCUMENT_WIZARD_LISTBOX_PLACEHOLDER,
+  SELECT_PLACEHOLDER_DISCIPLINE,
+  SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE,
 } from "@/lib/ui/ui-copy";
 
 const ASPECT_KEYS = Object.keys(ASPECT_LABEL) as AspectSocieteKey[];
@@ -92,7 +93,7 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
                   setValue("connaissances_miller", []);
                 }}
                 allowEmpty
-                placeholder={DOCUMENT_WIZARD_LISTBOX_PLACEHOLDER}
+                placeholder={SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE}
                 error={!!errors.niveau_id}
                 aria-invalid={errors.niveau_id ? true : undefined}
                 aria-describedby={errors.niveau_id ? "doc-wizard-niveau-error" : undefined}
@@ -129,7 +130,7 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
                   setValue("connaissances_miller", []);
                 }}
                 allowEmpty
-                placeholder={DOCUMENT_WIZARD_LISTBOX_PLACEHOLDER}
+                placeholder={SELECT_PLACEHOLDER_DISCIPLINE}
                 error={!!errors.discipline_id}
                 aria-invalid={errors.discipline_id ? true : undefined}
                 aria-describedby={errors.discipline_id ? "doc-wizard-discipline-error" : undefined}

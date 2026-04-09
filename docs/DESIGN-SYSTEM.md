@@ -89,12 +89,44 @@ Primitives dans `components/ui/` : **`Button`**, **`Field`**, **`PasswordField`*
 
 **Règle absolue :** pas de `<select>` natif dans les formulaires. Utiliser **`ListboxField`** ou composants qui réutilisent **`formSelectClasses.ts`** (`listboxFieldClassName`, `LISTBOX_DROPDOWN_PANEL_CLASSES`, `LISTBOX_OPTION_ROW_CLASSES`, `LISTBOX_TRIGGER_CLASSES`).
 
-| Élément                | Rôle                                                                     |
-| ---------------------- | ------------------------------------------------------------------------ |
-| `ListboxField.tsx`     | Listbox générique ; React Hook Form : `Controller` + `ref` sur le bouton |
-| `formSelectClasses.ts` | Source unique des classes trigger / panneau / option                     |
+| Élément                | Rôle                                                                                                                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ListboxField.tsx`     | Listbox générique ; React Hook Form : `Controller` + `ref` sur le bouton ; supporte une icône optionnelle par option (`ListboxOption.icon`) et des options désactivées (`ListboxOption.disabled`) |
+| `formSelectClasses.ts` | Source unique des classes trigger / panneau / option                                                                                                                                              |
 
-Cas riches (OI, comportements) : **`OiPicker`**, **`ComportementPicker`** — mêmes tokens.
+Cas riches (OI, comportements) : **`OiPicker`**, **`ComportementPicker`** — mêmes tokens. Ces deux pickers restent custom car ils affichent des labels multilignes avec sous-titres ; ils ne sont pas remplaçables par `ListboxField` enrichi à ce jour.
+
+#### Règles absolues des selects
+
+Tout select du projet doit relever de **l'une de ces deux règles**, jamais d'un état hybride. Aucun tiret (`—`), aucune option vide non labellisée, nulle part.
+
+**Règle 1 — Champs de saisie obligatoires (selects de formulaire) :**
+Placeholder « Sélectionner un/une [label] » en texte gris clair, jamais de tiret ou d'option vide. Le placeholder s'affiche tant que `value === ""`.
+
+Exemples :
+
+- `SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE` → « Sélectionner un niveau scolaire »
+- `SELECT_PLACEHOLDER_DISCIPLINE` → « Sélectionner une discipline »
+- `SELECT_PLACEHOLDER_OI` → « Sélectionner une opération intellectuelle »
+- `SELECT_PLACEHOLDER_COMPORTEMENT` → « Sélectionner un comportement attendu »
+- `SELECT_PLACEHOLDER_CATEGORIE_TEXTUELLE` → « Sélectionner une catégorie textuelle »
+- `SELECT_PLACEHOLDER_CATEGORIE_ICONOGRAPHIQUE` → « Sélectionner une catégorie iconographique »
+
+Toutes ces constantes vivent dans `lib/ui/ui-copy.ts` (section « Placeholders spécifiques »).
+
+**Règle 2 — Filtres de liste (selects de filtrage, recherche, exploration) :**
+Première option « Tous les [label pluriel] » ou « Toutes les [label pluriel] », sémantiquement cohérente avec l'état « pas de filtre appliqué ». Pas de placeholder, pas de valeur par défaut vide muette.
+
+Exemples :
+
+- `FILTER_LABEL_ALL_NIVEAUX` → « Tous les niveaux »
+- `FILTER_LABEL_ALL_DISCIPLINES` → « Toutes les disciplines »
+- `FILTER_LABEL_ALL_OIS` → « Toutes les opérations intellectuelles »
+- `FILTER_LABEL_ALL_COMPORTEMENTS` → « Tous les comportements »
+
+Ces deux règles sont **complémentaires et absolues**. Elles garantissent une expérience utilisateur cohérente et scalable : un select de saisie demande explicitement un choix, un filtre de liste démarre toujours « tout afficher ».
+
+**Fallback générique :** `LISTBOX_PLACEHOLDER_FALLBACK` (« Sélectionner ») existe uniquement comme garde-fou si un nouveau composant oublie de passer un placeholder spécifique. **Tout usage réel doit fournir un placeholder spécifique** via la règle 1.
 
 **Espace de production (Bloc 2) :** section **lecture seule** après choix d’un comportement — nombre de lignes issu de `oi.json` (`Bloc2EspaceProductionReadonly`) ; pas de curseur `form-range` dans ce bloc.
 
@@ -106,12 +138,12 @@ Texte/icône discrets (`text-muted`), **`hover:text-error`**, **`hover:bg-error/
 
 Pattern pour les formulaires avec slots ou perspectives complétables dans l'ordre.
 
-| État | Icône | Token couleur | Comportement |
-|------|-------|---------------|--------------|
-| Verrouillé | `lock` | `text-muted` | Non cliquable |
-| À compléter | `lock_open` | `text-muted` | Cliquable |
-| En cours | _(accordéon ouvert)_ | `text-accent` | Ouvert |
-| Complété | `fact_check` | `text-success` | Cliquable, rouvre |
+| État        | Icône                | Token couleur  | Comportement      |
+| ----------- | -------------------- | -------------- | ----------------- |
+| Verrouillé  | `lock`               | `text-muted`   | Non cliquable     |
+| À compléter | `lock_open`          | `text-muted`   | Cliquable         |
+| En cours    | _(accordéon ouvert)_ | `text-accent`  | Ouvert            |
+| Complété    | `fact_check`         | `text-success` | Cliquable, rouvre |
 
 **Règle icône :** `check_circle` est réservé au corrigé (Bloc 5) et aux étapes wizard complétées (stepper). Ne pas l'utiliser pour les slots documents ou les perspectives.
 

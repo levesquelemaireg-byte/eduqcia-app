@@ -12,11 +12,7 @@ import { BLOC2_STEPPER_ICON } from "@/components/tae/TaeForm/bloc2-stepper-icons
 import { LabelWithInfo } from "@/components/tae/TaeForm/bloc2/LabelWithInfo";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import type { OiEntryJson } from "@/lib/types/oi";
-import {
-  BLOC2_LISTBOX_PLACEHOLDER,
-  BLOC2_OI_COMING_SOON,
-  BLOC2_OI_FIELD_HELP,
-} from "@/lib/ui/ui-copy";
+import { BLOC2_OI_COMING_SOON, BLOC2_OI_FIELD_HELP, SELECT_PLACEHOLDER_OI } from "@/lib/ui/ui-copy";
 
 type Props = {
   oiList: OiEntryJson[];
@@ -80,7 +76,7 @@ export function OiPicker({
               <span className="min-w-0 font-medium text-deep">{selectedOi.titre}</span>
             </>
           ) : (
-            <span className="text-muted">{BLOC2_LISTBOX_PLACEHOLDER}</span>
+            <span className="text-muted">{SELECT_PLACEHOLDER_OI}</span>
           )}
           <span className="material-symbols-outlined ml-auto text-muted" aria-hidden="true">
             expand_more

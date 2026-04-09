@@ -6,8 +6,23 @@ import {
   LISTBOX_OPTION_ROW_CLASSES,
   listboxFieldClassName,
 } from "@/components/ui/formSelectClasses";
+import { cn } from "@/lib/utils/cn";
 
-export type ListboxOption = { value: string; label: string };
+export type ListboxOption = {
+  value: string;
+  label: string;
+  /**
+   * Icône Material Symbols Outlined optionnelle, affichée à gauche du label
+   * dans le bouton sélectionné et dans chaque ligne du dropdown.
+   * Si aucune option n'a d'icône, le rendu est strictement identique au mode texte pur.
+   */
+  icon?: string;
+  /**
+   * Option visible mais non sélectionnable (rendu grisé).
+   * Utile pour annoncer un futur niveau / catégorie « bientôt disponible ».
+   */
+  disabled?: boolean;
+};
 
 export type ListboxFieldProps = {
   id: string;
@@ -15,7 +30,11 @@ export type ListboxFieldProps = {
   value: string;
   onChange: (value: string) => void;
   onBlur?: () => void;
-  /** Libellé quand `value === ""` (et première ligne si `allowEmpty`). */
+  /**
+   * Texte affiché quand `value === ""` (et première ligne du dropdown si `allowEmpty`).
+   * Doit suivre la convention « Sélectionner un/une [label] » — voir
+   * `docs/DESIGN-SYSTEM.md` § « Règles absolues des selects ».
+   */
   placeholder?: string;
   /** Affiche une valeur vide : première option avec `value` "" */
   allowEmpty?: boolean;
@@ -28,8 +47,9 @@ export type ListboxFieldProps = {
 };
 
 /**
- * Listbox accessible — remplace le `<select>` natif partout dans l’app.
+ * Listbox accessible — remplace le `<select>` natif partout dans l'app.
  * Libellés avec retours à la ligne (`wrap-break-word`, `leading-snug`).
+ * Supporte optionnellement une icône Material Symbols Outlined par option.
  */
 export const ListboxField = forwardRef<HTMLButtonElement, ListboxFieldProps>(function ListboxField(
   {
@@ -65,7 +85,9 @@ export const ListboxField = forwardRef<HTMLButtonElement, ListboxFieldProps>(fun
   }, [open]);
 
   const selected = options.find((o) => o.value === value);
-  const display = value === "" ? placeholder : (selected?.label ?? placeholder);
+  const isPlaceholder = value === "" || selected === undefined;
+  const display = isPlaceholder ? placeholder : selected.label;
+  const selectedIcon = selected?.icon;
 
   return (
     <div className="relative" ref={containerRef}>
@@ -85,7 +107,20 @@ export const ListboxField = forwardRef<HTMLButtonElement, ListboxFieldProps>(fun
         onBlur={onBlur}
         className={listboxFieldClassName({ error, className })}
       >
-        <span className="min-w-0 flex-1 whitespace-normal wrap-break-word text-left leading-snug text-deep">
+        {selectedIcon && !isPlaceholder ? (
+          <span
+            className="material-symbols-outlined shrink-0 text-[1.1em] text-accent"
+            aria-hidden="true"
+          >
+            {selectedIcon}
+          </span>
+        ) : null}
+        <span
+          className={cn(
+            "min-w-0 flex-1 whitespace-normal wrap-break-word text-left leading-snug",
+            isPlaceholder ? "text-muted" : "text-deep",
+          )}
+        >
           {display}
         </span>
         <span className="material-symbols-outlined mt-0.5 shrink-0 text-muted" aria-hidden="true">
@@ -107,26 +142,45 @@ export const ListboxField = forwardRef<HTMLButtonElement, ListboxFieldProps>(fun
                 value === "" ? "bg-accent/10" : "hover:bg-panel-alt"
               }`}
             >
-              <span className="block whitespace-normal wrap-break-word">{placeholder}</span>
+              <span className="block whitespace-normal wrap-break-word text-muted">
+                {placeholder}
+              </span>
             </button>
           ) : null}
           {options.map((opt) => {
             const isSelected = value === opt.value;
+            const isDisabled = opt.disabled === true;
             return (
               <button
                 key={opt.value}
                 type="button"
                 role="option"
                 aria-selected={isSelected}
+                aria-disabled={isDisabled}
+                disabled={isDisabled}
                 onClick={() => {
+                  if (isDisabled) return;
                   onChange(opt.value);
                   setOpen(false);
                 }}
-                className={`${LISTBOX_OPTION_ROW_CLASSES} ${
-                  isSelected ? "bg-accent/10" : "hover:bg-panel-alt"
-                }`}
+                className={cn(
+                  LISTBOX_OPTION_ROW_CLASSES,
+                  opt.icon && "flex items-center gap-2",
+                  isSelected ? "bg-accent/10" : !isDisabled && "hover:bg-panel-alt",
+                  isDisabled && "cursor-not-allowed opacity-55",
+                )}
               >
-                <span className="block whitespace-normal wrap-break-word">{opt.label}</span>
+                {opt.icon ? (
+                  <span
+                    className="material-symbols-outlined shrink-0 text-[1.1em] text-accent"
+                    aria-hidden="true"
+                  >
+                    {opt.icon}
+                  </span>
+                ) : null}
+                <span className="block min-w-0 flex-1 whitespace-normal wrap-break-word">
+                  {opt.label}
+                </span>
               </button>
             );
           })}
