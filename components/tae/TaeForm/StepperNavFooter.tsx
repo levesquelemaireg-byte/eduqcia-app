@@ -53,6 +53,10 @@ import {
   isWizardPublishReady,
 } from "@/lib/tae/wizard-publish-guards";
 import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
+import {
+  isMomentsStepComplete,
+  isPerspectivesStepComplete,
+} from "@/lib/tae/oi-perspectives/perspectives-helpers";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { PublishTaeFailureCode } from "@/lib/tae/publish-tae";
 import { detectMajorChangeFromFormState } from "@/lib/tae/publish-tae-version";
@@ -237,7 +241,36 @@ export function StepperNavFooter() {
       }
     }
     if (state.currentStep === TAE_DOCUMENTS_STEP_INDEX) {
-      if (isActiveOrdreChronologiqueVariant(state)) {
+      // PROVISOIRE — anti-pattern d'énumération identifié le 8 avril 2026 :
+      // ce guard énumère tous les cas particuliers et finit toujours par en oublier un
+      // (perspectives groupées + moments groupés étaient cassés en silence avant le hotfix
+      // du 8 avril 2026). Solution durable : déclarer un validateur par comportement
+      // dans wizard-bloc-config.ts. Voir BACKLOG.md "Anomalies identifiées" et
+      // docs/todos/post-audit-corrections.md Phase 5.
+      const blocConfig = getWizardBlocConfig(state.bloc2.comportementId);
+      const isPerspectivesGroupe =
+        blocConfig?.bloc4.type === "perspectives" && state.bloc3.perspectivesMode === "groupe";
+      const isMomentsGroupe =
+        blocConfig?.bloc4.type === "moments" && state.bloc3.perspectivesMode === "groupe";
+
+      if (isPerspectivesGroupe) {
+        const count = blocConfig.bloc4.type === "perspectives" ? blocConfig.bloc4.count : 2;
+        if (
+          !isPerspectivesStepComplete(
+            state.bloc4.perspectives,
+            count,
+            state.bloc4.perspectivesTitre,
+          )
+        ) {
+          toast.error("Toutes les perspectives doivent être complétées avant de continuer.");
+          return;
+        }
+      } else if (isMomentsGroupe) {
+        if (!isMomentsStepComplete(state.bloc4.moments, 2, state.bloc4.momentsTitre)) {
+          toast.error("Tous les moments doivent être complétés avant de continuer.");
+          return;
+        }
+      } else if (isActiveOrdreChronologiqueVariant(state)) {
         if (
           !isOrdreChronologiqueDocumentsStepComplete(
             state.bloc2.documentSlots,
@@ -339,96 +372,96 @@ export function StepperNavFooter() {
 
   return (
     <>
-    <WarningModal
-      open={majorConfirmOpen}
-      title={EDIT_MAJOR_VERSION_MODAL_TITLE}
-      onClose={() => setMajorConfirmOpen(false)}
-      footer={
-        <div className="flex items-center justify-end gap-3">
+      <WarningModal
+        open={majorConfirmOpen}
+        title={EDIT_MAJOR_VERSION_MODAL_TITLE}
+        onClose={() => setMajorConfirmOpen(false)}
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => setMajorConfirmOpen(false)}
+              className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
+            >
+              {EDIT_MAJOR_VERSION_MODAL_CANCEL}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMajorConfirmOpen(false);
+                doPublish();
+              }}
+              className="inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95"
+            >
+              {EDIT_MAJOR_VERSION_MODAL_CONFIRM}
+            </button>
+          </div>
+        }
+      >
+        <p className="leading-relaxed">{EDIT_MAJOR_VERSION_MODAL_BODY_P1}</p>
+        <p className="mt-3 leading-relaxed">{EDIT_MAJOR_VERSION_MODAL_BODY_P2}</p>
+      </WarningModal>
+      <div className="mt-6 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <button
             type="button"
-            onClick={() => setMajorConfirmOpen(false)}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
+            onClick={() => dispatch({ type: "STEP_PREV" })}
+            disabled={!canPrev}
+            className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {EDIT_MAJOR_VERSION_MODAL_CANCEL}
+            <span className="material-symbols-outlined text-lg" aria-hidden="true">
+              arrow_back
+            </span>
+            Précédent
           </button>
           <button
             type="button"
-            onClick={() => {
-              setMajorConfirmOpen(false);
-              doPublish();
-            }}
-            className="inline-flex min-h-11 items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95"
+            onClick={handleNext}
+            disabled={nextDisabled}
+            className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
           >
-            {EDIT_MAJOR_VERSION_MODAL_CONFIRM}
+            Suivant
+            <span className="material-symbols-outlined text-lg" aria-hidden="true">
+              arrow_forward
+            </span>
           </button>
         </div>
-      }
-    >
-      <p className="leading-relaxed">{EDIT_MAJOR_VERSION_MODAL_BODY_P1}</p>
-      <p className="mt-3 leading-relaxed">{EDIT_MAJOR_VERSION_MODAL_BODY_P2}</p>
-    </WarningModal>
-    <div className="mt-6 flex flex-col gap-3 border-t border-border pt-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-        <button
-          type="button"
-          onClick={() => dispatch({ type: "STEP_PREV" })}
-          disabled={!canPrev}
-          className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-40"
-        >
-          <span className="material-symbols-outlined text-lg" aria-hidden="true">
-            arrow_back
-          </span>
-          Précédent
-        </button>
-        <button
-          type="button"
-          onClick={handleNext}
-          disabled={nextDisabled}
-          className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          Suivant
-          <span className="material-symbols-outlined text-lg" aria-hidden="true">
-            arrow_forward
-          </span>
-        </button>
-      </div>
-      <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
-        {persistSessionDraft ? (
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
+          {persistSessionDraft ? (
+            <button
+              type="button"
+              disabled={draftSaving}
+              onClick={handleSaveDraft}
+              aria-busy={draftSaving}
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <span
+                className={`material-symbols-outlined text-lg ${draftSaving ? "animate-pulse" : ""}`}
+                aria-hidden="true"
+              >
+                save
+              </span>
+              Sauvegarder le brouillon
+            </button>
+          ) : null}
           <button
             type="button"
-            disabled={draftSaving}
-            onClick={handleSaveDraft}
-            aria-busy={draftSaving}
-            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={!canPublish || publishing}
+            onClick={handlePublish}
+            aria-busy={publishing}
+            title={publishTitleImageOnly ? PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE : undefined}
+            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-45"
           >
             <span
-              className={`material-symbols-outlined text-lg ${draftSaving ? "animate-pulse" : ""}`}
+              className={`material-symbols-outlined text-lg ${publishing ? "animate-pulse" : ""}`}
               aria-hidden="true"
             >
-              save
+              upload
             </span>
-            Sauvegarder le brouillon
+            {editingTaeId ? WIZARD_EDIT_SAVE_CTA : WIZARD_PUBLISH_CTA}
           </button>
-        ) : null}
-        <button
-          type="button"
-          disabled={!canPublish || publishing}
-          onClick={handlePublish}
-          aria-busy={publishing}
-          title={publishTitleImageOnly ? PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE : undefined}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-45"
-        >
-          <span
-            className={`material-symbols-outlined text-lg ${publishing ? "animate-pulse" : ""}`}
-            aria-hidden="true"
-          >
-            upload
-          </span>
-          {editingTaeId ? WIZARD_EDIT_SAVE_CTA : WIZARD_PUBLISH_CTA}
-        </button>
+        </div>
       </div>
-    </div>
     </>
   );
 }

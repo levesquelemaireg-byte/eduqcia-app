@@ -7,6 +7,7 @@
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import type { DocumentSlotData } from "@/lib/tae/document-helpers";
 import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import type {
   MomentData,
   PerspectiveData,
@@ -172,4 +173,48 @@ export function migrateSlotsToMoments(
       source: slot.source_citation,
     };
   });
+}
+
+// ---------------------------------------------------------------------------
+// Complétude (Bloc 4 mode groupé) — appelée par le guard handleNext
+// ---------------------------------------------------------------------------
+
+/**
+ * Complétude des perspectives groupées (OI3 · 3.3 / 3.4 / 3.5).
+ * Exige : titre du document non vide + chaque perspective avec acteur, contenu et source.
+ */
+export function isPerspectivesStepComplete(
+  perspectives: PerspectiveData[] | null,
+  expectedCount: 2 | 3,
+  titre: string,
+): boolean {
+  if (titre.trim().length === 0) return false;
+  if (!perspectives || perspectives.length < expectedCount) return false;
+  for (let i = 0; i < expectedCount; i++) {
+    const p = perspectives[i]!;
+    if (p.acteur.trim().length === 0) return false;
+    if (!htmlHasMeaningfulText(p.contenu)) return false;
+    if (!htmlHasMeaningfulText(p.source)) return false;
+  }
+  return true;
+}
+
+/**
+ * Complétude des moments groupés (OI6 · 6.1 / 6.2 / 6.3).
+ * Exige : titre du document non vide + chaque moment avec contenu et source.
+ * Les moments n'ont pas de champ acteur (le titre interne du moment est optionnel).
+ */
+export function isMomentsStepComplete(
+  moments: MomentData[] | null,
+  expectedCount: 2,
+  titre: string,
+): boolean {
+  if (titre.trim().length === 0) return false;
+  if (!moments || moments.length < expectedCount) return false;
+  for (let i = 0; i < expectedCount; i++) {
+    const m = moments[i]!;
+    if (!htmlHasMeaningfulText(m.contenu)) return false;
+    if (!htmlHasMeaningfulText(m.source)) return false;
+  }
+  return true;
 }

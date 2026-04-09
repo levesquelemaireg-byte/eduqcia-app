@@ -98,6 +98,7 @@
 - [ ] Mention explicite « Ce guidage s'affichera en italique sous la consigne en mode formatif. Il sera masqué automatiquement en mode sommatif. » sous le champ guidage (A3.4.1) — copy à ajouter dans `lib/ui/ui-copy.ts`
 - [ ] Texte d'aide contextuel sur les champs désactivés du Bloc 2 (A3.3.1) — « Choisissez d'abord une opération intellectuelle » etc.
 - [ ] Bouton final « Terminer » ou « Enregistrer dans la banque » à la dernière étape (A3.8.1) — soit transformer le bouton « Suivant » à l'index 6, soit décider que le bouton « Publier » permanent est suffisant
+- [ ] Refactoring du guard `handleNext` Bloc 4 (anti-pattern d'énumération identifié le 8 avril 2026) — voir `BACKLOG.md` section « Anomalies identifiées » pour le détail. Effort 4-6 heures.
 
 ---
 
@@ -146,9 +147,9 @@
 | Phase 2 — Refonte modèle références + drag-and-drop    | 0 / 8 actions      |
 | Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions      |
 | Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions      |
-| Phase 5 — Quick wins UX                                | 0 / 8 actions      |
+| Phase 5 — Quick wins UX                                | 0 / 9 actions      |
 | Phase 6 — Picker banque documents                      | 0 / 9 actions      |
 | Phase 7 — Décisions et spec finale                     | 0 / 8 actions      |
-| **Total**                                              | **8 / 55 actions** |
+| **Total**                                              | **8 / 56 actions** |
 
 Mets à jour ce tableau au fur et à mesure que tu coches des actions dans les sections ci-dessus.
