@@ -18,9 +18,19 @@ export const PRINT_DOC_FULL_WIDTH_UL_LI_THRESHOLD = 12;
 /** Seuil de `<li` pour considérer une liste `<ol>` comme « large ». */
 export const PRINT_DOC_FULL_WIDTH_OL_LI_THRESHOLD = 10;
 
+/**
+ * Seuil de largeur native (px) au-delà duquel un document iconographique
+ * passe en pleine largeur à l'impression. Aligné `task-creation-wizard.md` §4.4 :
+ * « Image : si largeur native ≤ 315 px, largeur simple ; sinon largeur double
+ * (plafonnée à 650 px) ». Adresse l'écart E4.5 de l'audit du 8 avril 2026.
+ */
+export const PRINT_DOC_FULL_WIDTH_IMAGE_PX = 315;
+
 export function shouldPrintDocumentFullWidth(doc: DocumentFiche): boolean {
   if (doc.type === "iconographique") {
-    return false;
+    // Largeur native inconnue (legacy import, brouillon ancien) → fallback simple
+    if (doc.imagePixelWidth == null) return false;
+    return doc.imagePixelWidth > PRINT_DOC_FULL_WIDTH_IMAGE_PX;
   }
 
   const plainText = stripHtmlToPlainText(doc.contenu ?? "");
