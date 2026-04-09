@@ -66,90 +66,19 @@ import { RequiredMark } from "@/components/ui/RequiredMark";
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { SimpleModal } from "@/components/ui/SimpleModal";
+import { getDocumentTypeIcon, getDocumentTypeSource } from "@/lib/tae/document-categories-helpers";
 import { cn } from "@/lib/utils/cn";
 import stepStyles from "./step-document.module.css";
 
-function IconDocTextual() {
+/**
+ * Petite icône Material Symbols Outlined pour les segments — alignement vertical
+ * compact avec le texte du label.
+ */
+function SegmentIcon({ name }: { name: string }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <path d="M14 2v6h6" />
-      <path d="M16 13H8" />
-      <path d="M16 17H8" />
-      <path d="M10 9H8" />
-    </svg>
-  );
-}
-
-function IconDocImage() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-      <circle cx="9" cy="9" r="2" />
-      <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-    </svg>
-  );
-}
-
-function IconSourcePrimaire() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-    </svg>
-  );
-}
-
-function IconSourceSecondaire() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={20}
-      height={20}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
-    </svg>
+    <span className="material-symbols-outlined text-[1.1em]" aria-hidden="true">
+      {name}
+    </span>
   );
 }
 
@@ -159,12 +88,12 @@ const DOC_TYPE_SEGMENTS = [
   {
     value: "textuel" as const,
     label: DOCUMENT_MODULE_TYPE_TEXT,
-    icon: <IconDocTextual />,
+    icon: <SegmentIcon name={getDocumentTypeIcon("textuel")} />,
   },
   {
     value: "iconographique" as const,
     label: DOCUMENT_MODULE_TYPE_IMAGE,
-    icon: <IconDocImage />,
+    icon: <SegmentIcon name={getDocumentTypeIcon("iconographique")} />,
   },
 ] as const;
 
@@ -172,12 +101,12 @@ const SOURCE_TYPE_SEGMENTS = [
   {
     value: "primaire" as const,
     label: DOCUMENT_MODULE_SOURCE_PRIMAIRE,
-    icon: <IconSourcePrimaire />,
+    icon: <SegmentIcon name={getDocumentTypeSource("primaire")?.icon ?? "counter_1"} />,
   },
   {
     value: "secondaire" as const,
     label: DOCUMENT_MODULE_SOURCE_SECONDAIRE,
-    icon: <IconSourceSecondaire />,
+    icon: <SegmentIcon name={getDocumentTypeSource("secondaire")?.icon ?? "counter_2"} />,
   },
 ] as const;
 

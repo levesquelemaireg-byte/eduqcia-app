@@ -18,6 +18,7 @@ import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+import { getDocumentTypeIcon } from "@/lib/tae/document-categories-helpers";
 import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
 import {
   emptyPerspective,
@@ -243,10 +244,7 @@ function PerspectivesGroupeAccordion({
                 isOpen ? "rounded-t-md" : "rounded-md",
               )}
             >
-              <span
-                className={cn("material-symbols-outlined text-[18px]", cls)}
-                aria-hidden="true"
-              >
+              <span className={cn("material-symbols-outlined text-[18px]", cls)} aria-hidden="true">
                 {icon}
               </span>
               <span>{label}</span>
@@ -280,8 +278,16 @@ function PerspectivesGroupeAccordion({
 // ---------------------------------------------------------------------------
 
 const TYPE_OPTIONS = [
-  { value: "textuel", label: DOCUMENT_MODULE_TYPE_TEXT },
-  { value: "iconographique", label: DOCUMENT_MODULE_TYPE_IMAGE },
+  {
+    value: "textuel",
+    label: DOCUMENT_MODULE_TYPE_TEXT,
+    icon: getDocumentTypeIcon("textuel"),
+  },
+  {
+    value: "iconographique",
+    label: DOCUMENT_MODULE_TYPE_IMAGE,
+    icon: getDocumentTypeIcon("iconographique"),
+  },
 ];
 
 function PerspectiveSection({

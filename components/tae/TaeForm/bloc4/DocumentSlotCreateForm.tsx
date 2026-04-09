@@ -12,6 +12,7 @@ import { DocumentSlotImageField } from "@/components/tae/TaeForm/bloc4/DocumentS
 import { DocumentSlotLegendBlock } from "@/components/tae/TaeForm/bloc4/DocumentSlotLegendBlock";
 import { DocumentSlotSourceTypeFieldset } from "@/components/tae/TaeForm/bloc4/DocumentSlotSourceTypeFieldset";
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
+import { getDocumentTypeIcon } from "@/lib/tae/document-categories-helpers";
 import type { DocumentSlotData } from "@/lib/tae/document-helpers";
 import {
   DOCUMENT_MODULE_SOURCE_FORMAT_HINT,
@@ -58,7 +59,7 @@ export function DocumentSlotCreateForm({
       label: DOCUMENT_MODULE_TYPE_TEXT,
       icon: (
         <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-          docs
+          {getDocumentTypeIcon("textuel")}
         </span>
       ),
     },
@@ -67,7 +68,7 @@ export function DocumentSlotCreateForm({
       label: DOCUMENT_MODULE_TYPE_IMAGE,
       icon: (
         <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-          image
+          {getDocumentTypeIcon("iconographique")}
         </span>
       ),
     },

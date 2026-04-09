@@ -68,6 +68,24 @@ Bibliothèque **unique**. Glyphe en **`1em`**, pattern **`.icon-text`** / **`.ic
 
 Justifications pédagogiques : [DECISIONS.md](./DECISIONS.md#justifications-des-icônes-material) ; `lib/tae/icon-justifications.ts`.
 
+#### Icônes des types de document
+
+Les types de document ont des icônes **fixes** utilisées de manière cohérente partout dans l'application (toggles, en-têtes, badges, fallbacks pour la catégorie « Autre »). Source de vérité unique : `getDocumentTypeIcon()` dans `lib/tae/document-categories-helpers.ts`.
+
+| Type                        | Icône Material Symbols Outlined |
+| --------------------------- | ------------------------------- |
+| Document **textuel**        | `article`                       |
+| Document **iconographique** | `image_inset`                   |
+
+**Toute utilisation** d'une icône représentant un type de document doit référencer ces deux valeurs **via le helper**, jamais en hardcodant une autre icône (`docs`, `image`, `picture_as_pdf`, etc.).
+
+**Catégorie « Autre »** :
+
+- Catégorie textuelle « Autre » → fallback `article` (cf. `public/data/document-categories.json` clé `textuelles[autre]`)
+- Catégorie iconographique « Autre » → fallback `image_inset` (clé `iconographiques[autre]`)
+
+**Toggle Type de source** (Primaire / Secondaire) : icônes `counter_1` et `counter_2`, lues via `getDocumentTypeSource()` depuis le même JSON. Aucun hardcoding ailleurs dans le code.
+
 #### Glyphes OI (données `oi.json` / fiche / liste)
 
 - **Composant unique :** `components/ui/MaterialSymbolOiGlyph.tsx` — enveloppe **`material-symbols-outlined`** et pose **`data-oi-glyph="{nom}"`** pour tout glyphe issu du **catalogue OI** (listes Bloc 2, en-tête fiche, `TaeCard`, modales d’aide).

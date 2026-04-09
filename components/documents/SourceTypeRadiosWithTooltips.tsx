@@ -5,6 +5,7 @@ import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { SimpleModal } from "@/components/ui/SimpleModal";
+import { getDocumentTypeSource } from "@/lib/tae/document-categories-helpers";
 import {
   DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_BODY,
   DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_TITLE,
@@ -23,9 +24,27 @@ type Props = {
 
 type HelpKey = "primaire" | "secondaire";
 
+function SourceIcon({ id }: { id: "primaire" | "secondaire" }) {
+  const fallback = id === "primaire" ? "counter_1" : "counter_2";
+  const name = getDocumentTypeSource(id)?.icon ?? fallback;
+  return (
+    <span className="material-symbols-outlined text-[1.1em]" aria-hidden="true">
+      {name}
+    </span>
+  );
+}
+
 const SOURCE_OPTIONS = [
-  { value: "primaire", label: DOCUMENT_MODULE_SOURCE_PRIMAIRE },
-  { value: "secondaire", label: DOCUMENT_MODULE_SOURCE_SECONDAIRE },
+  {
+    value: "primaire",
+    label: DOCUMENT_MODULE_SOURCE_PRIMAIRE,
+    icon: <SourceIcon id="primaire" />,
+  },
+  {
+    value: "secondaire",
+    label: DOCUMENT_MODULE_SOURCE_SECONDAIRE,
+    icon: <SourceIcon id="secondaire" />,
+  },
 ] as const;
 
 /**
@@ -35,8 +54,7 @@ export function SourceTypeRadiosWithTooltips({ value, onChange, errorMessage }: 
   const legendId = useId();
   const [helpOpen, setHelpOpen] = useState<HelpKey | null>(null);
 
-  const resolved =
-    value === "primaire" || value === "secondaire" ? value : "secondaire";
+  const resolved = value === "primaire" || value === "secondaire" ? value : "secondaire";
 
   return (
     <>
