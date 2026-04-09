@@ -1,0 +1,74 @@
+{
+  "textuelles": [
+    {
+      "id": "documents_officiels",
+      "label": "Documents officiels",
+      "description": "Lois, traités, rapports gouvernementaux, proclamations, pétitions",
+      "icon": "gavel",
+      "exemples": ["Extrait de loi", "Traité de Paris 1763", "Rapport Durham"]
+    },
+    {
+      "id": "ecrits_personnels",
+      "label": "Écrits personnels",
+      "description": "Lettres, journaux intimes, mémoires, récits de voyage, témoignages",
+      "icon": "edit_note",
+      "exemples": ["Correspondance", "Journal d'un soldat", "Mémoires de politicien"]
+    },
+    {
+      "id": "presse_publications",
+      "label": "Presse et publications",
+      "description": "Articles de journaux, éditoriaux, magazines",
+      "icon": "newspaper",
+      "exemples": ["Article du Devoir", "Éditorial de La Presse"]
+    },
+    {
+      "id": "discours_prises_parole",
+      "label": "Discours et prises de parole",
+      "description": "Discours politiques, sermons, allocutions publiques",
+      "icon": "campaign",
+      "exemples": ["Discours de Laurier", "Sermon de Mgr Bourget"]
+    },
+    {
+      "id": "textes_savants",
+      "label": "Textes savants",
+      "description": "Textes d'historiens, articles scientifiques, manuels, encyclopédies",
+      "icon": "menu_book",
+      "exemples": ["Marcel Trudel", "Encyclopédie canadienne"]
+    },
+    {
+      "id": "donnees_statistiques",
+      "label": "Données statistiques",
+      "description": "Tableaux, recensements, rapports économiques",
+      "icon": "bar_chart",
+      "exemples": ["Recensement 1871", "Rapport annuel de la Banque du Canada"]
+    },
+    {
+      "id": "textes_litteraires_culturels",
+      "label": "Textes littéraires et culturels",
+      "description": "Romans, poèmes, chansons, pièces de théâtre",
+      "icon": "auto_stories",
+      "exemples": ["Maria Chapdelaine", "Chansons de Vigneault"]
+    },
+    {
+      "id": "autre",
+      "label": "Autre",
+      "description": "Document textuel ne correspondant à aucune catégorie ci-dessus",
+      "icon": "article",
+      "exemples": []
+    }
+  ],
+  "iconographiques": [
+    { "id": "carte", "label": "Carte", "icon": "map" },
+    { "id": "photographie", "label": "Photographie", "icon": "photo_camera" },
+    { "id": "peinture", "label": "Peinture", "icon": "palette" },
+    { "id": "dessin_gravure", "label": "Dessin / gravure", "icon": "draw" },
+    { "id": "affiche_caricature", "label": "Affiche / caricature", "icon": "image" },
+    { "id": "planche_didactique", "label": "Planche didactique", "icon": "grid_view" },
+    { "id": "objet_artefact", "label": "Objet / artefact", "icon": "inventory_2" },
+    { "id": "autre", "label": "Autre", "icon": "image_inset" }
+  ],
+  "types_source": [
+    { "id": "primaire", "label": "Primaire", "icon": "counter_1" },
+    { "id": "secondaire", "label": "Secondaire", "icon": "counter_2" }
+  ]
+}
