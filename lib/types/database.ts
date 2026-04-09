@@ -197,6 +197,7 @@ export type Database = {
           annee_normalisee: number | null;
           aspects_societe: Database["public"]["Enums"]["aspect_societe"][];
           auteur_id: string;
+          categorie_textuelle: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
           connaissances_ids: number[];
           contenu: string | null;
           created_at: string;
@@ -217,7 +218,6 @@ export type Database = {
           titre: string;
           type: Database["public"]["Enums"]["doc_type"];
           type_iconographique: string | null;
-          categorie_textuelle: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
           updated_at: string;
           version: number;
         };
@@ -225,6 +225,7 @@ export type Database = {
           annee_normalisee?: number | null;
           aspects_societe?: Database["public"]["Enums"]["aspect_societe"][];
           auteur_id: string;
+          categorie_textuelle?: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
           connaissances_ids?: number[];
           contenu?: string | null;
           created_at?: string;
@@ -245,7 +246,6 @@ export type Database = {
           titre: string;
           type: Database["public"]["Enums"]["doc_type"];
           type_iconographique?: string | null;
-          categorie_textuelle?: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
           updated_at?: string;
           version?: number;
         };
@@ -253,6 +253,7 @@ export type Database = {
           annee_normalisee?: number | null;
           aspects_societe?: Database["public"]["Enums"]["aspect_societe"][];
           auteur_id?: string;
+          categorie_textuelle?: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
           connaissances_ids?: number[];
           contenu?: string | null;
           created_at?: string;
@@ -273,7 +274,6 @@ export type Database = {
           titre?: string;
           type?: Database["public"]["Enums"]["doc_type"];
           type_iconographique?: string | null;
-          categorie_textuelle?: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
           updated_at?: string;
           version?: number;
         };
