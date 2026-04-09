@@ -117,6 +117,7 @@
 - [ ] Ajouter l'indicateur « Utilisé dans N tâches » pour chaque document (requête comptage côté serveur)
 - [ ] Ajouter la pagination si la banque grossit (cursor-based)
 - [ ] Mettre à jour `listBankDocumentsPickerAction` pour supporter les filtres et la pagination
+- [ ] Afficher l'icône de la catégorie textuelle ou iconographique à côté du label de chaque document dans les thumbnails et fiches de la banque. Consommer le mapping défini dans `public/data/document-categories.json` via les helpers de `lib/tae/document-categories-helpers.ts` (`getCategoryIcon` ou `getDocumentCategorieIconographique` / `getDocumentCategorieTextuelle`).
 
 ---
 
@@ -148,8 +149,8 @@
 | Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions      |
 | Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions      |
 | Phase 5 — Quick wins UX                                | 0 / 9 actions      |
-| Phase 6 — Picker banque documents                      | 0 / 9 actions      |
+| Phase 6 — Picker banque documents                      | 0 / 10 actions     |
 | Phase 7 — Décisions et spec finale                     | 0 / 8 actions      |
-| **Total**                                              | **8 / 56 actions** |
+| **Total**                                              | **8 / 57 actions** |
 
 Mets à jour ce tableau au fur et à mesure que tu coches des actions dans les sections ci-dessus.
