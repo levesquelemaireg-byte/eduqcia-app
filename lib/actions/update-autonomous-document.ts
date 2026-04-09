@@ -94,6 +94,9 @@ export async function updateAutonomousDocumentAction(
   const typeIcono =
     v.doc_type === "iconographique" && v.type_iconographique != null ? v.type_iconographique : null;
 
+  const categorieTextuelle =
+    v.doc_type === "textuel" && v.categorie_textuelle != null ? v.categorie_textuelle : null;
+
   const { error: upErr } = await supabase
     .from("documents")
     .update({
@@ -115,6 +118,7 @@ export async function updateAutonomousDocumentAction(
           ? Math.trunc(v.annee_normalisee)
           : null,
       type_iconographique: typeIcono,
+      categorie_textuelle: categorieTextuelle,
       updated_at: new Date().toISOString(),
     })
     .eq("id", document_id)

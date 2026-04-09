@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { categorieTextuelleSchema } from "@/lib/documents/categorie-textuelle";
 import { typeIconographiqueSchema } from "@/lib/documents/type-iconographique";
 import { documentLegendPositionSchema, documentSourceTypeSchema } from "@/lib/schemas/document";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
@@ -81,6 +82,10 @@ export const autonomousDocumentFormSchema = z
       .union([typeIconographiqueSchema, z.literal(""), z.null()])
       .optional()
       .transform((v) => (v === "" || v === undefined || v === null ? null : v)),
+    categorie_textuelle: z
+      .union([categorieTextuelleSchema, z.literal(""), z.null()])
+      .optional()
+      .transform((v) => (v === "" || v === undefined || v === null ? null : v)),
     legal_accepted: z.boolean().refine((v) => v === true, {
       message: "Vous devez confirmer le cadre légal pour continuer.",
     }),
@@ -141,6 +146,20 @@ export const autonomousDocumentFormSchema = z
         code: z.ZodIssueCode.custom,
         path: ["type_iconographique"],
         message: "Réservé aux documents iconographiques.",
+      });
+    }
+    if (data.doc_type === "iconographique" && data.categorie_textuelle != null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["categorie_textuelle"],
+        message: "Réservé aux documents textuels.",
+      });
+    }
+    if (data.doc_type === "textuel" && data.categorie_textuelle == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["categorie_textuelle"],
+        message: "Sélectionnez une catégorie textuelle.",
       });
     }
   });

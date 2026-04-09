@@ -16,6 +16,7 @@ export type BankDocumentListRow = {
   image_url: string | null;
   image_legende: string | null;
   type_iconographique: string | null;
+  categorie_textuelle: string | null;
   niveaux_ids: number[];
   disciplines_ids: number[];
 };
@@ -73,6 +74,7 @@ const BANK_DOCUMENTS_SELECT = `
       image_url,
       image_legende,
       type_iconographique,
+      categorie_textuelle,
       niveaux_ids,
       disciplines_ids
     `;
@@ -122,6 +124,7 @@ function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
     image_url: string | null;
     image_legende: string | null;
     type_iconographique: string | null;
+    categorie_textuelle: string | null;
     niveaux_ids: number[] | null;
     disciplines_ids: number[] | null;
   };
@@ -135,6 +138,7 @@ function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
     image_url: row.image_url,
     image_legende: row.image_legende,
     type_iconographique: row.type_iconographique ?? null,
+    categorie_textuelle: row.categorie_textuelle ?? null,
     niveaux_ids: row.niveaux_ids ?? [],
     disciplines_ids: row.disciplines_ids ?? [],
   }));

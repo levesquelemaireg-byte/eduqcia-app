@@ -2,6 +2,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
+import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
@@ -105,6 +106,7 @@ export async function loadAutonomousDocumentForEditForm(
   }
 
   const typeIcono = parseTypeIconographique(doc.type_iconographique);
+  const categorieTextuelle = parseCategorieTextuelle(doc.categorie_textuelle);
 
   return {
     titre: doc.titre,
@@ -124,6 +126,7 @@ export async function loadAutonomousDocumentForEditForm(
     repere_temporel: doc.repere_temporel ?? "",
     annee_normalisee: doc.annee_normalisee,
     type_iconographique: typeIcono,
+    categorie_textuelle: categorieTextuelle,
     legal_accepted: true,
   };
 }

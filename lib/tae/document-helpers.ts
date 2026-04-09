@@ -1,3 +1,4 @@
+import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
@@ -55,6 +56,8 @@ export type DocumentSlotData = {
   annee_normalisee: number | null;
   /** Sous-type didactique — documents iconographiques uniquement. */
   type_iconographique: DocumentTypeIconoSlug | null;
+  /** Catégorie didactique — documents textuels uniquement. */
+  categorie_textuelle: CategorieTextuelleValue | null;
 };
 
 export type SlotUiStatus = "empty" | "in_progress" | "complete";
@@ -82,6 +85,7 @@ export function emptyDocumentSlot(): DocumentSlotData {
     repere_temporel: "",
     annee_normalisee: null,
     type_iconographique: null,
+    categorie_textuelle: null,
   };
 }
 

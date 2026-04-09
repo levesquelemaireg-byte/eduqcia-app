@@ -60,6 +60,17 @@ CREATE TYPE document_legend_position AS ENUM (
   'bas_droite'
 );
 
+CREATE TYPE document_categorie_textuelle AS ENUM (
+  'documents_officiels',
+  'ecrits_personnels',
+  'presse_publications',
+  'discours_prises_parole',
+  'textes_savants',
+  'donnees_statistiques',
+  'textes_litteraires_culturels',
+  'autre'
+);
+
 CREATE TYPE vote_niveau AS ENUM ('1', '2', '3');
 
 CREATE TYPE favori_type AS ENUM (
@@ -305,6 +316,7 @@ CREATE TABLE documents (
   repere_temporel    TEXT,
   annee_normalisee   INT,
   type_iconographique TEXT,
+  categorie_textuelle document_categorie_textuelle,
 
   -- Métadonnées héritées cumulativement depuis les TAÉ parentes (DOMAIN §8.8)
   -- Uniquement sur le master (source_document_id IS NULL)
@@ -334,6 +346,8 @@ COMMENT ON COLUMN documents.annee_normalisee IS
   'Année normalisée (entier, peut être négatif). Comparaisons parcours non rédactionnels OI1.';
 COMMENT ON COLUMN documents.type_iconographique IS
   'Sous-type didactique pour documents iconographiques (carte, photographie, etc.) ; recherche banque ; non affiché sur la copie de l'élève.';
+COMMENT ON COLUMN documents.categorie_textuelle IS
+  'Catégorie didactique d''un document textuel (lois, écrits personnels, presse, etc.) ; NULL pour les documents iconographiques. Source produit : public/data/document-categories.json clé "textuelles".';
 
 -- Liaison TAÉ ↔ Documents avec slots doc_A–D (DOMAIN §4.2 ; D = parcours non rédactionnel)
 CREATE TABLE tae_documents (
@@ -531,6 +545,8 @@ CREATE INDEX idx_tae_version          ON tae (id, version);
 CREATE INDEX idx_doc_type             ON documents (type);
 CREATE INDEX idx_doc_type_iconographique ON documents (type_iconographique)
   WHERE type = 'iconographique'::doc_type AND type_iconographique IS NOT NULL;
+CREATE INDEX idx_doc_categorie_textuelle ON documents (categorie_textuelle)
+  WHERE type = 'textuel'::doc_type AND categorie_textuelle IS NOT NULL;
 CREATE INDEX idx_doc_niveaux          ON documents USING GIN (niveaux_ids);
 CREATE INDEX idx_doc_disciplines      ON documents USING GIN (disciplines_ids);
 CREATE INDEX idx_doc_aspects          ON documents USING GIN (aspects_societe);

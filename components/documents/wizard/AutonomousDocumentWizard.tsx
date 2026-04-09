@@ -76,6 +76,7 @@ function defaultFormValues(): AutonomousDocumentFormValues {
     repere_temporel: "",
     annee_normalisee: null,
     type_iconographique: null,
+    categorie_textuelle: null,
     legal_accepted: false,
   };
 }

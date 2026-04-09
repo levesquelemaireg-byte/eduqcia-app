@@ -2,6 +2,7 @@
  * Payload `publish_tae_transaction` — lecture `TaeFormState` via `bloc1`…`bloc7` uniquement
  * (contrat RPC inchangé : `consigne`, `guidage`, `corrige`, `aspects_societe`, documents, etc.).
  */
+import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import { buildCollaborateursUserIdsForPayload } from "@/lib/tae/collaborateur-user-ids";
 import { getSlotData, isPublicHttpUrl } from "@/lib/tae/document-helpers";
@@ -143,6 +144,10 @@ export function buildPublishPayload(
       slot.type === "iconographique" && slot.type_iconographique != null
         ? { type_iconographique: slot.type_iconographique }
         : {};
+    const categorieTextuellePayload: { categorie_textuelle?: CategorieTextuelleValue | null } =
+      slot.type === "textuel" && slot.categorie_textuelle != null
+        ? { categorie_textuelle: slot.categorie_textuelle }
+        : {};
     documentsNew.push({
       titre: slot.titre.trim(),
       type: slot.type,
@@ -158,6 +163,7 @@ export function buildPublishPayload(
       repere_temporel: rt.length > 0 ? rt : null,
       annee_normalisee: annee,
       ...typeIconoPayload,
+      ...categorieTextuellePayload,
     });
     slots.push({
       slot: slotId,

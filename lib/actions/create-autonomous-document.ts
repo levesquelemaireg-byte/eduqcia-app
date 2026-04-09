@@ -60,6 +60,7 @@ async function insertAutonomousDocumentRow(
       "repere_temporel",
       "annee_normalisee",
       "type_iconographique",
+      "categorie_textuelle",
     ]),
   ];
 
@@ -144,6 +145,9 @@ export async function createAutonomousDocumentAction(
   const typeIcono =
     v.doc_type === "iconographique" && v.type_iconographique != null ? v.type_iconographique : null;
 
+  const categorieTextuelle =
+    v.doc_type === "textuel" && v.categorie_textuelle != null ? v.categorie_textuelle : null;
+
   const fullRow: DocumentInsertPayload = {
     auteur_id: user.id,
     titre: v.titre,
@@ -165,6 +169,7 @@ export async function createAutonomousDocumentAction(
         ? Math.trunc(v.annee_normalisee)
         : null,
     type_iconographique: typeIcono,
+    categorie_textuelle: categorieTextuelle,
   };
 
   const inserted = await insertAutonomousDocumentRow(supabase, fullRow);

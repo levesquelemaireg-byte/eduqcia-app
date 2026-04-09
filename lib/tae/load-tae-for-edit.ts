@@ -26,6 +26,7 @@ import {
   rowToSelectionWithIds,
   type ConnRawRow,
 } from "@/lib/tae/connaissances-helpers";
+import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tae/document-helpers";
 import { nonRedactionFromDbColumn } from "@/lib/tae/non-redaction/non-redaction-edit-hydrate";
@@ -183,6 +184,7 @@ export async function loadTaeFormStateForEdit(
           ? Math.trunc(d.annee_normalisee)
           : null;
       const typeIcono = parseTypeIconographique(d.type_iconographique);
+      const categorieTextuelle = parseCategorieTextuelle(d.categorie_textuelle);
       if (sourceId) {
         documents[slotId] = {
           ...emptyDocumentSlot(),
@@ -204,6 +206,7 @@ export async function loadTaeFormStateForEdit(
           repere_temporel: repereT,
           annee_normalisee: anneeN,
           type_iconographique: typeIcono,
+          categorie_textuelle: categorieTextuelle,
         };
       } else {
         documents[slotId] = {
@@ -226,6 +229,7 @@ export async function loadTaeFormStateForEdit(
           repere_temporel: repereT,
           annee_normalisee: anneeN,
           type_iconographique: typeIcono,
+          categorie_textuelle: categorieTextuelle,
         };
       }
     }
@@ -335,7 +339,13 @@ export async function loadTaeFormStateForEdit(
       oi7Element3: "",
       consigneMode: "gabarit",
     },
-    bloc4: { documents, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+    bloc4: {
+      documents,
+      perspectives: null,
+      perspectivesTitre: "",
+      moments: null,
+      momentsTitre: "",
+    },
     bloc5: {
       corrige: typeof row.corrige === "string" ? row.corrige : "",
       nonRedaction: nonRedactionFromDbColumn(
