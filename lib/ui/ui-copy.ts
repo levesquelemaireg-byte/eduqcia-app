@@ -274,54 +274,29 @@ export const DOCUMENT_FICHE_EDIT = "Modifier";
 /** Colonne méta — titre de section (grille large). */
 export const DOCUMENT_FICHE_SECTION_INDEXATION = "Références et indexation";
 
-/** Slugs persistés en `documents.type_iconographique` — formulaires et banque. */
-export const DOCUMENT_TYPE_ICONO_SLUGS = [
-  "carte",
-  "photographie",
-  "peinture",
-  "dessin_gravure",
-  "affiche_caricature",
-  "planche_didactique",
-  "objet_artefact",
-  "autre",
-] as const;
-
-export type DocumentTypeIconoSlug = (typeof DOCUMENT_TYPE_ICONO_SLUGS)[number];
-
+/**
+ * Catégorie iconographique — labels et helpers déplacés dans
+ * `lib/tae/document-categories-helpers.ts` (D-Coexistence Option A, commit
+ * Chantier 3). Le type `DocumentCategorieIconographiqueId` vit dans
+ * `lib/types/document-categories.ts`. Source de vérité unique :
+ * `public/data/document-categories.json`.
+ *
+ * Anciennes constantes supprimées :
+ *   - DOCUMENT_TYPE_ICONO_SLUGS, DOCUMENT_TYPE_ICONO_LABEL,
+ *     DOCUMENT_TYPE_ICONO_BADGE_SHORT, DocumentTypeIconoSlug,
+ *     documentTypeIconoLabel
+ *
+ * Seules les constantes de copy UI (titres, helps de section) restent ici.
+ */
 export const DOCUMENT_TYPE_ICONO_CATEGORY_LABEL = "Catégorie iconographique";
 export const DOCUMENT_TYPE_ICONO_CATEGORY_HELP =
   "Indiquez le type d’image (carte, peinture, etc.) pour faciliter la recherche. Cette information n’apparaît pas sur la copie de l'élève.";
 
+export const DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL = "Catégorie textuelle";
+export const DOCUMENT_TYPE_TEXTUEL_CATEGORY_HELP =
+  "Indiquez le genre de document textuel (loi, écrit personnel, presse, etc.) pour faciliter la recherche. Cette information n’apparaît pas sur la copie de l'élève.";
+
 export const BANK_FILTER_ICONO_CATEGORY_LABEL = "Catégorie iconographique";
-
-export const DOCUMENT_TYPE_ICONO_LABEL: Record<DocumentTypeIconoSlug, string> = {
-  carte: "Carte",
-  photographie: "Photographie",
-  peinture: "Peinture",
-  dessin_gravure: "Dessin / gravure",
-  affiche_caricature: "Affiche / caricature",
-  planche_didactique: "Planche didactique",
-  objet_artefact: "Objet / artefact",
-  autre: "Autre",
-};
-
-/** Badges compacts (liste banque). */
-/** Libellé long pour fiche / filtres — `null` si inconnu. */
-export function documentTypeIconoLabel(slug: DocumentTypeIconoSlug | null): string | null {
-  if (!slug) return null;
-  return DOCUMENT_TYPE_ICONO_LABEL[slug];
-}
-
-export const DOCUMENT_TYPE_ICONO_BADGE_SHORT: Record<DocumentTypeIconoSlug, string> = {
-  carte: "Carte",
-  photographie: "Photo",
-  peinture: "Peinture",
-  dessin_gravure: "Dessin",
-  affiche_caricature: "Affiche",
-  planche_didactique: "Planche",
-  objet_artefact: "Objet",
-  autre: "Autre",
-};
 
 export const DOCUMENT_FICHE_TYPE_ICONO_LINE = "Catégorie";
 export const TOAST_DOCUMENT_CREATE_SUCCESS = "Document enregistré.";

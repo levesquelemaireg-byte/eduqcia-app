@@ -2,7 +2,9 @@ import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuell
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
-import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+
+type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 
 /** BLOC4-DOCUMENTS.md §14 — état sérialisable (pas de `File` ; prévisualisation = URL blob ou publique). */
 export type DocumentSlotMode = "idle" | "create" | "reuse";

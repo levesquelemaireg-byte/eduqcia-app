@@ -3,7 +3,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
 import type { Database } from "@/lib/types/database";
-import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+
+type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 
 type Client = SupabaseClient<Database>;
 

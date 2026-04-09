@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
+import { DocumentCategorieTextuelleSelect } from "@/components/documents/DocumentCategorieTextuelleSelect";
 import { DocumentLegendPositionGrid } from "@/components/documents/DocumentLegendPositionGrid";
 import { DocumentLegendTextField } from "@/components/documents/DocumentLegendTextField";
 import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
@@ -17,13 +18,15 @@ import {
   DOCUMENT_LEGEND_MAX_WORDS,
   type AutonomousDocumentFormValues,
 } from "@/lib/schemas/autonomous-document";
-import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
+import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import { isPublicHttpUrl } from "@/lib/tae/document-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import { messageForUploadValidationReason } from "@/lib/ui/upload-image-validation-toast";
 import {
   DOCUMENT_TYPE_ICONO_CATEGORY_LABEL,
+  DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL,
   DOCUMENT_MODULE_SOURCE_LABEL,
   DOCUMENT_MODULE_SOURCE_PRIMAIRE,
   DOCUMENT_MODULE_SOURCE_SECONDAIRE,
@@ -319,6 +322,8 @@ export function StepDocument() {
             setValue("doc_type", v as "textuel" | "iconographique", { shouldValidate: true });
             if (v === "textuel") {
               setValue("type_iconographique", null, { shouldValidate: true });
+            } else {
+              setValue("categorie_textuelle", null, { shouldValidate: true });
             }
           }}
           options={[...DOC_TYPE_SEGMENTS]}
@@ -379,6 +384,33 @@ export function StepDocument() {
               {errors.contenu.message}
             </p>
           ) : null}
+
+          <div className="space-y-1.5">
+            <label
+              htmlFor="doc-wizard-categorie-textuelle"
+              className="text-sm font-semibold text-deep"
+            >
+              {DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL}
+            </label>
+            <Controller
+              name="categorie_textuelle"
+              control={control}
+              render={({ field }) => (
+                <DocumentCategorieTextuelleSelect
+                  id="doc-wizard-categorie-textuelle"
+                  value={(field.value ?? "") as CategorieTextuelleValue | ""}
+                  onChange={(v) => field.onChange(v === "" ? null : v)}
+                  showDescription={false}
+                  showLabel={false}
+                />
+              )}
+            />
+            {errors.categorie_textuelle ? (
+              <p className="text-sm text-error" role="alert">
+                {errors.categorie_textuelle.message}
+              </p>
+            ) : null}
+          </div>
         </div>
       ) : (
         <div className="space-y-3">
@@ -490,7 +522,7 @@ export function StepDocument() {
               render={({ field }) => (
                 <DocumentTypeIconographiqueSelect
                   id="doc-wizard-type-icono"
-                  value={(field.value ?? "") as DocumentTypeIconoSlug | ""}
+                  value={(field.value ?? "") as DocumentCategorieIconographiqueId | ""}
                   onChange={(v) => field.onChange(v === "" ? null : v)}
                   showDescription={false}
                   showLabel={false}

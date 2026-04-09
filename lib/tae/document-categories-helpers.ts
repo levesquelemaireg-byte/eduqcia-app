@@ -12,6 +12,7 @@ import documentCategoriesJson from "@/public/data/document-categories.json";
 import type {
   DocumentCategoriesData,
   DocumentCategorieIconographique,
+  DocumentCategorieIconographiqueId,
   DocumentCategorieTextuelle,
   DocumentType,
   DocumentTypeSource,
@@ -47,6 +48,30 @@ export function getDocumentCategorieIconographique(
   id: string,
 ): DocumentCategorieIconographique | null {
   return data.iconographiques.find((c) => c.id === id) ?? null;
+}
+
+/**
+ * Libellé long d'une catégorie iconographique — `null` si l'id est inconnu.
+ * Remplace l'ancien `documentTypeIconoLabel` de `lib/ui/ui-copy.ts`.
+ */
+export function documentCategorieIconographiqueLabel(
+  id: DocumentCategorieIconographiqueId | string | null,
+): string | null {
+  if (!id) return null;
+  const cat = getDocumentCategorieIconographique(id);
+  return cat?.label ?? null;
+}
+
+/**
+ * Libellé compact (badge banque) d'une catégorie iconographique — `null` si inconnu.
+ * Remplace l'ancien `DOCUMENT_TYPE_ICONO_BADGE_SHORT[slug]` de `lib/ui/ui-copy.ts`.
+ */
+export function documentCategorieIconographiqueBadgeShort(
+  id: DocumentCategorieIconographiqueId | string | null,
+): string | null {
+  if (!id) return null;
+  const cat = getDocumentCategorieIconographique(id);
+  return cat?.badge_short ?? null;
 }
 
 // ---------------------------------------------------------------------------

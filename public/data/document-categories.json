@@ -58,14 +58,14 @@
     }
   ],
   "iconographiques": [
-    { "id": "carte", "label": "Carte", "icon": "map" },
-    { "id": "photographie", "label": "Photographie", "icon": "photo_camera" },
-    { "id": "peinture", "label": "Peinture", "icon": "palette" },
-    { "id": "dessin_gravure", "label": "Dessin / gravure", "icon": "draw" },
-    { "id": "affiche_caricature", "label": "Affiche / caricature", "icon": "image" },
-    { "id": "planche_didactique", "label": "Planche didactique", "icon": "grid_view" },
-    { "id": "objet_artefact", "label": "Objet / artefact", "icon": "inventory_2" },
-    { "id": "autre", "label": "Autre", "icon": "image_inset" }
+    { "id": "carte", "label": "Carte", "icon": "map", "badge_short": "Carte" },
+    { "id": "photographie", "label": "Photographie", "icon": "photo_camera", "badge_short": "Photo" },
+    { "id": "peinture", "label": "Peinture", "icon": "palette", "badge_short": "Peinture" },
+    { "id": "dessin_gravure", "label": "Dessin / gravure", "icon": "draw", "badge_short": "Dessin" },
+    { "id": "affiche_caricature", "label": "Affiche / caricature", "icon": "image", "badge_short": "Affiche" },
+    { "id": "planche_didactique", "label": "Planche didactique", "icon": "grid_view", "badge_short": "Planche" },
+    { "id": "objet_artefact", "label": "Objet / artefact", "icon": "inventory_2", "badge_short": "Objet" },
+    { "id": "autre", "label": "Autre", "icon": "image_inset", "badge_short": "Autre" }
   ],
   "types_source": [
     { "id": "primaire", "label": "Primaire", "icon": "counter_1" },

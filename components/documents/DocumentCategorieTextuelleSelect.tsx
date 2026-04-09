@@ -1,18 +1,18 @@
 "use client";
 
 import { ListboxField, type ListboxOption } from "@/components/ui/ListboxField";
-import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
-import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
+import { getAllCategoriesTextuelles } from "@/lib/tae/document-categories-helpers";
 import {
-  DOCUMENT_TYPE_ICONO_CATEGORY_HELP,
-  DOCUMENT_TYPE_ICONO_CATEGORY_LABEL,
-  SELECT_PLACEHOLDER_CATEGORIE_ICONOGRAPHIQUE,
+  DOCUMENT_TYPE_TEXTUEL_CATEGORY_HELP,
+  DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL,
+  SELECT_PLACEHOLDER_CATEGORIE_TEXTUELLE,
 } from "@/lib/ui/ui-copy";
 
 type Props = {
   id: string;
-  value: DocumentCategorieIconographiqueId | "";
-  onChange: (next: DocumentCategorieIconographiqueId | "") => void;
+  value: CategorieTextuelleValue | "";
+  onChange: (next: CategorieTextuelleValue | "") => void;
   /** défaut true — false : pas de paragraphe d'aide sous le label (modale (i) côté parent). */
   showDescription?: boolean;
   /** défaut true — false : pas de `<label>` (libellé + (i) côté parent). */
@@ -20,11 +20,11 @@ type Props = {
 };
 
 /**
- * Sélecteur catégorie iconographique — façade fine sur `ListboxField` étendu
- * avec icônes par option (D-Composant-1 Option A). Source de vérité unique :
- * `public/data/document-categories.json` clé `iconographiques`.
+ * Sélecteur catégorie textuelle — symétrique à `DocumentTypeIconographiqueSelect`.
+ * Façade fine sur `ListboxField` étendu avec icônes par option. Source de vérité
+ * unique : `public/data/document-categories.json` clé `textuelles`.
  */
-export function DocumentTypeIconographiqueSelect({
+export function DocumentCategorieTextuelleSelect({
   id,
   value,
   onChange,
@@ -33,7 +33,7 @@ export function DocumentTypeIconographiqueSelect({
 }: Props) {
   const helpId = `${id}-help`;
 
-  const options: ListboxOption[] = getAllCategoriesIconographiques().map((cat) => ({
+  const options: ListboxOption[] = getAllCategoriesTextuelles().map((cat) => ({
     value: cat.id,
     label: cat.label,
     icon: cat.icon,
@@ -43,20 +43,20 @@ export function DocumentTypeIconographiqueSelect({
     <div className="space-y-2">
       {showLabel ? (
         <label htmlFor={id} className="text-sm font-semibold text-deep">
-          {DOCUMENT_TYPE_ICONO_CATEGORY_LABEL}
+          {DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL}
         </label>
       ) : null}
       {showDescription ? (
         <p id={helpId} className="text-xs text-muted">
-          {DOCUMENT_TYPE_ICONO_CATEGORY_HELP}
+          {DOCUMENT_TYPE_TEXTUEL_CATEGORY_HELP}
         </p>
       ) : null}
       <ListboxField
         id={id}
         value={value}
-        onChange={(v) => onChange((v || "") as DocumentCategorieIconographiqueId | "")}
+        onChange={(v) => onChange((v || "") as CategorieTextuelleValue | "")}
         allowEmpty
-        placeholder={SELECT_PLACEHOLDER_CATEGORIE_ICONOGRAPHIQUE}
+        placeholder={SELECT_PLACEHOLDER_CATEGORIE_TEXTUELLE}
         aria-describedby={showDescription ? helpId : undefined}
         aria-required
         options={options}

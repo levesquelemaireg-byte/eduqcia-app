@@ -14,11 +14,33 @@ export type DocumentCategorieTextuelle = {
   exemples: string[];
 };
 
+/**
+ * Identifiants des catégories iconographiques (union littérale).
+ *
+ * Cette union doit rester strictement synchronisée avec le tableau du JSON
+ * `public/data/document-categories.json` clé `iconographiques`. Un test
+ * unitaire (`document-categories-helpers.test.ts`) vérifie cette cohérence.
+ *
+ * Anciennement défini comme `DocumentTypeIconoSlug` dans `lib/ui/ui-copy.ts`,
+ * désormais centralisé ici depuis le commit Chantier 3 (D-Coexistence).
+ */
+export type DocumentCategorieIconographiqueId =
+  | "carte"
+  | "photographie"
+  | "peinture"
+  | "dessin_gravure"
+  | "affiche_caricature"
+  | "planche_didactique"
+  | "objet_artefact"
+  | "autre";
+
 /** Catégorie iconographique (carte, peinture, photographie, etc.). */
 export type DocumentCategorieIconographique = {
-  id: string;
+  id: DocumentCategorieIconographiqueId;
   label: string;
   icon: string;
+  /** Libellé compact pour les badges de la banque (5-8 caractères max). */
+  badge_short: string;
 };
 
 /** Type de source (primaire / secondaire). */

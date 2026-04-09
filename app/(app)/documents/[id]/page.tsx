@@ -6,11 +6,8 @@ import { DocumentFicheRetourLink } from "@/components/documents/DocumentFicheRet
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { createClient } from "@/lib/supabase/server";
 import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
-import {
-  DOCUMENT_FICHE_EDIT,
-  copyDocumentPublishedTaeUsageCount,
-  documentTypeIconoLabel,
-} from "@/lib/ui/ui-copy";
+import { DOCUMENT_FICHE_EDIT, copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
+import { documentCategorieIconographiqueLabel } from "@/lib/tae/document-categories-helpers";
 import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
 
 type PageProps = {
@@ -76,7 +73,7 @@ export default async function DocumentReadPage({ params }: PageProps) {
 
   const iconoSlug =
     doc.type === "iconographique" ? parseTypeIconographique(doc.type_iconographique) : null;
-  const iconoCategoryLabel = documentTypeIconoLabel(iconoSlug);
+  const iconoCategoryLabel = documentCategorieIconographiqueLabel(iconoSlug);
 
   const sourceType =
     doc.source_type === "primaire" || doc.source_type === "secondaire"

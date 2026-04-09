@@ -16,9 +16,6 @@ import {
   BANK_TASK_LOAD_MORE,
   FILTER_LABEL_ALL_DISCIPLINES,
   FILTER_LABEL_ALL_NIVEAUX,
-  DOCUMENT_TYPE_ICONO_BADGE_SHORT,
-  DOCUMENT_TYPE_ICONO_LABEL,
-  DOCUMENT_TYPE_ICONO_SLUGS,
   PAGE_BANK_DOCUMENTS_CTA_INTRO,
   PAGE_BANK_DOCUMENTS_CTA_LINK,
   PAGE_BANK_DOCUMENTS_EMPTY,
@@ -34,7 +31,10 @@ import {
   DOCUMENT_MODULE_TYPE_TEXT,
 } from "@/lib/ui/ui-copy";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
-import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import {
+  documentCategorieIconographiqueBadgeShort,
+  getAllCategoriesIconographiques,
+} from "@/lib/tae/document-categories-helpers";
 import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
 import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/server";
@@ -157,19 +157,19 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
               {PAGE_BANK_DOCUMENTS_FILTER_ICONO_ALL}
             </p>
             <div className="flex max-h-32 flex-col gap-1.5 overflow-y-auto rounded-lg border border-border bg-panel-alt p-2">
-              {DOCUMENT_TYPE_ICONO_SLUGS.map((slug: DocumentTypeIconoSlug) => (
+              {getAllCategoriesIconographiques().map((cat) => (
                 <label
-                  key={slug}
+                  key={cat.id}
                   className="flex cursor-pointer items-center gap-2 text-xs text-deep"
                 >
                   <input
                     type="checkbox"
                     name="icat"
-                    value={slug}
-                    defaultChecked={icatSet.has(slug)}
+                    value={cat.id}
+                    defaultChecked={icatSet.has(cat.id)}
                     className="h-4 w-4 rounded border-border text-accent"
                   />
-                  <span>{DOCUMENT_TYPE_ICONO_LABEL[slug]}</span>
+                  <span>{cat.label}</span>
                 </label>
               ))}
             </div>
@@ -213,9 +213,10 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
                       <span>{row.titre}</span>
                       {(() => {
                         const slug = parseTypeIconographique(row.type_iconographique);
-                        return slug ? (
+                        const badge = documentCategorieIconographiqueBadgeShort(slug);
+                        return badge ? (
                           <span className="rounded-md bg-steel/20 px-1.5 py-0.5 text-[11px] font-medium text-muted">
-                            {DOCUMENT_TYPE_ICONO_BADGE_SHORT[slug]}
+                            {badge}
                           </span>
                         ) : null;
                       })()}

@@ -6,7 +6,9 @@ import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuell
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import { buildCollaborateursUserIdsForPayload } from "@/lib/tae/collaborateur-user-ids";
 import { getSlotData, isPublicHttpUrl } from "@/lib/tae/document-helpers";
-import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+
+type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 import type { PublishTaeFailureCode, PublishTaeRpcPayload } from "@/lib/tae/publish-tae-types";
 import {
   buildAvantApresConsigneHtml,

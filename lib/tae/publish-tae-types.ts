@@ -1,6 +1,8 @@
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
-import type { DocumentTypeIconoSlug } from "@/lib/ui/ui-copy";
+import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import type { Json } from "@/lib/types/database";
+
+type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 
 /**
  * Snapshot des champs majeurs d'une TAÉ avant édition.
