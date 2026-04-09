@@ -3,6 +3,7 @@
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
+import { BLOC3_GUIDAGE_FORMATIF_SOMMATIF_HINT } from "@/lib/ui/ui-copy";
 
 type Props = {
   value: string;
@@ -48,6 +49,7 @@ export function SectionGuidage({ value, onChange, onInfoClick }: Props) {
         autosaveKey="eduqcia-tae-guidage-new"
         minHeight={88}
       />
+      <p className="text-xs italic text-muted">{BLOC3_GUIDAGE_FORMATIF_SOMMATIF_HINT}</p>
     </section>
   );
 }

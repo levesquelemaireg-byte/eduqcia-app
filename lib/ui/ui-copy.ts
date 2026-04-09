@@ -371,6 +371,13 @@ export const STEP_DESCRIPTIONS: Record<number, Record<string, string>> = {
 export const BLOC3_GATE_BLUEPRINT =
   "Complétez d'abord l'étape « Paramètres de la tâche » (étape 2) et passez à l'étape suivante pour définir la consigne et le guidage complémentaire.";
 
+/**
+ * Étape 3 — guidage complémentaire — mention discrète sous le champ qui rappelle
+ * son comportement formatif/sommatif. Spec : task-creation-wizard.md §3.4 (absence A3.4.1).
+ */
+export const BLOC3_GUIDAGE_FORMATIF_SOMMATIF_HINT =
+  "Ce guidage s'affichera en italique sous la consigne en mode formatif. Il sera masqué automatiquement en mode sommatif.";
+
 /** Wizard TAÉ — étape 4 (documents) — parcours rédactionnel : étapes 2–3 requises */
 export const BLOC4_GATE_WIZARD =
   "Complétez d'abord les étapes « Paramètres de la tâche » et « Consigne et guidage complémentaire » (étapes 2 et 3) pour accéder aux documents historiques.";
