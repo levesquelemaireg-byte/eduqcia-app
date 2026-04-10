@@ -148,6 +148,23 @@ Ces deux règles sont **complémentaires et absolues**. Elles garantissent une e
 
 **Espace de production (Bloc 2) :** section **lecture seule** après choix d’un comportement — nombre de lignes issu de `oi.json` (`Bloc2EspaceProductionReadonly`) ; pas de curseur `form-range` dans ce bloc.
 
+### Avertissements inline
+
+Bannières informatives non bloquantes, sans modale ni question. L'enseignant voit l'info et décide seul. **Un seul composant** pour tout le projet : `components/ui/InlineWarning.tsx`. Modifier l'apparence **ici uniquement** pour que tous les avertissements évoluent ensemble.
+
+| Propriété     | Valeur                                    |
+| ------------- | ----------------------------------------- |
+| Composant     | `InlineWarning`                           |
+| Couleur texte | `text-warning`                            |
+| Taille texte  | `text-xs leading-relaxed`                 |
+| Icône défaut  | `info` (Material Symbols Outlined, 14 px) |
+| Layout        | `flex items-start gap-1.5`                |
+| Rôle ARIA     | `role="status"`                           |
+
+**Quand l'utiliser** : champ optionnel dont l'absence mérite d'être signalée (titre textuel vide, source absente, débordement de page, etc.).
+
+**Quand ne PAS l'utiliser** : erreur de validation bloquante (utiliser `text-error` inline sous le champ), message de succès (utiliser toast), aide contextuelle permanente (utiliser `text-muted`).
+
 ### Actions destructrices
 
 Texte/icône discrets (`text-muted`), **`hover:text-error`**, **`hover:bg-error/5`**, jamais gros bouton rouge plein pour une action secondaire. Références : `ConnaissanceRemoveButton`, `TaeCardMenu`, réinitialiser connaissances.

@@ -3,6 +3,7 @@
 import type { RefObject } from "react";
 import { useId } from "react";
 import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
+import { InlineWarning } from "@/components/ui/InlineWarning";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { DocumentLegendPositionGrid } from "@/components/documents/DocumentLegendPositionGrid";
 import { RequiredMark } from "@/components/ui/RequiredMark";
@@ -111,15 +112,7 @@ export function DocumentSlotCreateForm({
           className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
         />
         {slot.type === "textuel" && slot.titre.trim().length === 0 ? (
-          <p className="flex items-start gap-1.5 text-xs leading-relaxed text-warning">
-            <span
-              className="material-symbols-outlined mt-0.5 shrink-0 text-[14px]"
-              aria-hidden="true"
-            >
-              info
-            </span>
-            {BLOC4_WARNING_NO_TITLE}
-          </p>
+          <InlineWarning>{BLOC4_WARNING_NO_TITLE}</InlineWarning>
         ) : null}
       </div>
 
@@ -192,15 +185,7 @@ export function DocumentSlotCreateForm({
           aria-describedby={sourceHintId}
         />
         {!htmlHasMeaningfulText(slot.source_citation) ? (
-          <p className="flex items-start gap-1.5 text-xs leading-relaxed text-warning">
-            <span
-              className="material-symbols-outlined mt-0.5 shrink-0 text-[14px]"
-              aria-hidden="true"
-            >
-              info
-            </span>
-            {BLOC4_WARNING_NO_SOURCE}
-          </p>
+          <InlineWarning>{BLOC4_WARNING_NO_SOURCE}</InlineWarning>
         ) : null}
       </div>
 
