@@ -93,7 +93,7 @@
 - [x] Indicateur permanent « Brouillon · Sauvegardé il y a X sec. » (E3.1.2) — `WizardDraftIndicator` dans `StepperNavFooter`
 - [x] Champ « Notes au correcteur » dans `Bloc5Redactionnel` (E3.6.1) — `state.bloc5.notesCorrecteur`, sauvegardé en brouillon local, colonne DB à brancher ultérieurement
 - [x] Titre optionnel (textuel) + source optionnelle + bannières informatives passives (E3.5.4) — pas de modale, cohérent avec le ton du wizard
-- [ ] Signalement en temps réel du débordement « le dossier dépasse une page » (E4.3) — hook `useFicheOverflow` à créer
+- [ ] ~~Signalement débordement page (E4.3)~~ — **reporté** après implémentation de `docs/specs/document-renderer.md` (le rendu va changer, coder contre l'actuel serait du travail jeté)
 - [x] Correction de la largeur des images iconographiques (E4.5) — `shouldPrintDocumentFullWidth` lit `imagePixelWidth`, seuil 315 px
 - [x] Mention explicite formatif/sommatif sous le champ guidage (A3.4.1) — `BLOC3_GUIDAGE_FORMATIF_SOMMATIF_HINT` dans `SectionGuidage`
 - [x] Texte d'aide contextuel sur les champs désactivés du Bloc 2 (A3.3.1) — `BLOC2_DISCIPLINE_PREREQ_NIVEAU` + `BLOC2_OI_PREREQ_DISCIPLINE`
