@@ -91,7 +91,7 @@
 **Caractère** : actions individuelles indépendantes, peuvent être traitées dans n'importe quel ordre.
 
 - [x] Indicateur permanent « Brouillon · Sauvegardé il y a X sec. » (E3.1.2) — `WizardDraftIndicator` dans `StepperNavFooter`
-- [ ] Ajouter le champ « Notes au correcteur » distinct du corrigé dans `Bloc5Redactionnel` (E3.6.1) — slice `state.bloc5.notesCorrecteur` à créer
+- [x] Champ « Notes au correcteur » dans `Bloc5Redactionnel` (E3.6.1) — `state.bloc5.notesCorrecteur`, sauvegardé en brouillon local, colonne DB à brancher ultérieurement
 - [ ] Avertissements « est-ce volontaire ? » pour document sans titre ou sans source à la validation Bloc 4 (E3.5.4) — modale groupée non-bloquante
 - [ ] Signalement en temps réel du débordement « le dossier dépasse une page » (E4.3) — hook `useFicheOverflow` à créer
 - [x] Correction de la largeur des images iconographiques (E4.5) — `shouldPrintDocumentFullWidth` lit `imagePixelWidth`, seuil 315 px
@@ -148,9 +148,9 @@
 | Phase 2 — Refonte modèle références + drag-and-drop    | 0 / 8 actions       |
 | Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions       |
 | Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions       |
-| Phase 5 — Quick wins UX                                | 5 / 9 actions       |
+| Phase 5 — Quick wins UX                                | 6 / 9 actions       |
 | Phase 6 — Picker banque documents                      | 0 / 10 actions      |
 | Phase 7 — Décisions et spec finale                     | 0 / 8 actions       |
-| **Total**                                              | **13 / 57 actions** |
+| **Total**                                              | **14 / 57 actions** |
 
 Mets à jour ce tableau au fur et à mesure que tu coches des actions dans les sections ci-dessus.
