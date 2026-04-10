@@ -1,5 +1,5 @@
 import type { DocumentFiche } from "@/lib/types/fiche";
-import { DocumentCard } from "@/components/tae/fiche/DocumentCard";
+import { DocumentCardCompact } from "@/components/tae/fiche/DocumentCardCompact";
 import { FICHE_SECTION_BODY_INSET, FICHE_SECTION_TITLE_CLASS } from "@/lib/ui/fiche-layout";
 import { ficheDocumentsSectionTitle } from "@/lib/ui/ui-copy";
 
@@ -51,13 +51,13 @@ export function SectionDocuments({ documents }: Props) {
           className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}
           aria-label="Emplacements documents textuel et iconographique"
         >
-          <DocumentCard doc={EMPTY_DOC_TEXTUEL} />
-          <DocumentCard doc={EMPTY_DOC_ICONO} />
+          <DocumentCardCompact doc={EMPTY_DOC_TEXTUEL} />
+          <DocumentCardCompact doc={EMPTY_DOC_ICONO} />
         </div>
       ) : (
         <div className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}>
           {documents.map((doc) => (
-            <DocumentCard key={doc.letter} doc={doc} />
+            <DocumentCardCompact key={doc.letter} doc={doc} />
           ))}
         </div>
       )}

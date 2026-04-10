@@ -9,7 +9,7 @@ type Props = {
   doc: DocumentFiche;
 };
 
-export function DocumentCard({ doc }: Props) {
+export function DocumentCardCompact({ doc }: Props) {
   const hasTitle = doc.titre.trim().length > 0;
   const hasBody =
     doc.type === "textuel"

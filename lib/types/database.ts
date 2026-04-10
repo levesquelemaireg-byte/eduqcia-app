@@ -192,6 +192,71 @@ export type Database = {
         };
         Relationships: [];
       };
+      document_elements: {
+        Row: {
+          auteur: string | null;
+          categorie_iconographique: string | null;
+          categorie_textuelle: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
+          contenu: string | null;
+          created_at: string;
+          document_id: string;
+          id: string;
+          image_url: string | null;
+          legende: string | null;
+          legende_position: Database["public"]["Enums"]["document_legend_position"] | null;
+          position: number;
+          repere_temporel: string | null;
+          source_citation: string;
+          source_type: Database["public"]["Enums"]["document_source_type"];
+          sous_titre: string | null;
+          type: Database["public"]["Enums"]["doc_type"];
+        };
+        Insert: {
+          auteur?: string | null;
+          categorie_iconographique?: string | null;
+          categorie_textuelle?: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
+          contenu?: string | null;
+          created_at?: string;
+          document_id: string;
+          id?: string;
+          image_url?: string | null;
+          legende?: string | null;
+          legende_position?: Database["public"]["Enums"]["document_legend_position"] | null;
+          position?: number;
+          repere_temporel?: string | null;
+          source_citation: string;
+          source_type?: Database["public"]["Enums"]["document_source_type"];
+          sous_titre?: string | null;
+          type: Database["public"]["Enums"]["doc_type"];
+        };
+        Update: {
+          auteur?: string | null;
+          categorie_iconographique?: string | null;
+          categorie_textuelle?: Database["public"]["Enums"]["document_categorie_textuelle"] | null;
+          contenu?: string | null;
+          created_at?: string;
+          document_id?: string;
+          id?: string;
+          image_url?: string | null;
+          legende?: string | null;
+          legende_position?: Database["public"]["Enums"]["document_legend_position"] | null;
+          position?: number;
+          repere_temporel?: string | null;
+          source_citation?: string;
+          source_type?: Database["public"]["Enums"]["document_source_type"];
+          sous_titre?: string | null;
+          type?: Database["public"]["Enums"]["doc_type"];
+        };
+        Relationships: [
+          {
+            foreignKeyName: "document_elements_document_id_fkey";
+            columns: ["document_id"];
+            isOneToOne: false;
+            referencedRelation: "documents";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       documents: {
         Row: {
           annee_normalisee: number | null;
@@ -215,6 +280,7 @@ export type Database = {
           source_document_id: string | null;
           source_type: Database["public"]["Enums"]["document_source_type"];
           source_version: number | null;
+          structure: Database["public"]["Enums"]["document_structure"];
           titre: string;
           type: Database["public"]["Enums"]["doc_type"];
           type_iconographique: string | null;
@@ -243,6 +309,7 @@ export type Database = {
           source_document_id?: string | null;
           source_type?: Database["public"]["Enums"]["document_source_type"];
           source_version?: number | null;
+          structure?: Database["public"]["Enums"]["document_structure"];
           titre: string;
           type: Database["public"]["Enums"]["doc_type"];
           type_iconographique?: string | null;
@@ -271,6 +338,7 @@ export type Database = {
           source_document_id?: string | null;
           source_type?: Database["public"]["Enums"]["document_source_type"];
           source_version?: number | null;
+          structure?: Database["public"]["Enums"]["document_structure"];
           titre?: string;
           type?: Database["public"]["Enums"]["doc_type"];
           type_iconographique?: string | null;
@@ -1272,6 +1340,7 @@ export type Database = {
         | "autre";
       document_legend_position: "haut_gauche" | "haut_droite" | "bas_gauche" | "bas_droite";
       document_source_type: "primaire" | "secondaire";
+      document_structure: "simple" | "perspectives" | "deux_temps";
       favori_type: "tae" | "document" | "evaluation";
       oi_status: "active" | "coming_soon";
       user_role: "enseignant" | "conseiller_pedagogique" | "admin";
@@ -1418,6 +1487,7 @@ export const Constants = {
       ],
       document_legend_position: ["haut_gauche", "haut_droite", "bas_gauche", "bas_droite"],
       document_source_type: ["primaire", "secondaire"],
+      document_structure: ["simple", "perspectives", "deux_temps"],
       favori_type: ["tae", "document", "evaluation"],
       oi_status: ["active", "coming_soon"],
       user_role: ["enseignant", "conseiller_pedagogique", "admin"],
