@@ -757,6 +757,18 @@ Pas d'icône devant le **titre d'étape** (`<h2>`) dans le wizard.
 - Pas de god component ; pas de duplication de schémas Zod / types existants
 - Provisoire → `PROVISOIRE — …` + référence spec
 
+### Règle de scalabilité — extraction immédiate des patterns visuels
+
+**Dès la PREMIÈRE occurrence** d'un pattern visuel (bannière, badge, indicateur, état, feedback, etc.), l'extraire dans un composant réutilisable dans `components/ui/`. Ne jamais écrire du JSX inline pour un pattern qui a vocation à être réutilisé, même si on ne voit qu'un seul usage immédiat.
+
+**Pourquoi** : si le design change, l'enseignant ou le développeur doit pouvoir modifier l'apparence **à un seul endroit** et que tout le projet suive. Du JSX inline copié-collé crée de la dette invisible qui explose au prochain changement de design.
+
+**Comment décider** : si le bloc JSX contient une icône + du texte + un style spécifique (couleur, layout, taille) et qu'il représente un **concept UI** (avertissement, statut, compteur, badge, etc.), c'est un composant — pas du JSX inline.
+
+**En cas de doute** : demander au développeur « est-ce que je dois extraire ce pattern en composant réutilisable ? » plutôt que de le laisser inline.
+
+**Exemples existants** : `InlineWarning` (bannières d'avertissement), `LimitCounterPill` (compteurs de limite), `RequiredMark` (astérisque champ obligatoire). Chacun vit dans un seul fichier et est documenté dans `DESIGN-SYSTEM.md`.
+
 ---
 
 ## Formulaires — contrat du dépôt
@@ -1045,12 +1057,12 @@ lib/
 
 ### Décision rapide : où placer un nouveau fichier ?
 
-| Le fichier utilise...                           | Emplacement             | Première ligne              |
-| ----------------------------------------------- | ----------------------- | --------------------------- |
-| `sharp`, `fs`, `path`, Prisma, DB               | `lib/server/`           | `import "server-only"`      |
-| `window`, `document`, `localStorage`            | `lib/client/`           | `import "client-only"`      |
-| Uniquement types, constantes, fonctions pures    | `lib/shared/` ou `lib/` | Rien                        |
-| Server Actions qui importent du code Node.js     | Ajouter en tête         | `import "server-only"`      |
+| Le fichier utilise...                         | Emplacement             | Première ligne         |
+| --------------------------------------------- | ----------------------- | ---------------------- |
+| `sharp`, `fs`, `path`, Prisma, DB             | `lib/server/`           | `import "server-only"` |
+| `window`, `document`, `localStorage`          | `lib/client/`           | `import "client-only"` |
+| Uniquement types, constantes, fonctions pures | `lib/shared/` ou `lib/` | Rien                   |
+| Server Actions qui importent du code Node.js  | Ajouter en tête         | `import "server-only"` |
 
 ### Packages requis
 
