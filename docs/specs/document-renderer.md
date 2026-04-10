@@ -681,6 +681,25 @@ Pour les structures à plusieurs éléments (`perspectives` et `deux_temps`), ch
 
 Après la sélection de la card _« Document à perspectives »_, un deuxième choix apparaît pour le nombre de perspectives (2 ou 3), également sans aucun code d'OI dans l'UI.
 
+### 6.5 Architecture réutilisable — formulaire de document partagé
+
+Le wizard de création de document (`/documents/new`) et le formulaire de création inline du wizard tâche (Bloc 4) doivent consommer le **même composant de formulaire** dès l'implémentation. Il n'y a pas deux implémentations parallèles — une seule, avec des configurations différentes.
+
+**Composant partagé** : encapsule les champs (titre, contenu, source, type de source, catégorie, légende, repère temporel), la validation (état `touched`, avertissements non-bloquants, règles obligatoires), et la logique d'accordéons pour les structures multi-éléments. Les deux surfaces ne diffèrent que par leur **configuration** — pas par leur code.
+
+**Deux surfaces, un composant** :
+
+- **Wizard standalone** (`/documents/new`) : accès aux 4 étapes complètes (structure → titre → éléments → métadonnées). L'enseignant choisit librement la structure du document. Les connaissances associées sont saisies explicitement à l'étape métadonnées.
+- **Wizard tâche, Bloc 4** (formulaire inline dans un slot) : version allégée. L'enseignant ne choisit pas la structure — elle est **déduite automatiquement** du comportement attendu sélectionné à l'étape 2 du wizard tâche, via `WizardBlocConfig`. C'est une règle, pas une option : le wizard inline doit être plus léger que le standalone.
+
+**Règles fixes** :
+
+1. **Structure déduite dans le Bloc 4** : quand l'enseignant crée un document inline dans le wizard tâche, la structure du document (simple, perspectives, ou deux temps) est déterminée par le comportement attendu, pas par un choix utilisateur. Le composant partagé reçoit la structure en prop de configuration, pas via une étape de sélection.
+
+2. **Connaissances héritées dans le Bloc 4** : les connaissances associées au document créé inline ne sont pas saisies au niveau du document — elles sont **copiées silencieusement** depuis les connaissances de la tâche (saisies à l'étape 7 du wizard tâche) au moment de la sauvegarde. Le document publié est autonome et indexable dans la banque (il porte ses propres connaissances), mais l'enseignant n'a pas à les saisir deux fois.
+
+**Décisions à prendre à l'implémentation** : quels champs sont visibles dans chaque surface, quels défauts sont pré-remplis dans le Bloc 4, quel layout (pleine page vs inline dans un panneau de slot), et si certaines étapes du wizard standalone sont fusionnées ou simplifiées dans le Bloc 4. Ces décisions relèvent du build et peuvent évoluer sans modifier la spec, tant que le principe d'un composant partagé est respecté.
+
 ## 7. Points d'intégration
 
 ### 7.1 Avec le wizard de création de document
