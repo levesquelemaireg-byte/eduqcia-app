@@ -1,7 +1,7 @@
 "use client";
 
 import type { RefObject } from "react";
-import { useId } from "react";
+import { useCallback, useId, useState } from "react";
 import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
 import { InlineWarning } from "@/components/ui/InlineWarning";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
@@ -57,6 +57,14 @@ export function DocumentSlotCreateForm({
   const iconoCategoryId = useId();
   const sourceHintId = `${sourceId}-hint`;
 
+  // Track des champs visités pour conditionner les avertissements non-bloquants.
+  // Les bannières InlineWarning ne s'affichent qu'après que l'utilisateur a
+  // interagi avec le champ (onBlur) — pas au premier rendu.
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const markTouched = useCallback((field: string) => {
+    setTouched((prev) => (prev[field] ? prev : { ...prev, [field]: true }));
+  }, []);
+
   const docTypeOptions = [
     {
       value: "textuel",
@@ -107,11 +115,12 @@ export function DocumentSlotCreateForm({
           type="text"
           value={slot.titre}
           onChange={(e) => patch({ titre: e.target.value })}
+          onBlur={() => markTouched("titre")}
           placeholder="Titre du document"
           autoComplete="off"
           className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
         />
-        {slot.type === "textuel" && slot.titre.trim().length === 0 ? (
+        {touched.titre && slot.type === "textuel" && slot.titre.trim().length === 0 ? (
           <InlineWarning>{BLOC4_WARNING_NO_TITLE}</InlineWarning>
         ) : null}
       </div>
@@ -168,7 +177,8 @@ export function DocumentSlotCreateForm({
         </div>
       )}
 
-      <div className="space-y-2">
+      {}
+      <div className="space-y-2" onBlur={() => markTouched("source")}>
         <label htmlFor={sourceId} className="text-sm font-semibold text-deep">
           {DOCUMENT_MODULE_SOURCE_LABEL}
         </label>
@@ -184,7 +194,7 @@ export function DocumentSlotCreateForm({
           toolbarAriaLabel="Mise en forme de la source"
           aria-describedby={sourceHintId}
         />
-        {!htmlHasMeaningfulText(slot.source_citation) ? (
+        {touched.source && !htmlHasMeaningfulText(slot.source_citation) ? (
           <InlineWarning>{BLOC4_WARNING_NO_SOURCE}</InlineWarning>
         ) : null}
       </div>
