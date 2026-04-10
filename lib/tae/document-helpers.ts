@@ -113,8 +113,9 @@ export function computeSlotStatus(slot: DocumentSlotData): SlotUiStatus {
     return "in_progress";
   }
 
-  const hasTitle = slot.titre.trim().length > 0;
-  const hasSource = htmlHasMeaningfulText(slot.source_citation);
+  // Titre obligatoire pour iconographique, optionnel pour textuel.
+  // Source bibliographique optionnelle (bannière d'avertissement dans l'UI si absente).
+  const titleOk = slot.type === "textuel" || slot.titre.trim().length > 0;
   const hasSourceType = slot.source_type === "primaire" || slot.source_type === "secondaire";
   const hasContent =
     slot.type === "textuel"
@@ -125,13 +126,7 @@ export function computeSlotStatus(slot: DocumentSlotData): SlotUiStatus {
     legendTrim.length === 0 ||
     (slot.image_legende_position !== null && slot.image_legende_position !== undefined);
 
-  if (
-    hasTitle &&
-    hasSource &&
-    hasSourceType &&
-    hasContent &&
-    (slot.type !== "iconographique" || legendOk)
-  ) {
+  if (titleOk && hasSourceType && hasContent && (slot.type !== "iconographique" || legendOk)) {
     return "complete";
   }
   return "in_progress";

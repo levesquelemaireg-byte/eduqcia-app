@@ -14,7 +14,10 @@ import { DocumentSlotSourceTypeFieldset } from "@/components/tae/TaeForm/bloc4/D
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
 import { getDocumentTypeIcon } from "@/lib/tae/document-categories-helpers";
 import type { DocumentSlotData } from "@/lib/tae/document-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import {
+  BLOC4_WARNING_NO_SOURCE,
+  BLOC4_WARNING_NO_TITLE,
   DOCUMENT_MODULE_SOURCE_FORMAT_HINT,
   DOCUMENT_MODULE_SOURCE_LABEL,
   DOCUMENT_MODULE_SOURCE_PLACEHOLDER,
@@ -96,7 +99,7 @@ export function DocumentSlotCreateForm({
 
       <div className="space-y-2">
         <label htmlFor={titreId} className="text-sm font-semibold text-deep">
-          Titre <RequiredMark />
+          Titre {slot.type === "iconographique" ? <RequiredMark /> : null}
         </label>
         <input
           id={titreId}
@@ -107,6 +110,17 @@ export function DocumentSlotCreateForm({
           autoComplete="off"
           className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
         />
+        {slot.type === "textuel" && slot.titre.trim().length === 0 ? (
+          <p className="flex items-start gap-1.5 text-xs leading-relaxed text-warning">
+            <span
+              className="material-symbols-outlined mt-0.5 shrink-0 text-[14px]"
+              aria-hidden="true"
+            >
+              info
+            </span>
+            {BLOC4_WARNING_NO_TITLE}
+          </p>
+        ) : null}
       </div>
 
       <RepereTemporelField
@@ -163,7 +177,7 @@ export function DocumentSlotCreateForm({
 
       <div className="space-y-2">
         <label htmlFor={sourceId} className="text-sm font-semibold text-deep">
-          {DOCUMENT_MODULE_SOURCE_LABEL} <RequiredMark />
+          {DOCUMENT_MODULE_SOURCE_LABEL}
         </label>
         <p id={sourceHintId} className="text-xs text-muted">
           {DOCUMENT_MODULE_SOURCE_PLACEHOLDER} {DOCUMENT_MODULE_SOURCE_FORMAT_HINT}
@@ -177,6 +191,17 @@ export function DocumentSlotCreateForm({
           toolbarAriaLabel="Mise en forme de la source"
           aria-describedby={sourceHintId}
         />
+        {!htmlHasMeaningfulText(slot.source_citation) ? (
+          <p className="flex items-start gap-1.5 text-xs leading-relaxed text-warning">
+            <span
+              className="material-symbols-outlined mt-0.5 shrink-0 text-[14px]"
+              aria-hidden="true"
+            >
+              info
+            </span>
+            {BLOC4_WARNING_NO_SOURCE}
+          </p>
+        ) : null}
       </div>
 
       <DocumentSlotSourceTypeFieldset slot={slot} patch={patch} />

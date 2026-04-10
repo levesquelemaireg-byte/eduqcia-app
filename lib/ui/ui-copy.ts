@@ -409,6 +409,12 @@ export const BLOC5_REDACTIONNEL_LABEL = "Production attendue";
 export const BLOC5_REDACTIONNEL_HELP = `Décrivez ce que l'élève doit produire pour répondre correctement à la tâche. Cette information apparaît dans le corrigé destiné à l'enseignant, jamais sur la copie de l'élève.`;
 export const BLOC5_REDACTIONNEL_PLACEHOLDER = `ex. L'élève doit identifier deux causes de la Rébellion des Patriotes et les mettre en relation avec le contexte politique de 1837.`;
 
+/** Bloc 4 — bannières d'avertissement champs optionnels (titre textuel, source) */
+export const BLOC4_WARNING_NO_TITLE =
+  "Ce document n'a pas de titre. En mode formatif, le titre sera affiché pour guider l'élève. En mode sommatif, le document apparaîtra sans titre.";
+export const BLOC4_WARNING_NO_SOURCE =
+  "Ce document n'a pas de source bibliographique. Il apparaîtra sans indication de provenance.";
+
 /** Bloc 5 — notes au correcteur (spec §3.6, écart E3.6.1 de l'audit du 8 avril 2026) */
 export const BLOC5_NOTES_CORRECTEUR_LABEL = "Notes au correcteur";
 export const BLOC5_NOTES_CORRECTEUR_HELP =
