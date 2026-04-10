@@ -44,13 +44,13 @@ export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
         )}
         <span
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-            tae.is_published ? "bg-success/10 text-success" : "bg-border text-muted"
+            tae.is_published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
           }`}
         >
           <span
-            className={`h-1.5 w-1.5 rounded-full ${tae.is_published ? "bg-success" : "bg-muted"}`}
+            className={`h-1.5 w-1.5 rounded-full ${tae.is_published ? "bg-success" : "bg-warning"}`}
           />
-          {tae.is_published ? "Publiée" : "Non publiée"}
+          {tae.is_published ? "Publiée" : "Brouillon"}
         </span>
       </footer>
     );
@@ -85,13 +85,13 @@ export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
 
       <span
         className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-          tae.is_published ? "bg-success/10 text-success" : "bg-border text-muted"
+          tae.is_published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
         }`}
       >
         <span
-          className={`h-1.5 w-1.5 rounded-full ${tae.is_published ? "bg-success" : "bg-muted"}`}
+          className={`h-1.5 w-1.5 rounded-full ${tae.is_published ? "bg-success" : "bg-warning"}`}
         />
-        {tae.is_published ? "Publiée" : "Non publiée"}
+        {tae.is_published ? "Publiée" : "Brouillon"}
       </span>
     </footer>
   );
