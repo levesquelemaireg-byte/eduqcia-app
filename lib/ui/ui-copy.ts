@@ -458,9 +458,15 @@ export const BLOC2_DISCIPLINE_HELP = "Choisissez la discipline associée au nive
 /** Bloc 2 — discipline imposée (Sec 3 / 4) — libellé avec glyphe `settings` dans le JSX */
 export const BLOC2_DISCIPLINE_AUTO_ASSIGNED = "Assignée automatiquement";
 
+/** Bloc 2 — discipline — prérequis niveau non choisi */
+export const BLOC2_DISCIPLINE_PREREQ_NIVEAU = "(Disponible après la sélection du niveau scolaire.)";
+
 /** Bloc 2 — opération intellectuelle — texte d'aide sous le champ */
 export const BLOC2_OI_FIELD_HELP =
   "Sélectionnez l'opération intellectuelle mobilisée dans la tâche.";
+
+/** Bloc 2 — opération intellectuelle — prérequis discipline non choisie */
+export const BLOC2_OI_PREREQ_DISCIPLINE = "(Disponible après la sélection de la discipline.)";
 
 /** Bloc 2 — comportement attendu — texte d'aide sous le champ */
 export const BLOC2_COMPORTEMENT_FIELD_HELP =

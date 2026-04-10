@@ -20,6 +20,7 @@ import type { ComportementAttenduJson, OiEntryJson } from "@/lib/types/oi";
 import {
   BLOC2_DISCIPLINE_AUTO_ASSIGNED,
   BLOC2_DISCIPLINE_HELP,
+  BLOC2_DISCIPLINE_PREREQ_NIVEAU,
   SELECT_PLACEHOLDER_DISCIPLINE,
   SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE,
 } from "@/lib/ui/ui-copy";
@@ -147,7 +148,9 @@ export function Bloc2EditFields({
                   label: DISCIPLINE_LABEL[d],
                 }))}
               />
-              <p className="text-sm leading-relaxed text-muted">{BLOC2_DISCIPLINE_HELP}</p>
+              <p className="text-sm leading-relaxed text-muted">
+                {b.niveau ? BLOC2_DISCIPLINE_HELP : BLOC2_DISCIPLINE_PREREQ_NIVEAU}
+              </p>
             </>
           )}
         </div>

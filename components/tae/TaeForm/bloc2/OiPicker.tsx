@@ -12,7 +12,12 @@ import { BLOC2_STEPPER_ICON } from "@/components/tae/TaeForm/bloc2-stepper-icons
 import { LabelWithInfo } from "@/components/tae/TaeForm/bloc2/LabelWithInfo";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import type { OiEntryJson } from "@/lib/types/oi";
-import { BLOC2_OI_COMING_SOON, BLOC2_OI_FIELD_HELP, SELECT_PLACEHOLDER_OI } from "@/lib/ui/ui-copy";
+import {
+  BLOC2_OI_COMING_SOON,
+  BLOC2_OI_FIELD_HELP,
+  BLOC2_OI_PREREQ_DISCIPLINE,
+  SELECT_PLACEHOLDER_OI,
+} from "@/lib/ui/ui-copy";
 
 type Props = {
   oiList: OiEntryJson[];
@@ -130,7 +135,9 @@ export function OiPicker({
           </div>
         ) : null}
       </div>
-      <p className="text-sm leading-relaxed text-muted">{BLOC2_OI_FIELD_HELP}</p>
+      <p className="text-sm leading-relaxed text-muted">
+        {disciplineSet ? BLOC2_OI_FIELD_HELP : BLOC2_OI_PREREQ_DISCIPLINE}
+      </p>
     </div>
   );
 }
