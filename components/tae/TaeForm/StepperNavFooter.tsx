@@ -415,17 +415,19 @@ export function StepperNavFooter() {
             </span>
             Précédent
           </button>
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={nextDisabled}
-            className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
-          >
-            Suivant
-            <span className="material-symbols-outlined text-lg" aria-hidden="true">
-              arrow_forward
-            </span>
-          </button>
+          {canNext ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={nextDisabled}
+              className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Suivant
+              <span className="material-symbols-outlined text-lg" aria-hidden="true">
+                arrow_forward
+              </span>
+            </button>
+          ) : null}
         </div>
         {persistSessionDraft ? (
           <div className="hidden sm:block">

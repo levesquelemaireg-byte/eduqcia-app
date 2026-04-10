@@ -396,6 +396,197 @@ Le pipeline de téléversement et traitement des images existe déjà et doit ê
 
 **Blocage critique identifié** : le bucket Supabase Storage n'est pas configuré en production sur `eduqc-ia.com`. C'est l'item F4 du backlog technique. Tant que le bucket n'est pas créé avec ses politiques RLS, les uploads échoueront en production. Ce point doit être résolu avant toute publication de document iconographique par le bêta testeur.
 
+### 5.6 Système d'aperçu multi-modes (`PreviewPanel`)
+
+Le panneau d'aperçu est un composant générique réutilisable qui permet de basculer entre plusieurs modes de visualisation d'un même contenu. Il est utilisé dans le wizard de création de document, dans le wizard de création de tâche, et dans la fiche de lecture de la banque collaborative.
+
+**Principe fondamental** : ce composant ne connaît rien de la nature de ce qu'il affiche. Il gère uniquement le state du mode sélectionné, la transition entre les vues, et l'accessibilité du switcher. Toute logique métier reste dans les composants enfants injectés par le parent.
+
+**Emplacement** : `components/preview/` (pas dans `components/documents/`, car le composant est générique et réutilisable dans tout contexte métier).
+
+#### 5.6.1 Architecture en 3 niveaux
+
+**Niveau 1 — Hook `usePreviewModes`**
+
+Logique pure de switching entre modes, sans UI. Gère le state du mode courant, la persistance optionnelle dans localStorage, et la validation des modes disponibles.
+
+```typescript
+interface PreviewMode {
+  id: string;
+  label: string;
+  icon?: string; // Nom d'icône Material Symbols Outlined
+  description?: string; // Tooltip ou texte d'aide
+  disabled?: boolean; // Pour griser un mode selon le contexte
+}
+
+interface UsePreviewModesOptions {
+  modes: PreviewMode[];
+  defaultModeId?: string;
+  onModeChange?: (modeId: string) => void;
+  persistKey?: string; // Si fourni, persiste le mode sélectionné dans localStorage
+}
+
+interface UsePreviewModesResult {
+  currentMode: PreviewMode;
+  currentModeId: string;
+  setMode: (modeId: string) => void;
+  modes: PreviewMode[];
+}
+```
+
+**Niveau 2 — Composant `ModeSwitcher`**
+
+Présentation visuelle du switcher (segmented control par défaut). Gère l'accessibilité ARIA (`role="tablist"`, `role="tab"`, `aria-selected`, navigation clavier avec flèches gauche/droite) et respecte `prefers-reduced-motion` pour les transitions.
+
+**Règle d'implémentation critique** : avant de coder ce composant, Claude Code doit vérifier si le projet dispose déjà d'une primitive ARIA de type tablist ou segmented control (Radix UI Tabs, Headless UI Tab, ou composant custom existant). Si oui, l'utiliser comme base. Si non, Radix Tabs est le candidat recommandé pour sa légèreté, son accessibilité, et sa maintenance active.
+
+**Niveau 3 — Composant `PreviewContainer`**
+
+Gère le rendu du mode actif avec une stratégie configurable :
+
+- **`eager`** (défaut) : tous les modes sont rendus en permanence dans le DOM, basculement via `display: none` / `display: block`. Avantage : switch instantané, pas de perte de state interne (scroll, éditeur riche). Inconvénient : rendu initial plus lourd.
+- **`lazy`** : seul le mode actif est monté dans le DOM, les autres sont démontés. Avantage : rendu initial léger. Inconvénient : perte de state au switch, temps de montage à chaque bascule.
+- **`keep-alive`** : un mode est rendu la première fois qu'il est sélectionné, puis gardé dans le DOM même inactif. Avantage : premier switch lazy, puis instantané. Inconvénient : mémoire croissante si beaucoup de modes.
+
+#### 5.6.2 Composite `PreviewPanel` (compound component pattern)
+
+Pour simplifier l'usage dans 90% des cas, un composant composite expose ses sous-composants comme enfants composables, suivant le pattern compound component (Radix-style, Kent C. Dodds-style).
+
+```typescript
+interface PreviewPanelProps {
+  defaultMode?: string;
+  persistKey?: string;
+  renderStrategy?: "eager" | "lazy" | "keep-alive"; // Défaut: 'eager'
+  className?: string;
+  onModeChange?: (modeId: string) => void;
+  children: React.ReactNode;
+}
+
+interface PreviewPanelModeProps {
+  id: string;
+  label: string;
+  icon?: string;
+  description?: string;
+  disabled?: boolean;
+  children: React.ReactNode;
+}
+```
+
+**API déclarative** :
+
+```tsx
+<PreviewPanel defaultMode="sommaire">
+  <PreviewPanel.Switcher />
+  <PreviewPanel.Content>
+    <PreviewPanel.Mode id="sommaire" label="Sommaire" icon="topic">
+      <DocumentCardSommaire document={doc} />
+    </PreviewPanel.Mode>
+    <PreviewPanel.Mode id="impression" label="Aperçu impression" icon="picture_as_pdf">
+      <DocumentCardImpression document={doc} />
+    </PreviewPanel.Mode>
+  </PreviewPanel.Content>
+</PreviewPanel>
+```
+
+**Communication interne** : le `PreviewPanel` parent crée un React Context interne qui expose le state du mode courant et la fonction `setMode`. Les sous-composants (`Switcher`, `Content`, `Mode`) consomment ce contexte. Aucun prop drilling.
+
+#### 5.6.3 Exemples d'utilisation
+
+**Cas 1 — Wizard de création de document (2 modes)**
+
+```tsx
+<PreviewPanel defaultMode="sommaire" persistKey="wizard-doc-preview">
+  <PreviewPanel.Switcher />
+  <PreviewPanel.Content>
+    <PreviewPanel.Mode id="sommaire" label="Sommaire" icon="topic">
+      <DocumentCardSommaire document={currentDocument} />
+    </PreviewPanel.Mode>
+    <PreviewPanel.Mode id="impression" label="Aperçu impression" icon="picture_as_pdf">
+      <DocumentCardImpression document={currentDocument} />
+    </PreviewPanel.Mode>
+  </PreviewPanel.Content>
+</PreviewPanel>
+```
+
+**Cas 2 — Wizard de création de tâche (3 modes, ajout futur)**
+
+```tsx
+<PreviewPanel defaultMode="sommaire">
+  <PreviewPanel.Switcher />
+  <PreviewPanel.Content>
+    <PreviewPanel.Mode id="sommaire" label="Sommaire" icon="topic">
+      <TaskSommaire task={currentTask} />
+    </PreviewPanel.Mode>
+    <PreviewPanel.Mode id="impression" label="Aperçu impression" icon="picture_as_pdf">
+      <TaskImpression task={currentTask} />
+    </PreviewPanel.Mode>
+    <PreviewPanel.Mode id="vue_eleve" label="Vue élève" icon="visibility">
+      <TaskStudentView task={currentTask} />
+    </PreviewPanel.Mode>
+  </PreviewPanel.Content>
+</PreviewPanel>
+```
+
+**Cas 3 — Switcher séparé dans le header de la page (cas avancé)**
+
+Pour les contextes où le switcher doit être dans un endroit différent du conteneur de rendu, les primitives du hook sont utilisées directement :
+
+```tsx
+function TaskEditorPage({ task }) {
+  const previewModes = usePreviewModes({
+    modes: [
+      { id: "sommaire", label: "Sommaire", icon: "topic" },
+      { id: "impression", label: "Impression", icon: "picture_as_pdf" },
+    ],
+    defaultModeId: "sommaire",
+  });
+
+  return (
+    <>
+      <PageHeader>
+        <ModeSwitcher
+          modes={previewModes.modes}
+          currentModeId={previewModes.currentModeId}
+          onModeChange={previewModes.setMode}
+        />
+      </PageHeader>
+      <SidePanel>
+        <PreviewContainer
+          modes={previewModes.modes}
+          currentModeId={previewModes.currentModeId}
+          renderStrategy="keep-alive"
+        >
+          {previewModes.currentModeId === "sommaire" && <TaskSommaire task={task} />}
+          {previewModes.currentModeId === "impression" && <TaskImpression task={task} />}
+        </PreviewContainer>
+      </SidePanel>
+    </>
+  );
+}
+```
+
+#### 5.6.4 Contraintes d'implémentation
+
+- **Réutilisation de primitives ARIA** : vérifier d'abord l'existence d'une primitive tablist/segmented dans le design system ou les dépendances du projet. Radix UI Tabs est le candidat recommandé si aucune primitive n'est disponible.
+- **Stratégie de rendu par défaut** : `eager` pour le wizard (switch instantané, pas de perte de state). Configurable pour d'autres contextes.
+- **Accessibilité** : navigation clavier complète (flèches gauche/droite pour changer de mode, Tab pour entrer/sortir du switcher), `aria-selected` sur le mode actif, respect de `prefers-reduced-motion` pour toute transition ou animation.
+- **Fidélité du mode impression** : le mode _« Aperçu impression »_ doit réutiliser exactement les mêmes classes CSS et les mêmes composants que `DocumentCardPrint` pour garantir la fidélité visuelle. Pas de duplication de styles.
+- **Performance** : le mode impression ne doit pas bloquer le rendu initial du panneau. Si le chargement des fonts ou des images haute résolution est coûteux, utiliser `React.lazy` + `Suspense` avec un fallback de chargement.
+- **Nommage** : aucun préfixe métier (`Document`, `Task`, `Form`, etc.) sur le composant ou ses sous-composants. Le nom reflète la nature générique du composant.
+
+#### 5.6.5 Fichiers
+
+```
+components/preview/
+├── usePreviewModes.ts              // Hook moteur (logique pure)
+├── ModeSwitcher.tsx                 // Switcher visuel (segmented control ARIA)
+├── PreviewContainer.tsx             // Container de rendu (stratégie eager/lazy/keep-alive)
+├── PreviewPanel.tsx                 // Composite compound component
+├── PreviewPanel.types.ts            // Types partagés (PreviewMode, etc.)
+├── PreviewPanelContext.tsx          // Context interne pour compound components
+└── index.ts                         // Exports publics
+```
+
 ## 6. Le wizard de création de document
 
 ### 6.1 Ordre des étapes
