@@ -19,6 +19,7 @@ import { DocumentWizardPreview } from "@/components/documents/wizard/DocumentWiz
 import { StepClassification } from "@/components/documents/wizard/steps/StepClassification";
 import { StepConfirmation } from "@/components/documents/wizard/steps/StepConfirmation";
 import { StepDocument } from "@/components/documents/wizard/steps/StepDocument";
+import { StepStructure } from "@/components/documents/wizard/steps/StepStructure";
 import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
 import { filterDisciplinesForDocumentNiveau } from "@/lib/documents/filter-disciplines-by-niveau";
 import { refIdsEqual } from "@/lib/documents/ref-id";
@@ -31,6 +32,7 @@ import {
   autonomousDocumentFormSchema,
   type AutonomousDocumentFormValues,
 } from "@/lib/schemas/autonomous-document";
+import { createEmptyElement } from "@/lib/documents/document-element-defaults";
 import { initialAspects } from "@/lib/tae/redaction-helpers";
 import {
   DOCUMENT_MODULE_PAGE_TITLE,
@@ -59,24 +61,16 @@ type Props = {
 
 function defaultFormValues(): AutonomousDocumentFormValues {
   return {
+    structure: "simple",
+    nb_perspectives: undefined,
     titre: "",
-    doc_type: "textuel",
-    contenu: "",
-    image_url: "",
-    image_intrinsic_width: undefined,
-    image_intrinsic_height: undefined,
-    source_citation: "",
-    source_type: "secondaire",
+    elements: [createEmptyElement()],
+    repere_temporel: "",
+    annee_normalisee: null,
     niveau_id: 0,
     discipline_id: 0,
     connaissances_miller: [],
     aspects: { ...initialAspects },
-    image_legende: "",
-    image_legende_position: null,
-    repere_temporel: "",
-    annee_normalisee: null,
-    type_iconographique: null,
-    categorie_textuelle: null,
     legal_accepted: false,
   };
 }
@@ -179,13 +173,19 @@ export function AutonomousDocumentWizard({
   const validateStep = useCallback(
     async (s: DocumentWizardStepIndex): Promise<boolean> => {
       if (s === 0) {
-        const base = await trigger(["titre", "doc_type", "source_citation", "source_type"]);
-        if (!base) return false;
-        const dt = getValues("doc_type");
-        if (dt === "textuel") return trigger(["contenu"]);
-        return trigger(["image_url", "image_legende", "image_legende_position"]);
+        const ok = await trigger(["structure"]);
+        if (!ok) return false;
+        const st = getValues("structure");
+        if (st === "perspectives") {
+          const nb = getValues("nb_perspectives");
+          if (nb !== 2 && nb !== 3) return false;
+        }
+        return true;
       }
       if (s === 1) {
+        return trigger(["titre", "elements"]);
+      }
+      if (s === 2) {
         return trigger(["niveau_id", "discipline_id", "aspects"]);
       }
       return true;
@@ -299,11 +299,12 @@ export function AutonomousDocumentWizard({
             ) : null}
 
             <div className="mt-6 max-w-2xl">
-              {step === 0 ? <StepDocument /> : null}
-              {step === 1 ? (
+              {step === 0 ? <StepStructure /> : null}
+              {step === 1 ? <StepDocument /> : null}
+              {step === 2 ? (
                 <StepClassification niveaux={niveaux} disciplineOptions={filteredDisciplines} />
               ) : null}
-              {step === 2 ? <StepConfirmation /> : null}
+              {step === 3 ? <StepConfirmation /> : null}
             </div>
 
             <DocumentWizardNavFooter

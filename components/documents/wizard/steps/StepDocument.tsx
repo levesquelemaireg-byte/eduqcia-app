@@ -70,10 +70,6 @@ import { getDocumentTypeIcon, getDocumentTypeSource } from "@/lib/tae/document-c
 import { cn } from "@/lib/utils/cn";
 import stepStyles from "./step-document.module.css";
 
-/**
- * Petite icône Material Symbols Outlined pour les segments — alignement vertical
- * compact avec le texte du label.
- */
 function SegmentIcon({ name }: { name: string }) {
   return (
     <span className="material-symbols-outlined text-[1.1em]" aria-hidden="true">
@@ -110,8 +106,12 @@ const SOURCE_TYPE_SEGMENTS = [
   },
 ] as const;
 
+/** Préfixe pour les champs de l'élément courant. */
+const E = "elements.0" as const;
+
 /**
- * Étape 1 « Document » — wizard création document (refonte UI compacte, modales d’aide).
+ * Étape 2 « Document » — formulaire de l'élément unique (structure simple).
+ * Lit/écrit dans `elements[0]` du formulaire.
  */
 export function StepDocument() {
   const {
@@ -133,27 +133,30 @@ export function StepDocument() {
   const [imageUploadMeta, setImageUploadMeta] = useState<DocumentImageUploadMeta | null>(null);
   const [helpKey, setHelpKey] = useState<HelpKey>(null);
 
-  const docType = watch("doc_type");
-  const imageLegende = watch("image_legende");
-  const imageUrl = watch("image_url");
+  const docType = watch(`${E}.type`);
+  const imageLegende = watch(`${E}.image_legende`);
+  const imageUrl = watch(`${E}.image_url`);
   const titre = watch("titre");
   const legendTrimmed = (imageLegende ?? "").trim();
   const showLegendPosition = legendTrimmed.length > 0;
 
   const legendWords = countWordsFr(imageLegende ?? "");
 
+  // Erreurs sur l'élément courant
+  const elErrors = errors.elements?.[0];
+
   useEffect(() => {
     if (legendTrimmed.length === 0) {
-      setValue("image_legende_position", null, { shouldValidate: true });
+      setValue(`${E}.image_legende_position`, null, { shouldValidate: true });
     }
   }, [legendTrimmed, setValue]);
 
   const onFile = useCallback(
     async (file: File | null) => {
       if (!file) {
-        setValue("image_url", "", { shouldValidate: true });
-        setValue("image_intrinsic_width", undefined, { shouldValidate: true });
-        setValue("image_intrinsic_height", undefined, { shouldValidate: true });
+        setValue(`${E}.image_url`, "", { shouldValidate: true });
+        setValue(`${E}.image_intrinsic_width`, undefined, { shouldValidate: true });
+        setValue(`${E}.image_intrinsic_height`, undefined, { shouldValidate: true });
         setImageUploadMeta(null);
         return;
       }
@@ -178,9 +181,9 @@ export function StepDocument() {
         else toast.error(TOAST_DOCUMENT_IMAGE_UPLOAD_FAILED);
         return;
       }
-      setValue("image_url", r.publicUrl, { shouldValidate: true });
-      setValue("image_intrinsic_width", r.width, { shouldValidate: true });
-      setValue("image_intrinsic_height", r.height, { shouldValidate: true });
+      setValue(`${E}.image_url`, r.publicUrl, { shouldValidate: true });
+      setValue(`${E}.image_intrinsic_width`, r.width, { shouldValidate: true });
+      setValue(`${E}.image_intrinsic_height`, r.height, { shouldValidate: true });
       setImageUploadMeta({
         width: r.width,
         height: r.height,
@@ -248,11 +251,11 @@ export function StepDocument() {
           aria-labelledby={typeDocLabelId}
           value={docType}
           onChange={(v) => {
-            setValue("doc_type", v as "textuel" | "iconographique", { shouldValidate: true });
+            setValue(`${E}.type`, v as "textuel" | "iconographique", { shouldValidate: true });
             if (v === "textuel") {
-              setValue("type_iconographique", null, { shouldValidate: true });
+              setValue(`${E}.type_iconographique`, null, { shouldValidate: true });
             } else {
-              setValue("categorie_textuelle", null, { shouldValidate: true });
+              setValue(`${E}.categorie_textuelle`, null, { shouldValidate: true });
             }
           }}
           options={[...DOC_TYPE_SEGMENTS]}
@@ -282,7 +285,7 @@ export function StepDocument() {
 
       <hr className="border-0 border-t border-border/70" />
 
-      {/* 4. Bloc conditionnel type */}
+      {/* 3. Bloc conditionnel type */}
       {docType === "textuel" ? (
         <div className="space-y-1.5">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -292,7 +295,7 @@ export function StepDocument() {
             <FieldHelpModalButton onClick={() => setHelpKey("contenu")} />
           </div>
           <Controller
-            name="contenu"
+            name={`${E}.contenu`}
             control={control}
             render={({ field }) => (
               <RichTextEditor
@@ -303,14 +306,14 @@ export function StepDocument() {
                 minHeight={120}
                 placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_CONTENU}
                 toolbarAriaLabel="Mise en forme du contenu"
-                aria-invalid={errors.contenu ? true : undefined}
-                aria-describedby={errors.contenu ? contenuErrorId : undefined}
+                aria-invalid={elErrors?.contenu ? true : undefined}
+                aria-describedby={elErrors?.contenu ? contenuErrorId : undefined}
               />
             )}
           />
-          {errors.contenu ? (
+          {elErrors?.contenu ? (
             <p id={contenuErrorId} className="text-sm text-error" role="alert">
-              {errors.contenu.message}
+              {elErrors.contenu.message}
             </p>
           ) : null}
 
@@ -322,7 +325,7 @@ export function StepDocument() {
               {DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL}
             </label>
             <Controller
-              name="categorie_textuelle"
+              name={`${E}.categorie_textuelle`}
               control={control}
               render={({ field }) => (
                 <DocumentCategorieTextuelleSelect
@@ -334,9 +337,9 @@ export function StepDocument() {
                 />
               )}
             />
-            {errors.categorie_textuelle ? (
+            {elErrors?.categorie_textuelle ? (
               <p className="text-sm text-error" role="alert">
-                {errors.categorie_textuelle.message}
+                {elErrors.categorie_textuelle.message}
               </p>
             ) : null}
           </div>
@@ -350,9 +353,9 @@ export function StepDocument() {
               </span>
               <FieldHelpModalButton onClick={() => setHelpKey("file")} />
             </div>
-            {errors.image_url ? (
+            {elErrors?.image_url ? (
               <p className="text-sm text-error" role="alert">
-                {errors.image_url.message}
+                {elErrors.image_url.message}
               </p>
             ) : null}
             {isPdfLegacy ? (
@@ -400,7 +403,7 @@ export function StepDocument() {
           </div>
 
           <Controller
-            name="image_legende"
+            name={`${E}.image_legende`}
             control={control}
             render={({ field }) => (
               <DocumentLegendTextField
@@ -408,7 +411,7 @@ export function StepDocument() {
                 onChange={field.onChange}
                 legendWords={legendWords}
                 showWordsError={
-                  Boolean(errors.image_legende) || legendWords > DOCUMENT_LEGEND_MAX_WORDS
+                  Boolean(elErrors?.image_legende) || legendWords > DOCUMENT_LEGEND_MAX_WORDS
                 }
                 placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_LEGENDE}
                 helpModalTitle={DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_TITLE}
@@ -416,22 +419,22 @@ export function StepDocument() {
               />
             )}
           />
-          {errors.image_legende?.message ? (
+          {elErrors?.image_legende?.message ? (
             <p className="text-sm text-error" role="alert">
-              {errors.image_legende.message}
+              {elErrors.image_legende.message}
             </p>
           ) : null}
 
           {showLegendPosition ? (
             <div className={cn(stepStyles.legendReveal)}>
               <Controller
-                name="image_legende_position"
+                name={`${E}.image_legende_position`}
                 control={control}
                 render={({ field }) => (
                   <DocumentLegendPositionGrid
                     value={field.value ?? null}
                     onChange={field.onChange}
-                    showPositionError={Boolean(errors.image_legende_position)}
+                    showPositionError={Boolean(elErrors?.image_legende_position)}
                   />
                 )}
               />
@@ -446,7 +449,7 @@ export function StepDocument() {
               <FieldHelpModalButton onClick={() => setHelpKey("icono")} />
             </div>
             <Controller
-              name="type_iconographique"
+              name={`${E}.type_iconographique`}
               control={control}
               render={({ field }) => (
                 <DocumentTypeIconographiqueSelect
@@ -464,7 +467,7 @@ export function StepDocument() {
 
       <hr className="border-0 border-t border-border/70" />
 
-      {/* 6. Source */}
+      {/* 4. Source */}
       <div className="space-y-1.5">
         <div className="flex flex-wrap items-center gap-1.5">
           <label htmlFor={sourceId} className="text-sm font-semibold text-deep">
@@ -473,7 +476,7 @@ export function StepDocument() {
           <FieldHelpModalButton onClick={() => setHelpKey("source")} />
         </div>
         <Controller
-          name="source_citation"
+          name={`${E}.source_citation`}
           control={control}
           render={({ field }) => (
             <RichTextEditor
@@ -484,19 +487,19 @@ export function StepDocument() {
               minHeight={88}
               placeholder={DOCUMENT_WIZARD_STEP1_SOURCE_ARIA_PLACEHOLDER}
               toolbarAriaLabel="Mise en forme de la source"
-              aria-invalid={errors.source_citation ? true : undefined}
-              aria-describedby={errors.source_citation ? sourceErrorId : undefined}
+              aria-invalid={elErrors?.source_citation ? true : undefined}
+              aria-describedby={elErrors?.source_citation ? sourceErrorId : undefined}
             />
           )}
         />
-        {errors.source_citation ? (
+        {elErrors?.source_citation ? (
           <p id={sourceErrorId} className="text-sm text-error" role="alert">
-            {errors.source_citation.message}
+            {elErrors.source_citation.message}
           </p>
         ) : null}
       </div>
 
-      {/* 7. Type de source + Repère — deux colonnes */}
+      {/* 5. Type de source + Repère — deux colonnes */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-4">
         <div className="min-w-0 space-y-1.5">
           <div className="flex flex-wrap items-center gap-1.5">
@@ -506,7 +509,7 @@ export function StepDocument() {
             <FieldHelpModalButton onClick={() => setHelpKey("sourceType")} />
           </div>
           <Controller
-            name="source_type"
+            name={`${E}.source_type`}
             control={control}
             render={({ field }) => (
               <SegmentedControl
@@ -521,9 +524,9 @@ export function StepDocument() {
               />
             )}
           />
-          {errors.source_type ? (
+          {elErrors?.source_type ? (
             <p className="text-sm text-error" role="alert">
-              {errors.source_type.message}
+              {elErrors.source_type.message}
             </p>
           ) : null}
         </div>

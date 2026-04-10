@@ -19,18 +19,22 @@ type Props = {
 
 /**
  * Aperçu « feuille » — mêmes classes que la fiche imprimable TAÉ (`printable-fiche-preview.module.css`).
+ * Lit les données depuis `elements[0]` (structure éléments unifiée).
  */
 export function DocumentWizardPreview({ className, compact }: Props) {
   const { watch } = useFormContext<AutonomousDocumentFormValues>();
   const titre = watch("titre");
-  const docType = watch("doc_type");
-  const contenu = watch("contenu");
-  const imageUrl = watch("image_url");
-  const imageIntrinsicW = watch("image_intrinsic_width");
-  const imageIntrinsicH = watch("image_intrinsic_height");
-  const imageLegende = watch("image_legende")?.trim() ?? "";
-  const imageLegendePosition = watch("image_legende_position");
-  const source = watch("source_citation");
+  const elements = watch("elements");
+  const el = elements?.[0];
+
+  const docType = el?.type ?? "textuel";
+  const contenu = el?.contenu;
+  const imageUrl = el?.image_url;
+  const imageIntrinsicW = el?.image_intrinsic_width;
+  const imageIntrinsicH = el?.image_intrinsic_height;
+  const imageLegende = el?.image_legende?.trim() ?? "";
+  const imageLegendePosition = el?.image_legende_position;
+  const source = el?.source_citation;
 
   const isPdf = imageUrl ? isDocumentPdfUrl(imageUrl) : false;
 

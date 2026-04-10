@@ -85,27 +85,29 @@ export async function updateAutonomousDocumentAction(
 
   const aspectsPg = aspectsToPgArray(v.aspects);
   const repereTrim = (v.repere_temporel ?? "").trim();
-  const legendTrim = v.image_legende?.trim() ?? "";
+
+  const el = v.elements[0];
+  const legendTrim = el.image_legende?.trim() ?? "";
   const legendPos =
-    v.doc_type === "iconographique" && legendTrim.length > 0
-      ? (v.image_legende_position ?? null)
+    el.type === "iconographique" && legendTrim.length > 0
+      ? (el.image_legende_position ?? null)
       : null;
 
   const typeIcono =
-    v.doc_type === "iconographique" && v.type_iconographique != null ? v.type_iconographique : null;
+    el.type === "iconographique" && el.type_iconographique != null ? el.type_iconographique : null;
 
   const categorieTextuelle =
-    v.doc_type === "textuel" && v.categorie_textuelle != null ? v.categorie_textuelle : null;
+    el.type === "textuel" && el.categorie_textuelle != null ? el.categorie_textuelle : null;
 
   const { error: upErr } = await supabase
     .from("documents")
     .update({
       titre: v.titre,
-      type: v.doc_type,
-      contenu: v.doc_type === "textuel" ? (v.contenu ?? "").trim() : null,
-      image_url: v.doc_type === "iconographique" ? (v.image_url ?? "").trim() : null,
-      source_citation: v.source_citation.trim(),
-      source_type: v.source_type,
+      type: el.type,
+      contenu: el.type === "textuel" ? (el.contenu ?? "").trim() : null,
+      image_url: el.type === "iconographique" ? (el.image_url ?? "").trim() : null,
+      source_citation: el.source_citation.trim(),
+      source_type: el.source_type,
       image_legende: legendTrim.length > 0 ? legendTrim : null,
       image_legende_position: legendPos,
       niveaux_ids: [v.niveau_id],

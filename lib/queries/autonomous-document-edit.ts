@@ -108,25 +108,44 @@ export async function loadAutonomousDocumentForEditForm(
   const typeIcono = parseTypeIconographique(doc.type_iconographique);
   const categorieTextuelle = parseCategorieTextuelle(doc.categorie_textuelle);
 
+  const docStructure = (doc as { structure?: string }).structure;
+  const structure =
+    docStructure === "perspectives"
+      ? ("perspectives" as const)
+      : docStructure === "deux_temps"
+        ? ("deux_temps" as const)
+        : ("simple" as const);
+
   return {
+    structure,
+    nb_perspectives: undefined,
     titre: doc.titre,
-    doc_type: doc.type === "iconographique" ? "iconographique" : "textuel",
-    contenu: doc.contenu ?? "",
-    image_url: doc.image_url ?? "",
-    image_intrinsic_width: undefined,
-    image_intrinsic_height: undefined,
-    source_citation: doc.source_citation,
-    source_type: doc.source_type === "primaire" ? "primaire" : "secondaire",
+    elements: [
+      {
+        id: crypto.randomUUID(),
+        type: doc.type === "iconographique" ? ("iconographique" as const) : ("textuel" as const),
+        contenu: doc.contenu ?? "",
+        image_url: doc.image_url ?? "",
+        image_intrinsic_width: undefined,
+        image_intrinsic_height: undefined,
+        source_citation: doc.source_citation,
+        source_type:
+          doc.source_type === "primaire" ? ("primaire" as const) : ("secondaire" as const),
+        image_legende: doc.image_legende ?? "",
+        image_legende_position: doc.image_legende_position ?? null,
+        type_iconographique: typeIcono,
+        categorie_textuelle: categorieTextuelle,
+        auteur: "",
+        repere_temporel: "",
+        sous_titre: "",
+      },
+    ],
+    repere_temporel: doc.repere_temporel ?? "",
+    annee_normalisee: doc.annee_normalisee,
     niveau_id: niveauId,
     discipline_id: disciplineId,
     connaissances_miller,
     aspects,
-    image_legende: doc.image_legende ?? "",
-    image_legende_position: doc.image_legende_position ?? null,
-    repere_temporel: doc.repere_temporel ?? "",
-    annee_normalisee: doc.annee_normalisee,
-    type_iconographique: typeIcono,
-    categorie_textuelle: categorieTextuelle,
     legal_accepted: true,
   };
 }

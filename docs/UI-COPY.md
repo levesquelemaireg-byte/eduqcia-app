@@ -66,7 +66,7 @@ Source de vérité pour les **libellés, CTA, messages et textes d’aide** affi
 
 > **Banque — navigation :** une **seule** entrée dans la barre latérale, libellée au **singulier** « Banque collaborative » (pas « Banques » au pluriel). Les espaces **Tâches**, **Documents historiques** et **Épreuves** vivent **dans** la page `/bank` (onglets ou sélecteur), conformément à [FEATURES.md](./FEATURES.md) §8.7 et §13.
 
-> **Créer un document — navigation :** entrée **Créer un document** dans la section **Création**, glyphe Material Symbols Outlined **`add_notes`** ; **route livrée :** `/documents/new` (wizard 3 étapes — voir [WORKFLOWS.md](./WORKFLOWS.md), [FEATURES.md](./FEATURES.md) §13.1, [ARCHITECTURE.md](./ARCHITECTURE.md)). Voir [Module documents historiques](#module-documents-historiques).
+> **Créer un document — navigation :** entrée **Créer un document** dans la section **Création**, glyphe Material Symbols Outlined **`add_notes`** ; **route livrée :** `/documents/new` (wizard 4 étapes — voir [WORKFLOWS.md](./WORKFLOWS.md), [FEATURES.md](./FEATURES.md) §13.1, [ARCHITECTURE.md](./ARCHITECTURE.md)). Voir [Module documents historiques](#module-documents-historiques).
 
 ### Actions génériques
 
@@ -770,6 +770,60 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 
 **Terminologie (livrable élève) :** en copy **visible** (modales, aides, FAQ, commentaires SQL lisibles produit), utiliser **copie de l’élève** pour ce qui est remis ou affiché côté élève ; **ne pas** afficher « fiche élève » (terme technique interne). Les formulations du type « fiche » / « feuille élève » dans le guidage imprimé (enseignant vs élève) restent telles que listées dans les clés concernées.
 
+### Structure du document (wizard — étape 0)
+
+- **Titre d'étape :** Structure du document
+- **Sous-titre :** Choisissez la structure qui correspond à l'usage pédagogique du document.
+
+#### Card — Document simple
+
+- **Titre :** Document simple
+- **Description :** Un seul élément, texte ou image. Compatible avec toutes les opérations intellectuelles.
+- **Modale (i) — titre :** Document simple
+- **Modale (i) — corps :**
+  Un document simple contient un seul élément, textuel ou iconographique. C'est la structure la plus courante dans les épreuves ministérielles : un extrait de texte, une carte, une photographie ou un tableau statistique, présenté seul avec son titre et sa source.
+  Cette structure est compatible avec toutes les opérations intellectuelles du programme. Elle convient chaque fois que la tâche repose sur l'analyse d'une source unique : établir un fait, identifier une cause ou une conséquence, situer un événement dans le temps, etc.
+  Choisissez cette structure quand votre document se suffit à lui-même pour que l'élève réalise l'opération intellectuelle demandée.
+
+#### Card — Document à perspectives
+
+- **Titre :** Document à perspectives
+- **Description :** 2 ou 3 points de vue côte à côte.
+- **Ligne OI :** icône `text_compare` — Dégager des différences et des similitudes
+- **Comportements listés (muted) :**
+  - Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence)
+  - Indiquer le point précis sur lequel des acteurs ou des historiens sont d'accord (convergence)
+  - Montrer des différences et des similitudes par rapport à des points de vue d'acteurs ou à des interprétations d'historiens
+- **Modale (i) — titre :** Document à perspectives
+- **Modale (i) — corps :**
+  Un document à perspectives regroupe 2 ou 3 points de vue sur un même sujet, présentés côte à côte dans un seul cadre. Chaque perspective est un élément distinct (texte ou image) avec son propre auteur et sa propre source.
+  Le terme perspective désigne ici le regard porté par un acteur de l'époque ou par un historien sur une réalité sociale. Deux acteurs peuvent observer le même événement et en tirer des conclusions opposées : c'est précisément ce que l'élève doit analyser.
+  Cette structure est conçue pour l'opération intellectuelle Dégager des différences et des similitudes. Elle permet de travailler les comportements suivants :
+  - Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (2 perspectives)
+  - Indiquer le point précis sur lequel des acteurs ou des historiens sont d'accord (2 perspectives)
+  - Montrer des différences et des similitudes par rapport à des points de vue d'acteurs ou à des interprétations d'historiens (3 perspectives)
+    Les perspectives peuvent être de types différents au sein du même document. Par exemple, une caricature d'époque et un extrait de discours politique peuvent constituer deux perspectives complémentaires sur un même enjeu.
+
+#### Card — Document à deux temps
+
+- **Titre :** Document à deux temps
+- **Description :** Un même objet à deux moments distincts.
+- **Ligne OI :** icône `alt_route` — Déterminer des changements et des continuités
+- **Comportement listé (muted) :**
+  - Montrer qu'une réalité historique se transforme ou se maintient
+- **Modale (i) — titre :** Document à deux temps
+- **Modale (i) — corps :**
+  Un document à deux temps présente un même objet ou une même réalité à deux moments distincts, pour que l'élève puisse observer ce qui a changé ou ce qui s'est maintenu entre les deux périodes. Chaque temps est un élément distinct (texte ou image) avec son propre repère temporel et sa propre source.
+  Le terme deux temps fait référence à la comparaison diachronique : on place côte à côte deux états d'une même réalité, séparés dans le temps, pour rendre visible le changement ou la continuité.
+  Cette structure est conçue pour l'opération intellectuelle Déterminer des changements et des continuités. Elle permet de travailler le comportement suivant :
+  - Montrer qu'une réalité historique se transforme ou se maintient
+    Les deux temps peuvent être de types différents. Par exemple, une carte de la Nouvelle-France en 1713 et une carte de la même région en 1763 pour observer les changements territoriaux après la Conquête, ou une photographie d'époque et un texte contemporain pour observer une évolution sociale.
+
+#### Sous-choix perspectives (après sélection de la card)
+
+- **2 perspectives** — Pour un point d'accord ou de désaccord entre deux acteurs ou historiens.
+- **3 perspectives** — Pour une comparaison plus large avec identification de différences et similitudes entre trois points de vue.
+
 ### Création — champs et libellés (`lib/ui/ui-copy.ts`)
 
 - **Page :** Créer un document ; **Modifier le document** (`DOCUMENT_MODULE_PAGE_TITLE_EDIT`) — `/documents/[id]/edit` (auteur) ; toasts `TOAST_DOCUMENT_UPDATE_SUCCESS`, `TOAST_DOCUMENT_EDIT_FORBIDDEN`
@@ -795,10 +849,11 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 ### Wizard — titres d’étape et textes
 
 - Intro : Complétez les étapes pour créer un document historique structuré. L’aperçu se met à jour à chaque modification.
-- Étape 1 — Ajouter un document
+- Étape 1 — Structure du document (voir [Structure du document](#structure-du-document-wizard--étape-0) ci-dessus)
+- Étape 2 — Ajouter un document (ancienne étape 1)
 - **Refonte UI étape 1** (`StepDocument.tsx`) : **`SegmentedControl`** (type de document, type de source) ; champs **Fichier**, **Source**, **Catégorie iconographique**, **Contenu**, **Repère** (wizard) : textes d’aide en **modale (i)** — constantes `DOCUMENT_WIZARD_STEP1_PLACEHOLDER_*`, `DOCUMENT_WIZARD_STEP1_HELP_*` (titres + corps) ; `DOCUMENT_WIZARD_STEP1_CONTENU_LABEL` ; `ImageUploadDropzone` prop `hideFormatsHint` ; `RepereTemporelField` : `suppressLabelAndHelp`, `textInputPlaceholder` ; préfixe année extraite `REPERE_TEMPOREL_EXTRACTED_PREFIX` (« ↳ Année extraite : ») en **text-success** ; contenu textuel : **TipTap** (`RichTextEditor`) — aperçu via `sourceCitationDisplayHtml`.
-- Étape 2 — Indexer le document
-- Étape 3 — Confirmation — Droits d'auteur — sous-texte : Lisez le cadre légal et confirmez avant d’enregistrer le document.
+- Étape 3 — Indexer le document (ancienne étape 2)
+- Étape 4 — Confirmation — Droits d'auteur (ancienne étape 3) — sous-texte : Lisez le cadre légal et confirmez avant d’enregistrer le document.
 - Fichier du document ; Glisser un fichier ici ou choisir ; texte permanent `IMAGE_UPLOAD_FORMATS_INFO` (JPG, PNG, WebP — 10 Mo — redimensionnement 660×400).
 - Optionnel — cochez une ou plusieurs connaissances. / Sélectionnez d’abord une discipline.
 - Aperçu du document

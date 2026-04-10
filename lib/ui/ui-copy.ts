@@ -144,12 +144,40 @@ export const DOCUMENT_MODULE_SUBMIT = "Enregistrer le document";
 /** Wizard « Créer un document » — `docs/UI-COPY.md` (Module) */
 export const DOCUMENT_WIZARD_INTRO =
   "Complétez les étapes pour créer un document historique structuré. L’aperçu se met à jour à chaque modification.";
-export const DOCUMENT_WIZARD_STEP_DOCUMENT_LABEL = "Étape 1 — Ajouter un document";
+
+// Étape 1 — Structure du document
+export const DOCUMENT_WIZARD_STEP_STRUCTURE_LABEL = "Étape 1 — Structure du document";
+export const DOCUMENT_WIZARD_STEP_STRUCTURE_DESC =
+  "Choisissez la structure qui correspond à l’usage pédagogique du document.";
+
+export const DOC_STRUCTURE_SIMPLE_TITLE = "Document simple";
+export const DOC_STRUCTURE_SIMPLE_DESC =
+  "Un seul élément, texte ou image. Compatible avec toutes les opérations intellectuelles.";
+export const DOC_STRUCTURE_SIMPLE_MODAL_BODY =
+  "Un document simple contient un seul élément, textuel ou iconographique. C’est la structure la plus courante dans les épreuves ministérielles : un extrait de texte, une carte, une photographie ou un tableau statistique, présenté seul avec son titre et sa source.\n\nCette structure est compatible avec toutes les opérations intellectuelles du programme. Elle convient chaque fois que la tâche repose sur l’analyse d’une source unique : établir un fait, identifier une cause ou une conséquence, situer un événement dans le temps, etc.\n\nChoisissez cette structure quand votre document se suffit à lui-même pour que l’élève réalise l’opération intellectuelle demandée.";
+
+export const DOC_STRUCTURE_PERSPECTIVES_TITLE = "Document à perspectives";
+export const DOC_STRUCTURE_PERSPECTIVES_DESC = "2 ou 3 points de vue côte à côte.";
+export const DOC_STRUCTURE_PERSPECTIVES_MODAL_BODY =
+  "Un document à perspectives regroupe 2 ou 3 points de vue sur un même sujet, présentés côte à côte dans un seul cadre. Chaque perspective est un élément distinct (texte ou image) avec son propre auteur et sa propre source.\n\nLe terme perspective désigne ici le regard porté par un acteur de l’époque ou par un historien sur une réalité sociale. Deux acteurs peuvent observer le même événement et en tirer des conclusions opposées : c’est précisément ce que l’élève doit analyser.\n\nCette structure est conçue pour l’opération intellectuelle Dégager des différences et des similitudes. Elle permet de travailler les comportements suivants :\n\n- Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (2 perspectives)\n- Indiquer le point précis sur lequel des acteurs ou des historiens sont d’accord (2 perspectives)\n- Montrer des différences et des similitudes par rapport à des points de vue d’acteurs ou à des interprétations d’historiens (3 perspectives)\n\nLes perspectives peuvent être de types différents au sein du même document. Par exemple, une caricature d’époque et un extrait de discours politique peuvent constituer deux perspectives complémentaires sur un même enjeu.";
+
+export const DOC_STRUCTURE_DEUX_TEMPS_TITLE = "Document à deux temps";
+export const DOC_STRUCTURE_DEUX_TEMPS_DESC = "Un même objet à deux moments distincts.";
+export const DOC_STRUCTURE_DEUX_TEMPS_MODAL_BODY =
+  "Un document à deux temps présente un même objet ou une même réalité à deux moments distincts, pour que l’élève puisse observer ce qui a changé ou ce qui s’est maintenu entre les deux périodes. Chaque temps est un élément distinct (texte ou image) avec son propre repère temporel et sa propre source.\n\nLe terme deux temps fait référence à la comparaison diachronique : on place côte à côte deux états d’une même réalité, séparés dans le temps, pour rendre visible le changement ou la continuité.\n\nCette structure est conçue pour l’opération intellectuelle Déterminer des changements et des continuités. Elle permet de travailler le comportement suivant :\n\n- Montrer qu’une réalité historique se transforme ou se maintient\n\nLes deux temps peuvent être de types différents. Par exemple, une carte de la Nouvelle-France en 1713 et une carte de la même région en 1763 pour observer les changements territoriaux après la Conquête, ou une photographie d’époque et un texte contemporain pour observer une évolution sociale.";
+
+export const DOC_STRUCTURE_PERSPECTIVES_2 =
+  "Pour un point d’accord ou de désaccord entre deux acteurs ou historiens.";
+export const DOC_STRUCTURE_PERSPECTIVES_3 =
+  "Pour une comparaison plus large avec identification de différences et similitudes entre trois points de vue.";
+
+// Étape 2 — Ajouter un document (ancienne étape 1)
+export const DOCUMENT_WIZARD_STEP_DOCUMENT_LABEL = "Étape 2 — Ajouter un document";
 /** Pas de paragraphe descriptif sous le titre d’étape — décision produit (wizard document). */
 export const DOCUMENT_WIZARD_STEP_DOCUMENT_DESC = "";
-export const DOCUMENT_WIZARD_STEP_CLASSIFICATION_LABEL = "Étape 2 — Indexer le document";
+export const DOCUMENT_WIZARD_STEP_CLASSIFICATION_LABEL = "Étape 3 — Indexer le document";
 export const DOCUMENT_WIZARD_STEP_CLASSIFICATION_DESC = "";
-export const DOCUMENT_WIZARD_STEP_CONFIRMATION_LABEL = "Étape 3 — Confirmation — Droits d'auteur";
+export const DOCUMENT_WIZARD_STEP_CONFIRMATION_LABEL = "Étape 4 — Confirmation — Droits d’auteur";
 export const DOCUMENT_WIZARD_STEP_CONFIRMATION_DESC =
   "Lisez le cadre légal et confirmez avant d’enregistrer le document.";
 /** Libellé visible au-dessus des boutons Textuel / Iconographique — astérisque via `RequiredMark` en UI. */
