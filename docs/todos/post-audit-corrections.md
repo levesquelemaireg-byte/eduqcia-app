@@ -90,12 +90,12 @@
 **Adresse** : E3.1.2, E3.6.1, E3.5.4, E4.3, E4.5, A3.4.1, A3.3.1, A3.8.1
 **Caractère** : actions individuelles indépendantes, peuvent être traitées dans n'importe quel ordre.
 
-- [ ] Indicateur permanent « Brouillon · Sauvegardé il y a X sec. » (E3.1.2) — surcouche de `StepperNavFooter` ou nouveau composant dans le shell
+- [x] Indicateur permanent « Brouillon · Sauvegardé il y a X sec. » (E3.1.2) — `WizardDraftIndicator` dans `StepperNavFooter`
 - [ ] Ajouter le champ « Notes au correcteur » distinct du corrigé dans `Bloc5Redactionnel` (E3.6.1) — slice `state.bloc5.notesCorrecteur` à créer
 - [ ] Avertissements « est-ce volontaire ? » pour document sans titre ou sans source à la validation Bloc 4 (E3.5.4) — modale groupée non-bloquante
 - [ ] Signalement en temps réel du débordement « le dossier dépasse une page » (E4.3) — hook `useFicheOverflow` à créer
-- [ ] Correction de la largeur des images iconographiques (E4.5) — `shouldPrintDocumentFullWidth` doit prendre en compte `imagePixelWidth` au lieu de retourner toujours `false` pour les iconographiques (seuil 315 px à confirmer)
-- [ ] Mention explicite « Ce guidage s'affichera en italique sous la consigne en mode formatif. Il sera masqué automatiquement en mode sommatif. » sous le champ guidage (A3.4.1) — copy à ajouter dans `lib/ui/ui-copy.ts`
+- [x] Correction de la largeur des images iconographiques (E4.5) — `shouldPrintDocumentFullWidth` lit `imagePixelWidth`, seuil 315 px
+- [x] Mention explicite formatif/sommatif sous le champ guidage (A3.4.1) — `BLOC3_GUIDAGE_FORMATIF_SOMMATIF_HINT` dans `SectionGuidage`
 - [ ] Texte d'aide contextuel sur les champs désactivés du Bloc 2 (A3.3.1) — « Choisissez d'abord une opération intellectuelle » etc.
 - [ ] Bouton final « Terminer » ou « Enregistrer dans la banque » à la dernière étape (A3.8.1) — soit transformer le bouton « Suivant » à l'index 6, soit décider que le bouton « Publier » permanent est suffisant
 - [ ] Refactoring du guard `handleNext` Bloc 4 (anti-pattern d'énumération identifié le 8 avril 2026) — voir `BACKLOG.md` section « Anomalies identifiées » pour le détail. Effort 4-6 heures.
@@ -142,15 +142,15 @@
 
 **Démarrage** : 8 avril 2026 (date de l'audit fondateur)
 
-| Phase                                                  | Avancement         |
-| ------------------------------------------------------ | ------------------ |
-| Phase 1 — Le grand ménage                              | 8 / 8 actions ✅   |
-| Phase 2 — Refonte modèle références + drag-and-drop    | 0 / 8 actions      |
-| Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions      |
-| Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions      |
-| Phase 5 — Quick wins UX                                | 0 / 9 actions      |
-| Phase 6 — Picker banque documents                      | 0 / 10 actions     |
-| Phase 7 — Décisions et spec finale                     | 0 / 8 actions      |
-| **Total**                                              | **8 / 57 actions** |
+| Phase                                                  | Avancement          |
+| ------------------------------------------------------ | ------------------- |
+| Phase 1 — Le grand ménage                              | 8 / 8 actions ✅    |
+| Phase 2 — Refonte modèle références + drag-and-drop    | 0 / 8 actions       |
+| Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions       |
+| Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions       |
+| Phase 5 — Quick wins UX                                | 3 / 9 actions       |
+| Phase 6 — Picker banque documents                      | 0 / 10 actions      |
+| Phase 7 — Décisions et spec finale                     | 0 / 8 actions       |
+| **Total**                                              | **11 / 57 actions** |
 
 Mets à jour ce tableau au fur et à mesure que tu coches des actions dans les sections ci-dessus.
