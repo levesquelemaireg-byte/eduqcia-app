@@ -99,6 +99,7 @@
 - [x] Texte d'aide contextuel sur les champs désactivés du Bloc 2 (A3.3.1) — `BLOC2_DISCIPLINE_PREREQ_NIVEAU` + `BLOC2_OI_PREREQ_DISCIPLINE`
 - [x] Bouton « Suivant » masqué à la dernière étape (A3.8.1) — le bouton « Publier » reste le seul CTA
 - [ ] Refactoring du guard `handleNext` Bloc 4 (anti-pattern d'énumération identifié le 8 avril 2026) — voir `BACKLOG.md` section « Anomalies identifiées » pour le détail. Effort 4-6 heures.
+- [ ] Unifier les formulaires de création de document : `StepDocument.tsx` (wizard standalone, React Hook Form) et `DocumentSlotCreateForm.tsx` (Bloc 4 wizard tâche, patch() libre) sont deux implémentations parallèles du même formulaire. **À absorber dans l'implémentation de `docs/specs/document-renderer.md`** — créer un `DocumentForm` partagé dès la refonte du wizard document, avec configuration (champs visibles, défauts, layout) au lieu de code dupliqué. Ne pas unifier avant la refonte : le wizard va changer fondamentalement (3 structures, accordéons, éléments multiples).
 
 ---
 
@@ -148,9 +149,9 @@
 | Phase 2 — Refonte modèle références + drag-and-drop    | 0 / 8 actions       |
 | Phase 3 — Aperçu en onglets inline + Formatif/Sommatif | 0 / 6 actions       |
 | Phase 4 — Pipeline PDF Vercel                          | 0 / 8 actions       |
-| Phase 5 — Quick wins UX                                | 7 / 9 actions       |
+| Phase 5 — Quick wins UX                                | 7 / 10 actions      |
 | Phase 6 — Picker banque documents                      | 0 / 10 actions      |
 | Phase 7 — Décisions et spec finale                     | 0 / 8 actions       |
-| **Total**                                              | **15 / 57 actions** |
+| **Total**                                              | **15 / 58 actions** |
 
 Mets à jour ce tableau au fur et à mesure que tu coches des actions dans les sections ci-dessus.
