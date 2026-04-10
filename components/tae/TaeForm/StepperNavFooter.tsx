@@ -5,6 +5,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { publishTaeAction } from "@/lib/actions/tae-publish";
 import { saveWizardDraftAction } from "@/lib/actions/tae-draft";
+import { WizardDraftIndicator } from "@/components/tae/TaeForm/WizardDraftIndicator";
 import { useWizardSession } from "@/components/tae/TaeForm/WizardSessionContext";
 import {
   TAE_BLUEPRINT_STEP_INDEX,
@@ -426,6 +427,11 @@ export function StepperNavFooter() {
             </span>
           </button>
         </div>
+        {persistSessionDraft ? (
+          <div className="hidden sm:block">
+            <WizardDraftIndicator />
+          </div>
+        ) : null}
         <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
           {persistSessionDraft ? (
             <button

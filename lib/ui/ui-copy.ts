@@ -579,6 +579,19 @@ export const WIZARD_PUBLISH_CTA = "Publier";
 /** CTA footer wizard — édition (`docs/UI-COPY.md` — Boutons wizard) */
 export const WIZARD_EDIT_SAVE_CTA = "Enregistrer les modifications";
 
+/**
+ * Indicateur permanent de sauvegarde brouillon dans le footer wizard.
+ * Adresse l'écart E3.1.2 de l'audit du 8 avril 2026.
+ */
+export const WIZARD_DRAFT_INDICATOR_SAVING = "Sauvegarde…";
+export const WIZARD_DRAFT_INDICATOR_SAVED = (seconds: number): string => {
+  if (seconds < 5) return "Brouillon · Sauvegardé à l'instant";
+  if (seconds < 60) return `Brouillon · Sauvegardé il y a ${seconds} sec.`;
+  const minutes = Math.floor(seconds / 60);
+  if (minutes === 1) return "Brouillon · Sauvegardé il y a 1 min";
+  return `Brouillon · Sauvegardé il y a ${minutes} min`;
+};
+
 /** Page `/questions/new` — sous-titre sous le h1 (`docs/UI-COPY.md`) */
 export const PAGE_CREER_UNE_TACHE_SUBTITLE =
   "Complétez les sept (7) étapes pour créer une tâche complète, alignée sur les prescriptions ministérielles.";
