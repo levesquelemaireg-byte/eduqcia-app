@@ -8,6 +8,8 @@ import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { Bloc5Props } from "@/lib/tae/tae-form-state-types";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import {
+  BLOC5_NOTES_CORRECTEUR_HELP,
+  BLOC5_NOTES_CORRECTEUR_LABEL,
   BLOC5_REDACTIONNEL_HELP,
   BLOC5_REDACTIONNEL_LABEL,
   BLOC5_REDACTIONNEL_PLACEHOLDER,
@@ -17,6 +19,10 @@ export default function Bloc5Redactionnel({ state, dispatch }: Bloc5Props) {
   const [helpOpen, setHelpOpen] = useState(false);
   const setCorrige = useCallback(
     (html: string) => dispatch({ type: "SET_CORRIGE", value: html }),
+    [dispatch],
+  );
+  const setNotesCorrecteur = useCallback(
+    (html: string) => dispatch({ type: "SET_NOTES_CORRECTEUR", value: html }),
     [dispatch],
   );
 
@@ -64,6 +70,29 @@ export default function Bloc5Redactionnel({ state, dispatch }: Bloc5Props) {
           onChange={setCorrige}
           autosaveKey="eduqcia-tae-corrige-new"
           minHeight={100}
+        />
+      </section>
+
+      <section className="space-y-2 border-t border-border pt-5">
+        <label className="flex items-center gap-2 text-sm font-semibold text-deep">
+          <span
+            className="material-symbols-outlined text-[1em] text-accent"
+            aria-hidden="true"
+            title={materialIconTooltip("edit_note") ?? undefined}
+          >
+            edit_note
+          </span>
+          {BLOC5_NOTES_CORRECTEUR_LABEL}
+        </label>
+        <p className="text-xs text-muted">{BLOC5_NOTES_CORRECTEUR_HELP}</p>
+        <RichTextEditor
+          id="notes-correcteur-bloc5"
+          instanceId="notes-correcteur-bloc5"
+          className="mt-2"
+          value={state.bloc5.notesCorrecteur}
+          onChange={setNotesCorrecteur}
+          autosaveKey="eduqcia-tae-notes-correcteur-new"
+          minHeight={80}
         />
       </section>
     </div>

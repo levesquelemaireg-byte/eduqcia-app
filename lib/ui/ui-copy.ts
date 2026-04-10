@@ -409,6 +409,11 @@ export const BLOC5_REDACTIONNEL_LABEL = "Production attendue";
 export const BLOC5_REDACTIONNEL_HELP = `Décrivez ce que l'élève doit produire pour répondre correctement à la tâche. Cette information apparaît dans le corrigé destiné à l'enseignant, jamais sur la copie de l'élève.`;
 export const BLOC5_REDACTIONNEL_PLACEHOLDER = `ex. L'élève doit identifier deux causes de la Rébellion des Patriotes et les mettre en relation avec le contexte politique de 1837.`;
 
+/** Bloc 5 — notes au correcteur (spec §3.6, écart E3.6.1 de l'audit du 8 avril 2026) */
+export const BLOC5_NOTES_CORRECTEUR_LABEL = "Notes au correcteur";
+export const BLOC5_NOTES_CORRECTEUR_HELP =
+  "Nuances d'interprétation, cas particuliers à accepter, pièges fréquents à reconnaître. Ce texte n'apparaît pas sur la copie de l'élève.";
+
 /** Bloc 5 — placeholders non rédactionnels */
 export const BLOC5_NON_REDACTIONNEL_PLACEHOLDER_TITRE = "Génération des options";
 export const BLOC5_NON_REDACTIONNEL_PLACEHOLDER_MESSAGE =

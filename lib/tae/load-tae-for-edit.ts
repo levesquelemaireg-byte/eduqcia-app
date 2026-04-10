@@ -348,6 +348,7 @@ export async function loadTaeFormStateForEdit(
     },
     bloc5: {
       corrige: typeof row.corrige === "string" ? row.corrige : "",
+      notesCorrecteur: "",
       nonRedaction: nonRedactionFromDbColumn(
         typeof row.comportement_id === "string" ? row.comportement_id : "",
         row.non_redaction_data,

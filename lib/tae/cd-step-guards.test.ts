@@ -17,9 +17,27 @@ function minimalRedactionStateForCdGate(over: Partial<TaeFormState> = {}): TaeFo
     blueprintLocked: true,
     documentSlots: [],
   };
-  s.bloc3 = { consigne: "<p>ok</p>", guidage: "", perspectivesMode: null, perspectivesType: "acteurs", perspectivesContexte: "", oi6Enjeu: "", oi7EnjeuGlobal: "", oi7Element1: "", oi7Element2: "", oi7Element3: "", consigneMode: "gabarit" };
-  s.bloc4 = { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" };
-  s.bloc5 = { corrige: "<p>ok</p>", nonRedaction: null, intrus: null };
+  s.bloc3 = {
+    consigne: "<p>ok</p>",
+    guidage: "",
+    perspectivesMode: null,
+    perspectivesType: "acteurs",
+    perspectivesContexte: "",
+    oi6Enjeu: "",
+    oi7EnjeuGlobal: "",
+    oi7Element1: "",
+    oi7Element2: "",
+    oi7Element3: "",
+    consigneMode: "gabarit",
+  };
+  s.bloc4 = {
+    documents: {},
+    perspectives: null,
+    perspectivesTitre: "",
+    moments: null,
+    momentsTitre: "",
+  };
+  s.bloc5 = { corrige: "<p>ok</p>", notesCorrecteur: "", nonRedaction: null, intrus: null };
   s.bloc7 = {
     ...s.bloc7,
     aspects: {

@@ -157,10 +157,9 @@ function sanitizeBloc5Slice(raw: unknown): Bloc5Slice {
   const corrige = typeof b.corrige === "string" ? b.corrige : "";
   const nr = parseNonRedactionData(b.nonRedaction);
   const intrus =
-    b.intrus && typeof b.intrus === "object"
-      ? (b.intrus as Bloc5Slice["intrus"])
-      : null;
-  return { corrige, nonRedaction: nr, intrus };
+    b.intrus && typeof b.intrus === "object" ? (b.intrus as Bloc5Slice["intrus"]) : null;
+  const notesCorrecteur = typeof b.notesCorrecteur === "string" ? b.notesCorrecteur : "";
+  return { corrige, notesCorrecteur, nonRedaction: nr, intrus };
 }
 
 function sanitizeBloc7Slice(raw: unknown): Bloc7Slice {
@@ -247,17 +246,20 @@ export function sanitizeHydratedState(raw: unknown): TaeFormState | null {
   const bloc3 = {
     consigne: typeof b3.consigne === "string" ? b3.consigne : "",
     guidage: typeof b3.guidage === "string" ? b3.guidage : "",
-    perspectivesMode: (
-      rawPerspMode === "groupe" || rawPerspMode === "separe" ? rawPerspMode : null
-    ) as "groupe" | "separe" | null,
-    perspectivesType: b3.perspectivesType === "historiens" ? "historiens" as const : "acteurs" as const,
-    perspectivesContexte: typeof b3.perspectivesContexte === "string" ? b3.perspectivesContexte : "",
+    perspectivesMode: (rawPerspMode === "groupe" || rawPerspMode === "separe"
+      ? rawPerspMode
+      : null) as "groupe" | "separe" | null,
+    perspectivesType:
+      b3.perspectivesType === "historiens" ? ("historiens" as const) : ("acteurs" as const),
+    perspectivesContexte:
+      typeof b3.perspectivesContexte === "string" ? b3.perspectivesContexte : "",
     oi6Enjeu: typeof b3.oi6Enjeu === "string" ? b3.oi6Enjeu : "",
     oi7EnjeuGlobal: typeof b3.oi7EnjeuGlobal === "string" ? b3.oi7EnjeuGlobal : "",
     oi7Element1: typeof b3.oi7Element1 === "string" ? b3.oi7Element1 : "",
     oi7Element2: typeof b3.oi7Element2 === "string" ? b3.oi7Element2 : "",
     oi7Element3: typeof b3.oi7Element3 === "string" ? b3.oi7Element3 : "",
-    consigneMode: b3.consigneMode === "personnalisee" ? "personnalisee" as const : "gabarit" as const,
+    consigneMode:
+      b3.consigneMode === "personnalisee" ? ("personnalisee" as const) : ("gabarit" as const),
   };
 
   const b4 = o.bloc4 as { documents?: unknown };
@@ -280,7 +282,13 @@ export function sanitizeHydratedState(raw: unknown): TaeFormState | null {
     bloc1,
     bloc2,
     bloc3,
-    bloc4: { documents, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+    bloc4: {
+      documents,
+      perspectives: null,
+      perspectivesTitre: "",
+      moments: null,
+      momentsTitre: "",
+    },
     bloc5,
     bloc6,
     bloc7,

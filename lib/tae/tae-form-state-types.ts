@@ -89,6 +89,8 @@ export type NonRedactionData =
 
 export type Bloc5Slice = {
   corrige: string;
+  /** Notes au correcteur — nuances, cas particuliers, pièges. Champ distinct du corrigé (spec §3.6). */
+  notesCorrecteur: string;
   nonRedaction: NonRedactionData | null;
   intrus: IntrusPayload | null;
 };
@@ -142,6 +144,7 @@ export type TaeFormAction =
   | { type: "SET_ASPECT"; aspect: AspectSocieteKey; value: boolean }
   | { type: "SET_GUIDAGE"; value: string }
   | { type: "SET_CORRIGE"; value: string }
+  | { type: "SET_NOTES_CORRECTEUR"; value: string }
   | {
       type: "UPDATE_DOCUMENT_SLOT";
       slotId: DocumentSlotId;
@@ -204,6 +207,7 @@ export const initialBloc3: Bloc3Slice = {
 
 export const initialBloc5: Bloc5Slice = {
   corrige: "",
+  notesCorrecteur: "",
   nonRedaction: null,
   intrus: null,
 };
@@ -218,7 +222,13 @@ export const initialTaeFormState: TaeFormState = {
   bloc1: initialConception,
   bloc2: initialBlueprint,
   bloc3: initialBloc3,
-  bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+  bloc4: {
+    documents: {},
+    perspectives: null,
+    perspectivesTitre: "",
+    moments: null,
+    momentsTitre: "",
+  },
   bloc5: initialBloc5,
   bloc6: { cd: initialCdFormSlice },
   bloc7: initialBloc7,

@@ -99,6 +99,7 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         },
         bloc5: {
           corrige: action.state.bloc5?.corrige ?? "",
+          notesCorrecteur: action.state.bloc5?.notesCorrecteur ?? "",
           nonRedaction: action.state.bloc5?.nonRedaction ?? null,
           intrus: action.state.bloc5?.intrus ?? null,
         },
@@ -152,7 +153,13 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         ...state,
         bloc2: b,
         bloc3: disciplineChanged ? initialBloc3 : state.bloc3,
-        bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+        bloc4: {
+          documents: {},
+          perspectives: null,
+          perspectivesTitre: "",
+          moments: null,
+          momentsTitre: "",
+        },
         bloc5: initialBloc5,
         bloc6: { cd: initialCdFormSlice },
         bloc7: { ...initialBloc7, connaissances: [] },
@@ -168,7 +175,13 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         ...state,
         bloc2: b,
         bloc3: disciplineChanged ? initialBloc3 : state.bloc3,
-        bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+        bloc4: {
+          documents: {},
+          perspectives: null,
+          perspectivesTitre: "",
+          moments: null,
+          momentsTitre: "",
+        },
         bloc5: initialBloc5,
         bloc6: { cd: initialCdFormSlice },
         bloc7: { ...initialBloc7, connaissances: [] },
@@ -198,13 +211,32 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
           documentSlots: documentSlotsFromCount(action.nbDocuments),
           nbLignes: action.nbLignes,
         },
-        bloc4: { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+        bloc4: {
+          documents: {},
+          perspectives: null,
+          perspectivesTitre: "",
+          moments: null,
+          momentsTitre: "",
+        },
         bloc5: {
           corrige: state.bloc5.corrige,
+          notesCorrecteur: state.bloc5.notesCorrecteur,
           nonRedaction,
           intrus: null,
         },
-        bloc3: { ...state.bloc3, guidage: "", perspectivesMode: null, perspectivesType: "acteurs", perspectivesContexte: "", oi6Enjeu: "", oi7EnjeuGlobal: "", oi7Element1: "", oi7Element2: "", oi7Element3: "", consigneMode: "gabarit" },
+        bloc3: {
+          ...state.bloc3,
+          guidage: "",
+          perspectivesMode: null,
+          perspectivesType: "acteurs",
+          perspectivesContexte: "",
+          oi6Enjeu: "",
+          oi7EnjeuGlobal: "",
+          oi7Element1: "",
+          oi7Element2: "",
+          oi7Element3: "",
+          consigneMode: "gabarit",
+        },
       };
     }
     case "LOCK_BLUEPRINT":
@@ -239,6 +271,11 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
       return {
         ...state,
         bloc5: { ...state.bloc5, corrige: action.value },
+      };
+    case "SET_NOTES_CORRECTEUR":
+      return {
+        ...state,
+        bloc5: { ...state.bloc5, notesCorrecteur: action.value },
       };
     case "UPDATE_DOCUMENT_SLOT": {
       const prev = state.bloc4.documents[action.slotId] ?? emptyDocumentSlot();
@@ -366,9 +403,7 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
     case "UPDATE_PERSPECTIVE": {
       const prev = state.bloc4.perspectives;
       if (!prev) return state;
-      const updated = prev.map((p, i) =>
-        i === action.index ? { ...p, ...action.patch } : p,
-      );
+      const updated = prev.map((p, i) => (i === action.index ? { ...p, ...action.patch } : p));
       return {
         ...state,
         bloc4: { ...state.bloc4, perspectives: updated },
@@ -377,24 +412,43 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
     case "UPDATE_MOMENT": {
       const prev = state.bloc4.moments;
       if (!prev) return state;
-      const updated = prev.map((m, i) =>
-        i === action.index ? { ...m, ...action.patch } : m,
-      );
+      const updated = prev.map((m, i) => (i === action.index ? { ...m, ...action.patch } : m));
       return { ...state, bloc4: { ...state.bloc4, moments: updated } };
     }
     case "SET_MOMENTS_TITRE":
       return { ...state, bloc4: { ...state.bloc4, momentsTitre: action.value } };
     case "SET_INTRUS_LETTER": {
-      const prev = state.bloc5.intrus ?? { intrusLetter: "", explicationDifference: "", pointCommun: "" };
-      return { ...state, bloc5: { ...state.bloc5, intrus: { ...prev, intrusLetter: action.value } } };
+      const prev = state.bloc5.intrus ?? {
+        intrusLetter: "",
+        explicationDifference: "",
+        pointCommun: "",
+      };
+      return {
+        ...state,
+        bloc5: { ...state.bloc5, intrus: { ...prev, intrusLetter: action.value } },
+      };
     }
     case "SET_INTRUS_EXPLICATION": {
-      const prev = state.bloc5.intrus ?? { intrusLetter: "", explicationDifference: "", pointCommun: "" };
-      return { ...state, bloc5: { ...state.bloc5, intrus: { ...prev, explicationDifference: action.value } } };
+      const prev = state.bloc5.intrus ?? {
+        intrusLetter: "",
+        explicationDifference: "",
+        pointCommun: "",
+      };
+      return {
+        ...state,
+        bloc5: { ...state.bloc5, intrus: { ...prev, explicationDifference: action.value } },
+      };
     }
     case "SET_INTRUS_POINT_COMMUN": {
-      const prev = state.bloc5.intrus ?? { intrusLetter: "", explicationDifference: "", pointCommun: "" };
-      return { ...state, bloc5: { ...state.bloc5, intrus: { ...prev, pointCommun: action.value } } };
+      const prev = state.bloc5.intrus ?? {
+        intrusLetter: "",
+        explicationDifference: "",
+        pointCommun: "",
+      };
+      return {
+        ...state,
+        bloc5: { ...state.bloc5, intrus: { ...prev, pointCommun: action.value } },
+      };
     }
     case "SET_PERSPECTIVES_MODE_WITH_MIGRATION": {
       const prev = state.bloc3.perspectivesMode;
@@ -403,44 +457,80 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
 
       const cfg = getWizardBlocConfig(state.bloc2.comportementId);
       const isMoments = cfg?.bloc4.type === "moments";
-      const emptyBloc4 = { documents: {}, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" };
+      const emptyBloc4 = {
+        documents: {},
+        perspectives: null,
+        perspectivesTitre: "",
+        moments: null,
+        momentsTitre: "",
+      };
 
       if (isMoments) {
         // OI6 — moments
         if (prev === "groupe" && next === "separe") {
-          const migratedDocs = state.bloc4.moments ? migrateMomentsToSlots(state.bloc4.moments) : {};
-          return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, documents: migratedDocs } };
+          const migratedDocs = state.bloc4.moments
+            ? migrateMomentsToSlots(state.bloc4.moments)
+            : {};
+          return {
+            ...state,
+            bloc3: { ...state.bloc3, perspectivesMode: next },
+            bloc4: { ...emptyBloc4, documents: migratedDocs },
+          };
         }
         if (prev === "separe" && next === "groupe") {
           const migratedMom = migrateSlotsToMoments(state.bloc4.documents, 2);
-          return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, moments: migratedMom, momentsTitre: state.bloc4.momentsTitre } };
+          return {
+            ...state,
+            bloc3: { ...state.bloc3, perspectivesMode: next },
+            bloc4: { ...emptyBloc4, moments: migratedMom, momentsTitre: state.bloc4.momentsTitre },
+          };
         }
         // Premier choix
         return {
           ...state,
           bloc3: { ...state.bloc3, perspectivesMode: next },
-          bloc4: next === "groupe"
-            ? { ...emptyBloc4, moments: emptyMoments(2), momentsTitre: state.bloc4.momentsTitre }
-            : emptyBloc4,
+          bloc4:
+            next === "groupe"
+              ? { ...emptyBloc4, moments: emptyMoments(2), momentsTitre: state.bloc4.momentsTitre }
+              : emptyBloc4,
         };
       }
 
       // OI3 — perspectives
       if (prev === "groupe" && next === "separe") {
-        const migratedDocs = state.bloc4.perspectives ? migratePerspectivesToSlots(state.bloc4.perspectives) : {};
-        return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, documents: migratedDocs } };
+        const migratedDocs = state.bloc4.perspectives
+          ? migratePerspectivesToSlots(state.bloc4.perspectives)
+          : {};
+        return {
+          ...state,
+          bloc3: { ...state.bloc3, perspectivesMode: next },
+          bloc4: { ...emptyBloc4, documents: migratedDocs },
+        };
       }
       if (prev === "separe" && next === "groupe") {
         const migratedPersp = migrateSlotsToPerpsectives(state.bloc4.documents, action.count);
-        return { ...state, bloc3: { ...state.bloc3, perspectivesMode: next }, bloc4: { ...emptyBloc4, perspectives: migratedPersp, perspectivesTitre: state.bloc4.perspectivesTitre } };
+        return {
+          ...state,
+          bloc3: { ...state.bloc3, perspectivesMode: next },
+          bloc4: {
+            ...emptyBloc4,
+            perspectives: migratedPersp,
+            perspectivesTitre: state.bloc4.perspectivesTitre,
+          },
+        };
       }
       // Premier choix
       return {
         ...state,
         bloc3: { ...state.bloc3, perspectivesMode: next },
-        bloc4: next === "groupe"
-          ? { ...emptyBloc4, perspectives: emptyPerspectives(action.count), perspectivesTitre: state.bloc4.perspectivesTitre }
-          : emptyBloc4,
+        bloc4:
+          next === "groupe"
+            ? {
+                ...emptyBloc4,
+                perspectives: emptyPerspectives(action.count),
+                perspectivesTitre: state.bloc4.perspectivesTitre,
+              }
+            : emptyBloc4,
       };
     }
     default:

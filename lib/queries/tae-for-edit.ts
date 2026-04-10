@@ -386,9 +386,16 @@ export async function fetchTaeFormStateForEdit(
       oi7Element3: "",
       consigneMode: "gabarit",
     },
-    bloc4: { documents, perspectives: null, perspectivesTitre: "", moments: null, momentsTitre: "" },
+    bloc4: {
+      documents,
+      perspectives: null,
+      perspectivesTitre: "",
+      moments: null,
+      momentsTitre: "",
+    },
     bloc5: {
       corrige: t.corrige ?? "",
+      notesCorrecteur: "",
       nonRedaction: nonRedactionFromDbColumn(t.comportement_id ?? "", t.non_redaction_data),
       intrus: null,
     },
