@@ -14,12 +14,14 @@ const completePerspective = (acteur: string): PerspectiveData => ({
   contenu: "<p>Extrait significatif.</p>",
   source: "<p>Source bibliographique.</p>",
   type: "textuel",
+  sourceType: "primaire",
 });
 
 const completeMoment = (): MomentData => ({
   titre: "",
   contenu: "<p>État historique avec indices temporels.</p>",
   source: "<p>Source bibliographique.</p>",
+  sourceType: "secondaire",
 });
 
 describe("isPerspectivesStepComplete", () => {

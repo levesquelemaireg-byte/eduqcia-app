@@ -20,7 +20,7 @@ import type {
 // ---------------------------------------------------------------------------
 
 export function emptyPerspective(): PerspectiveData {
-  return { acteur: "", contenu: "", source: "", type: "textuel" };
+  return { acteur: "", contenu: "", source: "", type: "textuel", sourceType: null };
 }
 
 export function emptyPerspectives(count: 2 | 3): PerspectiveData[] {
@@ -105,6 +105,7 @@ export function migratePerspectivesToSlots(
       titre: p.acteur,
       contenu: p.contenu,
       source_citation: p.source,
+      source_type: p.sourceType,
     };
   }
   return result;
@@ -123,6 +124,7 @@ export function migrateSlotsToPerpsectives(
       contenu: slot.contenu,
       source: slot.source_citation,
       type: slot.type,
+      sourceType: slot.source_type,
     };
   });
 }
@@ -132,7 +134,7 @@ export function migrateSlotsToPerpsectives(
 // ---------------------------------------------------------------------------
 
 export function emptyMoment(): MomentData {
-  return { titre: "", contenu: "", source: "" };
+  return { titre: "", contenu: "", source: "", sourceType: null };
 }
 
 export function emptyMoments(count: 2): MomentData[] {
@@ -154,6 +156,7 @@ export function migrateMomentsToSlots(
       titre: m.titre,
       contenu: m.contenu,
       source_citation: m.source,
+      source_type: m.sourceType,
     };
   }
   return result;
@@ -171,6 +174,7 @@ export function migrateSlotsToMoments(
       titre: slot.titre,
       contenu: slot.contenu,
       source: slot.source_citation,
+      sourceType: slot.source_type,
     };
   });
 }
@@ -195,13 +199,14 @@ export function isPerspectivesStepComplete(
     if (p.acteur.trim().length === 0) return false;
     if (!htmlHasMeaningfulText(p.contenu)) return false;
     if (!htmlHasMeaningfulText(p.source)) return false;
+    if (p.sourceType !== "primaire" && p.sourceType !== "secondaire") return false;
   }
   return true;
 }
 
 /**
  * Complétude des moments groupés (OI6 · 6.1 / 6.2 / 6.3).
- * Exige : titre du document non vide + chaque moment avec contenu et source.
+ * Exige : titre du document non vide + chaque moment avec contenu, source et sourceType.
  * Les moments n'ont pas de champ acteur (le titre interne du moment est optionnel).
  */
 export function isMomentsStepComplete(
@@ -215,6 +220,7 @@ export function isMomentsStepComplete(
     const m = moments[i]!;
     if (!htmlHasMeaningfulText(m.contenu)) return false;
     if (!htmlHasMeaningfulText(m.source)) return false;
+    if (m.sourceType !== "primaire" && m.sourceType !== "secondaire") return false;
   }
   return true;
 }

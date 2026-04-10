@@ -15,6 +15,7 @@ import { useTaeForm } from "@/components/tae/TaeForm/FormState";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { RequiredMark } from "@/components/ui/RequiredMark";
+import { SourceTypeRadiosWithTooltips } from "@/components/documents/SourceTypeRadiosWithTooltips";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
@@ -364,6 +365,12 @@ function PerspectiveSection({
           toolbarAriaLabel={`Mise en forme — ${perspectiveSectionLabel(index)} source`}
         />
       </div>
+
+      {/* Type de source */}
+      <SourceTypeRadiosWithTooltips
+        value={data.sourceType}
+        onChange={(v) => onPatch({ sourceType: v })}
+      />
     </div>
   );
 }

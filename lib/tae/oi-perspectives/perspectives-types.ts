@@ -17,6 +17,8 @@ export type PerspectiveData = {
   source: string;
   /** Type de document — textuel ou iconographique. */
   type: "textuel" | "iconographique";
+  /** Type de source — primaire ou secondaire. `null` = pas encore choisi. */
+  sourceType: "primaire" | "secondaire" | null;
 };
 
 // ---------------------------------------------------------------------------
@@ -51,6 +53,8 @@ export type MomentData = {
   contenu: string;
   /** Source — HTML TipTap. */
   source: string;
+  /** Type de source — primaire ou secondaire. `null` = pas encore choisi. */
+  sourceType: "primaire" | "secondaire" | null;
 };
 
 // ---------------------------------------------------------------------------

@@ -6,6 +6,13 @@ import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuell
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import { buildCollaborateursUserIdsForPayload } from "@/lib/tae/collaborateur-user-ids";
 import { getSlotData, isPublicHttpUrl } from "@/lib/tae/document-helpers";
+import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
+import type { DocumentSlotData } from "@/lib/tae/document-helpers";
+import {
+  migrateMomentsToSlots,
+  migratePerspectivesToSlots,
+} from "@/lib/tae/oi-perspectives/perspectives-helpers";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 
 type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
@@ -105,8 +112,26 @@ export function buildPublishPayload(
         ? buildLigneDuTempsCorrigeHtml(lignePayload)
         : state.bloc5.corrige;
 
+  // Mode groupé (perspectives / moments) : convertir en slots documents à la volée.
+  // En mode séparé les données vivent déjà dans state.bloc4.documents.
+  const blocConfig = getWizardBlocConfig(state.bloc2.comportementId);
+  const isGroupePersp =
+    blocConfig?.bloc4.type === "perspectives" && state.bloc3.perspectivesMode === "groupe";
+  const isGroupeMoments =
+    blocConfig?.bloc4.type === "moments" && state.bloc3.perspectivesMode === "groupe";
+
+  const resolvedDocuments: Partial<Record<DocumentSlotId, DocumentSlotData>> = isGroupePersp
+    ? state.bloc4.perspectives
+      ? migratePerspectivesToSlots(state.bloc4.perspectives)
+      : {}
+    : isGroupeMoments
+      ? state.bloc4.moments
+        ? migrateMomentsToSlots(state.bloc4.moments)
+        : {}
+      : state.bloc4.documents;
+
   for (const { slotId } of state.bloc2.documentSlots) {
-    const slot = getSlotData(state.bloc4.documents, slotId);
+    const slot = getSlotData(resolvedDocuments, slotId);
     const ordre = slots.length;
 
     if (slot.mode === "reuse") {
