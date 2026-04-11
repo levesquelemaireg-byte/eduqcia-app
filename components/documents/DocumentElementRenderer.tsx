@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImageLegendOverlay";
+import { extractFootnotes } from "@/lib/documents/extract-footnotes";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import type { DocumentElement } from "@/lib/types/document-renderer";
 import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
@@ -64,6 +65,8 @@ export function DocumentElementRenderer({
         </p>
       ) : null}
 
+      {element.type === "textuel" ? <FootnoteDefinitions html={element.contenu} /> : null}
+
       {!hideSource ? (
         <div
           className={`${styles.documentSource} ${styles.htmlFlow} ${styles.documentSourceValue}`}
@@ -72,6 +75,21 @@ export function DocumentElementRenderer({
           }}
         />
       ) : null}
+    </div>
+  );
+}
+
+/** Notes de bas de page extraites du HTML — rendu print/aperçu impression. */
+function FootnoteDefinitions({ html }: { html: string }) {
+  const notes = extractFootnotes(html);
+  if (notes.length === 0) return null;
+  return (
+    <div className={styles.documentFootnotes}>
+      {notes.map((n) => (
+        <p key={n.noteId}>
+          {n.noteId}. {n.definition}
+        </p>
+      ))}
     </div>
   );
 }

@@ -4,6 +4,13 @@ import type { Editor } from "@tiptap/core";
 
 type Cmd = "bold" | "italic" | "underline" | "bulletList";
 
+/** Classes du bouton toolbar — réutilisées par les boutons custom (citation, etc.). */
+export const TOOLBAR_BTN_BASE =
+  "inline-flex size-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-[color-mix(in_srgb,var(--color-muted)_10%,transparent)]";
+export const TOOLBAR_BTN_INACTIVE = `${TOOLBAR_BTN_BASE} text-[color:var(--color-text-secondary)]`;
+export const TOOLBAR_SEP_CLASS =
+  "mx-0.5 h-3.5 w-0 shrink-0 self-center border-l-[0.5px] border-solid border-[color:var(--color-border-tertiary)]";
+
 function ToolbarBtn({
   editor,
   cmd,
@@ -23,7 +30,7 @@ function ToolbarBtn({
       title={title}
       aria-label={title}
       aria-pressed={pressed}
-      className={`inline-flex size-7 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-[color-mix(in_srgb,var(--color-muted)_10%,transparent)] ${
+      className={`${TOOLBAR_BTN_BASE} ${
         pressed ? "bg-accent/15 text-accent" : "text-[color:var(--color-text-secondary)]"
       }`}
       onMouseDown={(e) => e.preventDefault()}
@@ -44,12 +51,7 @@ function ToolbarBtn({
 }
 
 function ToolbarSep() {
-  return (
-    <span
-      className="mx-0.5 h-3.5 w-0 shrink-0 self-center border-l-[0.5px] border-solid border-[color:var(--color-border-tertiary)]"
-      aria-hidden="true"
-    />
-  );
+  return <span className={TOOLBAR_SEP_CLASS} aria-hidden="true" />;
 }
 
 export type RichTextEditorToolbarProps = {
@@ -66,6 +68,8 @@ export type RichTextEditorToolbarProps = {
     label: string;
     onInsert: () => void;
   }>;
+  /** Contenu supplémentaire rendu à la fin de la toolbar (ex. boutons citation). */
+  extraContent?: React.ReactNode;
 };
 
 /**
@@ -79,6 +83,7 @@ export function RichTextEditorToolbar({
   toolbarAriaLabel,
   templateButton,
   docInsertButtons,
+  extraContent,
 }: RichTextEditorToolbarProps) {
   const b = editor?.isActive("bold") ?? false;
   const i = editor?.isActive("italic") ?? false;
@@ -165,6 +170,7 @@ export function RichTextEditorToolbar({
           </button>
         </>
       ) : null}
+      {extraContent}
     </div>
   );
 }

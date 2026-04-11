@@ -1,7 +1,10 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { RichTextEditorToolbar, type RichTextEditorToolbarProps } from "@/components/ui/RichTextEditorToolbar";
+import {
+  RichTextEditorToolbar,
+  type RichTextEditorToolbarProps,
+} from "@/components/ui/RichTextEditorToolbar";
 import { cn } from "@/lib/utils/cn";
 
 export type RichTextEditorShellProps = Omit<RichTextEditorToolbarProps, "editor"> & {
@@ -9,6 +12,8 @@ export type RichTextEditorShellProps = Omit<RichTextEditorToolbarProps, "editor"
   /** Contenu : typiquement `<EditorContent editor={editor} />`. */
   children: ReactNode;
   className?: string;
+  /** Contenu supplémentaire après les boutons standard dans la toolbar. */
+  extraToolbarContent?: ReactNode;
 };
 
 /**
@@ -24,6 +29,7 @@ export function RichTextEditorShell({
   docInsertButtons,
   className,
   children,
+  extraToolbarContent,
 }: RichTextEditorShellProps) {
   return (
     <div
@@ -41,6 +47,7 @@ export function RichTextEditorShell({
         onRestoreAmorce={onRestoreAmorce}
         templateButton={templateButton}
         docInsertButtons={docInsertButtons}
+        extraContent={extraToolbarContent}
       />
       <div
         className="border-t-[0.5px] border-solid border-[color:var(--color-border-tertiary)] bg-[color:var(--color-background-primary)] px-[11px] py-2"

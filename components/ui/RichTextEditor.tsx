@@ -1,5 +1,7 @@
 "use client";
 
+import type { Editor, Extensions } from "@tiptap/core";
+import type { ReactNode } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useEffect, useId, useRef } from "react";
 import { simpleRichExtensions } from "@/components/tae/TaeForm/tiptap/baseExtensions";
@@ -23,6 +25,14 @@ export type RichTextEditorProps = {
   "aria-invalid"?: boolean;
   "aria-describedby"?: string;
   className?: string;
+  /** Extensions TipTap custom (remplace `simpleRichExtensions` si fourni). */
+  extensions?: Extensions;
+  /** Contenu supplémentaire rendu après les boutons standard dans la toolbar. */
+  extraToolbarContent?: (editor: Editor | null) => ReactNode;
+  /** Contenu supplémentaire rendu sous la zone d’édition (ex. section notes). */
+  belowEditorContent?: (editor: Editor | null) => ReactNode;
+  /** Classe CSS additionnelle sur le wrapper racine de la zone d’édition. */
+  editorWrapperClassName?: string;
 };
 
 /**
@@ -40,6 +50,10 @@ export function RichTextEditor({
   "aria-invalid": ariaInvalid,
   "aria-describedby": ariaDescribedBy,
   className,
+  extensions: customExtensions,
+  extraToolbarContent,
+  belowEditorContent,
+  editorWrapperClassName,
 }: RichTextEditorProps) {
   const skipNextSyncRef = useRef(false);
   const generatedId = useId().replace(/:/g, "");
@@ -49,7 +63,7 @@ export function RichTextEditor({
     {
       immediatelyRender: false,
       shouldRerenderOnTransaction: true,
-      extensions: simpleRichExtensions(),
+      extensions: customExtensions ?? simpleRichExtensions(),
       content: value || "",
       editorProps: {
         attributes: {
@@ -58,7 +72,9 @@ export function RichTextEditor({
           style: `min-height: ${minHeight}px`,
           ...(ariaInvalid !== undefined ? { "aria-invalid": String(ariaInvalid) } : {}),
           ...(ariaDescribedBy ? { "aria-describedby": ariaDescribedBy } : {}),
-          ...(placeholder ? { "aria-placeholder": placeholder, "data-placeholder": placeholder } : {}),
+          ...(placeholder
+            ? { "aria-placeholder": placeholder, "data-placeholder": placeholder }
+            : {}),
         },
       },
       onUpdate: ({ editor: ed }) => {
@@ -99,8 +115,12 @@ export function RichTextEditor({
       editorId={instanceId}
       toolbarAriaLabel={toolbarAriaLabel}
       className={className}
+      extraToolbarContent={extraToolbarContent?.(editor)}
     >
-      <EditorContent editor={editor} />
+      <div className={editorWrapperClassName}>
+        <EditorContent editor={editor} />
+        {belowEditorContent?.(editor)}
+      </div>
     </RichTextEditorShell>
   );
 }

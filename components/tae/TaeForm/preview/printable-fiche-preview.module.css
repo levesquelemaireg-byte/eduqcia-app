@@ -211,6 +211,49 @@
   widows: 3;
 }
 
+/*
+ * Notes de bas de page — rendu print / aperçu impression.
+ * Exposants : noir pur, superscript, même police que le contenu mais plus petit.
+ * Pas de fond bleu (feedback éditeur uniquement).
+ */
+.documentBody :global(sup[data-footnote]),
+.htmlFlow :global(sup[data-footnote]) {
+  font-size: 0.65em;
+  font-weight: 500;
+  color: #000;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+  line-height: 0;
+  cursor: default;
+}
+
+/* Troncature [...] — rendu print : texte normal, pas de fond gris. */
+.documentBody :global(span[data-citation-ellipsis]),
+.htmlFlow :global(span[data-citation-ellipsis]) {
+  font-size: inherit;
+  color: #000;
+  background: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Section notes imprimées — sous le contenu, dans le cadre, avant la source. */
+.documentFootnotes {
+  margin-top: 0.5em;
+  padding-top: 0;
+}
+
+.documentFootnotes p {
+  margin: 0;
+  font-size: 9pt;
+  color: #000;
+  line-height: 1.4;
+}
+
 /* Zone 3 : source — hors cadre, sous le cadre bordé, texte libre 9pt. */
 .documentSource {
   margin: 0.35em 0 0;

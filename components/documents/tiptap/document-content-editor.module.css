@@ -1,0 +1,108 @@
+/*
+ * Styles éditeur TipTap — champ contenu document uniquement.
+ * Ces styles sont du feedback éditeur ; le rendu print est différent
+ * (noir pur, sans fond, géré dans printable-fiche-preview.module.css).
+ */
+
+/* Exposant note de bas de page — feedback éditeur */
+.editorRoot :global(.tiptap-footnote) {
+  font-size: 0.65em;
+  font-weight: 500;
+  color: #185fa5;
+  background: #e6f1fb;
+  border-radius: 2px;
+  padding: 1px 2px;
+  vertical-align: baseline;
+  position: relative;
+  top: -0.4em;
+  line-height: 0;
+}
+
+/* Node troncature [...] — feedback éditeur */
+.editorRoot :global(.tiptap-ellipsis) {
+  font-size: 13px;
+  color: var(--color-muted);
+  background: var(--color-panel-alt);
+  border-radius: 3px;
+  padding: 1px 3px;
+  user-select: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Section Notes en bas du champ TipTap                               */
+/* ------------------------------------------------------------------ */
+
+.notesSection {
+  border-top: 0.5px solid var(--color-border);
+  padding-top: 8px;
+  margin-top: 10px;
+}
+
+.notesLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-muted);
+  margin: 0 0 6px;
+}
+
+.noteRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.noteRow + .noteRow {
+  margin-top: 6px;
+}
+
+.noteNumber {
+  font-size: 12px;
+  font-weight: 500;
+  color: #185fa5;
+  min-width: 16px;
+  padding-top: 7px;
+  flex-shrink: 0;
+}
+
+.noteInput {
+  flex: 1;
+  min-width: 0;
+  border: 0.5px solid var(--color-border);
+  border-radius: 4px;
+  padding: 6px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--color-deep);
+  background: #fff;
+  outline: none;
+}
+
+.noteInput::placeholder {
+  color: var(--color-muted);
+}
+
+.noteInput:focus {
+  border-color: var(--color-accent);
+}
+
+.noteDelete {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.noteDelete:hover {
+  background: var(--color-panel-alt);
+  color: var(--color-deep);
+}

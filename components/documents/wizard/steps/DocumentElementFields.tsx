@@ -7,8 +7,12 @@ import { DocumentCategorieTextuelleSelect } from "@/components/documents/Documen
 import { DocumentLegendPositionGrid } from "@/components/documents/DocumentLegendPositionGrid";
 import { DocumentLegendTextField } from "@/components/documents/DocumentLegendTextField";
 import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
+import { DocumentContentToolbarButtons } from "@/components/documents/tiptap/DocumentContentToolbarButtons";
+import { FootnotesPanel } from "@/components/documents/tiptap/FootnotesPanel";
+import editorStyles from "@/components/documents/tiptap/document-content-editor.module.css";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { documentContentExtensions } from "@/components/tae/TaeForm/tiptap/baseExtensions";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { ImageUploadDropzone } from "@/components/ui/ImageUploadDropzone";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
@@ -317,21 +321,7 @@ export function DocumentElementFields({
             labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("contenu")} />}
             error={elErrors?.contenu?.message}
           >
-            <Controller
-              name={`${prefix}.contenu`}
-              control={control}
-              render={({ field }) => (
-                <RichTextEditor
-                  id={contenuEditorId}
-                  instanceId={contenuEditorId}
-                  value={field.value ?? ""}
-                  onChange={(html) => field.onChange(htmlHasMeaningfulText(html) ? html : "")}
-                  minHeight={120}
-                  placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_CONTENU}
-                  toolbarAriaLabel="Mise en forme du contenu"
-                />
-              )}
-            />
+            <DocumentContentRichEditor prefix={prefix} contenuEditorId={contenuEditorId} />
           </FieldLayout>
 
           <FieldLayout
@@ -515,5 +505,43 @@ export function DocumentElementFields({
         />
       </FieldLayout>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Sous-composant : éditeur contenu document avec extensions citation
+// ---------------------------------------------------------------------------
+
+const CONTENT_EXTENSIONS = documentContentExtensions();
+
+function DocumentContentRichEditor({
+  prefix,
+  contenuEditorId,
+}: {
+  prefix: `elements.${number}`;
+  contenuEditorId: string;
+}) {
+  const { control } = useFormContext<AutonomousDocumentFormValues>();
+
+  return (
+    <Controller
+      name={`${prefix}.contenu`}
+      control={control}
+      render={({ field }) => (
+        <RichTextEditor
+          id={contenuEditorId}
+          instanceId={contenuEditorId}
+          value={field.value ?? ""}
+          onChange={(html) => field.onChange(htmlHasMeaningfulText(html) ? html : "")}
+          minHeight={120}
+          placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_CONTENU}
+          toolbarAriaLabel="Mise en forme du contenu"
+          extensions={CONTENT_EXTENSIONS}
+          editorWrapperClassName={editorStyles.editorRoot}
+          extraToolbarContent={(editor) => <DocumentContentToolbarButtons editor={editor} />}
+          belowEditorContent={(editor) => <FootnotesPanel editor={editor} />}
+        />
+      )}
+    />
   );
 }
