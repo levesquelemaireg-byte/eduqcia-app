@@ -117,30 +117,26 @@ function DocumentWizardMillerConnaissancesLoaded({
 
   if (disciplineCode === "hec") {
     return (
-      <div className="space-y-3">
-        <MillerConnaissancesHec
-          key={millerResetKey}
-          rows={rows as HecConnRow[]}
-          selectedIds={selectedIds}
-          syncNavigationRowId={syncNavigationRowId}
-          onToggle={onToggle}
-        />
-        {resetConnaissancesButton}
-      </div>
+      <MillerConnaissancesHec
+        key={millerResetKey}
+        rows={rows as HecConnRow[]}
+        selectedIds={selectedIds}
+        syncNavigationRowId={syncNavigationRowId}
+        onToggle={onToggle}
+        onReset={handleResetConnaissances}
+      />
     );
   }
 
   return (
-    <div className="space-y-3">
-      <MillerConnaissancesHqc
-        key={millerResetKey}
-        rows={rows as HqcConnRow[]}
-        selectedIds={selectedIds}
-        syncNavigationRowId={syncNavigationRowId}
-        onToggle={onToggle}
-      />
-      {resetConnaissancesButton}
-    </div>
+    <MillerConnaissancesHqc
+      key={millerResetKey}
+      rows={rows as HqcConnRow[]}
+      selectedIds={selectedIds}
+      syncNavigationRowId={syncNavigationRowId}
+      onToggle={onToggle}
+      onReset={handleResetConnaissances}
+    />
   );
 }
 

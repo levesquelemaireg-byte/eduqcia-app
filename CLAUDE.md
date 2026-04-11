@@ -802,6 +802,13 @@ Checklist avant merge :
 - Pas de classes dynamiques construites par string concatenation (casse le scan Tailwind)
 - Deux-points UI : espace avant et après `:` — `lib/ui/colon.ts`
 
+### Co-localisation des styles — obligatoire
+
+- `globals.css` est réservé aux tokens globaux (`:root`), resets (`html`, `body`, `input`, `button`), utilitaires génériques (3+ composants non liés), et règles `@media print` globales. Jamais de styles spécifiques à un composant dans `globals.css`.
+- Styles de composant → Tailwind dans le JSX (préféré) ou CSS module co-localisé si complexité l'exige (container queries, pseudo-éléments, animations).
+- Avant d'ajouter une ligne dans `globals.css`, se demander : « est-ce que ce style est utilisé par plus de 3 composants non liés ? » Si non → dans le composant.
+- Avant de modifier un style existant, vérifier si le pattern visuel existe à plusieurs endroits. Si oui, centraliser dans un composant réutilisable d'abord, modifier ensuite.
+
 ---
 
 ## Obligation — documentation de progression

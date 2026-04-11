@@ -8,17 +8,15 @@ import {
   type ConnaissanceSelectionWithIds,
   type HecConnRow,
 } from "@/lib/tae/connaissances-helpers";
-import { cn } from "@/lib/utils/cn";
-import { MILLER_CHOICE_BTN_WRAP, MILLER_COLUMN_LIST_CLASSNAME } from "@/lib/ui/miller-columns";
-import { MillerColumnHead } from "@/components/tae/TaeForm/bloc7/MillerColumnHead";
+import { MillerColumnsLayout } from "@/components/ui/MillerColumnsLayout";
 import { encSous, SOUS_NULL } from "@/components/tae/TaeForm/bloc7/millerConnaissancesEnc";
 
 type Props = {
   rows: HecConnRow[];
   selectedIds: Set<string>;
   onToggle: (row: ConnaissanceSelectionWithIds) => void;
-  /** Réhydratation : aligne les colonnes sur la première connaissance sélectionnée. */
   syncNavigationRowId?: string | null;
+  onReset?: () => void;
 };
 
 function initialHecRealite(rows: HecConnRow[], syncId: string | null): string | null {
@@ -31,8 +29,7 @@ function initialHecRealite(rows: HecConnRow[], syncId: string | null): string | 
 
 function initialHecSection(rows: HecConnRow[], syncId: string | null): string | null {
   if (!syncId) return null;
-  const r = rows.find((x) => x.id === syncId);
-  return r?.section ?? null;
+  return rows.find((x) => x.id === syncId)?.section ?? null;
 }
 
 function initialHecSousPick(rows: HecConnRow[], syncId: string | null): string | null {
@@ -48,6 +45,7 @@ export function MillerConnaissancesHec({
   selectedIds,
   onToggle,
   syncNavigationRowId = null,
+  onReset,
 }: Props) {
   const syncId = syncNavigationRowId ?? null;
   const [realite, setRealite] = useState<string | null>(() => initialHecRealite(rows, syncId));
@@ -63,36 +61,34 @@ export function MillerConnaissancesHec({
     return uniqueInOrder(rows.filter((r) => r.realite_sociale === realite).map((r) => r.section));
   }, [rows, realite]);
 
-  const needsSousSectionColumn = useMemo(() => {
+  const needsSous = useMemo(() => {
     if (!realite || !section) return false;
     return hecBranchNeedsSousColumn(rows, realite, section);
   }, [rows, realite, section]);
 
   const sousKeys = useMemo(() => {
-    if (!realite || !section || !needsSousSectionColumn) return [];
+    if (!realite || !section || !needsSous) return [];
     return uniqueInOrder(
       rows
         .filter((r) => r.realite_sociale === realite && r.section === section)
         .map((r) => encSous(r.sous_section)),
     );
-  }, [rows, realite, section, needsSousSectionColumn]);
+  }, [rows, realite, section, needsSous]);
 
-  const autoResolvedSousKey = useMemo(() => {
-    if (!needsSousSectionColumn || !realite || !section) return null;
-    if (sousKeys.length === 0) return null;
-    if (sousKeys.length === 1) return sousKeys[0]!;
-    return null;
-  }, [needsSousSectionColumn, realite, section, sousKeys]);
+  const autoSousKey = useMemo(() => {
+    if (!needsSous) return null;
+    return sousKeys.length === 1 ? sousKeys[0]! : null;
+  }, [needsSous, sousKeys]);
 
   const sousKey = useMemo(() => {
-    if (autoResolvedSousKey !== null) return autoResolvedSousKey;
+    if (autoSousKey !== null) return autoSousKey;
     if (userSousPick !== null && sousKeys.includes(userSousPick)) return userSousPick;
     return null;
-  }, [autoResolvedSousKey, userSousPick, sousKeys]);
+  }, [autoSousKey, userSousPick, sousKeys]);
 
-  const enoncesRows = useMemo(() => {
+  const enonces = useMemo(() => {
     if (!realite || !section) return [];
-    if (!needsSousSectionColumn) {
+    if (!needsSous) {
       return rows.filter((r) => r.realite_sociale === realite && r.section === section);
     }
     if (sousKey === null) return [];
@@ -103,145 +99,91 @@ export function MillerConnaissancesHec({
         r.section === section &&
         (r.sous_section === null ? SOUS_NULL : r.sous_section) === encSous(sk),
     );
-  }, [rows, realite, section, needsSousSectionColumn, sousKey]);
+  }, [rows, realite, section, needsSous, sousKey]);
 
-  const showEnonces = Boolean(realite && section) && (!needsSousSectionColumn || sousKey !== null);
-
-  const gridColsClass =
-    section && needsSousSectionColumn ? "tae-miller-grid--4" : "tae-miller-grid--3";
+  const showEnonces = Boolean(realite && section) && (!needsSous || sousKey !== null);
+  const colCount = section && needsSous ? 4 : 3;
 
   return (
-    <div className="tae-miller-host w-full min-w-0">
-      <div
-        className={cn(
-          "tae-miller-grid overflow-hidden rounded-xl ring-1 ring-border/50",
-          gridColsClass,
-        )}
-      >
-        <div className="tae-miller-col">
-          <MillerColumnHead label="Réalité sociale" />
-          <ul
-            className={MILLER_COLUMN_LIST_CLASSNAME}
-            role="listbox"
-            aria-label="Réalités sociales"
+    <MillerColumnsLayout
+      columnCount={colCount as 3 | 4}
+      onReset={onReset}
+      resetDisabled={selectedIds.size === 0}
+    >
+      <MillerColumnsLayout.Column label="Réalité sociale" ariaLabel="Réalités sociales">
+        {realites.map((t) => (
+          <MillerColumnsLayout.NavItem
+            key={t}
+            active={realite === t}
+            onClick={() => {
+              setRealite(t);
+              setSection(null);
+              setUserSousPick(null);
+            }}
           >
-            {realites.map((t) => {
-              const sel = realite === t;
-              return (
-                <li key={t} className="mb-1">
-                  <button
-                    type="button"
-                    className={cn(
-                      MILLER_CHOICE_BTN_WRAP,
-                      "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                      sel ? "bg-accent/12 font-semibold text-deep" : "text-steel hover:bg-surface",
-                    )}
-                    onClick={() => {
-                      setRealite(t);
-                      setSection(null);
-                      setUserSousPick(null);
-                    }}
-                  >
-                    {t}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+            {t}
+          </MillerColumnsLayout.NavItem>
+        ))}
+      </MillerColumnsLayout.Column>
 
-        <div className="tae-miller-col">
-          <MillerColumnHead label="Section" />
-          <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Sections">
-            {realite ? (
-              sections.map((s) => {
-                const sel = section === s;
-                return (
-                  <li key={s} className="mb-1">
-                    <button
-                      type="button"
-                      className={cn(
-                        MILLER_CHOICE_BTN_WRAP,
-                        "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                        sel
-                          ? "bg-accent/12 font-semibold text-deep"
-                          : "text-steel hover:bg-surface",
-                      )}
-                      onClick={() => {
-                        setSection(s);
-                        setUserSousPick(null);
-                      }}
-                    >
-                      {s}
-                    </button>
-                  </li>
-                );
-              })
-            ) : (
-              <li className="px-3 py-6 text-left text-sm text-muted">—</li>
-            )}
-          </ul>
-        </div>
+      <MillerColumnsLayout.Column label="Section">
+        {realite ? (
+          sections.map((s) => (
+            <MillerColumnsLayout.NavItem
+              key={s}
+              active={section === s}
+              onClick={() => {
+                setSection(s);
+                setUserSousPick(null);
+              }}
+            >
+              {s}
+            </MillerColumnsLayout.NavItem>
+          ))
+        ) : (
+          <MillerColumnsLayout.EmptyState message="Sélectionnez une réalité sociale" />
+        )}
+      </MillerColumnsLayout.Column>
 
-        {section && needsSousSectionColumn ? (
-          <div className="tae-miller-col">
-            <MillerColumnHead label="Sous-section" />
-            <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Sous-sections">
-              {sousKeys.map((k) => {
-                const sel = sousKey === k;
-                const label = k === SOUS_NULL ? "—" : k;
-                return (
-                  <li key={k} className="mb-1">
-                    <button
-                      type="button"
-                      className={cn(
-                        MILLER_CHOICE_BTN_WRAP,
-                        "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                        sel
-                          ? "bg-accent/12 font-semibold text-deep"
-                          : "text-steel hover:bg-surface",
-                      )}
-                      onClick={() => setUserSousPick(k)}
-                    >
-                      {label}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ) : null}
+      {section && needsSous ? (
+        <MillerColumnsLayout.Column label="Sous-section">
+          {sousKeys.map((k) => (
+            <MillerColumnsLayout.NavItem
+              key={k}
+              active={sousKey === k}
+              onClick={() => setUserSousPick(k)}
+            >
+              {k === SOUS_NULL ? "—" : k}
+            </MillerColumnsLayout.NavItem>
+          ))}
+        </MillerColumnsLayout.Column>
+      ) : null}
 
-        <div className="tae-miller-col">
-          <MillerColumnHead label="Énoncé" />
-          <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Énoncés">
-            {showEnonces ? (
-              enoncesRows.map((r) => {
-                const on = selectedIds.has(r.id);
-                return (
-                  <li key={r.id} className="mb-1">
-                    <button
-                      type="button"
-                      className={cn(
-                        MILLER_CHOICE_BTN_WRAP,
-                        "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                        on
-                          ? "bg-success/15 font-medium text-deep ring-1 ring-inset ring-success/30"
-                          : "text-steel hover:bg-surface",
-                      )}
-                      onClick={() => onToggle({ rowId: r.id, ...hecRowToSelection(r) })}
-                    >
-                      {r.enonce}
-                    </button>
-                  </li>
-                );
-              })
-            ) : (
-              <li className="px-3 py-6 text-left text-sm text-muted">—</li>
-            )}
-          </ul>
-        </div>
-      </div>
-    </div>
+      <MillerColumnsLayout.Column label="Énoncé">
+        {showEnonces ? (
+          enonces.map((r) => (
+            <MillerColumnsLayout.CheckItem
+              key={r.id}
+              checked={selectedIds.has(r.id)}
+              onClick={() => onToggle({ rowId: r.id, ...hecRowToSelection(r) })}
+            >
+              {r.enonce}
+            </MillerColumnsLayout.CheckItem>
+          ))
+        ) : (
+          <MillerColumnsLayout.EmptyState
+            message={
+              !realite
+                ? "Sélectionnez une réalité sociale"
+                : !section
+                  ? "Sélectionnez une section"
+                  : needsSous && !sousKey
+                    ? "Sélectionnez une sous-section"
+                    : "Sélectionnez une section"
+            }
+          />
+        )}
+      </MillerColumnsLayout.Column>
+    </MillerColumnsLayout>
   );
 }

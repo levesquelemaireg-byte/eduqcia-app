@@ -110,7 +110,11 @@
   --color-text-info: var(--color-accent);
   --color-border-info: var(--color-accent);
   /* Toolbar éditeur riche — séparateurs */
-  --color-border-tertiary: color-mix(in srgb, var(--color-muted) 28%, var(--color-border-secondary));
+  --color-border-tertiary: color-mix(
+    in srgb,
+    var(--color-muted) 28%,
+    var(--color-border-secondary)
+  );
 
   /* Frise ligne du temps (TimeLine) — alias explicites pour fond / bordures */
   --color-background-primary: var(--color-panel);
@@ -195,81 +199,6 @@
   background-image: radial-gradient(ellipse 90% 60% at 50% -5%, hsl(0 0% 58%) 0%, transparent 52%);
 }
 
-.tae-miller-host {
-  container-type: inline-size;
-  min-width: 0;
-  max-width: 100%;
-  text-align: left;
-}
-
-.tae-miller-grid {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-@container (min-width: 42rem) {
-  .tae-miller-grid--3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    align-items: start;
-    justify-items: stretch;
-  }
-}
-
-@container (min-width: 52rem) {
-  .tae-miller-grid--4 {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    align-items: start;
-    justify-items: stretch;
-  }
-}
-
-.tae-miller-col {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  min-width: 0;
-  width: 100%;
-  text-align: left;
-  border-bottom: 1px solid var(--color-border);
-}
-
-/*
- * Les <button> ont souvent text-align: center (UA) ; si le navigateur les rend en flex
- * (inline-flex + justify-center), le texte reste centré sans text-align explicite.
- */
-.tae-miller-col button[type="button"] {
-  text-align: left;
-  justify-content: flex-start;
-}
-
-.tae-miller-col:last-child {
-  border-bottom: none;
-}
-
-@container (min-width: 42rem) {
-  .tae-miller-grid--3 > .tae-miller-col {
-    border-bottom: none;
-    border-right: 1px solid var(--color-border);
-  }
-  .tae-miller-grid--3 > .tae-miller-col:last-child {
-    border-right: none;
-  }
-}
-
-@container (min-width: 52rem) {
-  .tae-miller-grid--4 > .tae-miller-col {
-    border-bottom: none;
-    border-right: 1px solid var(--color-border);
-  }
-  .tae-miller-grid--4 > .tae-miller-col:last-child {
-    border-right: none;
-  }
-}
-
 @theme inline {
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 
@@ -292,7 +221,11 @@
   --color-background-info: color-mix(in srgb, var(--color-accent) 15%, var(--color-panel-alt));
   --color-text-info: var(--color-accent);
   --color-border-info: var(--color-accent);
-  --color-border-tertiary: color-mix(in srgb, var(--color-muted) 28%, var(--color-border-secondary));
+  --color-border-tertiary: color-mix(
+    in srgb,
+    var(--color-muted) 28%,
+    var(--color-border-secondary)
+  );
 
   --shadow-sm: 0 1px 3px hsl(220 30% 10% / 0.08);
   --shadow-md: 0 4px 12px hsl(220 30% 10% / 0.12);

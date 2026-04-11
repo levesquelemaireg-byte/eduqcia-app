@@ -1,0 +1,51 @@
+/* Container query host — nécessaire pour les breakpoints par largeur du panneau parent. */
+.host {
+  container-type: inline-size;
+}
+
+/* Grille : flex vertical en mobile, grid horizontal au-dessus du seuil. */
+.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+@container (min-width: 42rem) {
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+@container (min-width: 52rem) {
+  .grid4 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+/* Colonne — séparateurs : border-bottom en mobile, border-right en desktop. */
+.col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--color-panel);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.col:last-child {
+  border-bottom: none;
+}
+
+@container (min-width: 42rem) {
+  .grid3 > .col,
+  .grid4 > .col {
+    border-bottom: none;
+    border-right: 1px solid var(--color-border);
+  }
+  .grid3 > .col:last-child,
+  .grid4 > .col:last-child {
+    border-right: none;
+  }
+}

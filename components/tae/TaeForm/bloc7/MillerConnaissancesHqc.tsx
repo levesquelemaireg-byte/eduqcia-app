@@ -8,9 +8,7 @@ import {
   type ConnaissanceSelectionWithIds,
   type HqcConnRow,
 } from "@/lib/tae/connaissances-helpers";
-import { cn } from "@/lib/utils/cn";
-import { MILLER_CHOICE_BTN_WRAP, MILLER_COLUMN_LIST_CLASSNAME } from "@/lib/ui/miller-columns";
-import { MillerColumnHead } from "@/components/tae/TaeForm/bloc7/MillerColumnHead";
+import { MillerColumnsLayout } from "@/components/ui/MillerColumnsLayout";
 import { encSous, SOUS_NULL } from "@/components/tae/TaeForm/bloc7/millerConnaissancesEnc";
 
 function pairKeyFromParts(periode: string, realite: string): string {
@@ -22,6 +20,7 @@ type Props = {
   selectedIds: Set<string>;
   onToggle: (row: ConnaissanceSelectionWithIds) => void;
   syncNavigationRowId?: string | null;
+  onReset?: () => void;
 };
 
 function findHqcPairIdx(rows: HqcConnRow[], syncId: string | null): number {
@@ -38,8 +37,7 @@ function findHqcPairIdx(rows: HqcConnRow[], syncId: string | null): number {
 
 function initialHqcSection(rows: HqcConnRow[], syncId: string | null): string | null {
   if (!syncId) return null;
-  const r = rows.find((x) => x.id === syncId);
-  return r?.section ?? null;
+  return rows.find((x) => x.id === syncId)?.section ?? null;
 }
 
 function initialHqcSousPick(rows: HqcConnRow[], syncId: string | null): string | null {
@@ -55,6 +53,7 @@ export function MillerConnaissancesHqc({
   selectedIds,
   onToggle,
   syncNavigationRowId = null,
+  onReset,
 }: Props) {
   const syncId = syncNavigationRowId ?? null;
   const pairs = useMemo(() => {
@@ -80,14 +79,13 @@ export function MillerConnaissancesHqc({
     );
   }, [rows, currentPair]);
 
-  const needsSousSectionColumn = useMemo(() => {
+  const needsSous = useMemo(() => {
     if (!currentPair || !section) return false;
-    const [periode, realite] = currentPair;
-    return hqcBranchNeedsSousColumn(rows, periode, realite, section);
+    return hqcBranchNeedsSousColumn(rows, currentPair[0], currentPair[1], section);
   }, [rows, currentPair, section]);
 
   const sousKeys = useMemo(() => {
-    if (!currentPair || !section || !needsSousSectionColumn) return [];
+    if (!currentPair || !section || !needsSous) return [];
     const [periode, realite] = currentPair;
     return uniqueInOrder(
       rows
@@ -96,25 +94,23 @@ export function MillerConnaissancesHqc({
         )
         .map((r) => encSous(r.sous_section)),
     );
-  }, [rows, currentPair, section, needsSousSectionColumn]);
+  }, [rows, currentPair, section, needsSous]);
 
-  const autoResolvedSousKey = useMemo(() => {
-    if (!needsSousSectionColumn || !currentPair || !section) return null;
-    if (sousKeys.length === 0) return null;
-    if (sousKeys.length === 1) return sousKeys[0]!;
-    return null;
-  }, [needsSousSectionColumn, currentPair, section, sousKeys]);
+  const autoSousKey = useMemo(() => {
+    if (!needsSous) return null;
+    return sousKeys.length === 1 ? sousKeys[0]! : null;
+  }, [needsSous, sousKeys]);
 
   const sousKey = useMemo(() => {
-    if (autoResolvedSousKey !== null) return autoResolvedSousKey;
+    if (autoSousKey !== null) return autoSousKey;
     if (userSousPick !== null && sousKeys.includes(userSousPick)) return userSousPick;
     return null;
-  }, [autoResolvedSousKey, userSousPick, sousKeys]);
+  }, [autoSousKey, userSousPick, sousKeys]);
 
-  const enoncesRows = useMemo(() => {
+  const enonces = useMemo(() => {
     if (!currentPair || !section) return [];
     const [periode, realite] = currentPair;
-    if (!needsSousSectionColumn) {
+    if (!needsSous) {
       return rows.filter(
         (r) => r.periode === periode && r.realite_sociale === realite && r.section === section,
       );
@@ -128,147 +124,94 @@ export function MillerConnaissancesHqc({
         r.section === section &&
         (r.sous_section === null ? SOUS_NULL : r.sous_section) === encSous(sk),
     );
-  }, [rows, currentPair, section, needsSousSectionColumn, sousKey]);
+  }, [rows, currentPair, section, needsSous, sousKey]);
 
-  const showEnonces =
-    Boolean(currentPair && section) && (!needsSousSectionColumn || sousKey !== null);
-
-  const gridColsClass =
-    section && needsSousSectionColumn ? "tae-miller-grid--4" : "tae-miller-grid--3";
+  const showEnonces = Boolean(currentPair && section) && (!needsSous || sousKey !== null);
+  const colCount = section && needsSous ? 4 : 3;
 
   return (
-    <div className="tae-miller-host w-full min-w-0">
-      <div
-        className={cn(
-          "tae-miller-grid overflow-hidden rounded-xl ring-1 ring-border/50",
-          gridColsClass,
-        )}
+    <MillerColumnsLayout
+      columnCount={colCount as 3 | 4}
+      onReset={onReset}
+      resetDisabled={selectedIds.size === 0}
+    >
+      <MillerColumnsLayout.Column
+        label="Période et réalité"
+        ariaLabel="Périodes et réalités sociales"
       >
-        <div className="tae-miller-col">
-          <MillerColumnHead label="Période et réalité" />
-          <ul
-            className={MILLER_COLUMN_LIST_CLASSNAME}
-            role="listbox"
-            aria-label="Périodes et réalités sociales"
+        {pairs.map((p, i) => (
+          <MillerColumnsLayout.NavItem
+            key={pairKeyFromParts(p[0], p[1])}
+            active={pairIdx === i}
+            onClick={() => {
+              setPairIdx(i);
+              setSection(null);
+              setUserSousPick(null);
+            }}
           >
-            {pairs.map((p, i) => {
-              const label = `${p[0]} — ${p[1]}`;
-              const sel = pairIdx === i;
-              return (
-                <li key={pairKeyFromParts(p[0], p[1])} className="mb-1">
-                  <button
-                    type="button"
-                    className={cn(
-                      MILLER_CHOICE_BTN_WRAP,
-                      "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                      sel ? "bg-accent/12 font-semibold text-deep" : "text-steel hover:bg-surface",
-                    )}
-                    onClick={() => {
-                      setPairIdx(i);
-                      setSection(null);
-                      setUserSousPick(null);
-                    }}
-                  >
-                    {label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+            {p[0]} — {p[1]}
+          </MillerColumnsLayout.NavItem>
+        ))}
+      </MillerColumnsLayout.Column>
 
-        <div className="tae-miller-col">
-          <MillerColumnHead label="Section" />
-          <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Sections">
-            {currentPair ? (
-              sections.map((s) => {
-                const sel = section === s;
-                return (
-                  <li key={s} className="mb-1">
-                    <button
-                      type="button"
-                      className={cn(
-                        MILLER_CHOICE_BTN_WRAP,
-                        "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                        sel
-                          ? "bg-accent/12 font-semibold text-deep"
-                          : "text-steel hover:bg-surface",
-                      )}
-                      onClick={() => {
-                        setSection(s);
-                        setUserSousPick(null);
-                      }}
-                    >
-                      {s}
-                    </button>
-                  </li>
-                );
-              })
-            ) : (
-              <li className="px-3 py-6 text-left text-sm text-muted">—</li>
-            )}
-          </ul>
-        </div>
+      <MillerColumnsLayout.Column label="Section">
+        {currentPair ? (
+          sections.map((s) => (
+            <MillerColumnsLayout.NavItem
+              key={s}
+              active={section === s}
+              onClick={() => {
+                setSection(s);
+                setUserSousPick(null);
+              }}
+            >
+              {s}
+            </MillerColumnsLayout.NavItem>
+          ))
+        ) : (
+          <MillerColumnsLayout.EmptyState message="Sélectionnez une période" />
+        )}
+      </MillerColumnsLayout.Column>
 
-        {section && needsSousSectionColumn ? (
-          <div className="tae-miller-col">
-            <MillerColumnHead label="Sous-section" />
-            <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Sous-sections">
-              {sousKeys.map((k) => {
-                const sel = sousKey === k;
-                const label = k === SOUS_NULL ? "—" : k;
-                return (
-                  <li key={k} className="mb-1">
-                    <button
-                      type="button"
-                      className={cn(
-                        MILLER_CHOICE_BTN_WRAP,
-                        "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                        sel
-                          ? "bg-accent/12 font-semibold text-deep"
-                          : "text-steel hover:bg-surface",
-                      )}
-                      onClick={() => setUserSousPick(k)}
-                    >
-                      {label}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ) : null}
+      {section && needsSous ? (
+        <MillerColumnsLayout.Column label="Sous-section">
+          {sousKeys.map((k) => (
+            <MillerColumnsLayout.NavItem
+              key={k}
+              active={sousKey === k}
+              onClick={() => setUserSousPick(k)}
+            >
+              {k === SOUS_NULL ? "—" : k}
+            </MillerColumnsLayout.NavItem>
+          ))}
+        </MillerColumnsLayout.Column>
+      ) : null}
 
-        <div className="tae-miller-col">
-          <MillerColumnHead label="Énoncé" />
-          <ul className={MILLER_COLUMN_LIST_CLASSNAME} role="listbox" aria-label="Énoncés">
-            {showEnonces ? (
-              enoncesRows.map((r) => {
-                const on = selectedIds.has(r.id);
-                return (
-                  <li key={r.id} className="mb-1">
-                    <button
-                      type="button"
-                      className={cn(
-                        MILLER_CHOICE_BTN_WRAP,
-                        "w-full rounded-lg px-3 py-2.5 text-sm leading-snug transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                        on
-                          ? "bg-success/15 font-medium text-deep ring-1 ring-inset ring-success/30"
-                          : "text-steel hover:bg-surface",
-                      )}
-                      onClick={() => onToggle({ rowId: r.id, ...hqcRowToSelection(r) })}
-                    >
-                      {r.enonce}
-                    </button>
-                  </li>
-                );
-              })
-            ) : (
-              <li className="px-3 py-6 text-left text-sm text-muted">—</li>
-            )}
-          </ul>
-        </div>
-      </div>
-    </div>
+      <MillerColumnsLayout.Column label="Énoncé">
+        {showEnonces ? (
+          enonces.map((r) => (
+            <MillerColumnsLayout.CheckItem
+              key={r.id}
+              checked={selectedIds.has(r.id)}
+              onClick={() => onToggle({ rowId: r.id, ...hqcRowToSelection(r) })}
+            >
+              {r.enonce}
+            </MillerColumnsLayout.CheckItem>
+          ))
+        ) : (
+          <MillerColumnsLayout.EmptyState
+            message={
+              !currentPair
+                ? "Sélectionnez une période"
+                : !section
+                  ? "Sélectionnez une section"
+                  : needsSous && !sousKey
+                    ? "Sélectionnez une sous-section"
+                    : "Sélectionnez une section"
+            }
+          />
+        )}
+      </MillerColumnsLayout.Column>
+    </MillerColumnsLayout>
   );
 }
