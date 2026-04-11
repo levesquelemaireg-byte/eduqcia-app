@@ -50,9 +50,9 @@ const SECTIONS: Section[] = [
   {
     title: "Création",
     items: [
+      { href: "/documents/new", label: "Créer un document", icon: "add_notes" },
       { href: "/questions/new", label: "Créer une tâche", icon: "post_add" },
       { href: "/evaluations/new", label: "Créer une épreuve", icon: "note_add" },
-      { href: "/documents/new", label: "Créer un document", icon: "add_notes" },
     ],
   },
   {
