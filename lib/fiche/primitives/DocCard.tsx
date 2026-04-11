@@ -5,6 +5,7 @@ import type { DocumentFiche } from "@/lib/types/fiche";
 import type { FicheMode } from "@/lib/fiche/types";
 import { hasFicheContent } from "@/lib/tae/fiche-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 
 type Props = {
@@ -96,7 +97,7 @@ function DocMetaChips({ doc }: { doc: DocumentFiche }) {
   if (chips.length === 0) return null;
 
   return (
-    <div className="mt-1.5 flex flex-wrap gap-1.5">
+    <ChipBar className="mt-1.5 gap-1.5">
       {chips.map((chip) => (
         <span
           key={chip}
@@ -105,7 +106,7 @@ function DocMetaChips({ doc }: { doc: DocumentFiche }) {
           {chip}
         </span>
       ))}
-    </div>
+    </ChipBar>
   );
 }
 

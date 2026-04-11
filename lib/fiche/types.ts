@@ -7,6 +7,7 @@
 import type { ComponentType, ReactNode } from "react";
 import type { OiEntryJson } from "@/lib/types/oi";
 import type { DocumentFiche, CdSelection, ConnaissanceSelection } from "@/lib/types/fiche";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 
 /* ─── Mode de rendu ────────────────────────────────────────────── */
 
@@ -158,6 +159,54 @@ export interface FooterData {
   versionUpdatedAt: string | null;
   /** Sommaire wizard : masquer nb_lignes tant que le comportement n'est pas choisi. */
   hideNbLignesSkeleton: boolean;
+}
+
+/* ─── Types de données par section — fiches document ─────────── */
+
+/**
+ * État d'entrée pour les selectors DOC_FICHE_SECTIONS.
+ * Construit côté serveur à partir de la ligne `documents` + métadonnées jointes.
+ */
+export interface DocFicheData {
+  document: RendererDocument;
+  sourceType: "primaire" | "secondaire";
+  sourceCitation: string;
+  niveauLabels: string;
+  disciplineLabels: string;
+  aspectsStr: string;
+  connLabels: string;
+  authorName: string;
+  created: string;
+  usageCaption: string;
+  isPublished: boolean;
+}
+
+export interface DocHeaderData {
+  titre: string;
+  typeLabel: string;
+  structureLabel: string;
+  sourceTypeLabel: string;
+}
+
+export interface DocContentData {
+  document: RendererDocument;
+}
+
+export interface DocIndexationData {
+  typeLabel: string;
+  sourceTypeLabel: string;
+  sourceCitationHtml: string | null;
+  niveauLabels: string;
+  disciplineLabels: string;
+  aspectsStr: string;
+  connLabels: string;
+}
+
+export interface DocFooterData {
+  authorName: string;
+  created: string;
+  usageCaption: string;
+  isPublished: boolean;
 }
 
 /* ─── NR Content (selector partagé) ────────────────────────────── */

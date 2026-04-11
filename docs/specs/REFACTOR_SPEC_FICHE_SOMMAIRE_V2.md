@@ -1,7 +1,8 @@
 # Spec de refactoring v2 — Système de fiches (Sommaire, Thumbnail, Lecture)
 
-> **Statut** : Validé par 6 agents, corrigé suite à 14 critiques retenues
+> **Statut** : FERMÉ — toutes les phases livrées (1-3, 4.1-4.5, primitives §8, sanitisation §6.1, DOC_FICHE_SECTIONS §11)
 > **Date** : 11 avril 2026
+> **Fermé** : 11 avril 2026
 > **Principe** : Réordonner une section = déplacer une ligne. Ajouter = une entrée + un composant pur.
 
 ---

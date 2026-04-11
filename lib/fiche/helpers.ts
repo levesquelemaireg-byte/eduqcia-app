@@ -6,7 +6,7 @@
  * - resolveDocPlaceholders : remplacement {{doc_A}} → numéros
  */
 
-import DOMPurify from "dompurify";
+import DOMPurify from "isomorphic-dompurify";
 import type { SectionState } from "@/lib/fiche/types";
 
 /* ─── Constructeurs SectionState ───────────────────────────────── */
@@ -26,11 +26,11 @@ export function hidden<T>(): SectionState<T> {
 /* ─── Sanitisation HTML ────────────────────────────────────────── */
 
 /**
- * Sanitise du HTML via DOMPurify. Appelé dans les selectors avant passage au composant.
+ * Sanitise du HTML via DOMPurify (isomorphic — fonctionne client ET serveur).
+ * Appelé dans les selectors avant passage au composant.
  * Les composants (ContentBlock, etc.) ne sanitisent PAS eux-mêmes.
  */
 export function sanitize(html: string): string {
-  if (typeof window === "undefined") return html;
   return DOMPurify.sanitize(html);
 }
 

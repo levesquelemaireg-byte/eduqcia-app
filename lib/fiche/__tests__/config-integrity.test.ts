@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TAE_FICHE_SECTIONS } from "@/lib/fiche/configs/tae-fiche-sections";
 import { TAE_LECTURE_SECTIONS } from "@/lib/fiche/configs/tae-lecture-sections";
+import { DOC_FICHE_SECTIONS } from "@/lib/fiche/configs/doc-fiche-sections";
 import type { FicheMode, StepId } from "@/lib/fiche/types";
 
 const VALID_STEP_IDS: (StepId | null)[] = [
@@ -94,5 +95,46 @@ describe("TAE_LECTURE_SECTIONS (lecture)", () => {
 
   it("has exactly 9 sections", () => {
     expect(TAE_LECTURE_SECTIONS).toHaveLength(9);
+  });
+});
+
+describe("DOC_FICHE_SECTIONS (document)", () => {
+  it("has unique IDs", () => {
+    const ids = DOC_FICHE_SECTIONS.map((s) => s.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("all stepIds are null (no wizard for documents)", () => {
+    for (const section of DOC_FICHE_SECTIONS) {
+      expect(section.stepId).toBeNull();
+    }
+  });
+
+  it("visibleIn contains only valid modes", () => {
+    for (const section of DOC_FICHE_SECTIONS) {
+      if (section.visibleIn) {
+        for (const mode of section.visibleIn) {
+          expect(VALID_MODES).toContain(mode);
+        }
+      }
+    }
+  });
+
+  it("only doc-header visible in thumbnail", () => {
+    const visibleInThumbnail = DOC_FICHE_SECTIONS.filter(
+      (s) => !s.visibleIn || s.visibleIn.includes("thumbnail"),
+    );
+    const ids = visibleInThumbnail.map((s) => s.id);
+    expect(ids).toEqual(["doc-header"]);
+  });
+
+  it("has exactly 4 sections", () => {
+    expect(DOC_FICHE_SECTIONS).toHaveLength(4);
+  });
+
+  it("all IDs are prefixed with 'doc-'", () => {
+    for (const section of DOC_FICHE_SECTIONS) {
+      expect(section.id).toMatch(/^doc-/);
+    }
   });
 });
