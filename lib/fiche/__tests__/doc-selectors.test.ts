@@ -10,6 +10,7 @@ import type { RendererDocument } from "@/lib/types/document-renderer";
 
 const EMPTY_REFS: SelectorRefs = {
   oiList: [],
+  grilles: [],
   previewMeta: { authorFullName: "", draftStartedAtIso: "" },
 };
 

@@ -17,6 +17,7 @@ type Props = {
 
 const EMPTY_REFS: SelectorRefs = {
   oiList: [],
+  grilles: [],
   previewMeta: { authorFullName: "", draftStartedAtIso: "" },
 };
 

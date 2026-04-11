@@ -17,6 +17,7 @@ import {
 
 const EMPTY_REFS: SelectorRefs = {
   oiList: [],
+  grilles: [],
   previewMeta: { authorFullName: "", draftStartedAtIso: "" },
 };
 
@@ -96,12 +97,11 @@ describe("selectLectureHeader", () => {
 });
 
 describe("selectLectureConsigne", () => {
-  it("returns ready with HTML and amorce when consigne has content", () => {
+  it("returns ready with sanitized HTML when consigne has content", () => {
     const result = selectLectureConsigne(makeFiche(), EMPTY_REFS);
     expect(result.status).toBe("ready");
     if (result.status !== "ready") return;
     expect(result.data.html).toContain("Consigne test");
-    expect(result.data.amorce).not.toBeNull(); // has 1 document
   });
 
   it("returns hidden when consigne is empty", () => {
@@ -112,13 +112,6 @@ describe("selectLectureConsigne", () => {
   it("returns hidden when consigne is empty paragraph", () => {
     const result = selectLectureConsigne(makeFiche({ consigne: "<p></p>" }), EMPTY_REFS);
     expect(result.status).toBe("hidden");
-  });
-
-  it("returns null amorce when no documents", () => {
-    const result = selectLectureConsigne(makeFiche({ documents: [] }), EMPTY_REFS);
-    expect(result.status).toBe("ready");
-    if (result.status !== "ready") return;
-    expect(result.data.amorce).toBeNull();
   });
 });
 
@@ -169,11 +162,12 @@ describe("selectLectureCorrige", () => {
 });
 
 describe("selectLectureGrille", () => {
-  it("returns ready when outilEvaluation is set", () => {
+  it("returns ready with outilEvaluationId when outilEvaluation is set", () => {
     const result = selectLectureGrille(makeFiche(), EMPTY_REFS);
     expect(result.status).toBe("ready");
     if (result.status !== "ready") return;
-    expect(result.data.outilEvaluation).toBe("grille-oi1");
+    expect(result.data.outilEvaluationId).toBe("grille-oi1");
+    expect(result.data.entry).toBeNull(); // EMPTY_REFS has no grilles
   });
 
   it("returns hidden when outilEvaluation is null", () => {

@@ -5,7 +5,6 @@ import type { FicheMode } from "@/lib/fiche/types";
 import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
-import { GrilleEvaluationMetaButton } from "@/components/tae/fiche/GrilleEvaluationMetaButton";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
 import { cn } from "@/lib/utils/cn";
 
@@ -61,10 +60,6 @@ export function FicheHeader({ data, mode }: Props) {
         {hasAnyPill ? (
           <ChipBar>
             {showOiPill ? <MetaChip icon="psychology" label={data.oi!.titre} mode={mode} /> : null}
-            <GrilleEvaluationMetaButton
-              visible={showComportementPill}
-              outilEvaluation={data.outilEvaluation}
-            />
             {data.niveau ? <MetaChip icon="school" label={data.niveau} mode={mode} /> : null}
             {data.discipline ? (
               <MetaChip icon="menu_book" label={data.discipline} mode={mode} />

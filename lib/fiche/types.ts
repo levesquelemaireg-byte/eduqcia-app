@@ -6,6 +6,7 @@
 
 import type { ComponentType, ReactNode } from "react";
 import type { OiEntryJson } from "@/lib/types/oi";
+import type { GrilleEntry } from "@/components/tae/TaeForm/bloc2/types";
 import type { DocumentFiche, CdSelection, ConnaissanceSelection } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 
@@ -48,6 +49,7 @@ export type SectionState<T> =
 /** Référentiels passés aux selectors. Stabiliser avec useMemo dans le parent. */
 export interface SelectorRefs {
   oiList: OiEntryJson[];
+  grilles: GrilleEntry[];
   previewMeta: {
     authorFullName: string;
     draftStartedAtIso: string;
@@ -109,17 +111,14 @@ export interface FicheSectionEntry<TState> {
 export interface HeaderData {
   oi: { id: string; titre: string; icone: string } | null;
   comportement: { id: string; enonce: string } | null;
-  outilEvaluation: string | null;
   niveau: string;
   discipline: string;
   aspectsSociete: string[];
 }
 
 export interface ConsigneData {
-  /** HTML prêt à l'affichage — placeholders résolus, sanitisé */
+  /** HTML prêt à l'affichage — placeholders résolus, sanitisé, amorce incluse */
   html: string;
-  /** Amorce documentaire séparée (pour styling distinct par mode) */
-  amorce: string | null;
 }
 
 export interface GuidageData {
@@ -138,7 +137,8 @@ export interface CorrigeData {
 }
 
 export interface GrilleData {
-  outilEvaluation: string;
+  entry: GrilleEntry | null;
+  outilEvaluationId: string;
 }
 
 export interface CompetenceData {

@@ -139,7 +139,7 @@ Le guidage est un étayage méthodologique bref (scaffolding). Il doit être ret
 
 ### 4.4 Aperçu texte (liste « Mes tâches », carte `TaeCard`)
 
-L’amorce documentaire (« Consultez le document A. », et les variantes à deux ou trois documents — même libellé que celui inséré par le wizard) est affichée **en entier** sur la **fiche lecture** (`/questions/[id]`) et dans le **sommaire** du formulaire (aperçu fiche complète).
+L’amorce documentaire (« Consultez le document A. », et les variantes à deux ou trois documents) fait partie intégrante du HTML TipTap de la consigne — elle est insérée par le wizard dans l’éditeur et stockée en base avec le reste de la consigne. Les selectors fiche (`selectConsigne`, `selectLectureConsigne`) n’injectent aucun texte : ils prennent le HTML brut, résolvent les placeholders `{{doc_A}}` → numéros, sanitisent, et retournent. L’amorce s’affiche donc naturellement sur la **fiche lecture** et dans le **sommaire**.
 
 Pour les **miniatures** — ligne de la liste **Mes tâches** (`/questions`), aperçu du brouillon wizard côté serveur dans cette liste, et extrait sur la carte **`TaeCard`** — l’amorce documentaire est **retirée** du texte d’aperçu lorsqu’elle correspond **exactement** au modèle (début de chaîne, après résolution des références document en lettres et suppression du HTML). Objectif : mettre en avant la consigne rédigée par l’enseignant. Si l’enseignant a modifié l’amorce, elle n’est pas retirée.
 

@@ -32,7 +32,6 @@ export function selectHeaderMeta(
   return ready({
     oi: oiEntry ? { id: oiEntry.id, titre: oiEntry.titre, icone: oiEntry.icone } : null,
     comportement: comportement ? { id: comportement.id, enonce: comportement.enonce } : null,
-    outilEvaluation: state.bloc2.outilEvaluation,
     niveau: niveauLabel,
     discipline: disciplineLabel,
     aspectsSociete,

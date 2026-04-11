@@ -3,9 +3,8 @@
  * Much simpler than wizard selectors: data is already resolved, no NR cascade needed.
  */
 
-import { ready, hidden, sanitize } from "@/lib/fiche/helpers";
+import { ready, hidden, sanitize, resolveDocPlaceholders } from "@/lib/fiche/helpers";
 import { hasFicheContent } from "@/lib/tae/fiche-helpers";
-import { buildAmorceDocumentaire } from "@/lib/tae/consigne-helpers";
 import type {
   SectionState,
   HeaderData,
@@ -31,24 +30,23 @@ export function selectLectureHeader(
     comportement: state.comportement
       ? { id: state.comportement.id, enonce: state.comportement.enonce }
       : null,
-    outilEvaluation: state.outilEvaluation,
     niveau: state.niveau.label,
     discipline: state.discipline.label,
     aspectsSociete: state.aspects_societe,
   });
 }
 
-/** Consigne — already resolved HTML (placeholders, NR cascade done at publish). */
+/** Consigne — resolve doc placeholders, sanitize. HTML TipTap contient déjà l'amorce. */
 export function selectLectureConsigne(
   state: TaeFicheData,
   _refs: SelectorRefs,
 ): SectionState<ConsigneData> {
   if (!hasFicheContent(state.consigne)) return hidden();
 
-  return ready({
-    html: sanitize(state.consigne),
-    amorce: state.documents.length > 0 ? buildAmorceDocumentaire(state.documents.length) : null,
-  });
+  const nbDocs = state.documents.length;
+  const resolved = resolveDocPlaceholders(state.consigne, nbDocs);
+
+  return ready({ html: sanitize(resolved) });
 }
 
 /** Guidage — hidden if empty. */
@@ -82,14 +80,15 @@ export function selectLectureCorrige(
   });
 }
 
-/** Grille — hidden if no evaluation tool. */
+/** Grille — hidden if no evaluation tool. Resolve entry from refs. */
 export function selectLectureGrille(
   state: TaeFicheData,
-  _refs: SelectorRefs,
+  refs: SelectorRefs,
 ): SectionState<GrilleData> {
   if (!state.outilEvaluation) return hidden();
 
-  return ready({ outilEvaluation: state.outilEvaluation });
+  const entry = refs.grilles.find((g) => g.id === state.outilEvaluation) ?? null;
+  return ready({ entry, outilEvaluationId: state.outilEvaluation });
 }
 
 /** Compétence disciplinaire — hidden if not set. */

@@ -4,11 +4,12 @@ import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 
 /**
  * Grille d'évaluation — visible seulement si un outil d'évaluation est sélectionné.
- * `visibleIn: ['sommaire', 'lecture']` dans la config.
+ * Résout l'entrée complète depuis refs.grilles pour rendu inline.
  */
-export function selectGrille(state: TaeFormState, _refs: SelectorRefs): SectionState<GrilleData> {
+export function selectGrille(state: TaeFormState, refs: SelectorRefs): SectionState<GrilleData> {
   const outil = state.bloc2.outilEvaluation;
   if (!outil) return hidden();
 
-  return ready({ outilEvaluation: outil });
+  const entry = refs.grilles.find((g) => g.id === outil) ?? null;
+  return ready({ entry, outilEvaluationId: outil });
 }

@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { FicheRenderer } from "@/lib/fiche/FicheRenderer";
 import { TAE_LECTURE_SECTIONS } from "@/lib/fiche/configs/tae-lecture-sections";
 import { TaeCardMenu } from "@/components/tae/fiche/TaeCardMenu";
+import { useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
 import type { TaeFicheData } from "@/lib/types/fiche";
 import type { SelectorRefs } from "@/lib/fiche/types";
 
@@ -22,10 +23,11 @@ const EMPTY_PREVIEW_META: SelectorRefs["previewMeta"] = {
 /** Fiche TAÉ en mode lecture — FicheRenderer + TaeCardMenu. */
 export function FicheLecture({ tae, userId }: Props) {
   const isAuteur = Boolean(userId && tae.auteur_id === userId);
+  const grilles = useGrilles();
 
   const refs = useMemo<SelectorRefs>(
-    () => ({ oiList: EMPTY_OI_LIST, previewMeta: EMPTY_PREVIEW_META }),
-    [],
+    () => ({ oiList: EMPTY_OI_LIST, grilles: grilles ?? [], previewMeta: EMPTY_PREVIEW_META }),
+    [grilles],
   );
 
   return (

@@ -9,6 +9,7 @@ type Props = { data: DocFicheData };
 
 const EMPTY_REFS: SelectorRefs = {
   oiList: [],
+  grilles: [],
   previewMeta: { authorFullName: "", draftStartedAtIso: "" },
 };
 
