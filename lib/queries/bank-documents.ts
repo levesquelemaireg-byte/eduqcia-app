@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
 import type { Database } from "@/lib/types/database";
+import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 
 type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
@@ -24,6 +25,8 @@ export type BankDocumentListRow = {
   categorie_textuelle: string | null;
   niveaux_ids: number[];
   disciplines_ids: number[];
+  /** Nombre d'éléments dans le document. */
+  elementCount: number;
 };
 
 export type BankDocumentFilters = {
@@ -74,15 +77,9 @@ const BANK_DOCUMENTS_SELECT = `
       id,
       titre,
       type,
-      source_citation,
-      source_type,
       created_at,
-      image_url,
-      image_legende,
-      contenu,
       structure,
-      type_iconographique,
-      categorie_textuelle,
+      elements,
       niveaux_ids,
       disciplines_ids
     `;
@@ -101,7 +98,7 @@ function bankDocumentsFilteredQuery(
   const search = filters.search?.trim();
   if (search) {
     const pat = `%${search.replace(/\\/g, "\\\\").replace(/%/g, "\\%").replace(/_/g, "\\_")}%`;
-    q = q.or(`titre.ilike.${pat},source_citation.ilike.${pat}`);
+    q = q.ilike("titre", pat);
   }
   if (filters.disciplineId != null) {
     q = q.contains("disciplines_ids", [filters.disciplineId]);
@@ -112,56 +109,64 @@ function bankDocumentsFilteredQuery(
   if (filters.docType) {
     q = q.eq("type", filters.docType);
   }
-  if (
-    filters.docType !== "textuel" &&
-    filters.iconoCategories &&
-    filters.iconoCategories.length > 0
-  ) {
-    q = q.in("type_iconographique", filters.iconoCategories);
-  }
   return q;
 }
 
-function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
+function mapBankDocumentRows(
+  data: unknown,
+  iconoFilter: DocumentTypeIconoSlug[] | undefined,
+): BankDocumentListRow[] {
   type Raw = {
     id: string;
     titre: string;
     type: string;
-    source_citation: string;
-    source_type: string;
     created_at: string;
-    image_url: string | null;
-    image_legende: string | null;
-    contenu: string | null;
     structure: string;
-    type_iconographique: string | null;
-    categorie_textuelle: string | null;
+    elements: unknown;
     niveaux_ids: number[] | null;
     disciplines_ids: number[] | null;
   };
 
-  return (data as Raw[]).map((row) => ({
-    id: row.id,
-    titre: row.titre,
-    type: (row.type === "iconographique" ? "iconographique" : "textuel") as
-      | "textuel"
-      | "iconographique",
-    source_citation: row.source_citation,
-    source_type: (row.source_type === "primaire" ? "primaire" : "secondaire") as
-      | "primaire"
-      | "secondaire",
-    created_at: row.created_at,
-    image_url: row.image_url,
-    image_legende: row.image_legende,
-    contenu: row.contenu ?? null,
-    structure: (["simple", "perspectives", "deux_temps"].includes(row.structure)
-      ? row.structure
-      : "simple") as "simple" | "perspectives" | "deux_temps",
-    type_iconographique: row.type_iconographique ?? null,
-    categorie_textuelle: row.categorie_textuelle ?? null,
-    niveaux_ids: row.niveaux_ids ?? [],
-    disciplines_ids: row.disciplines_ids ?? [],
-  }));
+  const rows = (data as Raw[]).map((row) => {
+    const rawElements = (Array.isArray(row.elements) ? row.elements : []) as DocumentElementJson[];
+    const firstEl = rawElements[0];
+    const typeIcono = firstEl?.categorie_iconographique ?? null;
+    const categorieTextuelle = firstEl?.categorie_textuelle ?? null;
+    return {
+      id: row.id,
+      titre: row.titre,
+      type: (row.type === "iconographique" ? "iconographique" : "textuel") as
+        | "textuel"
+        | "iconographique",
+      source_citation: firstEl?.source_citation ?? "",
+      source_type: (firstEl?.source_type === "primaire" ? "primaire" : "secondaire") as
+        | "primaire"
+        | "secondaire",
+      created_at: row.created_at,
+      image_url: firstEl?.image_url ?? null,
+      image_legende: firstEl?.image_legende ?? null,
+      contenu: firstEl?.contenu ?? null,
+      structure: (["simple", "perspectives", "deux_temps"].includes(row.structure)
+        ? row.structure
+        : "simple") as "simple" | "perspectives" | "deux_temps",
+      type_iconographique: typeIcono,
+      categorie_textuelle: categorieTextuelle,
+      niveaux_ids: row.niveaux_ids ?? [],
+      disciplines_ids: row.disciplines_ids ?? [],
+      elementCount: rawElements.length,
+    };
+  });
+
+  // Filtrage icono en application (PostgREST ne supporte pas le filtre sur clé JSONB tableau)
+  if (iconoFilter && iconoFilter.length > 0) {
+    const set = new Set<string>(iconoFilter);
+    return rows.filter(
+      (r) =>
+        r.type !== "iconographique" ||
+        (r.type_iconographique != null && set.has(r.type_iconographique)),
+    );
+  }
+  return rows;
 }
 
 /**
@@ -173,14 +178,30 @@ export async function getBankPublishedDocumentsPage(
   page: number,
 ): Promise<{ rows: BankDocumentListRow[]; total: number }> {
   const p = Number.isFinite(page) && page >= 0 ? Math.floor(page) : 0;
-  const from = p * BANK_PAGE_SIZE;
-  const to = from + BANK_PAGE_SIZE - 1;
+  const hasIconoFilter =
+    filters.docType !== "textuel" && filters.iconoCategories && filters.iconoCategories.length > 0;
+
+  // Filtrage icono en JS → sur-fetch pour compenser
+  const pageSize = hasIconoFilter ? BANK_PAGE_SIZE * 3 : BANK_PAGE_SIZE;
+  const from = hasIconoFilter ? 0 : p * BANK_PAGE_SIZE;
+  const to = from + pageSize - 1;
+
   const { data, error, count } = await bankDocumentsFilteredQuery(supabase, filters, "exact").range(
     from,
     to,
   );
   if (error || !data) return { rows: [], total: 0 };
-  return { rows: mapBankDocumentRows(data), total: count ?? 0 };
+
+  const mapped = mapBankDocumentRows(data, hasIconoFilter ? filters.iconoCategories : undefined);
+
+  if (hasIconoFilter) {
+    const start = p * BANK_PAGE_SIZE;
+    return {
+      rows: mapped.slice(start, start + BANK_PAGE_SIZE),
+      total: mapped.length,
+    };
+  }
+  return { rows: mapped, total: count ?? 0 };
 }
 
 /**
@@ -194,28 +215,10 @@ export async function getBankPublishedDocuments(
   const lim = Number.isFinite(limit) && limit > 0 ? Math.min(Math.floor(limit), 200) : 80;
   const { data, error } = await bankDocumentsFilteredQuery(supabase, filters, "none").limit(lim);
   if (error || !data) return [];
-  return mapBankDocumentRows(data);
+  return mapBankDocumentRows(data, filters.iconoCategories);
 }
 
-/** Nombre d’éléments par document (table document_elements). */
-export async function countElementsByDocumentIds(
-  supabase: Client,
-  documentIds: string[],
-): Promise<Map<string, number>> {
-  const map = new Map<string, number>();
-  if (documentIds.length === 0) return map;
-  const { data, error } = await supabase
-    .from("document_elements")
-    .select("document_id")
-    .in("document_id", documentIds);
-  if (error || !data) return map;
-  for (const row of data as { document_id: string }[]) {
-    map.set(row.document_id, (map.get(row.document_id) ?? 0) + 1);
-  }
-  return map;
-}
-
-/** Compteur d’usages TAÉ publiées par document — `docs/FEATURES.md` §5.4. */
+/** Compteur d'usages TAÉ publiées par document — `docs/FEATURES.md` §5.4. */
 export async function countPublishedUsagesByDocumentIds(
   supabase: Client,
   documentIds: string[],

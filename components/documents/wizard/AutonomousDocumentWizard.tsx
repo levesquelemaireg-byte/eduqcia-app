@@ -44,7 +44,6 @@ import {
   DOCUMENT_WIZARD_PREVIEW_HEADING,
   TOAST_DOCUMENT_CREATE_AUTH,
   TOAST_DOCUMENT_CREATE_FAILED,
-  TOAST_DOCUMENT_CREATE_DEGRADED,
   TOAST_DOCUMENT_CREATE_SUCCESS,
   TOAST_DOCUMENT_EDIT_FORBIDDEN,
   TOAST_DOCUMENT_UPDATE_SUCCESS,
@@ -258,11 +257,7 @@ export function AutonomousDocumentWizard({
       return;
     }
     clearDraft();
-    if (r.degraded) {
-      toast.warning(TOAST_DOCUMENT_CREATE_DEGRADED);
-    } else {
-      toast.success(TOAST_DOCUMENT_CREATE_SUCCESS);
-    }
+    toast.success(TOAST_DOCUMENT_CREATE_SUCCESS);
     router.push(`/documents/${r.documentId}`);
     router.refresh();
   };

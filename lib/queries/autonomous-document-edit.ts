@@ -5,6 +5,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
+import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
 import {
   connDataUrlForDiscipline,
@@ -105,41 +106,64 @@ export async function loadAutonomousDocumentForEditForm(
     }
   }
 
-  const typeIcono = parseTypeIconographique(doc.type_iconographique);
-  const categorieTextuelle = parseCategorieTextuelle(doc.categorie_textuelle);
-
-  const docStructure = (doc as { structure?: string }).structure;
   const structure =
-    docStructure === "perspectives"
+    doc.structure === "perspectives"
       ? ("perspectives" as const)
-      : docStructure === "deux_temps"
+      : doc.structure === "deux_temps"
         ? ("deux_temps" as const)
         : ("simple" as const);
 
+  const rawElements = (Array.isArray(doc.elements) ? doc.elements : []) as DocumentElementJson[];
+  const formElements = rawElements.map((el) => ({
+    id: crypto.randomUUID(),
+    type: el.type === "iconographique" ? ("iconographique" as const) : ("textuel" as const),
+    contenu: el.contenu ?? "",
+    image_url: el.image_url ?? "",
+    image_intrinsic_width: undefined,
+    image_intrinsic_height: undefined,
+    source_citation: el.source_citation ?? "",
+    source_type: el.source_type === "primaire" ? ("primaire" as const) : ("secondaire" as const),
+    image_legende: el.image_legende ?? "",
+    image_legende_position:
+      (el.image_legende_position as
+        | "haut_gauche"
+        | "haut_droite"
+        | "bas_gauche"
+        | "bas_droite"
+        | null) ?? null,
+    type_iconographique: parseTypeIconographique(el.categorie_iconographique),
+    categorie_textuelle: parseCategorieTextuelle(el.categorie_textuelle),
+    auteur: el.auteur ?? "",
+    repere_temporel: el.repere_temporel ?? "",
+    sous_titre: el.sous_titre ?? "",
+  }));
+
   return {
     structure,
-    nb_perspectives: undefined,
+    nb_perspectives: structure === "perspectives" ? (formElements.length as 2 | 3) : undefined,
     titre: doc.titre,
-    elements: [
-      {
-        id: crypto.randomUUID(),
-        type: doc.type === "iconographique" ? ("iconographique" as const) : ("textuel" as const),
-        contenu: doc.contenu ?? "",
-        image_url: doc.image_url ?? "",
-        image_intrinsic_width: undefined,
-        image_intrinsic_height: undefined,
-        source_citation: doc.source_citation,
-        source_type:
-          doc.source_type === "primaire" ? ("primaire" as const) : ("secondaire" as const),
-        image_legende: doc.image_legende ?? "",
-        image_legende_position: doc.image_legende_position ?? null,
-        type_iconographique: typeIcono,
-        categorie_textuelle: categorieTextuelle,
-        auteur: "",
-        repere_temporel: "",
-        sous_titre: "",
-      },
-    ],
+    elements:
+      formElements.length > 0
+        ? formElements
+        : [
+            {
+              id: crypto.randomUUID(),
+              type: "textuel" as const,
+              contenu: "",
+              image_url: "",
+              image_intrinsic_width: undefined,
+              image_intrinsic_height: undefined,
+              source_citation: "",
+              source_type: "secondaire" as const,
+              image_legende: "",
+              image_legende_position: null,
+              type_iconographique: null,
+              categorie_textuelle: null,
+              auteur: "",
+              repere_temporel: "",
+              sous_titre: "",
+            },
+          ],
     repere_temporel: doc.repere_temporel ?? "",
     annee_normalisee: doc.annee_normalisee,
     niveau_id: niveauId,

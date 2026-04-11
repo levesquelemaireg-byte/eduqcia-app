@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
+import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import {
   CTA_CREER_UN_DOCUMENT,
@@ -22,7 +23,7 @@ export default async function MesDocumentsPage() {
 
   const { data: rows } = await supabase
     .from("documents")
-    .select("id, titre, type, source_citation, is_published, created_at")
+    .select("id, titre, type, elements, is_published, created_at")
     .eq("auteur_id", user.id)
     .order("created_at", { ascending: false });
 
@@ -57,7 +58,10 @@ export default async function MesDocumentsPage() {
       ) : (
         <ul className="mt-6 divide-y divide-border rounded-2xl border border-border bg-panel shadow-sm">
           {documents.map((doc) => {
-            const sourcePlain = stripHtmlToPlainText(doc.source_citation);
+            const rawEls = (
+              Array.isArray(doc.elements) ? doc.elements : []
+            ) as DocumentElementJson[];
+            const sourcePlain = stripHtmlToPlainText(rawEls[0]?.source_citation ?? "");
             const sourcePreview =
               sourcePlain.length > 120 ? `${sourcePlain.slice(0, 117)}…` : sourcePlain;
             return (

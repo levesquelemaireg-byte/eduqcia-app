@@ -26,6 +26,7 @@ import {
 } from "@/lib/tae/connaissances-match-db-to-json";
 import { initialCdFormSlice, parseCdJsonArray, type CdFormSlice } from "@/lib/tae/cd-helpers";
 import { resolveCdSelectionIdsFromTree } from "@/lib/tae/cd-resolve-json-ids";
+import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tae/document-helpers";
 import {
   initialAspects,
@@ -84,21 +85,18 @@ function slotDataForReuse(doc: {
   id: string;
   titre: string;
   type: string;
-  contenu: string | null;
-  image_url: string | null;
-  source_citation: string;
-  source_type?: string | null;
-  image_legende?: string | null;
-  image_legende_position?: string | null;
+  elements: unknown;
   repere_temporel?: string | null;
   annee_normalisee?: number | null;
 }): DocumentSlotData {
   const base = emptyDocumentSlot();
+  const rawEls = (Array.isArray(doc.elements) ? doc.elements : []) as DocumentElementJson[];
+  const el = rawEls[0];
   const st =
-    doc.source_type === "primaire" || doc.source_type === "secondaire"
-      ? doc.source_type
+    el?.source_type === "primaire" || el?.source_type === "secondaire"
+      ? el.source_type
       : "secondaire";
-  const lp = doc.image_legende_position;
+  const lp = el?.image_legende_position;
   const pos =
     lp === "haut_gauche" || lp === "haut_droite" || lp === "bas_gauche" || lp === "bas_droite"
       ? lp
@@ -108,9 +106,9 @@ function slotDataForReuse(doc: {
     mode: "reuse",
     type: doc.type === "iconographique" ? "iconographique" : "textuel",
     titre: doc.titre,
-    contenu: doc.contenu ?? "",
-    source_citation: doc.source_citation,
-    imageUrl: doc.image_url,
+    contenu: el?.contenu ?? "",
+    source_citation: el?.source_citation ?? "",
+    imageUrl: el?.image_url ?? null,
     source_document_id: doc.id,
     source_version: null,
     update_available: false,
@@ -118,7 +116,7 @@ function slotDataForReuse(doc: {
     reuse_source_citation: "",
     printImpressionScale: 1,
     source_type: st,
-    image_legende: typeof doc.image_legende === "string" ? doc.image_legende : "",
+    image_legende: el?.image_legende ?? "",
     image_legende_position: pos,
     repere_temporel: typeof doc.repere_temporel === "string" ? doc.repere_temporel : "",
     annee_normalisee:
@@ -246,12 +244,7 @@ export async function fetchTaeFormStateForEdit(
       id: string;
       titre: string;
       type: string;
-      contenu: string | null;
-      image_url: string | null;
-      source_citation: string;
-      source_type?: string | null;
-      image_legende?: string | null;
-      image_legende_position?: string | null;
+      elements: unknown;
       repere_temporel?: string | null;
       annee_normalisee?: number | null;
     }
@@ -260,9 +253,7 @@ export async function fetchTaeFormStateForEdit(
   if (docIds.length > 0) {
     const { data: docRows } = await supabase
       .from("documents")
-      .select(
-        "id, titre, type, contenu, image_url, source_citation, source_type, image_legende, image_legende_position, repere_temporel, annee_normalisee",
-      )
+      .select("id, titre, type, elements, repere_temporel, annee_normalisee")
       .in("id", docIds);
     if (Array.isArray(docRows)) {
       for (const d of docRows) {
@@ -270,12 +261,7 @@ export async function fetchTaeFormStateForEdit(
           id: string;
           titre: string;
           type: string;
-          contenu: string | null;
-          image_url: string | null;
-          source_citation: string;
-          source_type?: string | null;
-          image_legende?: string | null;
-          image_legende_position?: string | null;
+          elements: unknown;
           repere_temporel?: string | null;
           annee_normalisee?: number | null;
         };

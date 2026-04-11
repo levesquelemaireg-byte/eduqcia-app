@@ -202,10 +202,11 @@ describe("buildPublishPayload", () => {
     };
     const r = buildPublishPayload("u", state, ctx);
     assertPayload(r);
-    expect(r.documents_new[0].image_url).toBe("https://example.com/x.png");
-    expect(r.documents_new[0].contenu).toBeNull();
+    const el = r.documents_new[0].elements[0];
+    expect(el.image_url).toBe("https://example.com/x.png");
+    expect(el.contenu).toBeNull();
     expect(r.documents_new[0]).not.toHaveProperty("print_impression_scale");
-    expect(r.documents_new[0].source_type).toBe("secondaire");
+    expect(el.source_type).toBe("secondaire");
   });
 
   it("iconographique : print_impression_scale absent du payload (défaut SQL 1)", () => {

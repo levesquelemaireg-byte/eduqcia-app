@@ -23,7 +23,7 @@ export type DocumentFiche = {
   imageLegendePosition: DocumentLegendPosition | null;
   /**
    * Document multi-éléments hydraté (perspectives, deux_temps).
-   * Présent quand `document_elements` contient des lignes pour ce document.
+   * Présent quand le document a une structure multi-éléments (perspectives, deux_temps).
    * `PrintableDocumentCell` utilise ce champ pour rendre les colonnes.
    */
   rendererDocument?: RendererDocument;

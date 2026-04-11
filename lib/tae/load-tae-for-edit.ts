@@ -28,6 +28,7 @@ import {
 } from "@/lib/tae/connaissances-helpers";
 import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
+import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tae/document-helpers";
 import { nonRedactionFromDbColumn } from "@/lib/tae/non-redaction/non-redaction-edit-hydrate";
 import { initialAspects, type AspectSocieteKey } from "@/lib/tae/redaction-helpers";
@@ -140,7 +141,7 @@ export async function loadTaeFormStateForEdit(
     const { data: docRows } = await supabase
       .from("documents")
       .select(
-        "id, titre, type, contenu, image_url, source_citation, source_document_id, source_version, source_type, image_legende, image_legende_position, repere_temporel, annee_normalisee",
+        "id, titre, type, elements, source_document_id, source_version, repere_temporel, annee_normalisee",
       )
       .in("id", docIds);
     const byId = new Map<string, Record<string, unknown>>();
@@ -161,75 +162,74 @@ export async function loadTaeFormStateForEdit(
         documents[slotId] = { ...emptyDocumentSlot(), mode: "idle" };
         continue;
       }
-      const type = d.type === "iconographique" ? "iconographique" : "textuel";
+      const type: "textuel" | "iconographique" =
+        d.type === "iconographique" ? "iconographique" : "textuel";
       const sourceId =
         typeof d.source_document_id === "string" && d.source_document_id.length > 0
           ? d.source_document_id
           : null;
-      const stRaw = d.source_type;
+
+      const rawElements = (Array.isArray(d.elements) ? d.elements : []) as DocumentElementJson[];
+      const firstEl = rawElements[0];
+
+      const stRaw = firstEl?.source_type;
       const sourceType =
         stRaw === "primaire" || stRaw === "secondaire" ? stRaw : ("secondaire" as const);
-      const legendPos = d.image_legende_position;
-      const imageLegendePosition =
+      const legendPos = firstEl?.image_legende_position;
+      const imageLegendePosition:
+        | "haut_gauche"
+        | "haut_droite"
+        | "bas_gauche"
+        | "bas_droite"
+        | null =
         legendPos === "haut_gauche" ||
         legendPos === "haut_droite" ||
         legendPos === "bas_gauche" ||
         legendPos === "bas_droite"
           ? legendPos
           : null;
-      const imageLegende = typeof d.image_legende === "string" ? d.image_legende : "";
+      const imageLegende = firstEl?.image_legende ?? "";
       const repereT = typeof d.repere_temporel === "string" ? d.repere_temporel : "";
       const anneeN =
         typeof d.annee_normalisee === "number" && Number.isFinite(d.annee_normalisee)
           ? Math.trunc(d.annee_normalisee)
           : null;
-      const typeIcono = parseTypeIconographique(d.type_iconographique);
-      const categorieTextuelle = parseCategorieTextuelle(d.categorie_textuelle);
+      const typeIcono = parseTypeIconographique(firstEl?.categorie_iconographique);
+      const categorieTextuelle = parseCategorieTextuelle(firstEl?.categorie_textuelle);
+
+      const baseSlot = {
+        ...emptyDocumentSlot(),
+        type,
+        titre: typeof d.titre === "string" ? d.titre : "",
+        contenu: firstEl?.contenu ?? "",
+        source_citation: firstEl?.source_citation ?? "",
+        imageUrl: firstEl?.image_url ?? null,
+        update_available: false,
+        reuse_author: "",
+        reuse_source_citation: "",
+        printImpressionScale: 1,
+        source_type: sourceType,
+        image_legende: imageLegende,
+        image_legende_position: imageLegendePosition,
+        repere_temporel: repereT,
+        annee_normalisee: anneeN,
+        type_iconographique: typeIcono,
+        categorie_textuelle: categorieTextuelle,
+      };
+
       if (sourceId) {
         documents[slotId] = {
-          ...emptyDocumentSlot(),
+          ...baseSlot,
           mode: "reuse",
-          type,
-          titre: typeof d.titre === "string" ? d.titre : "",
-          contenu: typeof d.contenu === "string" ? d.contenu : "",
-          source_citation: typeof d.source_citation === "string" ? d.source_citation : "",
-          imageUrl: typeof d.image_url === "string" ? d.image_url : null,
           source_document_id: sourceId,
           source_version: typeof d.source_version === "number" ? d.source_version : null,
-          update_available: false,
-          reuse_author: "",
-          reuse_source_citation: "",
-          printImpressionScale: 1,
-          source_type: sourceType,
-          image_legende: imageLegende,
-          image_legende_position: imageLegendePosition,
-          repere_temporel: repereT,
-          annee_normalisee: anneeN,
-          type_iconographique: typeIcono,
-          categorie_textuelle: categorieTextuelle,
         };
       } else {
         documents[slotId] = {
-          ...emptyDocumentSlot(),
+          ...baseSlot,
           mode: "create",
-          type,
-          titre: typeof d.titre === "string" ? d.titre : "",
-          contenu: typeof d.contenu === "string" ? d.contenu : "",
-          source_citation: typeof d.source_citation === "string" ? d.source_citation : "",
-          imageUrl: typeof d.image_url === "string" ? d.image_url : null,
           source_document_id: null,
           source_version: null,
-          update_available: false,
-          reuse_author: "",
-          reuse_source_citation: "",
-          printImpressionScale: 1,
-          source_type: sourceType,
-          image_legende: imageLegende,
-          image_legende_position: imageLegendePosition,
-          repere_temporel: repereT,
-          annee_normalisee: anneeN,
-          type_iconographique: typeIcono,
-          categorie_textuelle: categorieTextuelle,
         };
       }
     }

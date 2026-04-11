@@ -7,10 +7,10 @@ import { resolveConnaissanceSelectionsToIds } from "@/lib/tae/publish-tae-lookup
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import { DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR } from "@/lib/ui/ui-copy";
 import { createClient } from "@/lib/supabase/server";
-import { persistDocumentElements } from "@/lib/actions/persist-document-elements";
+import { buildElementsJsonb } from "@/lib/documents/build-elements-jsonb";
 
 export type CreateAutonomousDocumentResult =
-  | { ok: true; documentId: string; degraded?: boolean }
+  | { ok: true; documentId: string }
   | {
       ok: false;
       code: "auth" | "validation" | "db";
@@ -25,65 +25,6 @@ function aspectsToPgArray(aspects: Record<AspectSocieteKey, boolean>): string[] 
     if (v) out.push(ASPECT_LABEL[k]);
   }
   return out;
-}
-
-/** PostgREST quand la table distante n’a pas encore les colonnes du dépôt (migrations non appliquées). */
-function isSchemaOrMissingColumnMessage(message: string): boolean {
-  return /could not find the .*column|schema cache|column.*does not exist/i.test(message);
-}
-
-type DocumentInsertPayload = Record<string, unknown>;
-
-function omitKeys(row: DocumentInsertPayload, keys: string[]): DocumentInsertPayload {
-  const next = { ...row };
-  for (const k of keys) delete next[k];
-  return next;
-}
-
-/**
- * Tente un insert complet puis retire des champs optionnels si l’erreur indique des colonnes absentes.
- */
-async function insertAutonomousDocumentRow(
-  supabase: Awaited<ReturnType<typeof createClient>>,
-  fullRow: DocumentInsertPayload,
-): Promise<
-  | { ok: true; documentId: string; degraded: boolean }
-  | { ok: false; error: { message: string } | null }
-> {
-  const attempts: DocumentInsertPayload[] = [
-    fullRow,
-    omitKeys(fullRow, ["image_legende", "image_legende_position"]),
-    omitKeys(fullRow, ["image_legende", "image_legende_position", "source_type"]),
-    omitKeys(fullRow, [
-      "image_legende",
-      "image_legende_position",
-      "source_type",
-      "repere_temporel",
-      "annee_normalisee",
-      "type_iconographique",
-      "categorie_textuelle",
-    ]),
-  ];
-
-  let lastMessage = "";
-  for (let i = 0; i < attempts.length; i++) {
-    const { data, error } = await supabase
-      .from("documents")
-      .insert(attempts[i] as never)
-      .select("id")
-      .single();
-
-    if (!error && data?.id) {
-      return { ok: true, documentId: data.id as string, degraded: i > 0 };
-    }
-
-    lastMessage = error?.message ?? "";
-    if (!isSchemaOrMissingColumnMessage(lastMessage)) {
-      return { ok: false, error: error ?? { message: lastMessage } };
-    }
-  }
-
-  return { ok: false, error: { message: lastMessage } };
 }
 
 export async function createAutonomousDocumentAction(
@@ -137,67 +78,37 @@ export async function createAutonomousDocumentAction(
 
   const aspectsPg = aspectsToPgArray(v.aspects);
   const repereTrim = (v.repere_temporel ?? "").trim();
+  const elementsJsonb = buildElementsJsonb(v.elements);
 
-  // Données du premier élément (structure simple pour l'instant)
-  const el = v.elements[0];
-  const legendTrim = el.image_legende?.trim() ?? "";
-  const legendPos =
-    el.type === "iconographique" && legendTrim.length > 0
-      ? (el.image_legende_position ?? null)
-      : null;
+  const { data, error } = await supabase
+    .from("documents")
+    .insert({
+      auteur_id: user.id,
+      titre: v.titre,
+      structure: v.structure,
+      type: v.elements[0].type,
+      elements: elementsJsonb,
+      niveaux_ids: [v.niveau_id],
+      disciplines_ids: [v.discipline_id],
+      connaissances_ids: connIds,
+      aspects_societe: aspectsPg,
+      is_published: true,
+      repere_temporel: repereTrim.length > 0 ? repereTrim : null,
+      annee_normalisee:
+        v.annee_normalisee != null && Number.isFinite(v.annee_normalisee)
+          ? Math.trunc(v.annee_normalisee)
+          : null,
+    } as never)
+    .select("id")
+    .single();
 
-  const typeIcono =
-    el.type === "iconographique" && el.type_iconographique != null ? el.type_iconographique : null;
-
-  const categorieTextuelle =
-    el.type === "textuel" && el.categorie_textuelle != null ? el.categorie_textuelle : null;
-
-  const fullRow: DocumentInsertPayload = {
-    auteur_id: user.id,
-    titre: v.titre,
-    structure: v.structure,
-    type: el.type,
-    contenu: el.type === "textuel" ? (el.contenu ?? "").trim() : null,
-    image_url: el.type === "iconographique" ? (el.image_url ?? "").trim() : null,
-    source_citation: el.source_citation.trim(),
-    source_type: el.source_type,
-    image_legende: legendTrim.length > 0 ? legendTrim : null,
-    image_legende_position: legendPos,
-    niveaux_ids: [v.niveau_id],
-    disciplines_ids: [v.discipline_id],
-    connaissances_ids: connIds,
-    aspects_societe: aspectsPg,
-    is_published: true,
-    repere_temporel: repereTrim.length > 0 ? repereTrim : null,
-    annee_normalisee:
-      v.annee_normalisee != null && Number.isFinite(v.annee_normalisee)
-        ? Math.trunc(v.annee_normalisee)
-        : null,
-    type_iconographique: typeIcono,
-    categorie_textuelle: categorieTextuelle,
-  };
-
-  const inserted = await insertAutonomousDocumentRow(supabase, fullRow);
-
-  if (!inserted.ok) {
+  if (error || !data?.id) {
     return {
       ok: false,
       code: "db",
-      message: inserted.error?.message ?? undefined,
+      message: error?.message ?? undefined,
     };
   }
 
-  // Persister les éléments pour les documents multi-éléments
-  if (v.structure !== "simple" && v.elements.length > 1) {
-    const elResult = await persistDocumentElements(supabase, inserted.documentId, v.elements);
-    if (!elResult.ok) {
-      return { ok: false, code: "db", message: elResult.message };
-    }
-  }
-
-  return {
-    ok: true,
-    documentId: inserted.documentId,
-    degraded: inserted.degraded,
-  };
+  return { ok: true, documentId: data.id as string };
 }

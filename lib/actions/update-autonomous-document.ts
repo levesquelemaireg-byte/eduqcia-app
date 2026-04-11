@@ -7,7 +7,7 @@ import { resolveConnaissanceSelectionsToIds } from "@/lib/tae/publish-tae-lookup
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import { DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR } from "@/lib/ui/ui-copy";
 import { createClient } from "@/lib/supabase/server";
-import { persistDocumentElements } from "@/lib/actions/persist-document-elements";
+import { buildElementsJsonb } from "@/lib/documents/build-elements-jsonb";
 
 export type UpdateAutonomousDocumentResult =
   | { ok: true }
@@ -86,32 +86,15 @@ export async function updateAutonomousDocumentAction(
 
   const aspectsPg = aspectsToPgArray(v.aspects);
   const repereTrim = (v.repere_temporel ?? "").trim();
-
-  const el = v.elements[0];
-  const legendTrim = el.image_legende?.trim() ?? "";
-  const legendPos =
-    el.type === "iconographique" && legendTrim.length > 0
-      ? (el.image_legende_position ?? null)
-      : null;
-
-  const typeIcono =
-    el.type === "iconographique" && el.type_iconographique != null ? el.type_iconographique : null;
-
-  const categorieTextuelle =
-    el.type === "textuel" && el.categorie_textuelle != null ? el.categorie_textuelle : null;
+  const elementsJsonb = buildElementsJsonb(v.elements);
 
   const { error: upErr } = await supabase
     .from("documents")
     .update({
       titre: v.titre,
       structure: v.structure,
-      type: el.type,
-      contenu: el.type === "textuel" ? (el.contenu ?? "").trim() : null,
-      image_url: el.type === "iconographique" ? (el.image_url ?? "").trim() : null,
-      source_citation: el.source_citation.trim(),
-      source_type: el.source_type,
-      image_legende: legendTrim.length > 0 ? legendTrim : null,
-      image_legende_position: legendPos,
+      type: v.elements[0].type,
+      elements: elementsJsonb,
       niveaux_ids: [v.niveau_id],
       disciplines_ids: [v.discipline_id],
       connaissances_ids: connIds,
@@ -121,26 +104,13 @@ export async function updateAutonomousDocumentAction(
         v.annee_normalisee != null && Number.isFinite(v.annee_normalisee)
           ? Math.trunc(v.annee_normalisee)
           : null,
-      type_iconographique: typeIcono,
-      categorie_textuelle: categorieTextuelle,
       updated_at: new Date().toISOString(),
-    })
+    } as never)
     .eq("id", document_id)
     .eq("auteur_id", user.id);
 
   if (upErr) {
     return { ok: false, code: "db", message: upErr.message };
-  }
-
-  // Persister les éléments pour les documents multi-éléments (ou nettoyer si retour à simple)
-  if (v.structure !== "simple" && v.elements.length > 1) {
-    const elResult = await persistDocumentElements(supabase, document_id, v.elements);
-    if (!elResult.ok) {
-      return { ok: false, code: "db", message: elResult.message };
-    }
-  } else {
-    // Structure simple — supprimer les éléments orphelins s'il y en avait
-    await supabase.from("document_elements").delete().eq("document_id", document_id);
   }
 
   return { ok: true };

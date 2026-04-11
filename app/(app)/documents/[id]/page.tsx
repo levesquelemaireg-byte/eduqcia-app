@@ -5,10 +5,7 @@ import { DocumentCardReader } from "@/components/documents/DocumentCardReader";
 import { DocumentFicheRetourLink } from "@/components/documents/DocumentFicheRetourLink";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
 import { createClient } from "@/lib/supabase/server";
-import {
-  countPublishedTaeUsagesForDocument,
-  getDocumentElements,
-} from "@/lib/queries/document-read";
+import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
 import { DOCUMENT_FICHE_EDIT, copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
 
 type PageProps = {
@@ -39,9 +36,8 @@ export default async function DocumentReadPage({ params }: PageProps) {
   const discIds = doc.disciplines_ids ?? [];
   const connIds = doc.connaissances_ids ?? [];
 
-  const [usageCount, elementRows, niveauRows, discRows, connRows, profileRow] = await Promise.all([
+  const [usageCount, niveauRows, discRows, connRows, profileRow] = await Promise.all([
     countPublishedTaeUsagesForDocument(supabase, id),
-    getDocumentElements(supabase, id),
     niveauIds.length
       ? supabase.from("niveaux").select("label").in("id", niveauIds)
       : Promise.resolve({ data: [] as { label: string }[] }),
@@ -70,12 +66,10 @@ export default async function DocumentReadPage({ params }: PageProps) {
       })
     : "";
 
-  const sourceType =
-    doc.source_type === "primaire" || doc.source_type === "secondaire"
-      ? doc.source_type
-      : "secondaire";
-
-  const rendererDoc = hydrateRendererDocument(doc, elementRows);
+  const rendererDoc = hydrateRendererDocument(doc);
+  const firstEl = rendererDoc.elements[0];
+  const sourceType = firstEl?.sourceType ?? "secondaire";
+  const sourceCitation = firstEl?.source ?? "";
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6">
@@ -105,7 +99,7 @@ export default async function DocumentReadPage({ params }: PageProps) {
         document={rendererDoc}
         meta={{
           sourceType,
-          sourceCitation: doc.source_citation,
+          sourceCitation,
           niveauLabels,
           disciplineLabels,
           aspectsStr,

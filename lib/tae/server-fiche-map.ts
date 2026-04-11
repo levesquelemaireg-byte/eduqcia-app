@@ -16,6 +16,7 @@ import { sortAuteursByFamilyName } from "@/lib/tae/auteur-display-sort";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
 import type { Database } from "@/lib/types/database";
+import type { DocumentElementJson } from "@/lib/types/document-element-json";
 
 type TaeRow = {
   id: string;
@@ -132,30 +133,14 @@ export async function fetchTaeFicheBundle(
   const links = docLinksRes.data as { slot: string; document_id: string }[] | null;
   const docIds = links?.map((l) => l.document_id) ?? [];
   type DocRow = Database["public"]["Tables"]["documents"]["Row"];
-  type ElRow = Database["public"]["Tables"]["document_elements"]["Row"];
 
   const docById = new Map<string, DocRow>();
-  const elementsByDocId = new Map<string, ElRow[]>();
 
   if (docIds.length > 0) {
-    const [{ data: docRows }, { data: elRows }] = await Promise.all([
-      supabase.from("documents").select("*").in("id", docIds),
-      supabase
-        .from("document_elements")
-        .select("*")
-        .in("document_id", docIds)
-        .order("position", { ascending: true }),
-    ]);
+    const { data: docRows } = await supabase.from("documents").select("*").in("id", docIds);
     if (Array.isArray(docRows)) {
       for (const d of docRows as DocRow[]) {
         docById.set(d.id, d);
-      }
-    }
-    if (Array.isArray(elRows)) {
-      for (const el of elRows as ElRow[]) {
-        const arr = elementsByDocId.get(el.document_id) ?? [];
-        arr.push(el);
-        elementsByDocId.set(el.document_id, arr);
       }
     }
   }
@@ -164,23 +149,27 @@ export async function fetchTaeFicheBundle(
     for (const l of links) {
       const d = docById.get(l.document_id);
       if (!d) continue;
-      const legendTrim = (d.image_legende ?? "").trim();
-      const legendPos = parseDocumentLegendPosition(d.image_legende_position);
-      const elRows = elementsByDocId.get(l.document_id) ?? [];
-      const isMultiElement = d.structure !== "simple" && elRows.length > 0;
+      const rawElements = (Array.isArray(d.elements) ? d.elements : []) as DocumentElementJson[];
+      const firstEl = rawElements[0];
+      const contenu = firstEl?.contenu ?? "";
+      const sourceCitation = firstEl?.source_citation ?? "";
+      const imageUrl = firstEl?.image_url ?? null;
+      const legendTrim = (firstEl?.image_legende ?? "").trim();
+      const legendPos = parseDocumentLegendPosition(firstEl?.image_legende_position ?? null);
+      const isMultiElement = d.structure !== "simple" && rawElements.length > 1;
       bySlot.set(l.slot, {
         letter: slotLetterFromSlot(l.slot),
         titre: d.titre,
-        contenu: d.contenu ?? "",
-        source_citation: d.source_citation,
+        contenu,
+        source_citation: sourceCitation,
         type: d.type === "iconographique" ? "iconographique" : "textuel",
-        image_url: d.image_url,
+        image_url: imageUrl,
         imagePixelWidth: null,
         imagePixelHeight: null,
         printImpressionScale: 1,
         imageLegende: legendTrim.length > 0 ? legendTrim : null,
         imageLegendePosition: legendTrim.length > 0 && legendPos ? legendPos : null,
-        rendererDocument: isMultiElement ? hydrateRendererDocument(d, elRows) : undefined,
+        rendererDocument: isMultiElement ? hydrateRendererDocument(d) : undefined,
       });
     }
     for (const sid of SLOT_ORDER) {

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  countElementsByDocumentIds,
   getBankPublishedDocumentsPage,
   serializeBankDocumentsQueryForHref,
   type BankDocumentFilters,
@@ -45,8 +44,6 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
   ]);
   const { rows, total } = pageResult;
   const hasMore = (page + 1) * BANK_PAGE_SIZE < total;
-  const docIds = rows.map((r) => r.id);
-  const elementCountMap = await countElementsByDocumentIds(supabase, docIds);
 
   const q = filters.search ?? "";
   const d = filters.disciplineId != null ? String(filters.disciplineId) : "";
@@ -194,7 +191,7 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
                 row.type === "iconographique"
                   ? parseTypeIconographique(row.type_iconographique)
                   : row.categorie_textuelle;
-              const elCount = elementCountMap.get(row.id) ?? 1;
+              const elCount = row.elementCount || 1;
               return (
                 <DocumentCardThumbnail
                   key={row.id}

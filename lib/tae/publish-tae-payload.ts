@@ -2,7 +2,6 @@
  * Payload `publish_tae_transaction` — lecture `TaeFormState` via `bloc1`…`bloc7` uniquement
  * (contrat RPC inchangé : `consigne`, `guidage`, `corrige`, `aspects_societe`, documents, etc.).
  */
-import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import { buildCollaborateursUserIdsForPayload } from "@/lib/tae/collaborateur-user-ids";
 import { getSlotData, isPublicHttpUrl } from "@/lib/tae/document-helpers";
@@ -13,9 +12,6 @@ import {
   migratePerspectivesToSlots,
 } from "@/lib/tae/oi-perspectives/perspectives-helpers";
 import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
-import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
-
-type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 import type { PublishTaeFailureCode, PublishTaeRpcPayload } from "@/lib/tae/publish-tae-types";
 import {
   buildAvantApresConsigneHtml,
@@ -156,10 +152,6 @@ export function buildPublishPayload(
         ? slot.source_type
         : "secondaire";
     const legendTrim = slot.image_legende.trim();
-    const legendPayload =
-      slot.type === "iconographique" && legendTrim.length > 0 && slot.image_legende_position
-        ? { image_legende: legendTrim, image_legende_position: slot.image_legende_position }
-        : {};
     const contenuPublish: string | null = slot.type === "textuel" ? slot.contenu : null;
     const sourceCitationPublish = slot.source_citation.trim();
     const rt = slot.repere_temporel.trim();
@@ -167,30 +159,35 @@ export function buildPublishPayload(
       slot.annee_normalisee != null && Number.isFinite(slot.annee_normalisee)
         ? slot.annee_normalisee
         : null;
-    const typeIconoPayload: { type_iconographique?: DocumentTypeIconoSlug | null } =
-      slot.type === "iconographique" && slot.type_iconographique != null
-        ? { type_iconographique: slot.type_iconographique }
-        : {};
-    const categorieTextuellePayload: { categorie_textuelle?: CategorieTextuelleValue | null } =
-      slot.type === "textuel" && slot.categorie_textuelle != null
-        ? { categorie_textuelle: slot.categorie_textuelle }
-        : {};
-    documentsNew.push({
-      titre: slot.titre.trim(),
+
+    const element: Record<string, unknown> = {
       type: slot.type,
       contenu: contenuPublish,
       image_url: slot.type === "iconographique" ? slot.imageUrl : null,
       source_citation: sourceCitationPublish,
       source_type: st,
-      ...legendPayload,
+    };
+    if (slot.type === "iconographique" && legendTrim.length > 0 && slot.image_legende_position) {
+      element.image_legende = legendTrim;
+      element.image_legende_position = slot.image_legende_position;
+    }
+    if (slot.type === "iconographique" && slot.type_iconographique != null) {
+      element.categorie_iconographique = slot.type_iconographique;
+    }
+    if (slot.type === "textuel" && slot.categorie_textuelle != null) {
+      element.categorie_textuelle = slot.categorie_textuelle;
+    }
+
+    documentsNew.push({
+      titre: slot.titre.trim(),
+      type: slot.type,
+      elements: [element],
       niveaux_ids: [ctx.niveauId],
       disciplines_ids: [ctx.disciplineId],
       aspects_societe: aspectsPg,
       connaissances_ids: ctx.connIds,
       repere_temporel: rt.length > 0 ? rt : null,
       annee_normalisee: annee,
-      ...typeIconoPayload,
-      ...categorieTextuellePayload,
     });
     slots.push({
       slot: slotId,

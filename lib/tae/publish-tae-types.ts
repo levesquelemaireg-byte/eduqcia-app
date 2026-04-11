@@ -1,8 +1,5 @@
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
-import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import type { Json } from "@/lib/types/database";
-
-type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 
 /**
  * Snapshot des champs majeurs d'une TAÉ avant édition.
@@ -72,21 +69,16 @@ export type PublishTaeRpcPayload = {
   documents_new: Array<{
     titre: string;
     type: "textuel" | "iconographique";
-    contenu: string | null;
-    image_url: string | null;
-    source_citation: string;
+    /** Éléments JSONB — 1 pour simple, 2–3 pour perspectives, 2 pour deux_temps. */
+    elements: Record<string, unknown>[];
     niveaux_ids: number[];
     disciplines_ids: number[];
     aspects_societe: string[];
     connaissances_ids: number[];
     /** Présent si `type` = iconographique — facteur 0,5–1 pour la fiche imprimable. */
     print_impression_scale?: number;
-    source_type?: "primaire" | "secondaire";
-    image_legende?: string | null;
-    image_legende_position?: "haut_gauche" | "haut_droite" | "bas_gauche" | "bas_droite" | null;
     repere_temporel?: string | null;
     annee_normalisee?: number | null;
-    type_iconographique?: DocumentTypeIconoSlug | null;
   }>;
   slots: Array<{
     slot: DocumentSlotId;

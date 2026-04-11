@@ -48,6 +48,12 @@ CREATE TYPE doc_type AS ENUM (
   'iconographique'
 );
 
+CREATE TYPE document_structure AS ENUM (
+  'simple',
+  'perspectives',
+  'deux_temps'
+);
+
 CREATE TYPE document_source_type AS ENUM (
   'primaire',
   'secondaire'
@@ -303,20 +309,14 @@ CREATE TABLE documents (
   is_modified        BOOLEAN NOT NULL DEFAULT FALSE,
 
   titre              TEXT NOT NULL,
-  type               doc_type NOT NULL,
-  contenu            TEXT,          -- texte pour type 'textuel'
-  image_url          TEXT,          -- URL Storage pour type 'iconographique'
+  type               doc_type NOT NULL,  -- raccourci du type du premier élément (filtres banque)
+  structure          document_structure NOT NULL DEFAULT 'simple',
+  elements           JSONB NOT NULL DEFAULT '[]',
   -- Facteur non destructif pour la taille des figures iconographiques sur la fiche imprimée (1,0 = défaut CSS).
   print_impression_scale numeric(3,2) NOT NULL DEFAULT 1.00
     CHECK (print_impression_scale >= 0.5 AND print_impression_scale <= 1.00),
-  source_citation    TEXT NOT NULL, -- obligatoire (DOMAIN §5.1)
-  source_type        document_source_type NOT NULL DEFAULT 'secondaire',
-  image_legende      TEXT,
-  image_legende_position document_legend_position,
   repere_temporel    TEXT,
   annee_normalisee   INT,
-  type_iconographique TEXT,
-  categorie_textuelle document_categorie_textuelle,
 
   -- Métadonnées héritées cumulativement depuis les TAÉ parentes (DOMAIN §8.8)
   -- Uniquement sur le master (source_document_id IS NULL)
@@ -334,20 +334,14 @@ CREATE TABLE documents (
 
 COMMENT ON COLUMN documents.print_impression_scale IS
   'Facteur d''échelle non destructif pour les figures iconographiques sur la fiche imprimée ; défaut 1,0 ; pas d''agrandissement au-delà du plafond CSS global.';
-COMMENT ON COLUMN documents.source_type IS
-  'Source primaire ou secondaire — choix obligatoire en UI pour les nouveaux formulaires ; défaut secondaire pour données existantes et inserts RPC tant que le payload n''envoie pas la valeur.';
-COMMENT ON COLUMN documents.image_legende IS
-  'Légende optionnelle (document iconographique) ; max 50 mots — validation application.';
-COMMENT ON COLUMN documents.image_legende_position IS
-  'Coin du bandeau de légende sur l''image ; NULL si pas de légende.';
+COMMENT ON COLUMN documents.structure IS
+  'Structure du document : simple (1 élément), perspectives (2-3 éléments), deux_temps (2 éléments). Défaut simple pour rétrocompatibilité.';
+COMMENT ON COLUMN documents.elements IS
+  'Éléments du document en JSONB. 1 élément pour simple, 2–3 pour perspectives, 2 pour deux_temps. Chaque élément : { type, contenu?, image_url?, source_citation, source_type, categorie_textuelle?, categorie_iconographique?, image_legende?, image_legende_position?, auteur?, repere_temporel?, sous_titre? }.';
 COMMENT ON COLUMN documents.repere_temporel IS
   'Repère temporel (texte libre). Saisie par l''enseignant ; non affiché sur la copie de l'élève.';
 COMMENT ON COLUMN documents.annee_normalisee IS
   'Année normalisée (entier, peut être négatif). Comparaisons parcours non rédactionnels OI1.';
-COMMENT ON COLUMN documents.type_iconographique IS
-  'Sous-type didactique pour documents iconographiques (carte, photographie, etc.) ; recherche banque ; non affiché sur la copie de l'élève.';
-COMMENT ON COLUMN documents.categorie_textuelle IS
-  'Catégorie didactique d''un document textuel (lois, écrits personnels, presse, etc.) ; NULL pour les documents iconographiques. Source produit : public/data/document-categories.json clé "textuelles".';
 
 -- Liaison TAÉ ↔ Documents avec slots doc_A–D (DOMAIN §4.2 ; D = parcours non rédactionnel)
 CREATE TABLE tae_documents (
@@ -1436,16 +1430,10 @@ BEGIN
       source_document_id,
       titre,
       type,
-      contenu,
-      image_url,
+      elements,
       print_impression_scale,
-      source_citation,
-      source_type,
-      image_legende,
-      image_legende_position,
       repere_temporel,
       annee_normalisee,
-      type_iconographique,
       niveaux_ids,
       disciplines_ids,
       aspects_societe,
@@ -1457,8 +1445,7 @@ BEGIN
       NULL,
       v_elem->>'titre',
       (v_elem->>'type')::doc_type,
-      NULLIF(v_elem->>'contenu', ''),
-      NULLIF(v_elem->>'image_url', ''),
+      COALESCE(v_elem->'elements', '[]'::jsonb),
       CASE
         WHEN (v_elem->>'type') = 'iconographique' THEN
           LEAST(
@@ -1470,31 +1457,12 @@ BEGIN
           )
         ELSE 1.0::numeric
       END,
-      v_elem->>'source_citation',
-      CASE
-        WHEN COALESCE(TRIM(v_elem->>'source_type'), '') IN ('primaire', 'secondaire') THEN
-          TRIM(v_elem->>'source_type')::document_source_type
-        ELSE 'secondaire'::document_source_type
-      END,
-      NULLIF(TRIM(COALESCE(v_elem->>'image_legende', '')), ''),
-      CASE
-        WHEN NULLIF(TRIM(COALESCE(v_elem->>'image_legende', '')), '') IS NULL THEN NULL::document_legend_position
-        WHEN TRIM(COALESCE(v_elem->>'image_legende_position', '')) IN (
-          'haut_gauche', 'haut_droite', 'bas_gauche', 'bas_droite'
-        ) THEN TRIM(v_elem->>'image_legende_position')::document_legend_position
-        ELSE NULL::document_legend_position
-      END,
       NULLIF(TRIM(COALESCE(v_elem->>'repere_temporel', '')), ''),
       CASE
         WHEN NOT (v_elem ? 'annee_normalisee') OR jsonb_typeof(v_elem->'annee_normalisee') = 'null' THEN NULL::int
         WHEN TRIM(COALESCE(v_elem->>'annee_normalisee', '')) = '' THEN NULL::int
         WHEN TRIM(v_elem->>'annee_normalisee') ~ '^-?[0-9]+$' THEN TRIM(v_elem->>'annee_normalisee')::int
         ELSE NULL::int
-      END,
-      CASE
-        WHEN (v_elem->>'type') = 'iconographique' THEN
-          NULLIF(TRIM(COALESCE(v_elem->>'type_iconographique', '')), '')
-        ELSE NULL
       END,
       COALESCE(
         ARRAY(SELECT (jsonb_array_elements(v_elem->'niveaux_ids'))::text::int),
@@ -1747,16 +1715,10 @@ BEGIN
       source_document_id,
       titre,
       type,
-      contenu,
-      image_url,
+      elements,
       print_impression_scale,
-      source_citation,
-      source_type,
-      image_legende,
-      image_legende_position,
       repere_temporel,
       annee_normalisee,
-      type_iconographique,
       niveaux_ids,
       disciplines_ids,
       aspects_societe,
@@ -1768,8 +1730,7 @@ BEGIN
       NULL,
       v_elem->>'titre',
       (v_elem->>'type')::doc_type,
-      NULLIF(v_elem->>'contenu', ''),
-      NULLIF(v_elem->>'image_url', ''),
+      COALESCE(v_elem->'elements', '[]'::jsonb),
       CASE
         WHEN (v_elem->>'type') = 'iconographique' THEN
           LEAST(
@@ -1781,31 +1742,12 @@ BEGIN
           )
         ELSE 1.0::numeric
       END,
-      v_elem->>'source_citation',
-      CASE
-        WHEN COALESCE(TRIM(v_elem->>'source_type'), '') IN ('primaire', 'secondaire') THEN
-          TRIM(v_elem->>'source_type')::document_source_type
-        ELSE 'secondaire'::document_source_type
-      END,
-      NULLIF(TRIM(COALESCE(v_elem->>'image_legende', '')), ''),
-      CASE
-        WHEN NULLIF(TRIM(COALESCE(v_elem->>'image_legende', '')), '') IS NULL THEN NULL::document_legend_position
-        WHEN TRIM(COALESCE(v_elem->>'image_legende_position', '')) IN (
-          'haut_gauche', 'haut_droite', 'bas_gauche', 'bas_droite'
-        ) THEN TRIM(v_elem->>'image_legende_position')::document_legend_position
-        ELSE NULL::document_legend_position
-      END,
       NULLIF(TRIM(COALESCE(v_elem->>'repere_temporel', '')), ''),
       CASE
         WHEN NOT (v_elem ? 'annee_normalisee') OR jsonb_typeof(v_elem->'annee_normalisee') = 'null' THEN NULL::int
         WHEN TRIM(COALESCE(v_elem->>'annee_normalisee', '')) = '' THEN NULL::int
         WHEN TRIM(v_elem->>'annee_normalisee') ~ '^-?[0-9]+$' THEN TRIM(v_elem->>'annee_normalisee')::int
         ELSE NULL::int
-      END,
-      CASE
-        WHEN (v_elem->>'type') = 'iconographique' THEN
-          NULLIF(TRIM(COALESCE(v_elem->>'type_iconographique', '')), '')
-        ELSE NULL
       END,
       COALESCE(
         ARRAY(SELECT (jsonb_array_elements(v_elem->'niveaux_ids'))::text::int),
