@@ -134,14 +134,16 @@ describe("buildPublishPayload", () => {
     expect(r.documents_new[0]).toMatchObject({
       titre: "Titre",
       type: "textuel",
-      contenu: "<p>Corps</p>",
-      source_citation: "Source",
-      source_type: "secondaire",
       niveaux_ids: [10],
       disciplines_ids: [20],
       connaissances_ids: [100, 101],
       repere_temporel: null,
       annee_normalisee: null,
+    });
+    expect(r.documents_new[0].elements[0]).toMatchObject({
+      contenu: "<p>Corps</p>",
+      source_citation: "Source",
+      source_type: "secondaire",
     });
     expect(r.slots[0]).toMatchObject({
       slot: "doc_A",
@@ -246,7 +248,7 @@ describe("buildPublishPayload", () => {
     };
     const r = buildPublishPayload("u", state, ctx);
     assertPayload(r);
-    expect(r.documents_new[0]).toMatchObject({
+    expect(r.documents_new[0].elements[0]).toMatchObject({
       source_type: "primaire",
       image_legende: "Légende courte",
       image_legende_position: "bas_droite",

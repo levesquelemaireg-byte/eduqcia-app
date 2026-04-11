@@ -11,11 +11,17 @@ import { autonomousDocumentFormSchema } from "@/lib/schemas/autonomous-document"
  */
 
 const baseTextual = {
+  structure: "simple" as const,
   titre: "Lettre de Wolfe à Pitt 1759",
-  doc_type: "textuel" as const,
-  contenu: "Texte du document.",
-  source_citation: "<p>Archives nationales du Canada, MG18.</p>",
-  source_type: "primaire" as const,
+  elements: [
+    {
+      id: "el-1",
+      type: "textuel" as const,
+      contenu: "Texte du document.",
+      source_citation: "<p>Archives nationales du Canada, MG18.</p>",
+      source_type: "primaire" as const,
+    },
+  ],
   niveau_id: 4,
   discipline_id: 3,
   connaissances_miller: [],
@@ -30,11 +36,17 @@ const baseTextual = {
 };
 
 const baseIconographic = {
+  structure: "simple" as const,
   titre: "Carte de la Nouvelle-France 1755",
-  doc_type: "iconographique" as const,
-  image_url: "https://example.com/carte.jpg",
-  source_citation: "<p>BAnQ, P1000-S15.</p>",
-  source_type: "primaire" as const,
+  elements: [
+    {
+      id: "el-1",
+      type: "iconographique" as const,
+      image_url: "https://example.com/carte.jpg",
+      source_citation: "<p>BAnQ, P1000-S15.</p>",
+      source_type: "primaire" as const,
+    },
+  ],
   niveau_id: 4,
   discipline_id: 3,
   connaissances_miller: [],
@@ -52,7 +64,7 @@ describe("autonomousDocumentFormSchema — règle categorie_textuelle", () => {
   it("accepte un document textuel avec une catégorie textuelle valide", () => {
     const result = autonomousDocumentFormSchema.safeParse({
       ...baseTextual,
-      categorie_textuelle: "ecrits_personnels",
+      elements: [{ ...baseTextual.elements[0], categorie_textuelle: "ecrits_personnels" }],
     });
     expect(result.success).toBe(true);
   });
@@ -60,11 +72,13 @@ describe("autonomousDocumentFormSchema — règle categorie_textuelle", () => {
   it("rejette un document textuel sans catégorie textuelle", () => {
     const result = autonomousDocumentFormSchema.safeParse({
       ...baseTextual,
-      categorie_textuelle: null,
+      elements: [{ ...baseTextual.elements[0], categorie_textuelle: null }],
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path.join(".") === "categorie_textuelle");
+      const issue = result.error.issues.find(
+        (i) => i.path.join(".") === "elements.0.categorie_textuelle",
+      );
       expect(issue).toBeDefined();
       expect(issue?.message).toBe("Sélectionnez une catégorie textuelle.");
     }
@@ -81,41 +95,44 @@ describe("autonomousDocumentFormSchema — règle categorie_textuelle", () => {
   it("accepte un document iconographique sans catégorie textuelle", () => {
     const result = autonomousDocumentFormSchema.safeParse({
       ...baseIconographic,
-      type_iconographique: "carte",
+      elements: [{ ...baseIconographic.elements[0], type_iconographique: "carte" }],
     });
     expect(result.success).toBe(true);
   });
 
-  it("rejette un document iconographique avec une catégorie textuelle non null", () => {
+  it("accepte un document iconographique même avec une catégorie textuelle non null (pas de cross-validation)", () => {
     const result = autonomousDocumentFormSchema.safeParse({
       ...baseIconographic,
-      type_iconographique: "carte",
-      categorie_textuelle: "documents_officiels",
+      elements: [
+        {
+          ...baseIconographic.elements[0],
+          type_iconographique: "carte",
+          categorie_textuelle: "documents_officiels",
+        },
+      ],
     });
-    expect(result.success).toBe(false);
-    if (!result.success) {
-      const issue = result.error.issues.find((i) => i.path.join(".") === "categorie_textuelle");
-      expect(issue).toBeDefined();
-      expect(issue?.message).toBe("Réservé aux documents textuels.");
-    }
+    // La validation croisée type/catégorie n'existe plus au niveau élément —
+    // categorie_textuelle est simplement ignorée pour les éléments iconographiques.
+    expect(result.success).toBe(true);
   });
 
   it("accepte une catégorie textuelle vide string transformée en null pour iconographique", () => {
     const result = autonomousDocumentFormSchema.safeParse({
       ...baseIconographic,
-      type_iconographique: "carte",
-      categorie_textuelle: "",
+      elements: [
+        { ...baseIconographic.elements[0], type_iconographique: "carte", categorie_textuelle: "" },
+      ],
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.categorie_textuelle).toBeNull();
+      expect(result.data.elements[0].categorie_textuelle).toBeNull();
     }
   });
 
   it("transforme la chaîne vide en null pour textuel (mais alors la règle d'obligation se déclenche)", () => {
     const result = autonomousDocumentFormSchema.safeParse({
       ...baseTextual,
-      categorie_textuelle: "",
+      elements: [{ ...baseTextual.elements[0], categorie_textuelle: "" }],
     });
     expect(result.success).toBe(false);
   });
