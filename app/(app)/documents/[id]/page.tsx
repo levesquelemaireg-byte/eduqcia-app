@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentBankCompletionCard } from "@/components/documents/DocumentBankCompletionCard";
-import { DocumentCardReader } from "@/components/documents/DocumentCardReader";
+import { DocumentFicheLecture } from "@/components/documents/DocumentFicheLecture";
 import { DocumentFicheRetourLink } from "@/components/documents/DocumentFicheRetourLink";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
 import { createClient } from "@/lib/supabase/server";
@@ -95,9 +95,9 @@ export default async function DocumentReadPage({ params }: PageProps) {
           }
         />
       ) : null}
-      <DocumentCardReader
-        document={rendererDoc}
-        meta={{
+      <DocumentFicheLecture
+        data={{
+          document: rendererDoc,
           sourceType,
           sourceCitation,
           niveauLabels,
@@ -107,6 +107,7 @@ export default async function DocumentReadPage({ params }: PageProps) {
           authorName,
           created,
           usageCaption: copyDocumentPublishedTaeUsageCount(usageCount),
+          isPublished: doc.is_published ?? false,
         }}
       />
     </div>

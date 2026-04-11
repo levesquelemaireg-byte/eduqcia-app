@@ -18,11 +18,16 @@ type Props = { data: DocHeaderData; mode: FicheMode };
 export function DocFicheHeader({ data, mode }: Props) {
   if (mode === "thumbnail") {
     return (
-      <div className="flex items-center gap-3 px-4 pt-3 pb-2">
-        <IconBadge glyph="article" mode={mode} />
-        <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-deep">{data.titre}</p>
+      <div className="px-4 pt-3 pb-2.5">
+        <div className="flex items-center gap-3">
+          <IconBadge glyph="article" mode={mode} />
+          <p className="line-clamp-2 min-w-0 text-sm font-bold text-deep">{data.titre}</p>
         </div>
+        <ChipBar className="mt-2">
+          <MetaChip icon="category" label={data.typeLabel} mode={mode} />
+          <MetaChip icon="view_column" label={data.structureLabel} mode={mode} />
+          <MetaChip icon="bookmark" label={data.sourceTypeLabel} mode={mode} />
+        </ChipBar>
       </div>
     );
   }

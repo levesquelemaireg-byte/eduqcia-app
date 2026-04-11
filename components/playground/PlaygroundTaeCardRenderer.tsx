@@ -7,7 +7,7 @@ import { MaterialSymbolOiGlyph } from "@/components/ui/MaterialSymbolOiGlyph";
 import { MetaPill } from "@/components/tae/fiche/MetaPill";
 import { FicheFooter } from "@/components/tae/fiche/FicheFooter";
 import { TaeCardMenu } from "@/components/tae/fiche/TaeCardMenu";
-import { TaeCard } from "@/components/tae/TaeCard";
+import { FicheThumbnail } from "@/components/tae/FicheThumbnail";
 import { PlaygroundFragmentWrapper } from "@/components/playground/PlaygroundFragmentWrapper";
 import type { PlaygroundViewMode } from "@/lib/fragment-playground/types";
 
@@ -24,7 +24,7 @@ export function PlaygroundTaeCardRenderer({ tae, viewMode, isolatedFragmentId }:
   if (viewMode === "full") {
     return (
       <PlaygroundFragmentWrapper name="TaeCard">
-        <TaeCard tae={tae} />
+        <FicheThumbnail tae={tae} />
       </PlaygroundFragmentWrapper>
     );
   }
@@ -53,7 +53,9 @@ export function PlaygroundTaeCardRenderer({ tae, viewMode, isolatedFragmentId }:
                 />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-accent">Consigne</p>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-accent">
+                  Consigne
+                </p>
                 <p className="line-clamp-2 text-sm font-medium leading-relaxed text-deep">
                   {previewSnippet}
                 </p>
@@ -84,6 +86,8 @@ export function PlaygroundTaeCardRenderer({ tae, viewMode, isolatedFragmentId }:
   }
 
   return (
-    <p className="text-sm text-zinc-500 dark:text-zinc-400">Fragment inconnu : {isolatedFragmentId}</p>
+    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      Fragment inconnu : {isolatedFragmentId}
+    </p>
   );
 }

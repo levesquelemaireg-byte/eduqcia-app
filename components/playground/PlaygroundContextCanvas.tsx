@@ -1,8 +1,7 @@
 "use client";
 
-import { FicheTache } from "@/components/tae/FicheTache";
 import { FicheLecture } from "@/components/tae/FicheLecture";
-import { TaeCard } from "@/components/tae/TaeCard";
+import { FicheThumbnail } from "@/components/tae/FicheThumbnail";
 import { PrintableFicheFromTaeData } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
 import { PlaygroundFicheRenderer } from "@/components/playground/PlaygroundFicheRenderer";
 import { PlaygroundPrintRenderer } from "@/components/playground/PlaygroundPrintRenderer";
@@ -208,7 +207,7 @@ export function PlaygroundContextCanvas({
                       isolatedFragmentId={isolatedFragmentId}
                     />
                   ) : (
-                    <FicheTache tae={mock} mode="sommaire" />
+                    <FicheLecture tae={mock} />
                   )
                 ) : null}
 
@@ -234,7 +233,7 @@ export function PlaygroundContextCanvas({
                     />
                   ) : (
                     <div className="max-w-xl">
-                      <TaeCard tae={mock} />
+                      <FicheThumbnail tae={mock} />
                     </div>
                   )
                 ) : null}

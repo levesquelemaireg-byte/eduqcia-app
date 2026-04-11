@@ -5,9 +5,13 @@ import {
   type BankDocumentFilters,
 } from "@/lib/queries/bank-documents";
 import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
-import { DocumentCardThumbnail } from "@/components/documents/DocumentCardThumbnail";
+import { DocumentFicheThumbnail } from "@/components/documents/DocumentFicheThumbnail";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
+import type { DocFicheData } from "@/lib/fiche/types";
+import type { DocumentElement } from "@/lib/types/document-renderer";
+import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
+import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
 import {
   BANK_DOCUMENT_FILTER_RESET,
@@ -185,28 +189,14 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
         </p>
       ) : (
         <>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-            {rows.map((row) => {
-              const categorieId =
-                row.type === "iconographique"
-                  ? parseTypeIconographique(row.type_iconographique)
-                  : row.categorie_textuelle;
-              const elCount = row.elementCount || 1;
-              return (
-                <DocumentCardThumbnail
-                  key={row.id}
-                  id={row.id}
-                  titre={row.titre}
-                  type={row.type}
-                  sourceType={row.source_type}
-                  structure={row.structure}
-                  elementCount={elCount}
-                  contenuHtml={row.contenu}
-                  imageUrl={row.image_url}
-                  categorieId={categorieId}
-                />
-              );
-            })}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {rows.map((row) => (
+              <DocumentFicheThumbnail
+                key={row.id}
+                href={`/documents/${row.id}`}
+                data={bankRowToDocFicheData(row)}
+              />
+            ))}
           </div>
           {hasMore ? (
             <div className="flex justify-center">
@@ -225,4 +215,61 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
       )}
     </div>
   );
+}
+
+/** Construit un DocFicheData minimal pour le thumbnail depuis une ligne de la banque. */
+function bankRowToDocFicheData(row: {
+  id: string;
+  titre: string;
+  type: "textuel" | "iconographique";
+  source_type: "primaire" | "secondaire";
+  structure: "simple" | "perspectives" | "deux_temps";
+  elementCount: number | null;
+  contenu: string | null;
+  image_url: string | null;
+  type_iconographique: string | null;
+  categorie_textuelle: string | null;
+}): DocFicheData {
+  const elCount = row.elementCount || 1;
+
+  const mainElement: DocumentElement =
+    row.type === "textuel"
+      ? {
+          id: "el-1",
+          type: "textuel",
+          contenu: row.contenu || "",
+          source: "",
+          sourceType: row.source_type,
+          categorieTextuelle: (row.categorie_textuelle ||
+            "documents_officiels") as CategorieTextuelleValue,
+        }
+      : {
+          id: "el-1",
+          type: "iconographique",
+          imageUrl: row.image_url || "",
+          source: "",
+          sourceType: row.source_type,
+          categorieIconographique: (parseTypeIconographique(row.type_iconographique) ||
+            "carte") as DocumentCategorieIconographiqueId,
+        };
+
+  // Dupliquer l'élément pour que elements.length reflète la structure réelle
+  const elements: DocumentElement[] = [mainElement];
+  for (let i = 1; i < elCount; i++) {
+    elements.push({ ...mainElement, id: `el-${i + 1}` });
+  }
+
+  return {
+    document: { id: row.id, titre: row.titre, structure: row.structure, elements },
+    sourceType: row.source_type,
+    sourceCitation: "",
+    niveauLabels: "",
+    disciplineLabels: "",
+    aspectsStr: "",
+    connLabels: "",
+    authorName: "",
+    created: "",
+    usageCaption: "",
+    isPublished: true,
+  };
 }
