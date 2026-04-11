@@ -4,12 +4,23 @@ import type { FooterData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { formatFicheDate } from "@/lib/tae/fiche-helpers";
 import { SkeletonFooterNbLignes } from "@/components/tae/fiche/FicheSkeletons";
+import { MetaRow } from "@/lib/fiche/primitives/MetaRow";
+import type { MetaRowItem } from "@/lib/fiche/primitives/MetaRow";
 
 type Props = { data: FooterData; mode: FicheMode };
 
 /** Pied de fiche — auteurs, date, nb lignes, statut publication, version. */
 export function FicheFooter({ data, mode: _mode }: Props) {
   const auteurs = data.auteurs.map((a) => a.full_name).join(" · ");
+
+  const items: MetaRowItem[] = [
+    { icon: "person", label: auteurs || "—" },
+    { icon: "calendar_today", label: formatFicheDate(data.createdAt) },
+  ];
+
+  if (data.showStudentAnswerLines && !data.hideNbLignesSkeleton) {
+    items.push({ icon: "format_line_spacing", label: `${data.nbLignes} lignes` });
+  }
 
   return (
     <footer className="border-t border-border text-xs text-muted">
@@ -18,42 +29,18 @@ export function FicheFooter({ data, mode: _mode }: Props) {
           Version {data.version} — mise à jour majeure le {formatFicheDate(data.versionUpdatedAt)}
         </p>
       ) : null}
-      <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-3">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-              person
-            </span>
-            {auteurs || "—"}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-              calendar_today
-            </span>
-            {formatFicheDate(data.createdAt)}
-          </span>
-          {!data.showStudentAnswerLines ? null : data.hideNbLignesSkeleton ? (
-            <SkeletonFooterNbLignes />
-          ) : (
-            <span className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                format_line_spacing
-              </span>
-              {data.nbLignes} lignes
-            </span>
-          )}
-        </div>
-
-        <span
-          className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-            data.isPublished ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
-          }`}
+      <div className="px-5 py-3">
+        <MetaRow
+          items={items}
+          badge={{
+            label: data.isPublished ? "Publiée" : "Brouillon",
+            variant: data.isPublished ? "published" : "draft",
+          }}
         >
-          <span
-            className={`h-1.5 w-1.5 rounded-full ${data.isPublished ? "bg-success" : "bg-warning"}`}
-          />
-          {data.isPublished ? "Publiée" : "Brouillon"}
-        </span>
+          {data.showStudentAnswerLines && data.hideNbLignesSkeleton ? (
+            <SkeletonFooterNbLignes />
+          ) : null}
+        </MetaRow>
       </div>
     </footer>
   );
