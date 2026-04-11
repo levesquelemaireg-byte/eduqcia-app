@@ -22,7 +22,10 @@ export function InlineWarning({ children, icon = "info", className }: Props) {
       className={`flex items-start gap-1.5 text-xs leading-relaxed text-warning ${className ?? ""}`}
       role="status"
     >
-      <span className="material-symbols-outlined mt-0.5 shrink-0 text-[14px]" aria-hidden="true">
+      <span
+        className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none"
+        aria-hidden="true"
+      >
         {icon}
       </span>
       {children}

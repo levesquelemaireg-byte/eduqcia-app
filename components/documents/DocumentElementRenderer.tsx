@@ -10,13 +10,20 @@ type Props = {
   showAuteur?: boolean;
   /** Afficher le repère temporel en en-tête (deux_temps). */
   showRepereTemporel?: boolean;
+  /** Masquer la source (rendue séparément hors cadre en mode print). */
+  hideSource?: boolean;
 };
 
 /**
  * Rendu d'un élément de document (textuel ou iconographique).
  * Sous-composant de `DocumentCard` — pas de logique de structure ici.
  */
-export function DocumentElementRenderer({ element, showAuteur, showRepereTemporel }: Props) {
+export function DocumentElementRenderer({
+  element,
+  showAuteur,
+  showRepereTemporel,
+  hideSource,
+}: Props) {
   return (
     <div className="flex min-w-0 flex-col">
       {showRepereTemporel && element.repereTemporel ? (
@@ -57,17 +64,14 @@ export function DocumentElementRenderer({ element, showAuteur, showRepereTempore
         </p>
       ) : null}
 
-      <div className={styles.documentSource}>
-        <div className={styles.documentSourceRow}>
-          <span className={styles.documentSourceLabel}>Source : </span>
-          <span
-            className={`${styles.documentSourceValue} ${styles.htmlFlow}`}
-            dangerouslySetInnerHTML={{
-              __html: sourceCitationDisplayHtml(element.source),
-            }}
-          />
-        </div>
-      </div>
+      {!hideSource ? (
+        <div
+          className={`${styles.documentSource} ${styles.htmlFlow} ${styles.documentSourceValue}`}
+          dangerouslySetInnerHTML={{
+            __html: sourceCitationDisplayHtml(element.source),
+          }}
+        />
+      ) : null}
     </div>
   );
 }

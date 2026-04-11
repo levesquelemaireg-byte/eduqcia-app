@@ -7,4 +7,6 @@ export type PreviewMode = {
   /** Tooltip ou texte d'aide. */
   description?: string;
   disabled?: boolean;
+  /** Sous-modes optionnels (ex. Dossier documentaire / Questionnaire). */
+  subModes?: PreviewMode[];
 };

@@ -7,6 +7,7 @@ import { resolveConnaissanceSelectionsToIds } from "@/lib/tae/publish-tae-lookup
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import { DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR } from "@/lib/ui/ui-copy";
 import { createClient } from "@/lib/supabase/server";
+import { persistDocumentElements } from "@/lib/actions/persist-document-elements";
 
 export type CreateAutonomousDocumentResult =
   | { ok: true; documentId: string; degraded?: boolean }
@@ -154,6 +155,7 @@ export async function createAutonomousDocumentAction(
   const fullRow: DocumentInsertPayload = {
     auteur_id: user.id,
     titre: v.titre,
+    structure: v.structure,
     type: el.type,
     contenu: el.type === "textuel" ? (el.contenu ?? "").trim() : null,
     image_url: el.type === "iconographique" ? (el.image_url ?? "").trim() : null,
@@ -183,6 +185,14 @@ export async function createAutonomousDocumentAction(
       code: "db",
       message: inserted.error?.message ?? undefined,
     };
+  }
+
+  // Persister les éléments pour les documents multi-éléments
+  if (v.structure !== "simple" && v.elements.length > 1) {
+    const elResult = await persistDocumentElements(supabase, inserted.documentId, v.elements);
+    if (!elResult.ok) {
+      return { ok: false, code: "db", message: elResult.message };
+    }
   }
 
   return {

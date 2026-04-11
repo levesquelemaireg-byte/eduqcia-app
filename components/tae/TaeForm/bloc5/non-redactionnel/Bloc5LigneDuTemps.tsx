@@ -182,7 +182,7 @@ export default function Bloc5LigneDuTemps(_props: Bloc5Props) {
           role="status"
         >
           <span
-            className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-success"
+            className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-success"
             aria-hidden
           >
             check_circle

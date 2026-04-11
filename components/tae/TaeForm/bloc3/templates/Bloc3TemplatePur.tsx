@@ -10,7 +10,10 @@
  * Spec : docs/SPEC-TEMPLATES-CONSIGNE.md § OI3 · 3.5, § OI6 · 6.3
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BLOC3_MODAL_GUIDAGE_BODY, BLOC3_MODAL_GUIDAGE_TITLE } from "@/components/tae/TaeForm/bloc3/modalCopy";
+import {
+  BLOC3_MODAL_GUIDAGE_BODY,
+  BLOC3_MODAL_GUIDAGE_TITLE,
+} from "@/components/tae/TaeForm/bloc3/modalCopy";
 import { SectionConsigne } from "@/components/tae/TaeForm/bloc3/SectionConsigne";
 import { SectionGuidage } from "@/components/tae/TaeForm/bloc3/SectionGuidage";
 import { buildAmorceDocumentaire } from "@/lib/tae/consigne-helpers";
@@ -157,10 +160,16 @@ function VarianteTriple({
           required
           options={[
             { value: "acteurs", label: PERSP_BLOC3_TYPE_ACTEURS, description: "Source primaire" },
-            { value: "historiens", label: PERSP_BLOC3_TYPE_HISTORIENS, description: "Source secondaire" },
+            {
+              value: "historiens",
+              label: PERSP_BLOC3_TYPE_HISTORIENS,
+              description: "Source secondaire",
+            },
           ]}
           value={typePerspectives}
-          onChange={(v) => dispatch({ type: "SET_PERSPECTIVES_TYPE", value: v as "acteurs" | "historiens" })}
+          onChange={(v) =>
+            dispatch({ type: "SET_PERSPECTIVES_TYPE", value: v as "acteurs" | "historiens" })
+          }
         />
 
         <div className="space-y-1">
@@ -188,10 +197,22 @@ function VarianteTriple({
         onInfoClick={() => setModalGuidage(true)}
       />
 
-      <SimpleModal open={modalConsigne} title={BLOC3_MODAL_CONSIGNE_35_TITLE} onClose={() => setModalConsigne(false)} titleStyle="info-help">
-        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">{BLOC3_MODAL_CONSIGNE_35_BODY}</p>
+      <SimpleModal
+        open={modalConsigne}
+        title={BLOC3_MODAL_CONSIGNE_35_TITLE}
+        onClose={() => setModalConsigne(false)}
+        titleStyle="info-help"
+      >
+        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">
+          {BLOC3_MODAL_CONSIGNE_35_BODY}
+        </p>
       </SimpleModal>
-      <SimpleModal open={modalGuidage} title={BLOC3_MODAL_GUIDAGE_TITLE} onClose={() => setModalGuidage(false)} titleStyle="info-help">
+      <SimpleModal
+        open={modalGuidage}
+        title={BLOC3_MODAL_GUIDAGE_TITLE}
+        onClose={() => setModalGuidage(false)}
+        titleStyle="info-help"
+      >
         <p className="text-sm leading-relaxed text-deep">{BLOC3_MODAL_GUIDAGE_BODY}</p>
       </SimpleModal>
     </div>
@@ -288,10 +309,22 @@ function VarianteOi6({
         onInfoClick={() => setModalGuidage(true)}
       />
 
-      <SimpleModal open={modalConsigne} title={BLOC3_MODAL_CONSIGNE_63_TITLE} onClose={() => setModalConsigne(false)} titleStyle="info-help">
-        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">{BLOC3_MODAL_CONSIGNE_63_BODY}</p>
+      <SimpleModal
+        open={modalConsigne}
+        title={BLOC3_MODAL_CONSIGNE_63_TITLE}
+        onClose={() => setModalConsigne(false)}
+        titleStyle="info-help"
+      >
+        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">
+          {BLOC3_MODAL_CONSIGNE_63_BODY}
+        </p>
       </SimpleModal>
-      <SimpleModal open={modalGuidage} title={BLOC3_MODAL_GUIDAGE_TITLE} onClose={() => setModalGuidage(false)} titleStyle="info-help">
+      <SimpleModal
+        open={modalGuidage}
+        title={BLOC3_MODAL_GUIDAGE_TITLE}
+        onClose={() => setModalGuidage(false)}
+        titleStyle="info-help"
+      >
         <p className="text-sm leading-relaxed text-deep">{BLOC3_MODAL_GUIDAGE_BODY}</p>
       </SimpleModal>
     </div>
@@ -401,11 +434,26 @@ function VarianteOi7({
             </div>
 
             {/* Éléments 1, 2, 3 */}
-            {([
-              { key: "SET_OI7_ELEMENT_1" as const, value: el1, n: 1, ph: BLOC3_OI7_ELEMENT_PLACEHOLDER_1 },
-              { key: "SET_OI7_ELEMENT_2" as const, value: el2, n: 2, ph: BLOC3_OI7_ELEMENT_PLACEHOLDER_2 },
-              { key: "SET_OI7_ELEMENT_3" as const, value: el3, n: 3, ph: BLOC3_OI7_ELEMENT_PLACEHOLDER_3 },
-            ]).map(({ key, value, n, ph }) => (
+            {[
+              {
+                key: "SET_OI7_ELEMENT_1" as const,
+                value: el1,
+                n: 1,
+                ph: BLOC3_OI7_ELEMENT_PLACEHOLDER_1,
+              },
+              {
+                key: "SET_OI7_ELEMENT_2" as const,
+                value: el2,
+                n: 2,
+                ph: BLOC3_OI7_ELEMENT_PLACEHOLDER_2,
+              },
+              {
+                key: "SET_OI7_ELEMENT_3" as const,
+                value: el3,
+                n: 3,
+                ph: BLOC3_OI7_ELEMENT_PLACEHOLDER_3,
+              },
+            ].map(({ key, value, n, ph }) => (
               <div key={n} className="space-y-1">
                 <label htmlFor={`oi7-el-${n}`} className="text-sm font-medium text-deep">
                   {BLOC3_OI7_ELEMENT_LABEL} {n} <RequiredMark />
@@ -429,8 +477,11 @@ function VarianteOi7({
         {/* Gabarit ou consigne libre */}
         <div className="rounded-md border border-border bg-panel">
           <div className="flex items-center justify-between gap-2 px-4 py-2.5">
-            <div className="flex items-center gap-1.5 text-xs text-muted">
-              <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
+            <div className="inline-flex items-center gap-[0.35em] text-xs text-muted">
+              <span
+                className="material-symbols-outlined text-[1em] leading-none"
+                aria-hidden="true"
+              >
                 {isGabarit ? "settings" : "edit"}
               </span>
               {isGabarit ? BLOC3_GABARIT_LABEL : BLOC3_CONSIGNE_LIBRE_LABEL}
@@ -438,9 +489,12 @@ function VarianteOi7({
             <button
               type="button"
               onClick={handleToggleMode}
-              className="inline-flex items-center gap-1 text-xs font-medium text-accent hover:underline"
+              className="inline-flex items-center gap-[0.35em] text-xs font-medium text-accent hover:underline"
             >
-              <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
+              <span
+                className="material-symbols-outlined text-[1em] leading-none"
+                aria-hidden="true"
+              >
                 {isGabarit ? "lock_open" : "lock"}
               </span>
               {isGabarit ? BLOC3_REDIGER_LIBREMENT : BLOC3_REVENIR_GABARIT}
@@ -450,17 +504,24 @@ function VarianteOi7({
             {isGabarit ? (
               <div className="text-sm leading-relaxed text-deep">
                 <p>
-                  <span className="text-muted">{amorce}</span>
-                  {" "}Expliquez comment{" "}
-                  <span className="pill-field">{enjeuGlobal.trim() || "[réalité historique]"}</span>.
+                  <span className="text-muted">{amorce}</span> Expliquez comment{" "}
+                  <span className="pill-field">{enjeuGlobal.trim() || "[réalité historique]"}</span>
+                  .
                 </p>
                 <p className="mt-2">
-                  Pour répondre à la question, précisez les éléments ci-dessous et liez-les entre eux.
+                  Pour répondre à la question, précisez les éléments ci-dessous et liez-les entre
+                  eux.
                 </p>
                 <ul className="mt-1 list-inside list-disc space-y-0.5 pl-1">
-                  <li><span className="pill-field">{el1.trim() || "[Élément 1]"}</span></li>
-                  <li><span className="pill-field">{el2.trim() || "[Élément 2]"}</span></li>
-                  <li><span className="pill-field">{el3.trim() || "[Élément 3]"}</span></li>
+                  <li>
+                    <span className="pill-field">{el1.trim() || "[Élément 1]"}</span>
+                  </li>
+                  <li>
+                    <span className="pill-field">{el2.trim() || "[Élément 2]"}</span>
+                  </li>
+                  <li>
+                    <span className="pill-field">{el3.trim() || "[Élément 3]"}</span>
+                  </li>
                 </ul>
               </div>
             ) : (
@@ -481,10 +542,22 @@ function VarianteOi7({
         onInfoClick={() => setModalGuidage(true)}
       />
 
-      <SimpleModal open={modalConsigne} title={BLOC3_MODAL_CONSIGNE_71_TITLE} onClose={() => setModalConsigne(false)} titleStyle="info-help">
-        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">{BLOC3_MODAL_CONSIGNE_71_BODY}</p>
+      <SimpleModal
+        open={modalConsigne}
+        title={BLOC3_MODAL_CONSIGNE_71_TITLE}
+        onClose={() => setModalConsigne(false)}
+        titleStyle="info-help"
+      >
+        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">
+          {BLOC3_MODAL_CONSIGNE_71_BODY}
+        </p>
       </SimpleModal>
-      <SimpleModal open={modalGuidage} title={BLOC3_MODAL_GUIDAGE_TITLE} onClose={() => setModalGuidage(false)} titleStyle="info-help">
+      <SimpleModal
+        open={modalGuidage}
+        title={BLOC3_MODAL_GUIDAGE_TITLE}
+        onClose={() => setModalGuidage(false)}
+        titleStyle="info-help"
+      >
         <p className="text-sm leading-relaxed text-deep">{BLOC3_MODAL_GUIDAGE_BODY}</p>
       </SimpleModal>
     </div>

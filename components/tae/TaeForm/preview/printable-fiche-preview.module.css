@@ -109,19 +109,66 @@
   color: var(--color-deep);
 }
 
+/*
+ * Document imprimable — 3 zones empilées verticalement :
+ * 1. `.documentHeader` — ligne titre (badge numéro + titre), hors cadre
+ * 2. `.documentCell` — cadre bordé (contenu + auteur)
+ * 3. `.documentSource` — source bibliographique, hors cadre, texte libre 9pt
+ *
+ * Le badge numéro chevauche le haut du cadre via un margin-bottom négatif,
+ * créant la jonction visuelle entre la ligne titre et la boîte bordée.
+ */
+
+/* Wrapper qui regroupe les 3 zones — ne pas fragmenter sur deux pages. */
+.documentWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* Zone 1 : ligne titre (badge + titre) — au-dessus du cadre, sans bordure. */
+.documentHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  /* Espace entre la ligne titre et le cadre bordé. */
+  margin-bottom: 3px;
+  position: relative;
+  z-index: 1;
+}
+
+/*
+ * Badge numéro — carré noir, fait la jonction entre la ligne titre et le cadre.
+ * `print-color-adjust: exact` pour que le fond noir s'imprime en PDF.
+ */
+.documentNumero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  background: #000;
+  color: #fff;
+  font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
+  font-weight: 700;
+  font-size: 14pt;
+  line-height: 1;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+
+/* Zone 2 : cadre bordé — contient uniquement le contenu et l'auteur. */
 .documentCell {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  /* Aperçu = impression — contours noirs (#000), alignés barèmes / fiche. */
-  border: 1pt solid #000;
+  border: 1.5pt solid #333;
   border-radius: 0;
-  /* Compact : gagner de la place dans la grille documents (aperçu = impression). */
   padding: 0.4rem 0.5rem;
   background: var(--color-panel);
-  /* Impression : ne pas fragmenter un document sur deux pages. */
-  break-inside: avoid;
-  page-break-inside: avoid;
 }
 
 .documentCellFull {
@@ -140,10 +187,11 @@
   align-items: flex-start;
 }
 
+/* Titre du document dans la ligne header — bold 12pt, pas de bordure. */
 .documentHeaderLine {
   margin: 0;
-  font-size: 10.5pt;
-  font-weight: 600;
+  font-size: 12pt;
+  font-weight: 700;
   line-height: 1.35;
 }
 
@@ -163,9 +211,10 @@
   widows: 3;
 }
 
+/* Zone 3 : source — hors cadre, sous le cadre bordé, texte libre 9pt. */
 .documentSource {
-  margin: 0.5em 0 0;
-  font-size: 8pt;
+  margin: 0.35em 0 0;
+  font-size: 9pt;
   color: var(--color-steel);
 }
 

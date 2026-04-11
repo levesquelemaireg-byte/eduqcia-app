@@ -123,7 +123,7 @@ export function Bloc2EditFields({
               <span className="font-medium text-deep">{disciplineLabel}</span>
               <span className="icon-text mt-1 gap-1 text-xs font-normal text-muted">
                 <span
-                  className="material-symbols-outlined text-[14px] text-muted"
+                  className="material-symbols-outlined text-[1em] leading-none text-muted"
                   aria-hidden="true"
                   title={materialIconTooltip("settings")}
                 >

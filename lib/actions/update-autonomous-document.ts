@@ -7,6 +7,7 @@ import { resolveConnaissanceSelectionsToIds } from "@/lib/tae/publish-tae-lookup
 import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import { DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR } from "@/lib/ui/ui-copy";
 import { createClient } from "@/lib/supabase/server";
+import { persistDocumentElements } from "@/lib/actions/persist-document-elements";
 
 export type UpdateAutonomousDocumentResult =
   | { ok: true }
@@ -103,6 +104,7 @@ export async function updateAutonomousDocumentAction(
     .from("documents")
     .update({
       titre: v.titre,
+      structure: v.structure,
       type: el.type,
       contenu: el.type === "textuel" ? (el.contenu ?? "").trim() : null,
       image_url: el.type === "iconographique" ? (el.image_url ?? "").trim() : null,
@@ -128,6 +130,17 @@ export async function updateAutonomousDocumentAction(
 
   if (upErr) {
     return { ok: false, code: "db", message: upErr.message };
+  }
+
+  // Persister les éléments pour les documents multi-éléments (ou nettoyer si retour à simple)
+  if (v.structure !== "simple" && v.elements.length > 1) {
+    const elResult = await persistDocumentElements(supabase, document_id, v.elements);
+    if (!elResult.ok) {
+      return { ok: false, code: "db", message: elResult.message };
+    }
+  } else {
+    // Structure simple — supprimer les éléments orphelins s'il y en avait
+    await supabase.from("document_elements").delete().eq("document_id", document_id);
   }
 
   return { ok: true };

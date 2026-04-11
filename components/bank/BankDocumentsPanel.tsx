@@ -1,17 +1,18 @@
 import Link from "next/link";
 import {
-  countPublishedUsagesByDocumentIds,
+  countElementsByDocumentIds,
   getBankPublishedDocumentsPage,
   serializeBankDocumentsQueryForHref,
   type BankDocumentFilters,
 } from "@/lib/queries/bank-documents";
 import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
+import { DocumentCardThumbnail } from "@/components/documents/DocumentCardThumbnail";
+import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
+import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
 import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
-import { copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
 import {
   BANK_DOCUMENT_FILTER_RESET,
   BANK_DOCUMENT_FILTER_SUBMIT,
-  BANK_DOCUMENT_LINK_FICHE,
   BANK_FILTER_ICONO_CATEGORY_LABEL,
   BANK_TASK_LOAD_MORE,
   FILTER_LABEL_ALL_DISCIPLINES,
@@ -27,15 +28,7 @@ import {
   PAGE_BANK_DOCUMENTS_FILTER_TYPE_IMAGE,
   PAGE_BANK_DOCUMENTS_FILTER_TYPE_TEXT,
   PAGE_BANK_DOCUMENTS_SEARCH_LABEL,
-  DOCUMENT_MODULE_TYPE_IMAGE,
-  DOCUMENT_MODULE_TYPE_TEXT,
 } from "@/lib/ui/ui-copy";
-import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
-import {
-  documentCategorieIconographiqueBadgeShort,
-  getAllCategoriesIconographiques,
-} from "@/lib/tae/document-categories-helpers";
-import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
 import { cn } from "@/lib/utils/cn";
 import { createClient } from "@/lib/supabase/server";
 
@@ -52,10 +45,8 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
   ]);
   const { rows, total } = pageResult;
   const hasMore = (page + 1) * BANK_PAGE_SIZE < total;
-  const usageMap = await countPublishedUsagesByDocumentIds(
-    supabase,
-    rows.map((r) => r.id),
-  );
+  const docIds = rows.map((r) => r.id);
+  const elementCountMap = await countElementsByDocumentIds(supabase, docIds);
 
   const q = filters.search ?? "";
   const d = filters.disciplineId != null ? String(filters.disciplineId) : "";
@@ -197,53 +188,29 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
         </p>
       ) : (
         <>
-          <ul className="divide-y divide-border rounded-2xl border border-border bg-panel shadow-sm">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
             {rows.map((row) => {
-              const usages = usageMap.get(row.id) ?? 0;
-              const sourcePlain = stripHtmlToPlainText(row.source_citation);
-              const sourcePreview =
-                sourcePlain.length > 140 ? `${sourcePlain.slice(0, 137)}…` : sourcePlain;
+              const categorieId =
+                row.type === "iconographique"
+                  ? parseTypeIconographique(row.type_iconographique)
+                  : row.categorie_textuelle;
+              const elCount = elementCountMap.get(row.id) ?? 1;
               return (
-                <li
+                <DocumentCardThumbnail
                   key={row.id}
-                  className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div className="min-w-0 flex-1">
-                    <p className="flex flex-wrap items-center gap-2 font-semibold text-deep">
-                      <span>{row.titre}</span>
-                      {(() => {
-                        const slug = parseTypeIconographique(row.type_iconographique);
-                        const badge = documentCategorieIconographiqueBadgeShort(slug);
-                        return badge ? (
-                          <span className="rounded-md bg-steel/20 px-1.5 py-0.5 text-[11px] font-medium text-muted">
-                            {badge}
-                          </span>
-                        ) : null;
-                      })()}
-                    </p>
-                    <p className="mt-1 text-xs text-muted">
-                      {row.type === "textuel"
-                        ? DOCUMENT_MODULE_TYPE_TEXT
-                        : DOCUMENT_MODULE_TYPE_IMAGE}{" "}
-                      · {sourcePreview || "—"}
-                    </p>
-                    <p className="mt-1 text-xs text-muted">
-                      {copyDocumentPublishedTaeUsageCount(usages)}
-                    </p>
-                  </div>
-                  <Link
-                    href={`/documents/${row.id}`}
-                    className={cn(
-                      "inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-border px-4 text-sm font-semibold text-accent",
-                      "hover:bg-accent/5",
-                    )}
-                  >
-                    {BANK_DOCUMENT_LINK_FICHE}
-                  </Link>
-                </li>
+                  id={row.id}
+                  titre={row.titre}
+                  type={row.type}
+                  sourceType={row.source_type}
+                  structure={row.structure}
+                  elementCount={elCount}
+                  contenuHtml={row.contenu}
+                  imageUrl={row.image_url}
+                  categorieId={categorieId}
+                />
               );
             })}
-          </ul>
+          </div>
           {hasMore ? (
             <div className="flex justify-center">
               <Link

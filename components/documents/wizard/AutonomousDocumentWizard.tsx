@@ -16,11 +16,13 @@ import {
 import { DocumentWizardNavFooter } from "@/components/documents/wizard/DocumentWizardNavFooter";
 import { DocumentWizardPrintModal } from "@/components/documents/wizard/DocumentWizardPrintModal";
 import { DocumentWizardPreview } from "@/components/documents/wizard/DocumentWizardPreview";
+import { DocumentWizardPrintPreview } from "@/components/documents/wizard/DocumentWizardPrintPreview";
+import { PreviewPanel } from "@/components/preview/PreviewPanel";
+import type { PreviewMode } from "@/components/preview/types";
 import { StepClassification } from "@/components/documents/wizard/steps/StepClassification";
 import { StepConfirmation } from "@/components/documents/wizard/steps/StepConfirmation";
 import { StepDocument } from "@/components/documents/wizard/steps/StepDocument";
 import { StepStructure } from "@/components/documents/wizard/steps/StepStructure";
-import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
 import { filterDisciplinesForDocumentNiveau } from "@/lib/documents/filter-disciplines-by-niveau";
 import { refIdsEqual } from "@/lib/documents/ref-id";
 import {
@@ -265,6 +267,11 @@ export function AutonomousDocumentWizard({
     router.refresh();
   };
 
+  const PREVIEW_MODES: PreviewMode[] = [
+    { id: "sommaire", label: "Sommaire", icon: "topic" },
+    { id: "impression", label: "Aperçu impression", icon: "picture_as_pdf" },
+  ];
+
   const stepMeta = DOCUMENT_WIZARD_STEP_METAS[step];
   const stepDescription = stepMeta.description.trim();
 
@@ -350,12 +357,24 @@ export function AutonomousDocumentWizard({
         </div>
 
         <div className="tae-wizard-preview-canvas relative hidden min-h-0 min-w-0 flex-1 flex-col xl:flex xl:min-h-0 xl:overflow-hidden">
-          <WizardPreviewToolbar onOpenPrintPreview={() => setPrintOpen(true)} />
-          <div className="flex min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain p-[80px]">
-            <aside className="min-w-0 w-full">
-              <DocumentWizardPreview />
-            </aside>
-          </div>
+          <PreviewPanel
+            modes={PREVIEW_MODES}
+            defaultModeId="sommaire"
+            switcherClassName="pointer-events-auto absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-lg bg-panel/80 px-1 py-1 shadow-md backdrop-blur-sm"
+            className="relative"
+          >
+            {(modeId, _subModeId) => (
+              <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-[80px] pt-16">
+                <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
+                  {modeId === "impression" ? (
+                    <DocumentWizardPrintPreview />
+                  ) : (
+                    <DocumentWizardPreview />
+                  )}
+                </aside>
+              </div>
+            )}
+          </PreviewPanel>
         </div>
       </div>
 

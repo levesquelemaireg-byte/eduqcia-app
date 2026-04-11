@@ -14,6 +14,8 @@ import { canonicalOiIcone } from "@/lib/tae/oi-canonical";
 import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
 import { sortAuteursByFamilyName } from "@/lib/tae/auteur-display-sort";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
+import type { Database } from "@/lib/types/database";
 
 type TaeRow = {
   id: string;
@@ -129,46 +131,31 @@ export async function fetchTaeFicheBundle(
   const documents: DocumentFiche[] = [];
   const links = docLinksRes.data as { slot: string; document_id: string }[] | null;
   const docIds = links?.map((l) => l.document_id) ?? [];
-  const docById = new Map<
-    string,
-    {
-      titre: string;
-      type: string;
-      contenu: string | null;
-      image_url: string | null;
-      source_citation: string;
-      image_legende: string | null;
-      image_legende_position: string | null;
-    }
-  >();
+  type DocRow = Database["public"]["Tables"]["documents"]["Row"];
+  type ElRow = Database["public"]["Tables"]["document_elements"]["Row"];
+
+  const docById = new Map<string, DocRow>();
+  const elementsByDocId = new Map<string, ElRow[]>();
+
   if (docIds.length > 0) {
-    const { data: docRows } = await supabase
-      .from("documents")
-      .select(
-        "id, titre, type, contenu, image_url, source_citation, image_legende, image_legende_position",
-      )
-      .in("id", docIds);
+    const [{ data: docRows }, { data: elRows }] = await Promise.all([
+      supabase.from("documents").select("*").in("id", docIds),
+      supabase
+        .from("document_elements")
+        .select("*")
+        .in("document_id", docIds)
+        .order("position", { ascending: true }),
+    ]);
     if (Array.isArray(docRows)) {
-      for (const d of docRows) {
-        const row = d as {
-          id: string;
-          titre: string;
-          type: string;
-          contenu: string | null;
-          image_url: string | null;
-          source_citation: string;
-          image_legende: string | null;
-          image_legende_position: string | null;
-        };
-        docById.set(row.id, {
-          titre: row.titre,
-          type: row.type,
-          contenu: row.contenu,
-          image_url: row.image_url,
-          source_citation: row.source_citation,
-          image_legende: row.image_legende,
-          image_legende_position: row.image_legende_position,
-        });
+      for (const d of docRows as DocRow[]) {
+        docById.set(d.id, d);
+      }
+    }
+    if (Array.isArray(elRows)) {
+      for (const el of elRows as ElRow[]) {
+        const arr = elementsByDocId.get(el.document_id) ?? [];
+        arr.push(el);
+        elementsByDocId.set(el.document_id, arr);
       }
     }
   }
@@ -179,6 +166,8 @@ export async function fetchTaeFicheBundle(
       if (!d) continue;
       const legendTrim = (d.image_legende ?? "").trim();
       const legendPos = parseDocumentLegendPosition(d.image_legende_position);
+      const elRows = elementsByDocId.get(l.document_id) ?? [];
+      const isMultiElement = d.structure !== "simple" && elRows.length > 0;
       bySlot.set(l.slot, {
         letter: slotLetterFromSlot(l.slot),
         titre: d.titre,
@@ -191,6 +180,7 @@ export async function fetchTaeFicheBundle(
         printImpressionScale: 1,
         imageLegende: legendTrim.length > 0 ? legendTrim : null,
         imageLegendePosition: legendTrim.length > 0 && legendPos ? legendPos : null,
+        rendererDocument: isMultiElement ? hydrateRendererDocument(d, elRows) : undefined,
       });
     }
     for (const sid of SLOT_ORDER) {

@@ -403,7 +403,7 @@ export function SequenceOptionsGenerator({ value, onChange, orderedSlotIds, docu
             <div className="rounded-md border border-accent/40 bg-panel px-3 py-3" role="status">
               <div className="flex gap-2">
                 <span
-                  className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-accent"
+                  className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-accent"
                   aria-hidden="true"
                   title={materialIconTooltip(BLOC3_SECTION_ICON.corrige) ?? undefined}
                 >

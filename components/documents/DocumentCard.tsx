@@ -67,14 +67,16 @@ function ColumnsLayout({
 
   return (
     <div
-      className="mt-2 gap-px"
       style={{
         display: "grid",
         gridTemplateColumns: `repeat(${colCount}, 1fr)`,
+        /* Stretch séparateurs bord à bord du cadre */
+        margin: "-0.4rem -0.5rem",
       }}
+      className="mt-2"
     >
       {elements.map((el) => (
-        <div key={el.id} className="border-l border-l-border px-2 first:border-l-0 first:pl-0">
+        <div key={el.id} className="border-l border-l-border px-2 py-[0.4rem] first:border-l-0">
           <DocumentElementRenderer
             element={el}
             showAuteur={showAuteur}

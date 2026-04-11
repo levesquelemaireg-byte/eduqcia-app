@@ -288,7 +288,11 @@ export function DocumentElementFields({
       ) : null}
 
       {showSousTitre ? (
-        <FieldLayout label="Sous-titre" htmlFor={sousTitreId}>
+        <FieldLayout
+          label="Sous-titre (doit contenir un repère temporel)"
+          htmlFor={sousTitreId}
+          required
+        >
           <input
             id={sousTitreId}
             type="text"

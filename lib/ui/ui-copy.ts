@@ -600,6 +600,12 @@ export const BLOC2_UNLOCK_MODAL_CONFIRM = "Confirmer";
 export const MODALE_OUTIL_EVALUATION_TITRE = "Outil d'évaluation";
 
 /** Page liste `/questions` — titre, CTA, état vide (`docs/UI-COPY.md` — Mes tâches) */
+export const PAGE_LISTE_MES_DOCUMENTS_TITLE = "Mes documents";
+export const PAGE_LISTE_MES_DOCUMENTS_SUBTITLE =
+  "Documents historiques que vous avez créés (brouillons et publiés).";
+export const CTA_CREER_UN_DOCUMENT = "Créer un document";
+export const LISTE_DOCUMENTS_VIDE = "Aucun document pour le moment.";
+
 export const PAGE_LISTE_MES_TACHES_TITLE = "Mes tâches";
 export const PAGE_LISTE_MES_TACHES_SUBTITLE =
   "Tâches d'apprentissage et d'évaluation que vous avez créées (brouillons et publiées).";
@@ -705,6 +711,26 @@ export const PAGE_BANK_DOCUMENTS_FILTER_ICONO_ALL = "Toutes";
 export const BANK_DOCUMENT_FILTER_SUBMIT = "Filtrer";
 export const BANK_DOCUMENT_FILTER_RESET = "Réinitialiser";
 export const BANK_DOCUMENT_LINK_FICHE = "Voir la fiche";
+
+/** Badges structure document (thumbnail banque). */
+export const DOCUMENT_STRUCTURE_BADGE_SIMPLE = "Simple";
+export const DOCUMENT_STRUCTURE_BADGE_PERSPECTIVES_2 = "2 perspectives";
+export const DOCUMENT_STRUCTURE_BADGE_PERSPECTIVES_3 = "3 perspectives";
+export const DOCUMENT_STRUCTURE_BADGE_DEUX_TEMPS = "Deux temps";
+
+/** Label structure pour le badge thumbnail. */
+export function documentStructureBadgeLabel(
+  structure: "simple" | "perspectives" | "deux_temps",
+  elementCount: number,
+): string {
+  if (structure === "simple") return DOCUMENT_STRUCTURE_BADGE_SIMPLE;
+  if (structure === "perspectives") {
+    return elementCount === 3
+      ? DOCUMENT_STRUCTURE_BADGE_PERSPECTIVES_3
+      : DOCUMENT_STRUCTURE_BADGE_PERSPECTIVES_2;
+  }
+  return DOCUMENT_STRUCTURE_BADGE_DEUX_TEMPS;
+}
 export const BANK_DOCUMENT_PICKER_LOADING = "Chargement des documents…";
 export const BANK_DOCUMENT_PICKER_EMPTY =
   "Aucun document publié dans la banque pour le moment. Créez-en un depuis le module dédié.";

@@ -14,9 +14,12 @@ export type BankDocumentListRow = {
   titre: string;
   type: "textuel" | "iconographique";
   source_citation: string;
+  source_type: "primaire" | "secondaire";
   created_at: string;
   image_url: string | null;
   image_legende: string | null;
+  contenu: string | null;
+  structure: "simple" | "perspectives" | "deux_temps";
   type_iconographique: string | null;
   categorie_textuelle: string | null;
   niveaux_ids: number[];
@@ -72,9 +75,12 @@ const BANK_DOCUMENTS_SELECT = `
       titre,
       type,
       source_citation,
+      source_type,
       created_at,
       image_url,
       image_legende,
+      contenu,
+      structure,
       type_iconographique,
       categorie_textuelle,
       niveaux_ids,
@@ -122,9 +128,12 @@ function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
     titre: string;
     type: string;
     source_citation: string;
+    source_type: string;
     created_at: string;
     image_url: string | null;
     image_legende: string | null;
+    contenu: string | null;
+    structure: string;
     type_iconographique: string | null;
     categorie_textuelle: string | null;
     niveaux_ids: number[] | null;
@@ -134,11 +143,20 @@ function mapBankDocumentRows(data: unknown): BankDocumentListRow[] {
   return (data as Raw[]).map((row) => ({
     id: row.id,
     titre: row.titre,
-    type: row.type === "iconographique" ? "iconographique" : "textuel",
+    type: (row.type === "iconographique" ? "iconographique" : "textuel") as
+      | "textuel"
+      | "iconographique",
     source_citation: row.source_citation,
+    source_type: (row.source_type === "primaire" ? "primaire" : "secondaire") as
+      | "primaire"
+      | "secondaire",
     created_at: row.created_at,
     image_url: row.image_url,
     image_legende: row.image_legende,
+    contenu: row.contenu ?? null,
+    structure: (["simple", "perspectives", "deux_temps"].includes(row.structure)
+      ? row.structure
+      : "simple") as "simple" | "perspectives" | "deux_temps",
     type_iconographique: row.type_iconographique ?? null,
     categorie_textuelle: row.categorie_textuelle ?? null,
     niveaux_ids: row.niveaux_ids ?? [],
@@ -177,6 +195,24 @@ export async function getBankPublishedDocuments(
   const { data, error } = await bankDocumentsFilteredQuery(supabase, filters, "none").limit(lim);
   if (error || !data) return [];
   return mapBankDocumentRows(data);
+}
+
+/** Nombre d’éléments par document (table document_elements). */
+export async function countElementsByDocumentIds(
+  supabase: Client,
+  documentIds: string[],
+): Promise<Map<string, number>> {
+  const map = new Map<string, number>();
+  if (documentIds.length === 0) return map;
+  const { data, error } = await supabase
+    .from("document_elements")
+    .select("document_id")
+    .in("document_id", documentIds);
+  if (error || !data) return map;
+  for (const row of data as { document_id: string }[]) {
+    map.set(row.document_id, (map.get(row.document_id) ?? 0) + 1);
+  }
+  return map;
 }
 
 /** Compteur d’usages TAÉ publiées par document — `docs/FEATURES.md` §5.4. */

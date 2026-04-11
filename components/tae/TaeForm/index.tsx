@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentType, ReactNode } from "react";
-import { createElement, useState } from "react";
+import { createElement } from "react";
 import { Bloc1AuteursTache } from "@/components/tae/TaeForm/Bloc1AuteursTache";
 import { Bloc2ParametresTache } from "@/components/tae/TaeForm/Bloc2ParametresTache";
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneProduction";
@@ -9,9 +9,10 @@ import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4Documen
 import { Bloc6CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc6CompetenceDisciplinaire";
 import { Bloc7AspectsConnaissances } from "@/components/tae/TaeForm/Bloc7AspectsConnaissances";
 import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
-import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
-import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
+import { PrintableFichePreview } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
 import { FicheSommaireColumn } from "@/components/tae/TaeForm/sommaire";
+import { PreviewPanel } from "@/components/preview/PreviewPanel";
+import type { PreviewMode } from "@/components/preview/types";
 import { Stepper } from "@/components/tae/TaeForm/Stepper";
 import { StepHeader } from "@/components/tae/TaeForm/StepHeader";
 import { StepperNavFooter } from "@/components/tae/TaeForm/StepperNavFooter";
@@ -97,7 +98,18 @@ function TaeFormInner({
     state.currentStep === TAE_REDACTION_STEP_INDEX || state.currentStep === TAE_DOCUMENTS_STEP_INDEX
       ? (resolveWizardBlocComponent(state.currentStep, state) ?? BLOC_COMPONENTS[state.currentStep])
       : BLOC_COMPONENTS[state.currentStep];
-  const [printPreviewOpen, setPrintPreviewOpen] = useState(false);
+  const TAE_PREVIEW_MODES: PreviewMode[] = [
+    { id: "sommaire", label: "Sommaire", icon: "topic" },
+    {
+      id: "impression",
+      label: "Aperçu impression",
+      icon: "picture_as_pdf",
+      subModes: [
+        { id: "dossier", label: "Dossier documentaire", icon: "description" },
+        { id: "questionnaire", label: "Questionnaire", icon: "quiz" },
+      ],
+    },
+  ];
 
   return (
     <>
@@ -160,21 +172,31 @@ function TaeFormInner({
           </div>
         </div>
 
-        {/* Colonne aperçu — barre d’outils + 80px autour du sommaire */}
+        {/* Colonne aperçu — toggle flottant Sommaire / Impression */}
         <div className="tae-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
-          <WizardPreviewToolbar onOpenPrintPreview={() => setPrintPreviewOpen(true)} />
-          <div className="flex min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-y-contain p-[80px]">
-            <aside className="min-w-0 w-full">
-              <FicheSommaireColumn previewMeta={wizardPreviewMeta} />
-            </aside>
-          </div>
+          <PreviewPanel
+            modes={TAE_PREVIEW_MODES}
+            defaultModeId="sommaire"
+            switcherClassName="pointer-events-auto absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-lg bg-panel/80 px-1 py-1 shadow-md backdrop-blur-sm"
+            className="relative"
+          >
+            {(modeId, subModeId) => (
+              <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-[80px] pt-16">
+                <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
+                  {modeId === "impression" ? (
+                    <PrintableFichePreview
+                      previewMeta={wizardPreviewMeta}
+                      feuillet={(subModeId as "dossier" | "questionnaire") ?? "dossier"}
+                    />
+                  ) : (
+                    <FicheSommaireColumn previewMeta={wizardPreviewMeta} />
+                  )}
+                </aside>
+              </div>
+            )}
+          </PreviewPanel>
         </div>
       </div>
-      <PrintPreviewModal
-        open={printPreviewOpen}
-        onClose={() => setPrintPreviewOpen(false)}
-        previewMeta={wizardPreviewMeta}
-      />
     </>
   );
 }

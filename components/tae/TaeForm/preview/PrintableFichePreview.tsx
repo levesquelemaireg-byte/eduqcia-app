@@ -10,6 +10,7 @@ import {
   TaePrintFeuilletToggle,
   type TaePrintFeuilletId,
 } from "@/components/tae/TaeForm/preview/TaePrintFeuilletToggle";
+import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import {
   htmlHasMeaningfulText,
@@ -37,6 +38,8 @@ import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-re
 type WizardProps = {
   previewMeta: WizardFichePreviewMeta;
   className?: string;
+  /** Feuillet contrôlé (PreviewPanel). Si fourni, le toggle interne est masqué. */
+  feuillet?: TaePrintFeuilletId;
 };
 
 export function PrintableHtml({
@@ -74,71 +77,136 @@ export function PrintableDocumentCell({
   documentHeaderLabel?: string;
 }) {
   const titre = doc.titre.trim();
+  const fullWidth = shouldPrintDocumentFullWidth(doc);
+  const headerLabel = documentHeaderLabel ?? doc.letter;
+  const rd = doc.rendererDocument;
+
+  // Multi-éléments (perspectives, deux_temps) — rendu via DocumentElementRenderer
+  if (rd && rd.elements.length > 1) {
+    const showAuteur = rd.structure === "perspectives";
+    const showRepereTemporel = rd.structure === "deux_temps";
+    return (
+      <article
+        className={cn(styles.documentWrapper, styles.documentCellFull)}
+        data-doc-type={doc.type}
+      >
+        <div className={styles.documentHeader}>
+          <div className={styles.documentNumero} aria-label={`Document ${headerLabel}`}>
+            {headerLabel}
+          </div>
+          <p className={styles.documentHeaderLine}>
+            {titre || PRINTABLE_FICHE_SECTION_COPY.emptySlot}
+          </p>
+        </div>
+        <div className={styles.documentCell}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${rd.elements.length}, 1fr)`,
+              margin: "-0.4rem -0.5rem",
+            }}
+          >
+            {rd.elements.map((el) => (
+              <div
+                key={el.id}
+                className="border-l border-l-[#333] px-2 py-[0.4rem] first:border-l-0"
+              >
+                <DocumentElementRenderer
+                  element={el}
+                  showAuteur={showAuteur}
+                  showRepereTemporel={showRepereTemporel}
+                  hideSource
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+        {rd.elements.length === 1 ? (
+          <PrintableSourceLine source={rd.elements[0].source} />
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${rd.elements.length}, 1fr)`,
+            }}
+          >
+            {rd.elements.map((el) => (
+              <PrintableSourceLine key={el.id} source={el.source} />
+            ))}
+          </div>
+        )}
+      </article>
+    );
+  }
+
+  // Simple (un seul élément) — rendu flat historique
   const source = doc.source_citation;
   const bodyHtml = resolveDocRefsForPreview(doc.contenu);
   const hasTextBody = doc.type === "textuel" && hasFicheContent(bodyHtml);
-  const fullWidth = shouldPrintDocumentFullWidth(doc);
-  const headerLabel = documentHeaderLabel ?? doc.letter;
 
   return (
     <article
-      className={cn(styles.documentCell, fullWidth && styles.documentCellFull)}
+      className={cn(styles.documentWrapper, fullWidth && styles.documentCellFull)}
       data-doc-type={doc.type}
     >
-      <p className={styles.documentHeaderLine}>
-        Document {headerLabel} - {titre || PRINTABLE_FICHE_SECTION_COPY.emptySlot}
-      </p>
-      <div className={styles.documentBody}>
-        {doc.type === "iconographique" && doc.image_url ? (
-          <figure className={styles.documentFigure}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- blob / URLs externes ; rendu print fiable */}
-            <img
-              src={doc.image_url}
-              alt={titre || `Document ${headerLabel}`}
-              width={doc.imagePixelWidth ?? undefined}
-              height={doc.imagePixelHeight ?? undefined}
-              className={styles.documentFigureImg}
-            />
-            {doc.imageLegende && doc.imageLegendePosition ? (
-              <DocumentImageLegendOverlay
-                text={doc.imageLegende}
-                position={doc.imageLegendePosition}
-              />
-            ) : null}
-          </figure>
-        ) : null}
-        {doc.type === "textuel" ? (
-          hasTextBody ? (
-            <div className={styles.htmlFlow} dangerouslySetInnerHTML={{ __html: bodyHtml }} />
-          ) : (
-            <p className="m-0 text-[10pt] text-muted">{PRINTABLE_FICHE_SECTION_COPY.emptySlot}</p>
-          )
-        ) : null}
-        {doc.type === "iconographique" && hasFicheContent(bodyHtml) ? (
-          <div
-            className={cn(styles.htmlFlow, styles.htmlFlowAfterFigure)}
-            dangerouslySetInnerHTML={{ __html: bodyHtml }}
-          />
-        ) : null}
-      </div>
-      {htmlHasMeaningfulText(source) ? (
-        <div className={cn(styles.documentSource, styles.documentSourceRow)}>
-          <span className={styles.documentSourceLabel}>
-            {PRINTABLE_FICHE_SECTION_COPY.sourcePrefix}
-          </span>
-          <div
-            className={cn(styles.htmlFlow, styles.documentSourceValue)}
-            dangerouslySetInnerHTML={{ __html: sourceCitationDisplayHtml(source) }}
-          />
+      <div className={styles.documentHeader}>
+        <div className={styles.documentNumero} aria-label={`Document ${headerLabel}`}>
+          {headerLabel}
         </div>
-      ) : (
-        <p className={styles.documentSource}>
-          {PRINTABLE_FICHE_SECTION_COPY.sourcePrefix}
-          {PRINTABLE_FICHE_SECTION_COPY.emptySlot}
+        <p className={styles.documentHeaderLine}>
+          {titre || PRINTABLE_FICHE_SECTION_COPY.emptySlot}
         </p>
-      )}
+      </div>
+      <div className={styles.documentCell}>
+        <div className={styles.documentBody}>
+          {doc.type === "iconographique" && doc.image_url ? (
+            <figure className={styles.documentFigure}>
+              {/* eslint-disable-next-line @next/next/no-img-element -- blob / URLs externes ; rendu print fiable */}
+              <img
+                src={doc.image_url}
+                alt={titre || `Document ${headerLabel}`}
+                width={doc.imagePixelWidth ?? undefined}
+                height={doc.imagePixelHeight ?? undefined}
+                className={styles.documentFigureImg}
+              />
+              {doc.imageLegende && doc.imageLegendePosition ? (
+                <DocumentImageLegendOverlay
+                  text={doc.imageLegende}
+                  position={doc.imageLegendePosition}
+                />
+              ) : null}
+            </figure>
+          ) : null}
+          {doc.type === "textuel" ? (
+            hasTextBody ? (
+              <div className={styles.htmlFlow} dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+            ) : (
+              <p className="m-0 text-[10pt] text-muted">{PRINTABLE_FICHE_SECTION_COPY.emptySlot}</p>
+            )
+          ) : null}
+          {doc.type === "iconographique" && hasFicheContent(bodyHtml) ? (
+            <div
+              className={cn(styles.htmlFlow, styles.htmlFlowAfterFigure)}
+              dangerouslySetInnerHTML={{ __html: bodyHtml }}
+            />
+          ) : null}
+        </div>
+      </div>
+      <PrintableSourceLine source={source} />
     </article>
   );
+}
+
+function PrintableSourceLine({ source }: { source: string }) {
+  if (htmlHasMeaningfulText(source)) {
+    return (
+      <div
+        className={cn(styles.documentSource, styles.htmlFlow, styles.documentSourceValue)}
+        dangerouslySetInnerHTML={{ __html: sourceCitationDisplayHtml(source) }}
+      />
+    );
+  }
+  return <p className={styles.documentSource}>{PRINTABLE_FICHE_SECTION_COPY.emptySlot}</p>;
 }
 
 export function PrintableGrilleSection({
@@ -168,6 +236,8 @@ export function PrintableGrilleSection({
 type FromTaeProps = {
   tae: TaeFicheData;
   className?: string;
+  /** Feuillet contrôlé de l'extérieur (PreviewPanel). Si fourni, pas de toggle interne. */
+  feuillet?: TaePrintFeuilletId;
 };
 
 function PrintableFicheDocumentsSection({ tae }: { tae: TaeFicheData }) {
@@ -271,20 +341,28 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
  * Contenu imprimable à partir d’une fiche persistée (lecture) — même mise en page que le wizard.
  * Deux feuillets (dossier documentaire / questionnaire) : aperçu écran avec bascule ; impression des deux.
  */
-export function PrintableFicheFromTaeData({ tae, className }: FromTaeProps) {
-  const [feuillet, setFeuillet] = useState<TaePrintFeuilletId>("dossier");
+export function PrintableFicheFromTaeData({
+  tae,
+  className,
+  feuillet: controlledFeuillet,
+}: FromTaeProps) {
+  const [internalFeuillet, setInternalFeuillet] = useState<TaePrintFeuilletId>("dossier");
+  const isControlled = controlledFeuillet != null;
+  const activeFeuillet = isControlled ? controlledFeuillet : internalFeuillet;
 
   return (
     <div
       id="tae-wizard-printable-fiche"
       className={cn("printable-sheet", styles.printFeuilletRoot, className)}
     >
-      <TaePrintFeuilletToggle active={feuillet} onChange={setFeuillet} />
+      {!isControlled ? (
+        <TaePrintFeuilletToggle active={activeFeuillet} onChange={setInternalFeuillet} />
+      ) : null}
       <section
         className={cn(
           styles.paper,
           styles.feuilletDossierPane,
-          feuillet !== "dossier" && styles.feuilletPaneScreenHidden,
+          activeFeuillet !== "dossier" && styles.feuilletPaneScreenHidden,
         )}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.documents}
       >
@@ -293,7 +371,7 @@ export function PrintableFicheFromTaeData({ tae, className }: FromTaeProps) {
       <section
         className={cn(
           styles.paper,
-          feuillet !== "questionnaire" && styles.feuilletPaneScreenHidden,
+          activeFeuillet !== "questionnaire" && styles.feuilletPaneScreenHidden,
         )}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.questionnaireFeuillet}
       >
@@ -306,7 +384,7 @@ export function PrintableFicheFromTaeData({ tae, className }: FromTaeProps) {
 /**
  * Aperçu impression wizard — `useTaeForm` + `formStateToTae`.
  */
-export function PrintableFichePreview({ previewMeta, className }: WizardProps) {
+export function PrintableFichePreview({ previewMeta, className, feuillet }: WizardProps) {
   const { state } = useTaeForm();
   const { oiList } = useOiData();
 
@@ -330,5 +408,5 @@ export function PrintableFichePreview({ previewMeta, className }: WizardProps) {
     );
   }
 
-  return <PrintableFicheFromTaeData tae={tae} className={className} />;
+  return <PrintableFicheFromTaeData tae={tae} className={className} feuillet={feuillet} />;
 }

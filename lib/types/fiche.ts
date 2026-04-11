@@ -1,6 +1,7 @@
 /** FICHE-TACHE.md — données affichées par `FicheTache` et `TaeCard`. */
 
 import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 
 export type AspectSociete = "economique" | "politique" | "social" | "culturel" | "territorial";
 
@@ -20,6 +21,12 @@ export type DocumentFiche = {
   imageLegende: string | null;
   /** Coin du bandeau ; `null` si pas de légende ou données incomplètes. */
   imageLegendePosition: DocumentLegendPosition | null;
+  /**
+   * Document multi-éléments hydraté (perspectives, deux_temps).
+   * Présent quand `document_elements` contient des lignes pour ce document.
+   * `PrintableDocumentCell` utilise ce champ pour rendre les colonnes.
+   */
+  rendererDocument?: RendererDocument;
 };
 
 export type CdSelection = {

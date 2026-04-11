@@ -123,7 +123,10 @@ export const ListboxField = forwardRef<HTMLButtonElement, ListboxFieldProps>(fun
         >
           {display}
         </span>
-        <span className="material-symbols-outlined mt-0.5 shrink-0 text-muted" aria-hidden="true">
+        <span
+          className="material-symbols-outlined shrink-0 text-[1em] leading-none text-muted"
+          aria-hidden="true"
+        >
           expand_more
         </span>
       </button>

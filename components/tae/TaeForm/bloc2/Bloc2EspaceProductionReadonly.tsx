@@ -40,7 +40,7 @@ export function Bloc2EspaceProductionReadonly({ selectedComportement }: Props) {
         )}
       >
         <span
-          className="material-symbols-outlined mt-px shrink-0 text-base text-muted"
+          className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-muted"
           aria-hidden="true"
           title={materialIconTooltip("settings")}
         >

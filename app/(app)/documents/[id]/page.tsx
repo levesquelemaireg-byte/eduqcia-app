@@ -1,14 +1,15 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentBankCompletionCard } from "@/components/documents/DocumentBankCompletionCard";
-import { DocumentFicheRead } from "@/components/documents/DocumentFicheRead";
+import { DocumentCardReader } from "@/components/documents/DocumentCardReader";
 import { DocumentFicheRetourLink } from "@/components/documents/DocumentFicheRetourLink";
-import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
+import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
 import { createClient } from "@/lib/supabase/server";
-import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
+import {
+  countPublishedTaeUsagesForDocument,
+  getDocumentElements,
+} from "@/lib/queries/document-read";
 import { DOCUMENT_FICHE_EDIT, copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
-import { documentCategorieIconographiqueLabel } from "@/lib/tae/document-categories-helpers";
-import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -38,8 +39,9 @@ export default async function DocumentReadPage({ params }: PageProps) {
   const discIds = doc.disciplines_ids ?? [];
   const connIds = doc.connaissances_ids ?? [];
 
-  const [usageCount, niveauRows, discRows, connRows, profileRow] = await Promise.all([
+  const [usageCount, elementRows, niveauRows, discRows, connRows, profileRow] = await Promise.all([
     countPublishedTaeUsagesForDocument(supabase, id),
+    getDocumentElements(supabase, id),
     niveauIds.length
       ? supabase.from("niveaux").select("label").in("id", niveauIds)
       : Promise.resolve({ data: [] as { label: string }[] }),
@@ -68,17 +70,12 @@ export default async function DocumentReadPage({ params }: PageProps) {
       })
     : "";
 
-  const legendText = typeof doc.image_legende === "string" ? doc.image_legende.trim() : "";
-  const legendPos = parseDocumentLegendPosition(doc.image_legende_position);
-
-  const iconoSlug =
-    doc.type === "iconographique" ? parseTypeIconographique(doc.type_iconographique) : null;
-  const iconoCategoryLabel = documentCategorieIconographiqueLabel(iconoSlug);
-
   const sourceType =
     doc.source_type === "primaire" || doc.source_type === "secondaire"
       ? doc.source_type
       : "secondaire";
+
+  const rendererDoc = hydrateRendererDocument(doc, elementRows);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 md:px-6">
@@ -104,23 +101,19 @@ export default async function DocumentReadPage({ params }: PageProps) {
           }
         />
       ) : null}
-      <DocumentFicheRead
-        titre={doc.titre}
-        docType={doc.type === "iconographique" ? "iconographique" : "textuel"}
-        sourceType={sourceType}
-        sourceCitation={doc.source_citation}
-        niveauLabels={niveauLabels}
-        disciplineLabels={disciplineLabels}
-        aspectsStr={aspectsStr}
-        connLabels={connLabels}
-        authorName={authorName}
-        created={created}
-        usageCaption={copyDocumentPublishedTaeUsageCount(usageCount)}
-        contenuHtml={doc.type === "textuel" && doc.contenu ? doc.contenu : null}
-        imageUrl={doc.type === "iconographique" ? doc.image_url : null}
-        legendText={legendText}
-        legendPosition={legendPos}
-        iconoCategoryLabel={iconoCategoryLabel}
+      <DocumentCardReader
+        document={rendererDoc}
+        meta={{
+          sourceType,
+          sourceCitation: doc.source_citation,
+          niveauLabels,
+          disciplineLabels,
+          aspectsStr,
+          connLabels,
+          authorName,
+          created,
+          usageCaption: copyDocumentPublishedTaeUsageCount(usageCount),
+        }}
       />
     </div>
   );

@@ -254,7 +254,6 @@ function MultiElementAccordion({ structure }: { structure: string }) {
                 <DocumentElementFields
                   prefix={`elements.${i}` as `elements.${number}`}
                   showAuteur={structure === "perspectives"}
-                  showRepereTemporel={structure === "deux_temps"}
                   showSousTitre={structure === "deux_temps"}
                 />
               </div>

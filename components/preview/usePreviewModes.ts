@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { PreviewMode } from "@/components/preview/types";
 
 type UsePreviewModesOptions = {
@@ -14,14 +14,18 @@ type UsePreviewModesResult = {
   currentModeId: string;
   setMode: (modeId: string) => void;
   modes: PreviewMode[];
+  /** Sous-mode actif (si le mode courant a des `subModes`). */
+  currentSubModeId: string | null;
+  /** Sous-modes du mode courant (vide si aucun). */
+  currentSubModes: PreviewMode[];
+  setSubMode: (subModeId: string) => void;
 };
 
 /**
- * Hook de gestion des modes d'aperçu.
+ * Hook de gestion des modes d'aperçu avec sous-modes optionnels.
  *
- * Logique pure de switching — pas d'UI, pas de persistance.
- * Consommé par `PreviewPanel` ou directement quand le switcher
- * et le conteneur sont dans des endroits séparés du layout.
+ * Quand le mode parent change, le sous-mode est réinitialisé au premier
+ * sous-mode du nouveau mode (ou `null` s'il n'en a pas).
  */
 export function usePreviewModes({
   modes,
@@ -30,18 +34,41 @@ export function usePreviewModes({
 }: UsePreviewModesOptions): UsePreviewModesResult {
   const initialId = defaultModeId ?? modes[0]?.id ?? "";
   const [currentModeId, setCurrentModeId] = useState(initialId);
+  const [currentSubModeId, setCurrentSubModeId] = useState<string | null>(() => {
+    const initial = modes.find((m) => m.id === initialId);
+    return initial?.subModes?.[0]?.id ?? null;
+  });
+
+  const currentMode = modes.find((m) => m.id === currentModeId) ?? modes[0];
+  const currentSubModes = useMemo(() => currentMode?.subModes ?? [], [currentMode]);
 
   const setMode = useCallback(
     (modeId: string) => {
-      const exists = modes.some((m) => m.id === modeId && !m.disabled);
-      if (!exists) return;
+      const target = modes.find((m) => m.id === modeId && !m.disabled);
+      if (!target) return;
       setCurrentModeId(modeId);
+      setCurrentSubModeId(target.subModes?.[0]?.id ?? null);
       onModeChange?.(modeId);
     },
     [modes, onModeChange],
   );
 
-  const currentMode = modes.find((m) => m.id === currentModeId) ?? modes[0];
+  const setSubMode = useCallback(
+    (subModeId: string) => {
+      const exists = currentSubModes.some((m) => m.id === subModeId && !m.disabled);
+      if (!exists) return;
+      setCurrentSubModeId(subModeId);
+    },
+    [currentSubModes],
+  );
 
-  return { currentMode, currentModeId, setMode, modes };
+  return {
+    currentMode,
+    currentModeId,
+    setMode,
+    modes,
+    currentSubModeId,
+    currentSubModes,
+    setSubMode,
+  };
 }

@@ -27,7 +27,9 @@ function isActive(pathname: string, href: string): boolean {
     return false;
   }
   if (href === "/documents") {
-    return pathname === "/documents" || pathname.startsWith("/documents/");
+    if (pathname === "/documents") return true;
+    if (pathname.startsWith("/documents/") && !pathname.startsWith("/documents/new")) return true;
+    return false;
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
@@ -40,6 +42,7 @@ const SECTIONS: Section[] = [
   {
     title: "Mes contenus",
     items: [
+      { href: "/documents", label: "Mes documents", icon: "article" },
       { href: "/questions", label: "Mes tâches", icon: "quiz" },
       { href: "/evaluations", label: "Mes épreuves", icon: "assignment" },
     ],

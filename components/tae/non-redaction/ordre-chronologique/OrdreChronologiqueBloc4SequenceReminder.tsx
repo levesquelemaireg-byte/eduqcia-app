@@ -39,7 +39,7 @@ export function OrdreChronologiqueBloc4SequenceReminder({ payload, orderedSlotId
       )}
     >
       <span
-        className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-accent"
+        className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-accent"
         aria-hidden="true"
       >
         reorder

@@ -973,6 +973,33 @@ Avant d'écrire une ligne de JSX pour un nouvel écran ou composant :
 - Icône Material Symbols autre que Outlined
 - Icône devant le titre d'étape du wizard (`<h2>`)
 
+### Alignement icône + texte — règle unique
+
+Chaque fois qu'une icône Material Symbols apparaît à côté d'un texte, utiliser UN SEUL pattern. Pas de `vertical-align` ad hoc, pas de `margin-top` au pif, pas de padding pour compenser.
+
+```tsx
+// Icône + texte sur une même ligne (labels, boutons, liens, badges)
+<span className="inline-flex items-center gap-[0.35em]">
+  <span className="material-symbols-outlined text-[1em] leading-none">icon_name</span>
+  Texte à côté
+</span>
+```
+
+**Les règles :**
+
+- Toujours `inline-flex items-center` sur le conteneur — jamais d'alignement au doigt mouillé
+- Gap en `em` (pas en `px`) pour que l'espacement scale avec la taille du texte : `gap-[0.35em]`
+- L'icône a `text-[1em] leading-none` — elle prend la taille du texte ambiant, pas une taille fixe arbitraire
+- Si l'icône doit être plus grande que le texte, utiliser `text-[1.2em]` ou `text-[1.5em]` — toujours relatif, jamais de `px`
+- Si le texte est multi-lignes et que l'icône doit s'aligner avec la première ligne : remplacer `items-center` par `items-start` et ajouter `mt-[0.125em]` sur l'icône
+- Les patterns `.icon-text`, `.icon-lead`, `.icon-text-block` existent déjà dans `globals.css` — les utiliser OU utiliser le pattern Tailwind inline ci-dessus, mais ne jamais inventer un troisième approach
+
+**Ce qu'on ne fait JAMAIS :**
+
+- `vertical-align: middle` sur une icône sans flex parent — ça aligne sur le x-height, pas le centre visuel
+- `margin-top: 2px` ou `margin-top: 3px` pour « ajuster » — ça casse à une autre taille de texte
+- Taille d'icône en `px` fixe (`text-[14px]`, `text-[20px]`) quand l'icône accompagne du texte — utiliser `em`
+
 ### Références visuelles dans le code existant
 
 ```

@@ -42,7 +42,7 @@ export function ConsigneTemplateCard({
       </div>
       <div className="flex gap-2.5 rounded-lg border border-border bg-panel px-3 py-3 text-sm text-deep sm:px-4">
         <span
-          className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-muted"
+          className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-muted"
           aria-hidden
         >
           info

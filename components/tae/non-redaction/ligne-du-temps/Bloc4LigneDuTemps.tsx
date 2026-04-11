@@ -41,7 +41,7 @@ export function Bloc4LigneDuTemps() {
     <div className="space-y-8">
       <div className="icon-lead rounded-xl border-l-4 border-accent bg-surface py-3.5 pl-4 pr-4 text-sm text-steel shadow-sm ring-1 ring-border/40">
         <span
-          className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-accent"
+          className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-accent"
           aria-hidden="true"
         >
           info
@@ -65,7 +65,7 @@ export function Bloc4LigneDuTemps() {
 
       <div className="icon-lead rounded-xl border-l-4 border-warning bg-warning/[0.07] py-3.5 pl-4 pr-4 text-sm text-steel shadow-sm ring-1 ring-warning/15">
         <span
-          className="material-symbols-outlined mt-0.5 shrink-0 text-[1em] text-warning"
+          className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-warning"
           aria-hidden="true"
         >
           warning
