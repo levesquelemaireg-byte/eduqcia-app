@@ -1,33 +1,31 @@
 import type { InputHTMLAttributes, ReactNode } from "react";
 import { forwardRef } from "react";
-import { RequiredMark } from "@/components/ui/RequiredMark";
-import { normalizeFrenchColonSpacing } from "@/lib/ui/colon";
+import { FieldLayout } from "@/components/ui/FieldLayout";
 
 type Props = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   id: string;
   error?: string;
   hint?: ReactNode;
-  /** Affiche l’astérisque rouge et `aria-required` / `required` sur le champ. */
+  /** Affiche l'astérisque rouge et `aria-required` / `required` sur le champ. */
   required?: boolean;
+  /** Slot à droite du label (bouton (i), compteur, etc.). */
+  labelExtra?: ReactNode;
 };
 
 export const Field = forwardRef<HTMLInputElement, Props>(function Field(
-  { label, id, error, hint, required, className = "", ...rest },
+  { label, id, error, hint, required, labelExtra, className = "", ...rest },
   ref,
 ) {
   return (
-    <div className="flex flex-col gap-[var(--space-2)]">
-      <label htmlFor={id} className="text-sm font-medium leading-none text-deep">
-        {normalizeFrenchColonSpacing(label)}
-        {required ? (
-          <>
-            {" "}
-            <RequiredMark />
-          </>
-        ) : null}
-      </label>
-      {hint}
+    <FieldLayout
+      label={label}
+      htmlFor={id}
+      error={error}
+      hint={hint}
+      required={required}
+      labelExtra={labelExtra}
+    >
       <input
         ref={ref}
         id={id}
@@ -40,11 +38,6 @@ export const Field = forwardRef<HTMLInputElement, Props>(function Field(
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
       />
-      {error ? (
-        <p id={`${id}-error`} className="text-sm font-medium text-error" role="alert">
-          {normalizeFrenchColonSpacing(error)}
-        </p>
-      ) : null}
-    </div>
+    </FieldLayout>
   );
 });
