@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DocumentStructure } from "@/lib/types/document-renderer";
+import { createElementsForStructure } from "@/lib/documents/document-element-defaults";
 import { cn } from "@/lib/utils/cn";
 import {
   DOC_STRUCTURE_SIMPLE_TITLE,
@@ -65,12 +66,22 @@ export function StepStructure() {
   const [modalOpen, setModalOpen] = useState<DocumentStructure | null>(null);
 
   const handleSelect = (value: DocumentStructure) => {
-    setValue("structure", value, { shouldValidate: true });
+    setValue("structure", value, { shouldValidate: false });
     if (value !== "perspectives") {
       setValue("nb_perspectives", undefined);
-    } else if (!nbPerspectives) {
-      setValue("nb_perspectives", 2);
+      setValue("elements", createElementsForStructure(value), { shouldValidate: false });
+    } else {
+      const nb = nbPerspectives ?? 2;
+      setValue("nb_perspectives", nb);
+      setValue("elements", createElementsForStructure(value, nb), { shouldValidate: false });
     }
+  };
+
+  const handlePerspectiveCount = (count: 2 | 3) => {
+    setValue("nb_perspectives", count);
+    setValue("elements", createElementsForStructure("perspectives", count), {
+      shouldValidate: false,
+    });
   };
 
   const modalOption = modalOpen ? STRUCTURE_OPTIONS.find((o) => o.value === modalOpen) : null;
@@ -173,13 +184,13 @@ export function StepStructure() {
                   <PerspectiveCountRadio
                     count={2}
                     selected={nbPerspectives === 2}
-                    onSelect={() => setValue("nb_perspectives", 2)}
+                    onSelect={() => handlePerspectiveCount(2)}
                     description={DOC_STRUCTURE_PERSPECTIVES_2}
                   />
                   <PerspectiveCountRadio
                     count={3}
                     selected={nbPerspectives === 3}
-                    onSelect={() => setValue("nb_perspectives", 3)}
+                    onSelect={() => handlePerspectiveCount(3)}
                     description={DOC_STRUCTURE_PERSPECTIVES_3}
                   />
                 </div>

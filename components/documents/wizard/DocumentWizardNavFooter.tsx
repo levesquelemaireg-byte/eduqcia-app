@@ -5,23 +5,20 @@ import { DOCUMENT_MODULE_SUBMIT } from "@/lib/ui/ui-copy";
 type Props = {
   canPrev: boolean;
   onPrev: () => void;
-  /** Étape confirmation : pas de « Suivant ». */
   showNext: boolean;
   onNext: () => void;
   nextDisabled: boolean;
-  /** Masquer le bouton brouillon (ex. édition document). */
   showDraft?: boolean;
   onSaveDraft: () => void;
   draftSaving: boolean;
-  /** Étape confirmation — soumission finale. */
-  showSubmit: boolean;
   onSubmit: () => void;
   submitDisabled: boolean;
   isSubmitting: boolean;
 };
 
 /**
- * Pied de wizard — mêmes classes que `StepperNavFooter` (wizard TAÉ).
+ * Pied de wizard document — aligné sur le pattern du wizard TAÉ :
+ * bouton Enregistrer toujours visible (désactivé si conditions non remplies).
  */
 export function DocumentWizardNavFooter({
   canPrev,
@@ -32,7 +29,6 @@ export function DocumentWizardNavFooter({
   showDraft = true,
   onSaveDraft,
   draftSaving,
-  showSubmit,
   onSubmit,
   submitDisabled,
   isSubmitting,
@@ -64,17 +60,6 @@ export function DocumentWizardNavFooter({
             </span>
           </button>
         ) : null}
-        {showSubmit ? (
-          <button
-            type="button"
-            onClick={onSubmit}
-            disabled={submitDisabled || isSubmitting}
-            aria-busy={isSubmitting}
-            className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
-          >
-            {isSubmitting ? "Enregistrement…" : DOCUMENT_MODULE_SUBMIT}
-          </button>
-        ) : null}
       </div>
       <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
         {showDraft ? (
@@ -91,9 +76,24 @@ export function DocumentWizardNavFooter({
             >
               save
             </span>
-            Sauvegarder le brouillon
+            Sauvegarder
           </button>
         ) : null}
+        <button
+          type="button"
+          onClick={onSubmit}
+          disabled={submitDisabled || isSubmitting}
+          aria-busy={isSubmitting}
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-45"
+        >
+          <span
+            className={`material-symbols-outlined text-lg ${isSubmitting ? "animate-pulse" : ""}`}
+            aria-hidden="true"
+          >
+            upload
+          </span>
+          {isSubmitting ? "Enregistrement…" : DOCUMENT_MODULE_SUBMIT}
+        </button>
       </div>
     </div>
   );

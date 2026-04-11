@@ -33,6 +33,7 @@ import {
   type AutonomousDocumentFormValues,
 } from "@/lib/schemas/autonomous-document";
 import { createEmptyElement } from "@/lib/documents/document-element-defaults";
+import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import { initialAspects } from "@/lib/tae/redaction-helpers";
 import {
   DOCUMENT_MODULE_PAGE_TITLE,
@@ -91,7 +92,7 @@ export function AutonomousDocumentWizard({
   const form = useForm<AutonomousDocumentFormValues>({
     resolver: zodResolver(autonomousDocumentFormSchema) as Resolver<AutonomousDocumentFormValues>,
     defaultValues: defaultFormValues(),
-    mode: "onBlur",
+    mode: "onSubmit",
   });
 
   const { handleSubmit, trigger, getValues, reset, watch, setValue, formState } = form;
@@ -183,7 +184,20 @@ export function AutonomousDocumentWizard({
         return true;
       }
       if (s === 1) {
-        return trigger(["titre", "elements"]);
+        const titreOk = await trigger(["titre"]);
+        if (!titreOk) return false;
+        // Validation manuelle des éléments (évite le superRefine global)
+        const st = getValues("structure");
+        const els = getValues("elements");
+        for (const el of els) {
+          if (el.type === "textuel" && !htmlHasMeaningfulText(el.contenu ?? "")) return false;
+          if (el.type === "textuel" && el.categorie_textuelle == null) return false;
+          if (el.type === "iconographique" && !(el.image_url ?? "").trim()) return false;
+          if (!htmlHasMeaningfulText(el.source_citation ?? "")) return false;
+          if (st === "perspectives" && !(el.auteur ?? "").trim()) return false;
+          if (st === "deux_temps" && !(el.repere_temporel ?? "").trim()) return false;
+        }
+        return true;
       }
       if (s === 2) {
         return trigger(["niveau_id", "discipline_id", "aspects"]);
@@ -256,7 +270,6 @@ export function AutonomousDocumentWizard({
 
   const canPrev = step > 0;
   const showNext = step < DOCUMENT_WIZARD_STEP_COUNT - 1;
-  const showSubmit = step === DOCUMENT_WIZARD_STEP_COUNT - 1;
 
   const handleCompletedStepClick = (index: number) => {
     if (index < step) setStep(index as DocumentWizardStepIndex);
@@ -266,76 +279,73 @@ export function AutonomousDocumentWizard({
     <FormProvider {...form}>
       <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
         <div className="tae-wizard-editor-column min-w-0 bg-[var(--color-panel)] px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
-          <header className="max-w-2xl">
-            <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
-              {mode === "edit" ? DOCUMENT_MODULE_PAGE_TITLE_EDIT : DOCUMENT_MODULE_PAGE_TITLE}
-            </h1>
-            <p className="mt-2 max-w-none text-sm text-muted md:text-base">
-              {DOCUMENT_WIZARD_INTRO}
-            </p>
-          </header>
+          <div>
+            <header>
+              <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
+                {mode === "edit" ? DOCUMENT_MODULE_PAGE_TITLE_EDIT : DOCUMENT_MODULE_PAGE_TITLE}
+              </h1>
+              <p className="mt-2 text-sm text-muted md:text-base">{DOCUMENT_WIZARD_INTRO}</p>
+            </header>
 
-          <div className="mt-6 border-b border-border pb-5 md:mt-8 md:pb-6">
-            <WizardStepper
-              className="px-0 pb-0 pt-0"
-              steps={DOCUMENT_WIZARD_STEPS_FOR_STEPPER}
-              currentStep={step}
-              onCompletedStepClick={handleCompletedStepClick}
-              navAriaLabel="Étapes du formulaire de création de document"
-            />
-          </div>
-
-          <div className="pt-6 md:pt-8">
-            <h2
-              id="document-wizard-step-heading"
-              className="text-xl font-semibold tracking-tight text-deep"
-            >
-              {stepMeta.label}
-            </h2>
-            {stepDescription ? (
-              <p className="mt-2 max-w-none text-sm leading-relaxed text-muted">
-                {stepDescription}
-              </p>
-            ) : null}
-
-            <div className="mt-6 max-w-2xl">
-              {step === 0 ? <StepStructure /> : null}
-              {step === 1 ? <StepDocument /> : null}
-              {step === 2 ? (
-                <StepClassification niveaux={niveaux} disciplineOptions={filteredDisciplines} />
-              ) : null}
-              {step === 3 ? <StepConfirmation /> : null}
+            <div className="mt-6 border-b border-border pb-5 md:mt-8 md:pb-6">
+              <WizardStepper
+                className="px-0 pb-0 pt-0"
+                steps={DOCUMENT_WIZARD_STEPS_FOR_STEPPER}
+                currentStep={step}
+                onCompletedStepClick={handleCompletedStepClick}
+                navAriaLabel="Étapes du formulaire de création de document"
+              />
             </div>
 
-            <DocumentWizardNavFooter
-              canPrev={canPrev}
-              onPrev={handlePrev}
-              showNext={showNext}
-              onNext={() => void handleNext()}
-              nextDisabled={false}
-              onSaveDraft={saveDraft}
-              draftSaving={draftSaving}
-              showDraft={mode !== "edit"}
-              showSubmit={showSubmit}
-              onSubmit={() => void handleSubmit(onValid)()}
-              submitDisabled={!legalAccepted}
-              isSubmitting={isSubmitting}
-            />
-
-            <section
-              className="mt-10 border-t border-border pt-6 xl:hidden"
-              aria-labelledby="document-wizard-mobile-preview-title"
-            >
-              <h3
-                id="document-wizard-mobile-preview-title"
-                className="text-base font-semibold text-deep"
+            <div className="pt-6 md:pt-8">
+              <h2
+                id="document-wizard-step-heading"
+                className="text-xl font-semibold tracking-tight text-deep"
               >
-                {DOCUMENT_WIZARD_PREVIEW_HEADING}
-              </h3>
-              <div className="mt-4 max-h-[min(55vh,28rem)] overflow-y-auto rounded-xl border border-border/60 bg-steel/10 p-4">
-                <DocumentWizardPreview compact />
+                {stepMeta.label}
+              </h2>
+              {stepDescription ? (
+                <p className="mt-2 text-sm leading-relaxed text-muted">{stepDescription}</p>
+              ) : null}
+
+              <div className="mt-6">
+                {step === 0 ? <StepStructure /> : null}
+                {step === 1 ? <StepDocument /> : null}
+                {step === 2 ? (
+                  <StepClassification niveaux={niveaux} disciplineOptions={filteredDisciplines} />
+                ) : null}
+                {step === 3 ? <StepConfirmation /> : null}
+
+                <DocumentWizardNavFooter
+                  canPrev={canPrev}
+                  onPrev={handlePrev}
+                  showNext={showNext}
+                  onNext={() => void handleNext()}
+                  nextDisabled={false}
+                  onSaveDraft={saveDraft}
+                  draftSaving={draftSaving}
+                  showDraft={mode !== "edit"}
+                  onSubmit={() => void handleSubmit(onValid)()}
+                  submitDisabled={!legalAccepted}
+                  isSubmitting={isSubmitting}
+                />
               </div>
-            </section>
+
+              <section
+                className="mt-10 border-t border-border pt-6 xl:hidden"
+                aria-labelledby="document-wizard-mobile-preview-title"
+              >
+                <h3
+                  id="document-wizard-mobile-preview-title"
+                  className="text-base font-semibold text-deep"
+                >
+                  {DOCUMENT_WIZARD_PREVIEW_HEADING}
+                </h3>
+                <div className="mt-4 max-h-[min(55vh,28rem)] overflow-y-auto rounded-xl border border-border/60 bg-steel/10 p-4">
+                  <DocumentWizardPreview compact />
+                </div>
+              </section>
+            </div>
           </div>
         </div>
 

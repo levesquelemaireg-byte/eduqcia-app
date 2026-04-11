@@ -139,7 +139,7 @@ export const DOCUMENT_MODULE_LEGAL_BODY =
   "Vous vous engagez à respecter les limites de reproduction permises (extraits raisonnables) et à citer adéquatement la source.";
 export const DOCUMENT_MODULE_LEGAL_FOOTER =
   "La plateforme ne vérifie pas les droits d'auteur des contenus ajoutés et décline toute responsabilité en cas d'utilisation non conforme.";
-export const DOCUMENT_MODULE_SUBMIT = "Enregistrer le document";
+export const DOCUMENT_MODULE_SUBMIT = "Publier";
 
 /** Wizard « Créer un document » — `docs/UI-COPY.md` (Module) */
 export const DOCUMENT_WIZARD_INTRO =
