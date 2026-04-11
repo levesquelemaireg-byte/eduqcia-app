@@ -1,9 +1,13 @@
 # Spec de refactoring v2 — Système de fiches (Sommaire, Thumbnail, Lecture)
 
-> **Statut** : FERMÉ — toutes les phases livrées (1-3, 4.1-4.5, primitives §8, sanitisation §6.1, DOC_FICHE_SECTIONS §11)
-> **Date** : 11 avril 2026
-> **Fermé** : 11 avril 2026
-> **Principe** : Réordonner une section = déplacer une ligne. Ajouter = une entrée + un composant pur.
+> **Statut** : FERMÉ — spec complétée à 100%
+> **Date de création** : 11 avril 2026
+> **Date de fermeture** : 11 avril 2026
+> **Validée par** : 6 agents (Claude, Grok, Copilot, Gemini, ChatGPT, DeepSeek)
+> **Phases livrées** : 1 (nettoyage), 2 (fondations), 3 (assemblage), 4 (extension complète)
+> **Branchements** : tous les points d'entrée production migrés (wizards TAÉ/Doc, lecture, thumbnails, banque)
+> **Tests** : 288 tests verts, 61 tests fiche spécifiques
+> **Ce document est désormais une référence historique. Pour l'architecture courante, voir le code dans `lib/fiche/`.**
 
 ---
 

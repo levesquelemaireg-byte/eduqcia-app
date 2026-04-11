@@ -1,12 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { MesQuestionsFiltres } from "@/components/questions/MesQuestionsFiltres";
-import { MesQuestionsRow } from "@/components/questions/MesQuestionsRow";
+import { MesTachesThumbnailCard } from "@/components/questions/MesTachesThumbnailCard";
 import { createClient } from "@/lib/supabase/server";
-import { getMyTaeList, parseMyTaeListFiltre } from "@/lib/queries/user-content";
-import { plainConsigneForMiniature } from "@/lib/tae/consigne-helpers";
-import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
-import { truncateText } from "@/lib/utils/stripHtml";
+import { getMyTaeThumbnailList } from "@/lib/queries/my-tae-thumbnails";
+import { parseMyTaeListFiltre } from "@/lib/queries/user-content";
 import {
   CTA_CREER_UNE_TACHE,
   LISTE_TACHES_VIDE_CATEGORIE,
@@ -28,7 +26,7 @@ export default async function QuestionsPage({ searchParams }: PageProps) {
 
   const sp = await searchParams;
   const filtre = parseMyTaeListFiltre(sp.filtre);
-  const rows = await getMyTaeList(filtre);
+  const rows = await getMyTaeThumbnailList(filtre);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-6">
@@ -65,22 +63,11 @@ export default async function QuestionsPage({ searchParams }: PageProps) {
           </Link>
         </div>
       ) : (
-        <ul className="mt-6 divide-y divide-border rounded-2xl border border-border bg-panel shadow-sm">
-          {rows.map((row) => {
-            const preview = truncateText(plainConsigneForMiniature(row.consigne), 160);
-            const dateLabel = formatDateFrCaMedium(row.updated_at);
-            return (
-              <MesQuestionsRow
-                key={row.id}
-                id={row.id}
-                preview={preview || "—"}
-                isPublished={row.is_published}
-                updatedAtLabel={dateLabel}
-                isWizardServerDraft={Boolean(row.isWizardServerDraft)}
-              />
-            );
-          })}
-        </ul>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          {rows.map((row) => (
+            <MesTachesThumbnailCard key={row.id} row={row} />
+          ))}
+        </div>
       )}
     </div>
   );

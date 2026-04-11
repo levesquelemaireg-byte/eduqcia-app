@@ -1,7 +1,6 @@
 import Link from "next/link";
-import { BankAddToEvaluationLauncher } from "@/components/bank/BankAddToEvaluationLauncher";
+import { BankThumbnailCard } from "@/components/bank/BankThumbnailCard";
 import { BankTaskFilters } from "@/components/bank/BankTaskFilters";
-import { BankTaskRow } from "@/components/bank/BankTaskRow";
 import { getBankTaeFilterRefs } from "@/lib/queries/bank-filter-ref-data";
 import {
   BANK_PAGE_SIZE,
@@ -36,15 +35,11 @@ export async function BankTasksPanel({ query }: Props) {
         </div>
       ) : (
         <>
-          <ul className="divide-y divide-border rounded-2xl border border-border bg-panel shadow-sm">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {rows.map((row) => (
-              <BankTaskRow
-                key={row.id}
-                row={row}
-                trailingSlot={<BankAddToEvaluationLauncher taeId={row.id} />}
-              />
+              <BankThumbnailCard key={row.id} row={row} />
             ))}
-          </ul>
+          </div>
           {hasMore ? (
             <div className="flex justify-center">
               <Link
