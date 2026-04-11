@@ -1,37 +1,44 @@
 "use client";
 
 import { useMemo } from "react";
-import { FicheTache } from "@/components/tae/FicheTache";
+import { FicheRenderer } from "@/lib/fiche/FicheRenderer";
+import { TAE_FICHE_SECTIONS } from "@/lib/fiche/configs/tae-fiche-sections";
+import { getCurrentStepId } from "@/lib/fiche/getCurrentStepId";
 import { useTaeForm } from "@/components/tae/TaeForm/FormState";
 import { useOiData } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
-import { formStateToTae, type WizardFichePreviewMeta } from "@/lib/tae/fiche-helpers";
+import type { SelectorRefs } from "@/lib/fiche/types";
 
 type Props = {
-  previewMeta: WizardFichePreviewMeta;
+  previewMeta: {
+    authorFullName: string;
+    draftStartedAtIso: string;
+  };
 };
 
-/** Sommaire formulaire — FICHE-TACHE.md mode `sommaire`. */
+/** Sommaire formulaire — FicheRenderer mode `sommaire`. */
 export function FicheSommaireColumn({ previewMeta }: Props) {
-  const { state, dispatch } = useTaeForm();
+  const { state } = useTaeForm();
   const { oiList } = useOiData();
 
-  const tae = useMemo(() => {
-    if (!oiList || oiList.length === 0) return null;
-    return formStateToTae(state, oiList, previewMeta);
-  }, [state, oiList, previewMeta]);
+  // Stabiliser refs — ne pas invalider tous les selectors à chaque render
+  const refs = useMemo<SelectorRefs>(
+    () => ({ oiList: oiList ?? [], previewMeta }),
+    [oiList, previewMeta],
+  );
 
-  if (!tae) {
+  const activeStepId = getCurrentStepId(state.currentStep);
+
+  if (!oiList || oiList.length === 0) {
     return <div className="h-48 w-full animate-pulse rounded-xl bg-border/40" aria-hidden="true" />;
   }
 
   return (
-    <FicheTache
-      tae={tae}
+    <FicheRenderer
+      sections={TAE_FICHE_SECTIONS}
+      state={state}
+      refs={refs}
       mode="sommaire"
-      connaissancesSommaire={{
-        items: state.bloc7.connaissances,
-        onRemoveRow: (rowId) => dispatch({ type: "REMOVE_CONNAISSANCE_BY_ROW_ID", rowId }),
-      }}
+      activeStepId={activeStepId}
     />
   );
 }

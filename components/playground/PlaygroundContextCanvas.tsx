@@ -1,6 +1,7 @@
 "use client";
 
 import { FicheTache } from "@/components/tae/FicheTache";
+import { FicheLecture } from "@/components/tae/FicheLecture";
 import { TaeCard } from "@/components/tae/TaeCard";
 import { PrintableFicheFromTaeData } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
 import { PlaygroundFicheRenderer } from "@/components/playground/PlaygroundFicheRenderer";
@@ -47,11 +48,8 @@ export function PlaygroundContextCanvas({
 }: Props) {
   const fragmentOptions = playgroundFragmentsForContext(context);
   const useFicheMirror =
-    context === "sommaire" || context === "lecture"
-      ? viewMode === "isolated" || debug
-      : false;
-  const useThumbnailMirror =
-    context === "thumbnail" ? viewMode === "isolated" || debug : false;
+    context === "sommaire" || context === "lecture" ? viewMode === "isolated" || debug : false;
+  const useThumbnailMirror = context === "thumbnail" ? viewMode === "isolated" || debug : false;
   const usePrintMirror = context === "print" ? viewMode === "isolated" || debug : false;
 
   return (
@@ -123,10 +121,7 @@ export function PlaygroundContextCanvas({
       </div>
 
       <div
-        className={cn(
-          "relative min-h-0 flex-1 overflow-y-auto p-4 md:p-6",
-          debugStyles.preview,
-        )}
+        className={cn("relative min-h-0 flex-1 overflow-y-auto p-4 md:p-6", debugStyles.preview)}
         data-playground-preview="true"
         data-debug={debug ? "true" : undefined}
       >
@@ -154,10 +149,12 @@ export function PlaygroundContextCanvas({
             {debug || viewMode === "isolated" ? (
               <PlaygroundFragmentWrapper name="WizardPlaceholder">
                 <div className="rounded-xl border border-dashed border-zinc-300 bg-white p-8 text-center dark:border-zinc-600 dark:bg-zinc-900">
-                  <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Wizard (saisie)</p>
+                  <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                    Wizard (saisie)
+                  </p>
                   <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                    Phase 1 — emplacement réservé. Phase 2 : montage du formulaire réel ou storyboard
-                    statique aligné sur les blocs du wizard.
+                    Phase 1 — emplacement réservé. Phase 2 : montage du formulaire réel ou
+                    storyboard statique aligné sur les blocs du wizard.
                   </p>
                   <p className="mt-4 font-mono text-[11px] text-zinc-400">
                     Comportement sélectionné : {mock.comportement.id}
@@ -166,7 +163,9 @@ export function PlaygroundContextCanvas({
               </PlaygroundFragmentWrapper>
             ) : (
               <div className="rounded-xl border border-dashed border-zinc-300 bg-white p-8 text-center dark:border-zinc-600 dark:bg-zinc-900">
-                <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">Wizard (saisie)</p>
+                <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
+                  Wizard (saisie)
+                </p>
                 <p className="mt-3 text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
                   Phase 1 — emplacement réservé. Phase 2 : montage du formulaire réel ou storyboard
                   statique aligné sur les blocs du wizard.
@@ -222,7 +221,7 @@ export function PlaygroundContextCanvas({
                       isolatedFragmentId={isolatedFragmentId}
                     />
                   ) : (
-                    <FicheTache tae={mock} mode="lecture" />
+                    <FicheLecture tae={mock} />
                   )
                 ) : null}
 

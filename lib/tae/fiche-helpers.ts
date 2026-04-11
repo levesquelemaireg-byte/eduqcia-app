@@ -84,6 +84,10 @@ export type WizardFichePreviewMeta = {
  * Construit les données fiche à partir du brouillon formulaire (sommaire temps réel).
  * `oiList` : référentiel `/data/oi.json` (même source que le Bloc 2).
  * `previewMeta` : nom affiché + date d’ouverture (évite « Vous » et « — », aligné chargement page).
+ *
+ * @deprecated Remplacé par les selectors dans `lib/fiche/selectors/` pour le sommaire wizard
+ * et `lib/fiche/selectors/lecture-selectors.ts` pour la lecture.
+ * Dernier consommateur : `PrintableFichePreview.tsx` — supprimer après migration impression.
  */
 export function formStateToTae(
   state: TaeFormState,

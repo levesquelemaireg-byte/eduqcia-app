@@ -127,9 +127,15 @@ Multi-sélection, Miller 3 ou 4 niveaux (HEC vs HQC) ; `sous_section` parfois nu
 
 ## Fiche lecture
 
-Route `app/(app)/questions/[id]/page.tsx` ; composant `FicheTache` ; mode **`lecture`** (données Supabase agrégées par `lib/tae/server-fiche-map.ts`). La fiche écran sert au contrôle et à la diffusion ; le livrable élève cible reste PDF / passation ([FEATURES.md](./FEATURES.md) §1.1, §10.3).
+Route `app/(app)/questions/[id]/page.tsx` ; composant **`FicheLecture`** (`components/tae/FicheLecture.tsx`) qui utilise `FicheRenderer` mode **`lecture`** avec `TAE_LECTURE_SECTIONS` (`lib/fiche/configs/tae-lecture-sections.ts`). Données Supabase agrégées par `lib/tae/server-fiche-map.ts` → `TaeFicheData`. La fiche écran sert au contrôle et à la diffusion ; le livrable élève cible reste PDF / passation ([FEATURES.md](./FEATURES.md) §1.1, §10.3).
 
-**Sommaire wizard :** le mode **`sommaire`** de `FicheTache` réutilise **exactement la même structure d’article** que la fiche lecture complète (en-tête, sections consigne / corrigé / documents / guidage / CD / connaissances, pied de fiche — pas le thumbnail). Seules les données (brouillon vs publié) et certains comportements diffèrent (ex. pas de section votes en sommaire ; connaissances avec retrait côté sommaire). Voir aussi § Vue d’ensemble du formulaire ci-dessus.
+**Selectors lecture** (`lib/fiche/selectors/lecture-selectors.ts`) : acceptent `TaeFicheData` (données publiées, déjà résolues — pas de cascade NR ni de résolution de placeholders). Les mêmes composants section (`lib/fiche/sections/`) servent le sommaire et la lecture, seuls les selectors diffèrent.
+
+**Menu ⋮ (TaeCardMenu)** : positionné en absolute top-right dans le wrapper `FicheLecture` (hors `FicheRenderer` — respecte le contrat `{ data, mode }` des sections).
+
+**Layout** : colonne unique (comme le sommaire wizard), sans la grille 2 colonnes de l’ancien `FicheTache`.
+
+**Sommaire wizard :** le mode **`sommaire`** utilise `FicheRenderer` + `TAE_FICHE_SECTIONS` (`lib/fiche/configs/tae-fiche-sections.tsx`) avec des selectors qui lisent `TaeFormState` (blocs wizard). Les mêmes composants section sont partagés. `FicheSommaireColumn` (`components/tae/TaeForm/sommaire/`) orchestre le tout. Voir aussi § Vue d’ensemble du formulaire ci-dessus.
 
 **Vignette `TaeCard` et liste `/questions` :** l’extrait de consigne est produit par `plainConsigneForMiniature` (`lib/tae/consigne-helpers.ts`) : résolution des refs document en lettres, suppression du HTML, puis retrait de la phrase d’intro « Consultez… » lorsqu’elle est **identique** au modèle wizard — la **fiche lecture** et le **sommaire** affichent la consigne HTML complète. Icônes OI sur fiche / carte : [DECISIONS.md](./DECISIONS.md#fiche-lecture-et-vignette-liste-taecard).
 
