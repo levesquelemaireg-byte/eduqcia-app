@@ -27,6 +27,12 @@ export type DocumentFiche = {
    * `PrintableDocumentCell` utilise ce champ pour rendre les colonnes.
    */
   rendererDocument?: RendererDocument;
+  /** Type de source — primaire ou secondaire. */
+  sourceType?: "primaire" | "secondaire";
+  /** Repère temporel (texte libre) — ex. "1837", "1760-1867". */
+  repereTemporel?: string | null;
+  /** Libellé de la catégorie (textuelle ou iconographique) — pré-calculé pour affichage. */
+  categorieLabel?: string | null;
 };
 
 export type CdSelection = {

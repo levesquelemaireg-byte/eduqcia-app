@@ -12,7 +12,7 @@ type Props = {
   mode: FicheMode;
 };
 
-/** Card document compacte — lettre + type + titre + aperçu. */
+/** Card document compacte — lettre + type + titre + aperçu + métadonnées enrichies. */
 export function DocCard({ doc, mode }: Props) {
   const hasTitle = doc.titre.trim().length > 0;
   const hasBody =
@@ -43,6 +43,7 @@ export function DocCard({ doc, mode }: Props) {
         <p className="text-sm font-semibold text-deep">
           Document {doc.letter} — {doc.titre}
         </p>
+        <DocMetaChips doc={doc} />
         <div className="mt-3 flex gap-4">
           {doc.image_url ? (
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-border">
@@ -67,12 +68,43 @@ export function DocCard({ doc, mode }: Props) {
       <p className="text-sm font-semibold text-deep">
         Document {doc.letter} — {doc.titre}
       </p>
+      <DocMetaChips doc={doc} />
       {mode === "lecture" ? (
         <p className="mt-2 text-sm leading-relaxed text-steel">{doc.contenu}</p>
       ) : null}
       <div className="mt-3">
         <SourceCitation html={doc.source_citation} />
       </div>
+    </div>
+  );
+}
+
+/** Chips métadonnées enrichies — source type, repère temporel, catégorie. */
+function DocMetaChips({ doc }: { doc: DocumentFiche }) {
+  const chips: string[] = [];
+
+  if (doc.sourceType) {
+    chips.push(doc.sourceType === "primaire" ? "Primaire" : "Secondaire");
+  }
+  if (doc.repereTemporel?.trim()) {
+    chips.push(doc.repereTemporel.trim());
+  }
+  if (doc.categorieLabel) {
+    chips.push(doc.categorieLabel);
+  }
+
+  if (chips.length === 0) return null;
+
+  return (
+    <div className="mt-1.5 flex flex-wrap gap-1.5">
+      {chips.map((chip) => (
+        <span
+          key={chip}
+          className="inline-flex items-center rounded-full bg-surface px-2 py-0.5 text-[10px] font-medium text-muted"
+        >
+          {chip}
+        </span>
+      ))}
     </div>
   );
 }

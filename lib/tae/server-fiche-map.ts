@@ -12,6 +12,10 @@ import type {
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { canonicalOiIcone } from "@/lib/tae/oi-canonical";
 import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
+import {
+  getDocumentCategorieTextuelle,
+  documentCategorieIconographiqueLabel,
+} from "@/lib/tae/document-categories-helpers";
 import { sortAuteursByFamilyName } from "@/lib/tae/auteur-display-sort";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
@@ -157,6 +161,13 @@ export async function fetchTaeFicheBundle(
       const legendTrim = (firstEl?.image_legende ?? "").trim();
       const legendPos = parseDocumentLegendPosition(firstEl?.image_legende_position ?? null);
       const isMultiElement = d.structure !== "simple" && rawElements.length > 1;
+      const sourceType = firstEl?.source_type ?? undefined;
+      const categorieLabel =
+        firstEl?.type === "textuel" && firstEl.categorie_textuelle
+          ? (getDocumentCategorieTextuelle(firstEl.categorie_textuelle)?.label ?? null)
+          : firstEl?.type === "iconographique" && firstEl.categorie_iconographique
+            ? (documentCategorieIconographiqueLabel(firstEl.categorie_iconographique) ?? null)
+            : null;
       bySlot.set(l.slot, {
         letter: slotLetterFromSlot(l.slot),
         titre: d.titre,
@@ -170,6 +181,9 @@ export async function fetchTaeFicheBundle(
         imageLegende: legendTrim.length > 0 ? legendTrim : null,
         imageLegendePosition: legendTrim.length > 0 && legendPos ? legendPos : null,
         rendererDocument: isMultiElement ? hydrateRendererDocument(d) : undefined,
+        sourceType,
+        repereTemporel: d.repere_temporel ?? null,
+        categorieLabel,
       });
     }
     for (const sid of SLOT_ORDER) {

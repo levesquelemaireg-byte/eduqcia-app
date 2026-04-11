@@ -47,9 +47,9 @@ import { FicheFooter } from "@/lib/fiche/sections/FicheFooter";
 /* ─── Config lecture ───────────────────────────────────────────── */
 
 /**
- * Sections pour le mode lecture — même structure que TAE_FICHE_SECTIONS
- * mais typé TaeFicheData au lieu de TaeFormState.
+ * Sections pour les modes lecture et thumbnail — typé TaeFicheData.
  *
+ * Thumbnail : seuls header + consigne sont visibles (spec §7.2).
  * Pas de WizardConnaissancesSection — pas d'onRemoveRow en lecture.
  * Pas de custom skeletons — les données sont complètes (serveur).
  */
@@ -71,18 +71,21 @@ export const TAE_LECTURE_SECTIONS = [
     stepId: "consigne",
     selector: selectLectureGuidage,
     component: SectionGuidage,
+    visibleIn: ["sommaire", "lecture"],
   }),
   defineSection<TaeFicheData, DocumentsData>({
     id: "documents",
     stepId: "documents",
     selector: selectLectureDocuments,
     component: SectionDocuments,
+    visibleIn: ["sommaire", "lecture"],
   }),
   defineSection<TaeFicheData, CorrigeData>({
     id: "corrige",
     stepId: "corrige",
     selector: selectLectureCorrige,
     component: SectionCorrige,
+    visibleIn: ["sommaire", "lecture"],
   }),
   defineSection<TaeFicheData, GrilleData>({
     id: "grille",

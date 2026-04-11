@@ -4,12 +4,22 @@ import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { DocumentFiche } from "@/lib/types/fiche";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import { getSlotData, slotLetter, type DocumentSlotData } from "@/lib/tae/document-helpers";
+import {
+  getDocumentCategorieTextuelle,
+  documentCategorieIconographiqueLabel,
+} from "@/lib/tae/document-categories-helpers";
 
 /** Convertit un slot du wizard en DocumentFiche pour affichage. */
 function documentSlotToFiche(slotId: DocumentSlotId, slot: DocumentSlotData): DocumentFiche {
   const legendTrim = slot.image_legende.trim();
   const hasLegend = legendTrim.length > 0;
   const pos = slot.image_legende_position;
+  const categorieLabel =
+    slot.type === "textuel" && slot.categorie_textuelle
+      ? (getDocumentCategorieTextuelle(slot.categorie_textuelle)?.label ?? null)
+      : slot.type === "iconographique" && slot.type_iconographique
+        ? (documentCategorieIconographiqueLabel(slot.type_iconographique) ?? null)
+        : null;
   return {
     letter: slotLetter(slotId),
     titre: slot.titre,
@@ -22,6 +32,12 @@ function documentSlotToFiche(slotId: DocumentSlotId, slot: DocumentSlotData): Do
     printImpressionScale: 1,
     imageLegende: hasLegend ? legendTrim : null,
     imageLegendePosition: hasLegend && pos ? pos : null,
+    sourceType:
+      slot.source_type !== "primaire" && slot.source_type !== "secondaire"
+        ? undefined
+        : slot.source_type,
+    repereTemporel: slot.repere_temporel?.trim() || null,
+    categorieLabel,
   };
 }
 
