@@ -113,9 +113,9 @@ export default function PrototypeFicheLectureMaquettePage() {
           </header>
 
           <div className="min-w-0 space-y-8 px-4 py-5 sm:px-5">
-            <SectionBlock titleId="proto-docs" icon="docs" title="Document(s)">
+            <SectionBlock titleId="proto-docs" icon="article" title="Document(s)">
               <p className="text-sm text-steel">
-                Liste ou cartes documents (placeholder) — même glyphe docs que l’app.
+                Liste ou cartes documents (placeholder) — même glyphe article que l’app.
               </p>
             </SectionBlock>
 

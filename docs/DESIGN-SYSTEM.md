@@ -59,7 +59,7 @@ Bibliothèque **unique**. Glyphe en **`1em`**, pattern **`.icon-text`** / **`.ic
 | Niveau                                             | `school`                                  |
 | Discipline                                         | `menu_book`                               |
 | OI (label)                                         | `psychology`                              |
-| Documents                                          | `docs`                                    |
+| Documents                                          | `article`                                 |
 | CD                                                 | `license`                                 |
 | Connaissances                                      | `lightbulb`                               |
 | Voir / Modifier / Supprimer                        | `visibility` / `edit_document` / `delete` |
@@ -77,7 +77,7 @@ Les types de document ont des icônes **fixes** utilisées de manière cohérent
 | Document **textuel**        | `article`                       |
 | Document **iconographique** | `image_inset`                   |
 
-**Toute utilisation** d'une icône représentant un type de document doit référencer ces deux valeurs **via le helper**, jamais en hardcodant une autre icône (`docs`, `image`, `picture_as_pdf`, etc.).
+**Toute utilisation** d'une icône représentant un type de document doit référencer ces deux valeurs **via le helper**, jamais en hardcodant une autre icône (`image`, `picture_as_pdf`, etc.).
 
 **Catégorie « Autre »** :
 

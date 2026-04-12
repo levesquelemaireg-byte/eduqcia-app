@@ -738,7 +738,7 @@ supabase/
 | Opération intellectuelle   | `psychology`                                     |
 | Comportement / grille      | `table`                                          |
 | Nombre de lignes           | `format_line_spacing`                            |
-| Documents                  | `docs`                                           |
+| Documents                  | `article`                                        |
 | Compétence disciplinaire   | `license`                                        |
 | Connaissances              | `lightbulb`                                      |
 | Documentation légale       | `gavel` (exclusif — composant `LegalNoticeIcon`) |

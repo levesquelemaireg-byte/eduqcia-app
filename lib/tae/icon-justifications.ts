@@ -22,7 +22,8 @@ export const MATERIAL_ICON_TOOLTIP: Record<string, string> = {
   lightbulb: "Les connaissances sont les savoirs à mobiliser — la compréhension qui s'allume.",
   add_notes:
     "Ajout ou structuration d’un document — notes et pièces à intégrer au parcours pédagogique.",
-  docs: "Les sources primaires et secondaires sur lesquelles l'élève s'appuie.",
+  article:
+    "Documents historiques : les sources primaires et secondaires sur lesquelles l'élève s'appuie — point d'entrée visuel de la fiche document.",
   image:
     "Document iconographique — source visuelle à analyser (photographie, gravure, carte, etc.).",
   position_top_left:
@@ -64,8 +65,6 @@ export const MATERIAL_ICON_TOOLTIP: Record<string, string> = {
     "Le marteau évoque le cadre juridique et les obligations liées au droit d'auteur et aux règles d'utilisation des contenus en contexte scolaire.",
 
   // —— Fiche lecture document (`/documents/[id]`)
-  article:
-    "L’article évoque un texte ou un document tenu comme pièce à consulter — point d’entrée visuel de la fiche document.",
   description:
     "Le document lu : corps de texte ou reproduction iconographique affiché dans la colonne principale.",
   label:

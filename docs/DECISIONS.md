@@ -116,7 +116,7 @@ Textes d’infobulle : `lib/tae/icon-justifications.ts` (`MATERIAL_ICON_TOOLTIP`
 - **`tooltip_2`** — Guidage : aide contextuelle.
 - **`license`** — Compétence disciplinaire : validation officielle programme.
 - **`lightbulb`** — Connaissances relatives : savoirs à mobiliser.
-- **`docs`** — Documents historiques : sources.
+- **`article`** — Documents historiques : sources.
 - **`school`** — Niveau scolaire.
 - **`menu_book`** — Discipline.
 - **`psychology`** — Opération intellectuelle (label).

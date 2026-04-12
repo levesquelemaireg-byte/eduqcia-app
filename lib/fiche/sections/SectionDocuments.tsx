@@ -15,7 +15,7 @@ export function SectionDocuments({ data, mode }: Props) {
 
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="docs">{title}</SectionLabel>
+      <SectionLabel icon="article">{title}</SectionLabel>
 
       <div className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}>
         {data.documents.map((doc) => (

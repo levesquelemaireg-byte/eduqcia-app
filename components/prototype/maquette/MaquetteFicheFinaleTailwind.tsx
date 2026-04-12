@@ -32,7 +32,7 @@ function SectionDivider() {
 
 /**
  * Reproduction Tailwind de la fiche remplie (`maquette/fiche-maquette-finale.html`).
- * Icônes produit : corrigé `task_alt`, documents `docs`, compétence `license`.
+ * Icônes produit : corrigé `task_alt`, documents `article`, compétence `license`.
  */
 export function MaquetteFicheFinaleTailwind() {
   return (
@@ -151,7 +151,7 @@ export function MaquetteFicheFinaleTailwind() {
           <section className="relative px-5 py-4" aria-labelledby="mq-docs">
             <SectionDivider />
             <div className="pt-4">
-              <SectionTitle id="mq-docs" icon="docs">
+              <SectionTitle id="mq-docs" icon="article">
                 Document(s)
               </SectionTitle>
               <div className={cn(SECTION_INSET, "flex flex-col gap-[0.65rem]")}>

@@ -25,7 +25,7 @@ export const DOCUMENT_WIZARD_STEP_METAS = [
     stepperLine: "Document",
     label: DOCUMENT_WIZARD_STEP_DOCUMENT_LABEL,
     description: DOCUMENT_WIZARD_STEP_DOCUMENT_DESC,
-    icons: ["add_notes", "docs", "image"] as const,
+    icons: ["add_notes", "article", "image"] as const,
   },
   {
     id: "classification",
