@@ -579,6 +579,15 @@ export function ficheDocumentsSectionTitle(documentCount: number): string {
   return documentCount <= 1 ? FICHE_SECTION_TITLE_DOCUMENT : FICHE_SECTION_TITLE_DOCUMENTS;
 }
 
+/** Titre de section — guidage (vue détaillée tâche) */
+export const FICHE_SECTION_TITLE_GUIDAGE = "Guidage";
+
+/** Titre de section — production attendue / corrigé (vue détaillée tâche) */
+export const FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE = "Production attendue";
+
+/** Titre de section — grille d'évaluation ministérielle (vue détaillée tâche) */
+export const FICHE_SECTION_TITLE_GRILLE = "Grille d\u2019évaluation ministérielle";
+
 /** Bloc 2 — encadré paramètres verrouillés (`docs/UI-COPY.md` — Paramètres verrouillés) */
 export const BLOC2_BLUEPRINT_LOCKED_TITLE = "Paramètres verrouillés";
 

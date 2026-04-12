@@ -18,6 +18,7 @@ const config: Config = {
         error: "hsl(0 70% 50%)",
         border: "hsl(215 20% 85%)",
         muted: "hsl(215 15% 60%)",
+        corrige: "#a32d2d",
       },
       fontFamily: {
         sans: ["var(--font-manrope)", "Manrope", "sans-serif"],

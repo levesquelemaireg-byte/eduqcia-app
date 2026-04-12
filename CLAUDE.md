@@ -1109,3 +1109,173 @@ npm install server-only client-only
 - Empêche Storybook/Vite de planter sur les modules Node.js
 - Génère une erreur au BUILD si du code serveur est importé côté client
 - Best practice officielle Next.js
+
+---
+
+## Convention de nommage et structure des fichiers
+
+Cette convention s'applique à tout nouveau fichier ou dossier créé dans le repo. Le code existant est grandfathered et n'a pas à être renommé sauf décision explicite au cas par cas.
+
+### Principes directeurs
+
+Trois axes structurent chaque nouveau fichier : **entité métier**, **fonction technique**, **descriptif**. L'arborescence porte l'essentiel du contexte. Les noms de fichiers restent courts et descriptifs, sans redondance avec le chemin qui les contient.
+
+### Entités métier reconnues
+
+- `tache` — tâches d'apprentissage et d'évaluation
+- `document` — documents historiques de la banque
+- `epreuve` — épreuves (regroupements de tâches)
+- `banque` — vues de navigation et filtrage de la banque collaborative
+- `partagees` — composants, hooks et utilitaires réutilisés entre plusieurs entités
+
+Ajouter une nouvelle entité à cette liste nécessite une mise à jour explicite du présent document.
+
+### Fonctions techniques reconnues
+
+**Dans `components/{entite}/` :**
+
+- `vue-detaillee/` — la detail view canonique en mode lecture, route dédiée
+- `miniature/` — vignette compacte affichée dans les listes et résultats de banque
+- `apercu/` — aperçu temps réel dans le wizard de création
+- `sections/` — blocs de contenu rendus dans une vue (sous-dossier d'une vue)
+- `rail/` — composants du panneau de métadonnées latéral (sous-dossier d'une vue quand applicable)
+- `partagees/` — composants spécifiques à l'entité mais réutilisés entre ses vues
+
+**Dans `lib/fiche/selectors/{entite}/` :**
+
+- Fichiers plats pour les selectors du flux principal
+- `rail/` — sous-dossier pour les selectors du rail de métadonnées
+
+**Dans `hooks/` :**
+
+- `hooks/{entite}/` — hooks métier spécifiques à une entité
+- `hooks/partagees/` — hooks réutilisés entre plusieurs entités
+- `hooks/` racine — hooks purement techniques (breakpoint, debounce, etc.)
+
+### Règles de nommage des fichiers
+
+- **Kebab-case** pour tous les noms de fichiers : `hero.tsx`, `production-attendue.tsx`, `use-epingler.ts`
+- **Aucun préfixe ou suffixe technique** dans le nom de fichier — le contexte est porté par le dossier parent, pas par le nom. Écrire `hero.tsx` dans `sections/`, pas `hero-section.tsx`
+- Aucun point dans les noms de fichiers sauf l'extension
+- `index.tsx` pour le point d'entrée principal d'un dossier de composant complexe
+- Une responsabilité par fichier : un composant, un hook, un selector, un utilitaire. Éviter les fichiers fourre-tout
+
+### Règles de nommage des composants exportés
+
+- **PascalCase** systématiquement
+- Nom court et descriptif quand le dossier porte déjà le contexte. Exemple : `export function SectionHero()` dans `components/tache/vue-detaillee/sections/hero.tsx`
+- Nom préfixé par l'entité si le composant risque la collision à l'import. Exemple : `export function TacheRail()` pour éviter de se confondre avec un hypothétique `DocumentRail`
+- Règle de décision simple : si deux entités ont un composant au rôle fonctionnel identique (ex : « Rail », « BarreActions », « Layout »), préfixer par l'entité pour éviter les collisions d'import
+
+### Règles de nommage des selectors
+
+- Préfixe `select` systématique : `selectHero`, `selectRailNiveau`, `selectCorrige`
+- Le nom ne répète pas l'entité si le selector vit dans `selectors/tache/` ou `selectors/document/` — l'arborescence porte le contexte
+- Un selector par fichier avec export nommé
+- Nom de fichier = nom du selector en kebab-case sans le préfixe `select` : `hero.ts` pour `selectHero`, `rail/niveau.ts` pour `selectRailNiveau`
+
+### Règles de nommage des hooks
+
+- Préfixe `use` systématique
+- Kebab-case du fichier : `use-epingler.ts` exporte `useEpingler`
+- Hooks métier dans `hooks/{entite}/`
+- Hooks partagés entre entités dans `hooks/partagees/`
+- Hooks purement techniques dans `hooks/` racine
+
+### Langue
+
+- **Français** pour le code métier : noms de composants, variables métier, concepts du domaine, props métier (`estAuteur`, `estEpinglee`, `estPubliee`, `surAjouterEpreuve`), messages UI, toasts, contenu visible
+- **Anglais** pour les API React standards : `children`, `className`, `onClick`, `ref`, `style`, `disabled`, `aria-*`, `data-*`
+- **Anglais** pour les types génériques TypeScript et les patterns techniques usuels : `Props`, `State`, `Ref`, `Dispatch`
+- **Français** pour les commentaires inline et la documentation JSDoc
+- **Anglais** pour les noms de fichiers de configuration d'outils : `next.config.js`, `tsconfig.json`, `tailwind.config.ts`, etc.
+
+### Exemples complets de chemins valides
+
+**Composants métier tâche :**
+
+```
+components/tache/vue-detaillee/index.tsx               → TacheVueDetaillee
+components/tache/vue-detaillee/layout.tsx               → TacheVueDetailleeLayout
+components/tache/vue-detaillee/rail.tsx                 → TacheRail
+components/tache/vue-detaillee/barre-actions.tsx        → TacheBarreActions
+components/tache/vue-detaillee/sections/hero.tsx        → SectionHero
+components/tache/vue-detaillee/sections/documents.tsx   → SectionDocuments
+components/tache/vue-detaillee/sections/guidage.tsx     → SectionGuidage
+components/tache/vue-detaillee/sections/corrige.tsx     → SectionCorrige
+components/tache/vue-detaillee/sections/grille.tsx      → SectionGrille
+
+components/tache/miniature/index.tsx                    → TacheMiniature
+components/tache/apercu/index.tsx                       → TacheApercu
+```
+
+**Composants métier document :**
+
+```
+components/document/vue-detaillee/index.tsx             → DocumentVueDetaillee
+components/document/vue-detaillee/layout.tsx            → DocumentVueDetailleeLayout
+components/document/vue-detaillee/rail.tsx              → DocumentRail
+components/document/vue-detaillee/sections/hero.tsx     → SectionHero
+components/document/vue-detaillee/sections/contenu.tsx  → SectionContenu
+
+components/document/miniature/index.tsx                 → DocumentMiniature
+```
+
+**Composants partagés entre entités :**
+
+```
+components/partagees/fiche-modale/index.tsx             → FicheModale
+components/partagees/barre-navigation/index.tsx         → BarreNavigation
+```
+
+**Selectors :**
+
+```
+lib/fiche/selectors/tache/hero.ts                      → selectHero
+lib/fiche/selectors/tache/documents.ts                 → selectDocuments
+lib/fiche/selectors/tache/guidage.ts                   → selectGuidage
+lib/fiche/selectors/tache/corrige.ts                   → selectCorrige
+lib/fiche/selectors/tache/grille.ts                    → selectGrille
+lib/fiche/selectors/tache/rail/niveau.ts               → selectRailNiveau
+lib/fiche/selectors/tache/rail/discipline.ts           → selectRailDiscipline
+lib/fiche/selectors/tache/rail/aspects.ts              → selectRailAspects
+lib/fiche/selectors/tache/rail/chapitre-connaissances.ts → selectRailChapitreConnaissances
+lib/fiche/selectors/tache/rail/competence.ts           → selectRailCompetence
+lib/fiche/selectors/tache/rail/connaissances.ts        → selectRailConnaissances
+lib/fiche/selectors/tache/rail/documents-compte.ts     → selectRailDocumentsCompte
+lib/fiche/selectors/tache/rail/auteur.ts               → selectRailAuteur
+lib/fiche/selectors/tache/rail/dates.ts                → selectRailDates
+lib/fiche/selectors/tache/rail/statut.ts               → selectRailStatut
+```
+
+**Hooks :**
+
+```
+hooks/tache/use-epingler.ts                            → useEpingler
+hooks/tache/use-ajouter-epreuve.ts                     → useAjouterEpreuve
+hooks/partagees/use-fiche-modale.ts                    → useFicheModale
+hooks/use-breakpoint.ts                                → useBreakpoint
+```
+
+### Code existant (grandfathering)
+
+Les fichiers déjà en place ne sont pas renommés, notamment :
+
+- Les primitives dans `lib/fiche/primitives/` (`MetaChip`, `IconBadge`, `SectionLabel`, `ChipBar`, `ContentBlock`, `DocCard`, `MetaRow`)
+- Les selectors existants dans `lib/fiche/selectors/lecture-selectors.ts`
+- Le `FicheRenderer` existant et son config `TAE_LECTURE_SECTIONS`
+- Les routes et composants de banque, wizard, thumbnail existants
+
+La convention s'applique uniquement aux nouveaux fichiers créés à partir de la mise en place de cette règle. Quand un fichier existant est significativement modifié, son renommage reste optionnel et décidé au cas par cas — jamais imposé mécaniquement.
+
+### Règle de vérification avant création de fichier
+
+Avant de créer un nouveau fichier, se poser les trois questions suivantes :
+
+1. **Quelle entité métier ?** — `tache`, `document`, `epreuve`, `banque`, ou `partagees`
+2. **Quelle fonction technique ?** — `vue-detaillee`, `miniature`, `apercu`, `sections`, `rail`, ou autre
+3. **Quel descriptif court ?** — `hero`, `documents`, `guidage`, `niveau`, etc.
+
+Le chemin est alors déterminé automatiquement : `{base}/{entité}/{fonction}/{descriptif}.{ext}`
+
+Si aucune des trois questions n'a une réponse claire, le fichier ne devrait probablement pas être créé à cet emplacement — c'est un signal qu'il manque une décision architecturale en amont.

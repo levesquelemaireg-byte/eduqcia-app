@@ -125,6 +125,9 @@
 
   --color-accent-pulse: hsla(195, 70%, 45%, 0.12);
 
+  /* Corrigé — rouge stylo professeur, distinct de --color-error (réservé aux erreurs UI) */
+  --color-corrige: #a32d2d;
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 16px;
@@ -226,6 +229,8 @@
     var(--color-muted) 28%,
     var(--color-border-secondary)
   );
+
+  --color-corrige: #a32d2d;
 
   --shadow-sm: 0 1px 3px hsl(220 30% 10% / 0.08);
   --shadow-md: 0 4px 12px hsl(220 30% 10% / 0.12);

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import type { DocumentFiche } from "@/lib/types/fiche";
 import type { FicheMode } from "@/lib/fiche/types";
+import { cn } from "@/lib/utils/cn";
 import { hasFicheContent } from "@/lib/tae/fiche-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
@@ -11,10 +12,16 @@ import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html"
 type Props = {
   doc: DocumentFiche;
   mode: FicheMode;
+  /** Numéro affiché dans une pastille (1-4). Vue détaillée uniquement. */
+  numero?: number;
+  /** Glyphe Material Symbols de la catégorie du document. Vue détaillée uniquement. */
+  categorieGlyph?: string;
+  /** Handler de clic — rend la card interactive. Vue détaillée uniquement. */
+  onClick?: () => void;
 };
 
 /** Card document compacte — lettre + type + titre + aperçu + métadonnées enrichies. */
-export function DocCard({ doc, mode }: Props) {
+export function DocCard({ doc, mode, numero, categorieGlyph, onClick }: Props) {
   const hasTitle = doc.titre.trim().length > 0;
   const hasBody =
     doc.type === "textuel"
@@ -34,6 +41,60 @@ export function DocCard({ doc, mode }: Props) {
     );
   }
 
+  /* ── Mode vue détaillée (avec numéro + catégorie + cliquable) ── */
+  if (numero != null) {
+    const Wrapper = onClick ? "button" : "div";
+    return (
+      <Wrapper
+        type={onClick ? "button" : undefined}
+        className={cn(
+          "flex items-start gap-3.5 rounded-lg border-[0.5px] border-border bg-panel px-4 py-3.5 text-left",
+          onClick && "cursor-pointer hover:border-border-secondary transition-colors duration-150",
+        )}
+        onClick={onClick}
+      >
+        {/* Pastille numérotée */}
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-panel-alt text-xs font-bold text-deep">
+          {numero}
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-1.5">
+            {categorieGlyph ? (
+              <span
+                className="material-symbols-outlined text-[16px] text-accent"
+                aria-hidden="true"
+              >
+                {categorieGlyph}
+              </span>
+            ) : null}
+            <p className="text-sm font-semibold text-deep">
+              {doc.titre || `Document ${doc.letter}`}
+            </p>
+          </div>
+          {/* Ligne source : catégorie · repère temporel · auteur */}
+          <DocMetaLine doc={doc} />
+          {/* Aperçu du contenu — 2 lignes max */}
+          {doc.type === "textuel" && hasFicheContent(doc.contenu) ? (
+            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-steel">{doc.contenu}</p>
+          ) : null}
+          {doc.type === "iconographique" && doc.image_url ? (
+            <div className="relative mt-2 h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-border">
+              <Image
+                src={doc.image_url}
+                alt={doc.titre || `Document ${doc.letter}`}
+                width={64}
+                height={64}
+                className="h-16 w-16 object-cover"
+                unoptimized={doc.image_url.startsWith("blob:")}
+              />
+            </div>
+          ) : null}
+        </div>
+      </Wrapper>
+    );
+  }
+
+  /* ── Mode legacy (sommaire / lecture sans numero) ── */
   if (!complete) {
     return <DocCardSkeleton type={doc.type} />;
   }
@@ -78,6 +139,19 @@ export function DocCard({ doc, mode }: Props) {
       </div>
     </div>
   );
+}
+
+/** Ligne source compacte pour la vue détaillée — catégorie · repère temporel. */
+function DocMetaLine({ doc }: { doc: DocumentFiche }) {
+  const parts: string[] = [];
+  if (doc.categorieLabel) parts.push(doc.categorieLabel);
+  if (doc.repereTemporel?.trim()) parts.push(doc.repereTemporel.trim());
+  if (doc.sourceType)
+    parts.push(doc.sourceType === "primaire" ? "Source primaire" : "Source secondaire");
+
+  if (parts.length === 0) return null;
+
+  return <p className="mt-0.5 text-xs text-muted">{parts.join(" · ")}</p>;
 }
 
 /** Chips métadonnées enrichies — source type, repère temporel, catégorie. */
