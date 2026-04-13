@@ -620,6 +620,17 @@ export const TOAST_FICHE_FONCTIONNALITE_A_VENIR = "Fonctionnalité à venir";
 /** Toast après copie du lien de partage. */
 export const TOAST_FICHE_LIEN_COPIE = "Lien copié dans le presse-papiers";
 
+/* ─── Modale fiche document embarquée ────────────────────────── */
+
+/** Titre du header de la modale fiche document (`docs/specs/fiche-tache-lecture.md` §10). */
+export const FICHE_MODALE_TITRE_DOCUMENT = "Document référencé";
+
+/** Lien « Ouvrir en plein écran » dans le header de la modale. */
+export const FICHE_MODALE_OUVRIR_PLEIN_ECRAN = "Ouvrir en plein écran";
+
+/** État vide si le document n'est plus disponible (`docs/specs/fiche-tache-lecture.md` §12). */
+export const FICHE_MODALE_DOCUMENT_INDISPONIBLE = "Ce document n'est plus disponible";
+
 /** Bloc 2 — encadré paramètres verrouillés (`docs/UI-COPY.md` — Paramètres verrouillés) */
 export const BLOC2_BLUEPRINT_LOCKED_TITLE = "Paramètres verrouillés";
 

@@ -1,6 +1,6 @@
 # Fiche tâche — Contexte d'implémentation (detail view lecture)
 
-**Dernière mise à jour :** 12 avril 2026 (session 4 — fin Phase 5)
+**Dernière mise à jour :** 12 avril 2026 (session 5 — fin Phase 6)
 **Spec de référence :** `docs/specs/fiche-tache-lecture.md`
 **Convention de nommage :** `CLAUDE.md` § Convention de nommage et structure des fichiers
 
@@ -8,16 +8,16 @@
 
 ## Tableau de bord de progression
 
-| Phase | Titre                              | Statut        | Notes                                                 |
-| ----- | ---------------------------------- | ------------- | ----------------------------------------------------- |
-| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée             |
-| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                        |
-| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre                |
-| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre     |
-| 5     | Barre d'actions (TopNavBar)        | **Terminée**  | TacheBarreActions, handlers placeholder, build propre |
-| 6     | Modale de fiche document embarquée | Non commencée | Prochaine phase                                       |
-| 7     | Responsive tablet et mobile        | Non commencée |                                                       |
-| 8     | Accessibilité et polish final      | Non commencée |                                                       |
+| Phase | Titre                              | Statut        | Notes                                                          |
+| ----- | ---------------------------------- | ------------- | -------------------------------------------------------------- |
+| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée                      |
+| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                                 |
+| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre                         |
+| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre              |
+| 5     | Barre d'actions (TopNavBar)        | **Terminée**  | TacheBarreActions, handlers placeholder, build propre          |
+| 6     | Modale de fiche document embarquée | **Terminée**  | useFicheModale + FicheModale + TacheVueDetaillee, build propre |
+| 7     | Responsive tablet et mobile        | Non commencée | Prochaine phase                                                |
+| 8     | Accessibilité et polish final      | Non commencée |                                                                |
 
 ---
 
@@ -431,13 +431,44 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 
 ---
 
+## Journal de session — 12 avril 2026 (session 5)
+
+### Phase 6 — Modale de fiche document embarquée (terminée)
+
+**Fichiers créés :**
+
+- `hooks/partagees/use-fiche-modale.ts` — `useFicheModale` : hook d'état global pour la modale fiche (un seul modal actif à la fois). Expose `ouvrirFicheModale({ kind, id })`, `fermerFicheModale()`, `modaleOuverte`, `cibleModale`. Gère la restauration du focus sur l'élément déclencheur à la fermeture via `requestAnimationFrame`.
+- `components/partagees/fiche-modale/index.tsx` — `FicheModale` : overlay fixed (rgba(28,37,54,0.55)), panneau centré (min(1080px,90vw) × min(90vh,900px), bg-bg, radius 16px, shadow). Header avec titre "Document référencé" + lien "Ouvrir en plein écran" (Link vers `/documents/[id]`) + bouton fermeture `close`. Corps scrollable qui rend `DocumentFicheLecture` (FicheRenderer + DOC_FICHE_SECTIONS) strictement identique à la route dédiée. Focus trap manuel (Tab/Shift+Tab), Escape ferme, click backdrop ferme, `aria-modal="true"`, `role="dialog"`, `aria-labelledby`, focus initial sur le bouton fermeture. Skeleton 2 colonnes pendant le chargement. État erreur "Ce document n'est plus disponible".
+- `lib/actions/fetch-doc-fiche-data.ts` — `fetchDocFicheDataAction` : Server Action qui construit un `DocFicheData` complet depuis un document ID. Réplique la logique de `app/(app)/documents/[id]/page.tsx` (hydrate renderer document, fetch niveaux/disciplines/connaissances/profil/usages en parallèle). Retourne `{ ok: true, data }` ou `{ ok: false, error: "auth" | "not_found" }`.
+- `components/tache/vue-detaillee/index.tsx` — `TacheVueDetaillee` : orchestrateur client qui compose barre d'actions + layout 2 colonnes (FluxLecture + TacheRail) + FicheModale. Connecte `surClicDocument` (DocCards) → `ouvrirFicheModale`. Prêt à être utilisé par la page `/questions/[id]` quand elle sera mise à jour.
+
+**Fichiers modifiés :**
+
+- `lib/ui/ui-copy.ts` — ajout de 3 constantes : `FICHE_MODALE_TITRE_DOCUMENT`, `FICHE_MODALE_OUVRIR_PLEIN_ECRAN`, `FICHE_MODALE_DOCUMENT_INDISPONIBLE`.
+
+**Build :** propre, aucune erreur TS, ESLint propre (0 erreur sur les fichiers Phase 6), Prettier appliqué.
+
+### Décisions prises — Phase 6
+
+**D21 — Server Action pour fetch document :** la modale est un composant client qui a besoin des données document. Plutôt qu'un route handler, une Server Action `fetchDocFicheDataAction` est créée — cohérent avec le pattern du projet (auth vérifiée, Result type). La logique duplique celle de la page `/documents/[id]` car cette page est un Server Component qui ne peut pas être appelée comme une fonction. Si cette duplication pose problème à terme, extraire la logique commune dans un helper `lib/queries/`.
+
+**D22 — FicheModale pas basée sur SimpleModal :** `SimpleModal` existant a un layout header+body+footer avec `max-w-lg` et `max-h-[min(90vh,720px)]` — trop contraint pour la fiche document qui a besoin de 1080px de large et d'un header différent (lien "Ouvrir en plein écran"). `FicheModale` est un composant dédié qui reprend les patterns d'accessibilité de `SimpleModal` (Escape, click backdrop, aria, body overflow lock) mais avec un layout propre conforme à la spec §10.
+
+**D23 — Focus trap manuel vs librairie :** implémentation manuelle du focus trap (Tab/Shift+Tab cyclique) plutôt qu'une dépendance supplémentaire (`focus-trap-react`, `@headlessui/dialog`). Le pattern est suffisamment simple pour ce cas (un seul modal, pas d'emboîtement) et évite l'ajout d'une dépendance npm.
+
+**D24 — TacheVueDetaillee comme orchestrateur :** plutôt que de modifier la page `/questions/[id]/page.tsx` (hors scope), un composant orchestrateur `TacheVueDetaillee` est créé. Il compose les 4 sous-composants (barre, layout, flux, rail) et gère l'état modal. La page sera mise à jour pour l'utiliser dans une phase ultérieure.
+
+**D25 — Page non modifiée :** conformément à l'instruction "Ne PAS modifier la page `app/(app)/questions/[id]/page.tsx`", la page actuelle continue d'utiliser l'ancien `FicheLecture`. Le branchement de `TacheVueDetaillee` dans la page sera fait séparément.
+
+---
+
 ## Instructions pour reprendre (prochaine session)
 
 1. Lire `docs/specs/fiche-tache-lecture.md` en entier (spec de référence)
 2. Lire `CLAUDE.md` § Convention de nommage et structure des fichiers
 3. Lire ce fichier (`docs/specs/fiche-tache-implementation-context.md`)
 4. Vérifier l'état de progression dans le tableau de bord ci-dessus
-5. Attaquer la phase suivante non terminée (Phase 6 — Modale de fiche document embarquée)
+5. Attaquer la phase suivante non terminée (Phase 7 — Responsive tablet et mobile)
 6. En fin de session, mettre à jour ce fichier :
    - Avancement dans le tableau de bord
    - Nouvelles décisions architecturales prises
