@@ -239,6 +239,7 @@ export async function getBankPublishedTaePage(
   const { data, error, count } = await q.range(from, to);
 
   if (error || !data) {
+    if (error) console.error("[getBankPublishedTaePage]", error.message);
     return { rows: [], total: 0 };
   }
 

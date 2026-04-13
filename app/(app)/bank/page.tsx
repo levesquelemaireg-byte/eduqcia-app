@@ -1,4 +1,7 @@
 import { redirect } from "next/navigation";
+
+/** La banque affiche les tâches publiées par tous les utilisateurs — jamais cacher. */
+export const dynamic = "force-dynamic";
 import { BankDocumentsPanel } from "@/components/bank/BankDocumentsPanel";
 import { BankEvaluationsPanel } from "@/components/bank/BankEvaluationsPanel";
 import { BankOnglets } from "@/components/bank/BankOnglets";
