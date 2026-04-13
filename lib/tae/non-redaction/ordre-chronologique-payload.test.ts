@@ -86,6 +86,8 @@ describe("ordre-chronologique-payload", () => {
       optionC: [3, 4, 1, 2],
       optionD: [4, 3, 2, 1],
       correctLetter: "A",
+      optionsJustification: "",
+      manualTieBreakSequence: null,
     });
     expect(html).toContain("data-ordre-chrono-student");
     expect(html).toContain("{{doc_A}}");
@@ -108,6 +110,8 @@ describe("ordre-chronologique-payload", () => {
       optionC: [3, 4, 1, 2],
       optionD: [4, 3, 2, 1],
       correctLetter: "A",
+      optionsJustification: "",
+      manualTieBreakSequence: null,
     });
     const parts = parseOrdreChronologiqueConsigneForStudentPrint(html);
     expect(parts).not.toBeNull();
@@ -131,6 +135,8 @@ describe("ordre-chronologique-payload", () => {
       optionC: [3, 4, 1, 2],
       optionD: [4, 3, 2, 1],
       correctLetter: "A",
+      optionsJustification: "",
+      manualTieBreakSequence: null,
     });
     const prep = prepareOrdreChronologiqueConsigneForTeacherDisplay(html);
     expect(prep).not.toContain(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
@@ -147,6 +153,8 @@ describe("ordre-chronologique-payload", () => {
       optionC: [2, 1, 4, 3] as OrdrePermutation,
       optionD: [4, 3, 2, 1] as OrdrePermutation,
       correctLetter: "B" as const,
+      optionsJustification: "",
+      manualTieBreakSequence: null,
     };
     expect(ordreChronologiqueCorrectPermutation(p)).toEqual(row);
   });

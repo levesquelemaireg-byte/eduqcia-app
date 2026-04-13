@@ -34,14 +34,14 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
   /* ─── Handlers ─────────────────────────────────────────────── */
 
   const surAjouterEpreuve = useCallback(() => {
-    console.log("ajouter à épreuve", taeId);
+    console.warn("ajouter à épreuve", taeId);
     toast.info(TOAST_FICHE_FONCTIONNALITE_A_VENIR);
   }, [taeId]);
 
   const surEpingler = useCallback(() => {
     const prochain = !epinglee;
     setEpinglee(prochain);
-    console.log("épingler toggle", taeId, prochain);
+    console.warn("épingler toggle", taeId, prochain);
     toast.info(TOAST_FICHE_FONCTIONNALITE_A_VENIR);
   }, [epinglee, taeId]);
 
@@ -57,13 +57,13 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
 
   const surExporterPdf = useCallback(() => {
     setKebabOuvert(false);
-    console.log("exporter PDF", taeId);
+    console.warn("exporter PDF", taeId);
     toast.info(TOAST_FICHE_FONCTIONNALITE_A_VENIR);
   }, [taeId]);
 
   const surSupprimer = useCallback(() => {
     setKebabOuvert(false);
-    console.log("supprimer", taeId);
+    console.warn("supprimer", taeId);
   }, [taeId]);
 
   /* ─── Fermeture kebab sur Escape ───────────────────────────── */

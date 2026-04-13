@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils/cn";
 import { MaterialSymbolOiGlyph } from "@/components/ui/MaterialSymbolOiGlyph";
 import type { FicheMode } from "@/lib/fiche/types";
 

@@ -63,9 +63,6 @@ import {
   BLOC3_CONSIGNE_LIBRE_LABEL,
   BLOC3_REDIGER_LIBREMENT,
   BLOC3_REVENIR_GABARIT,
-  BLOC3_COMPOSANTES_LABEL,
-  BLOC3_COMPOSANTES_DISABLED,
-  BLOC3_BADGE_GABARIT,
 } from "@/lib/ui/ui-copy";
 
 export default function Bloc3TemplatePur() {
@@ -102,7 +99,6 @@ function VarianteTriple({
   state: import("@/lib/tae/tae-form-state-types").TaeFormState;
   dispatch: import("react").Dispatch<import("@/lib/tae/tae-form-state-types").TaeFormAction>;
 }) {
-  const b = state.bloc2;
   const modeStructure = state.bloc3.perspectivesMode ?? "groupe";
   const typePerspectives = state.bloc3.perspectivesType;
   const contexte = state.bloc3.perspectivesContexte;
@@ -230,7 +226,6 @@ function VarianteOi6({
   state: import("@/lib/tae/tae-form-state-types").TaeFormState;
   dispatch: import("react").Dispatch<import("@/lib/tae/tae-form-state-types").TaeFormAction>;
 }) {
-  const b = state.bloc2;
   const modeStructure = state.bloc3.perspectivesMode ?? "groupe";
   const enjeu = state.bloc3.oi6Enjeu;
 

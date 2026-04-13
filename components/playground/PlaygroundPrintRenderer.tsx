@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
-import type { GrilleEntry } from "@/components/tae/TaeForm/bloc2/types";
 import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
 import { PRINTABLE_FICHE_SECTION_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
 import {
@@ -23,7 +22,6 @@ import { parseAvantApresConsigneForStudentPrint } from "@/lib/tae/non-redaction/
 import { parseLigneDuTempsConsigneForStudentPrint } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import type { TaeFicheData } from "@/lib/types/fiche";
-import { shouldPrintDocumentFullWidth } from "@/lib/tae/print-document-full-width";
 import { cn } from "@/lib/utils/cn";
 import { PlaygroundFragmentWrapper } from "@/components/playground/PlaygroundFragmentWrapper";
 import type { PlaygroundViewMode } from "@/lib/fragment-playground/types";
@@ -163,7 +161,10 @@ export function PlaygroundPrintRenderer({ tae, viewMode, isolatedFragmentId }: P
   if (isolatedFragmentId === "PrintDossier") {
     return (
       <div className={cn("printable-sheet", styles.printFeuilletRoot)}>
-        <section className={cn(styles.paper, "w-full max-w-full")} aria-label={PRINTABLE_FICHE_SECTION_COPY.documents}>
+        <section
+          className={cn(styles.paper, "w-full max-w-full")}
+          aria-label={PRINTABLE_FICHE_SECTION_COPY.documents}
+        >
           <PlaygroundFragmentWrapper name="PrintDossier">
             <PlaygroundPrintDossierBody tae={tae} />
           </PlaygroundFragmentWrapper>
@@ -188,6 +189,8 @@ export function PlaygroundPrintRenderer({ tae, viewMode, isolatedFragmentId }: P
   }
 
   return (
-    <p className="text-sm text-zinc-500 dark:text-zinc-400">Fragment inconnu : {isolatedFragmentId}</p>
+    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+      Fragment inconnu : {isolatedFragmentId}
+    </p>
   );
 }

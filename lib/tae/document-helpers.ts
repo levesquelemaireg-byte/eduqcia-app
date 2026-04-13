@@ -1,6 +1,5 @@
 import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 

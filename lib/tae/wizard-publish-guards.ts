@@ -14,7 +14,6 @@ import {
 import {
   isAvantApresDocumentsPublishable,
   isAvantApresDocumentsStepComplete,
-  isAvantApresPayloadCompleteForCdGate,
   isAvantApresPayloadConsistentWithDocuments,
   normalizeAvantApresPayload,
 } from "@/lib/tae/non-redaction/avant-apres-payload";

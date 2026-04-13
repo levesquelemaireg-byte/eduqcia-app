@@ -37,5 +37,7 @@ export function useOrdreChronologiquePayloadBootstrap(): void {
         dispatch({ type: "NON_REDACTION_PATCH_ORDRE_CHRONO", patch: n });
       }
     }
+    // Intentionnel : on ne veut pas re-run sur tout `state`, uniquement sur le payload non-rédaction
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, state.bloc5.nonRedaction]);
 }

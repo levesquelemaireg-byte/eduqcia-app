@@ -23,5 +23,7 @@ export function useAvantApresPayloadBootstrap(): void {
         patch: initialAvantApresPayload(),
       });
     }
+    // Intentionnel : on ne veut pas re-run sur tout `state`, uniquement sur le comportement et le payload non-rédaction
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, state.bloc2.comportementId, state.bloc5.nonRedaction]);
 }

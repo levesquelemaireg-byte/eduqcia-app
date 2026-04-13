@@ -31,7 +31,7 @@ type Props = {
 // ---------------------------------------------------------------------------
 
 export function RadioCardGroup({
-  name,
+  name: _name,
   options,
   value,
   onChange,
@@ -140,9 +140,7 @@ export function RadioCardGroup({
                   <span className="text-[13px] font-medium text-deep">{opt.label}</span>
                 </span>
                 {opt.description ? (
-                  <span className="pl-0 text-xs leading-relaxed text-muted">
-                    {opt.description}
-                  </span>
+                  <span className="pl-0 text-xs leading-relaxed text-muted">{opt.description}</span>
                 ) : null}
               </span>
             </button>

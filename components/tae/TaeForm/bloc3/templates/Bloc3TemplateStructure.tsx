@@ -7,7 +7,10 @@
  * Spec : docs/SPEC-TEMPLATES-CONSIGNE.md § OI3 · 3.3 et 3.4
  */
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { BLOC3_MODAL_GUIDAGE_BODY, BLOC3_MODAL_GUIDAGE_TITLE } from "@/components/tae/TaeForm/bloc3/modalCopy";
+import {
+  BLOC3_MODAL_GUIDAGE_BODY,
+  BLOC3_MODAL_GUIDAGE_TITLE,
+} from "@/components/tae/TaeForm/bloc3/modalCopy";
 import { SectionGuidage } from "@/components/tae/TaeForm/bloc3/SectionGuidage";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { useTaeForm } from "@/components/tae/TaeForm/FormState";
@@ -18,7 +21,6 @@ import { isBlueprintFieldsComplete } from "@/lib/tae/blueprint-helpers";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import {
   perspectiveTypePartitif,
-  perspectiveTypeSingulier,
   perspectiveTypePluriel,
 } from "@/lib/tae/oi-perspectives/perspectives-helpers";
 import {
@@ -58,8 +60,12 @@ export default function Bloc3TemplateStructure() {
 
   const isDesaccord = b.comportementId === "3.3";
   const accordLabel = isDesaccord ? "en désaccord" : "d'accord";
-  const consigneModalTitle = isDesaccord ? BLOC3_MODAL_CONSIGNE_33_TITLE : BLOC3_MODAL_CONSIGNE_34_TITLE;
-  const consigneModalBody = isDesaccord ? BLOC3_MODAL_CONSIGNE_33_BODY : BLOC3_MODAL_CONSIGNE_34_BODY;
+  const consigneModalTitle = isDesaccord
+    ? BLOC3_MODAL_CONSIGNE_33_TITLE
+    : BLOC3_MODAL_CONSIGNE_34_TITLE;
+  const consigneModalBody = isDesaccord
+    ? BLOC3_MODAL_CONSIGNE_33_BODY
+    : BLOC3_MODAL_CONSIGNE_34_BODY;
 
   const preview = useMemo(() => {
     const partitif = perspectiveTypePartitif(typePerspectives);
@@ -132,10 +138,16 @@ export default function Bloc3TemplateStructure() {
           required
           options={[
             { value: "acteurs", label: PERSP_BLOC3_TYPE_ACTEURS, description: "Source primaire" },
-            { value: "historiens", label: PERSP_BLOC3_TYPE_HISTORIENS, description: "Source secondaire" },
+            {
+              value: "historiens",
+              label: PERSP_BLOC3_TYPE_HISTORIENS,
+              description: "Source secondaire",
+            },
           ]}
           value={typePerspectives}
-          onChange={(v) => dispatch({ type: "SET_PERSPECTIVES_TYPE", value: v as "acteurs" | "historiens" })}
+          onChange={(v) =>
+            dispatch({ type: "SET_PERSPECTIVES_TYPE", value: v as "acteurs" | "historiens" })
+          }
         />
 
         {/* Contexte */}
@@ -176,9 +188,7 @@ export default function Bloc3TemplateStructure() {
         onClose={() => setModalConsigne(false)}
         titleStyle="info-help"
       >
-        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">
-          {consigneModalBody}
-        </p>
+        <p className="whitespace-pre-line text-sm leading-relaxed text-deep">{consigneModalBody}</p>
       </SimpleModal>
       <SimpleModal
         open={modalGuidage}

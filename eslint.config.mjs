@@ -15,6 +15,10 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Scripts Node CommonJS (require) — hors règles TypeScript ESM
     "scripts/**/*.cjs",
+    // Fichier généré par `npm run gen:types` — pas de lint
+    "lib/types/database.ts",
+    // Artefacts build maquette — pas de lint
+    "maquette/**",
   ]),
   {
     files: ["**/*.{js,jsx,ts,tsx,mjs,cjs}"],

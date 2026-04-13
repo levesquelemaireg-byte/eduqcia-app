@@ -25,7 +25,6 @@ import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
 import {
   BLOC7_CONNAISSANCES_HELP,
   BLOC7_CONNAISSANCES_LABEL,
-  BLOC7_CONNAISSANCES_RESET,
   BLOC7_GATE,
   WIZARD_CONNAISSANCES_EMPTY_FILTER,
   WIZARD_REFERENTIEL_CONN_INDISPO,
@@ -103,24 +102,6 @@ export function Bloc7AspectsConnaissances() {
     dispatch({ type: "CLEAR_CONNAISSANCES" });
     setMillerResetKey((k) => k + 1);
   };
-
-  const resetConnaissancesButton = (
-    <div className="flex justify-end pt-1">
-      <button
-        type="button"
-        onClick={handleResetConnaissances}
-        className="icon-text max-w-full flex-wrap justify-end gap-[0.35em] rounded-md px-2 py-1 text-xs font-medium text-muted transition-colors hover:bg-error/5 hover:text-error focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-      >
-        <span
-          className="material-symbols-outlined shrink-0 text-[0.95em] leading-none text-inherit"
-          aria-hidden="true"
-        >
-          remove_selection
-        </span>
-        <span>{BLOC7_CONNAISSANCES_RESET}</span>
-      </button>
-    </div>
-  );
 
   const connaissancesBlock = () => {
     if (discipline === "geo") {

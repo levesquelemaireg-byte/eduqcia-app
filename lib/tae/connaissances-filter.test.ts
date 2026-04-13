@@ -63,7 +63,7 @@ describe("filterConnRowsByNiveau", () => {
     const rows: HqcConnRow[] = ["P1", "P2", "P3", "P4", "P5", "P6"].map((periode, i) =>
       hqcRow({ id: `q${i}`, periode }),
     );
-    const out = filterConnRowsByNiveau(rows, "sec3");
+    const out = filterConnRowsByNiveau(rows, "sec3") as HqcConnRow[];
     const periodes = new Set(out.map((r) => r.periode));
     expect(periodes.size).toBe(4);
     expect(periodes.has("P1")).toBe(true);

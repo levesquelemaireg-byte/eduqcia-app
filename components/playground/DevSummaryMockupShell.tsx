@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { DevBankSummaryMockupCard } from "@/components/playground/DevBankSummaryMockupCard";
 import { DevBankThumbnailMockupCard } from "@/components/playground/DevBankThumbnailMockupCard";
 import { PlaygroundBehaviorSelector } from "@/components/playground/PlaygroundBehaviorSelector";
@@ -31,11 +31,7 @@ function readStoredView(): SummaryMockupView {
 export function DevSummaryMockupShell() {
   const { oiList, error } = useOiData();
   const [overrideComportementId, setOverrideComportementId] = useState<string | null>(null);
-  const [view, setView] = useState<SummaryMockupView>("thumbnail");
-
-  useEffect(() => {
-    setView(readStoredView());
-  }, []);
+  const [view, setView] = useState<SummaryMockupView>(readStoredView);
 
   const firstSelectableWithMock = useMemo(() => {
     if (!oiList) return null;

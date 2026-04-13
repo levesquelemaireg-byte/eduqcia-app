@@ -4,7 +4,7 @@
  * Monte le vrai composant bloc résolu dans un TaeFormProvider avec state mocké.
  * Même logique que index.tsx — resolveWizardBlocComponent + fallback BLOC_COMPONENTS.
  */
-import type { ComponentType } from "react";
+import { type ComponentType, useMemo } from "react";
 import { TaeFormProvider } from "@/components/tae/TaeForm/FormState";
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/bloc3/Bloc3ConsigneProduction";
 import Bloc3ModeleSouple from "@/components/tae/TaeForm/bloc3/templates/Bloc3ModeleSouple";
@@ -67,9 +67,12 @@ function resolveBloc(comportementId: string, bloc: 3 | 4 | 5): ComponentType {
 
   if (bloc === 3) {
     switch (config.bloc3.type) {
-      case "modele_souple": return Bloc3ModeleSouple;
-      case "structure": return Bloc3TemplateStructure;
-      case "pur": return Bloc3TemplatePur;
+      case "modele_souple":
+        return Bloc3ModeleSouple;
+      case "structure":
+        return Bloc3TemplateStructure;
+      case "pur":
+        return Bloc3TemplatePur;
     }
   }
 
@@ -83,16 +86,22 @@ function resolveBloc(comportementId: string, bloc: 3 | 4 | 5): ComponentType {
 // State mocké
 // ---------------------------------------------------------------------------
 
-function buildMockedState(comportementId: string, bloc: 3 | 4 | 5, oiList: OiEntryJson[]): TaeFormState {
+function buildMockedState(
+  comportementId: string,
+  bloc: 3 | 4 | 5,
+  oiList: OiEntryJson[],
+): TaeFormState {
   const oi = oiList.find((o) => o.comportements_attendus.some((c) => c.id === comportementId));
   const comp = oi?.comportements_attendus.find((c) => c.id === comportementId);
   const nb = comp?.nb_documents ?? 1;
   const config = getWizardBlocConfig(comportementId);
 
   const stepIndex =
-    bloc === 3 ? TAE_REDACTION_STEP_INDEX
-    : bloc === 4 ? TAE_DOCUMENTS_STEP_INDEX
-    : TAE_BLOC5_STEP_INDEX;
+    bloc === 3
+      ? TAE_REDACTION_STEP_INDEX
+      : bloc === 4
+        ? TAE_DOCUMENTS_STEP_INDEX
+        : TAE_BLOC5_STEP_INDEX;
 
   return {
     ...initialTaeFormState,
@@ -113,20 +122,13 @@ function buildMockedState(comportementId: string, bloc: 3 | 4 | 5, oiList: OiEnt
       ...initialTaeFormState.bloc3,
       consigne: "<p>Consigne de test — wizard lab.</p>",
       perspectivesMode:
-        config?.bloc4.type === "perspectives" || config?.bloc4.type === "moments"
-          ? "groupe"
-          : null,
+        config?.bloc4.type === "perspectives" || config?.bloc4.type === "moments" ? "groupe" : null,
     },
     bloc4: {
       ...initialTaeFormState.bloc4,
       perspectives:
-        config?.bloc4.type === "perspectives"
-          ? emptyPerspectives(config.bloc4.count)
-          : null,
-      moments:
-        config?.bloc4.type === "moments"
-          ? emptyMoments(2)
-          : null,
+        config?.bloc4.type === "perspectives" ? emptyPerspectives(config.bloc4.count) : null,
+      moments: config?.bloc4.type === "moments" ? emptyMoments(2) : null,
     },
   };
 }
@@ -146,7 +148,7 @@ const PREVIEW_META = { authorFullName: "Dev Lab", draftStartedAtIso: new Date().
 
 export function LabBlocViewer({ comportementId, bloc, showSommaire, oiList }: Props) {
   const mockedState = buildMockedState(comportementId, bloc, oiList);
-  const Comp = resolveBloc(comportementId, bloc);
+  const Comp = useMemo(() => resolveBloc(comportementId, bloc), [comportementId, bloc]);
 
   return (
     <TaeFormProvider
@@ -156,7 +158,10 @@ export function LabBlocViewer({ comportementId, bloc, showSommaire, oiList }: Pr
     >
       <div className="flex min-h-[60vh] rounded-lg border border-border">
         {/* Colonne édition */}
-        <div className={`min-w-0 bg-[var(--color-panel)] p-6 ${showSommaire ? "w-[42%] shrink-0" : "flex-1"}`}>
+        <div
+          className={`min-w-0 bg-[var(--color-panel)] p-6 ${showSommaire ? "w-[42%] shrink-0" : "flex-1"}`}
+        >
+          {/* eslint-disable-next-line react-hooks/static-components -- résolution dynamique intentionnelle (dev lab) */}
           <Comp />
         </div>
         {/* Colonne sommaire */}

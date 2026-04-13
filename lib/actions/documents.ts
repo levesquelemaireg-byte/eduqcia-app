@@ -9,10 +9,7 @@ import {
   IMAGE_UPLOAD_MAX_BYTES,
 } from "@/lib/images/image-upload-constants";
 import { ResizeImageError, resizeImage } from "@/lib/images/resize-image";
-import type {
-  UploadTaeDocumentImageResult,
-  UploadTaeDocumentImageValidationReason,
-} from "@/lib/types/upload-tae-document-image";
+import type { UploadTaeDocumentImageResult } from "@/lib/types/upload-tae-document-image";
 import { createClient } from "@/lib/supabase/server";
 
 export type {
