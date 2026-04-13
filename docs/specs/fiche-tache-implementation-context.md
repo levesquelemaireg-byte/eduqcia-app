@@ -1,6 +1,6 @@
 # Fiche tâche — Contexte d'implémentation (detail view lecture)
 
-**Dernière mise à jour :** 12 avril 2026 (session 4 — fin Phase 4)
+**Dernière mise à jour :** 12 avril 2026 (session 4 — fin Phase 5)
 **Spec de référence :** `docs/specs/fiche-tache-lecture.md`
 **Convention de nommage :** `CLAUDE.md` § Convention de nommage et structure des fichiers
 
@@ -8,16 +8,16 @@
 
 ## Tableau de bord de progression
 
-| Phase | Titre                              | Statut        | Notes                                             |
-| ----- | ---------------------------------- | ------------- | ------------------------------------------------- |
-| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée         |
-| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                    |
-| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre            |
-| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre |
-| 5     | Barre d'actions (TopNavBar)        | Non commencée | Prochaine phase                                   |
-| 6     | Modale de fiche document embarquée | Non commencée |                                                   |
-| 7     | Responsive tablet et mobile        | Non commencée |                                                   |
-| 8     | Accessibilité et polish final      | Non commencée |                                                   |
+| Phase | Titre                              | Statut        | Notes                                                 |
+| ----- | ---------------------------------- | ------------- | ----------------------------------------------------- |
+| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée             |
+| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                        |
+| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre                |
+| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre     |
+| 5     | Barre d'actions (TopNavBar)        | **Terminée**  | TacheBarreActions, handlers placeholder, build propre |
+| 6     | Modale de fiche document embarquée | Non commencée | Prochaine phase                                       |
+| 7     | Responsive tablet et mobile        | Non commencée |                                                       |
+| 8     | Accessibilité et polish final      | Non commencée |                                                       |
 
 ---
 
@@ -407,13 +407,37 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 
 ---
 
+### Phase 5 — Barre d'actions (terminée)
+
+**Fichiers créés :**
+
+- `components/tache/vue-detaillee/barre-actions.tsx` — `TacheBarreActions` : `<header>` sticky top-0 z-10, fond panel, border-bottom 0.5px. À gauche : lien "Banque" avec `arrow_back` vers `/questions`. À droite : bouton primaire "Ajouter à une épreuve" (`snippet_folder`, bg-accent), bouton icône toggle épingler (`file_save`, `aria-pressed`, `fontVariationSettings FILL` quand actif), bouton outline "Modifier" (auteur seulement, `edit_document`), kebab menu (`more_vert`) avec Partager (copie URL clipboard), Exporter en PDF, Supprimer (auteur, couleur error, divider). Handlers placeholder conformes aux décisions Q3/Q7/D5 : `console.log` + toast "Fonctionnalité à venir" pour épingler, ajouter à épreuve, exporter PDF. Partager fonctionne réellement (clipboard API + toast). Supprimer est un `console.log` placeholder.
+
+**Fichiers modifiés :**
+
+- `lib/ui/ui-copy.ts` — ajout de 11 constantes : `FICHE_BARRE_RETOUR`, `FICHE_BARRE_AJOUTER_EPREUVE`, `FICHE_BARRE_EPINGLER`, `FICHE_BARRE_MODIFIER`, `FICHE_BARRE_PARTAGER`, `FICHE_BARRE_EXPORTER_PDF`, `FICHE_BARRE_SUPPRIMER`, `TOAST_FICHE_FONCTIONNALITE_A_VENIR`, `TOAST_FICHE_LIEN_COPIE`.
+
+**Build :** propre. 4 warnings ESLint `no-console` attendus (placeholders hors scope v1).
+
+### Décisions prises — Phase 5
+
+**D17 — Positionnement kebab simplifié :** le kebab utilise un positionnement `absolute` relatif au bouton trigger (pas le `fixed` avec `computeMenuCoords` de `TaeCardMenu`). La barre d'actions est sticky et son contexte de positionnement est prévisible — pas besoin du pattern complexe avec scroll/resize listeners.
+
+**D18 — Partager fonctionne réellement :** contrairement aux autres actions hors scope v1, "Partager" (copier le lien) est trivial à implémenter via `navigator.clipboard.writeText`. Livré fonctionnel avec toast de confirmation.
+
+**D19 — Signaler un problème non rendu :** marqué v2 dans la spec, pas d'item dans le kebab. Sera ajouté quand la feature v2 sera scoped.
+
+**D20 — Props métier en français :** conformément à CLAUDE.md, les props métier sont en français (`estAuteur`, `surAjouterEpreuve`, `surEpingler`, `surPartager`). Les handlers internes et les callbacks du composant suivent cette convention.
+
+---
+
 ## Instructions pour reprendre (prochaine session)
 
 1. Lire `docs/specs/fiche-tache-lecture.md` en entier (spec de référence)
 2. Lire `CLAUDE.md` § Convention de nommage et structure des fichiers
 3. Lire ce fichier (`docs/specs/fiche-tache-implementation-context.md`)
 4. Vérifier l'état de progression dans le tableau de bord ci-dessus
-5. Attaquer la phase suivante non terminée (Phase 5 — Barre d'actions)
+5. Attaquer la phase suivante non terminée (Phase 6 — Modale de fiche document embarquée)
 6. En fin de session, mettre à jour ce fichier :
    - Avancement dans le tableau de bord
    - Nouvelles décisions architecturales prises

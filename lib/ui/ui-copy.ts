@@ -599,6 +599,27 @@ export const FICHE_RAIL_STATUT_PUBLIEE = "Publiée";
 /** Badge statut brouillon. */
 export const FICHE_RAIL_STATUT_BROUILLON = "Brouillon";
 
+/* ─── Barre d'actions de la vue détaillée tâche ──────────────────── */
+
+/** Bouton retour vers la banque. */
+export const FICHE_BARRE_RETOUR = "Banque";
+/** Bouton primaire — ajouter à une épreuve. */
+export const FICHE_BARRE_AJOUTER_EPREUVE = "Ajouter à une épreuve";
+/** Bouton épingler (title / aria-label). */
+export const FICHE_BARRE_EPINGLER = "Épingler";
+/** Bouton modifier (auteur). */
+export const FICHE_BARRE_MODIFIER = "Modifier";
+/** Item kebab — partager (copier le lien). */
+export const FICHE_BARRE_PARTAGER = "Partager";
+/** Item kebab — exporter en PDF. */
+export const FICHE_BARRE_EXPORTER_PDF = "Exporter en PDF";
+/** Item kebab — supprimer (auteur). */
+export const FICHE_BARRE_SUPPRIMER = "Supprimer";
+/** Toast générique pour les features hors scope v1. */
+export const TOAST_FICHE_FONCTIONNALITE_A_VENIR = "Fonctionnalité à venir";
+/** Toast après copie du lien de partage. */
+export const TOAST_FICHE_LIEN_COPIE = "Lien copié dans le presse-papiers";
+
 /** Bloc 2 — encadré paramètres verrouillés (`docs/UI-COPY.md` — Paramètres verrouillés) */
 export const BLOC2_BLUEPRINT_LOCKED_TITLE = "Paramètres verrouillés";
 
