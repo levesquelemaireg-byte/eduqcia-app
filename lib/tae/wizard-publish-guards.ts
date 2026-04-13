@@ -12,6 +12,11 @@ import {
   isDocumentsStepPublishable,
 } from "@/lib/tae/document-helpers";
 import {
+  isPerspectivesStepComplete,
+  isMomentsStepComplete,
+} from "@/lib/tae/oi-perspectives/perspectives-helpers";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
+import {
   isAvantApresDocumentsPublishable,
   isAvantApresDocumentsStepComplete,
   isAvantApresPayloadConsistentWithDocuments,
@@ -65,6 +70,21 @@ function redactionStepOkForPublish(state: TaeFormState): boolean {
 
 function documentsStepOkForPublish(state: TaeFormState): boolean {
   const b = state.bloc2;
+
+  // Perspectives groupé / moments : données dans bloc4.perspectives / bloc4.moments,
+  // pas d'upload iconographique séparé → publishable === complete.
+  const blocConfig = getWizardBlocConfig(b.comportementId);
+  if (blocConfig?.bloc4.type === "perspectives" && state.bloc3.perspectivesMode === "groupe") {
+    return isPerspectivesStepComplete(
+      state.bloc4.perspectives,
+      blocConfig.bloc4.count,
+      state.bloc4.perspectivesTitre,
+    );
+  }
+  if (blocConfig?.bloc4.type === "moments") {
+    return isMomentsStepComplete(state.bloc4.moments, 2, state.bloc4.momentsTitre);
+  }
+
   if (isActiveOrdreChronologiqueVariant(state)) {
     return isOrdreChronologiqueDocumentsPublishable(b.documentSlots, state.bloc4.documents);
   }
@@ -79,6 +99,16 @@ function documentsStepOkForPublish(state: TaeFormState): boolean {
 
 function documentsCompleteButUrlsBlocked(state: TaeFormState): boolean {
   const b = state.bloc2;
+
+  // Perspectives groupé / moments : pas d'upload iconographique séparé → jamais bloqué par URL.
+  const blocConfig = getWizardBlocConfig(b.comportementId);
+  if (blocConfig?.bloc4.type === "perspectives" && state.bloc3.perspectivesMode === "groupe") {
+    return false;
+  }
+  if (blocConfig?.bloc4.type === "moments") {
+    return false;
+  }
+
   if (isActiveOrdreChronologiqueVariant(state)) {
     return (
       isOrdreChronologiqueDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&

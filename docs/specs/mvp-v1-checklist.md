@@ -116,3 +116,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - Les lots sont ordonnés par priorité recommandée (sécurité d'abord, PDF en dernier)
 - Les items marqués « coupe possible » dans `mvp-v1.md` : PDF-5 (formatif), D4 (filtre auteur), D6/FAV (épinglage), D9/AUTH-4 (profil public)
 - Référence détaillée par item : `docs/specs/mvp-v1-audit-completude.md`
+
+## Dette technique identifiée (hors lots)
+
+- **DEBT-1** Extraire un helper partagé `isBloc4DataComplete(state)` et `isBloc4DataPublishable(state)` pour centraliser la logique 3-voies (perspectives groupé / moments / documents standard). Aujourd'hui dupliquée dans `cd-step-guards.ts`, `wizard-publish-guards.ts`, et `behaviours/redactionnel.ts` (`completionCriteria.bloc4` — pas encore branché dans le stepper mais incorrecte).
