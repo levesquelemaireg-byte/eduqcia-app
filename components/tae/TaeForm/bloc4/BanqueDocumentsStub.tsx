@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { listBankDocumentsPickerAction } from "@/lib/actions/list-bank-documents-picker";
-import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
+import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
 import { BANK_DOCUMENT_PICKER_EMPTY, BANK_DOCUMENT_PICKER_LOADING } from "@/lib/ui/ui-copy";
 
 export type BanqueDocStub = {

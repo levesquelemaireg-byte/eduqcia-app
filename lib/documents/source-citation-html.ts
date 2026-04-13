@@ -5,6 +5,9 @@
 
 import DOMPurify from "isomorphic-dompurify";
 
+// Réexport pour compatibilité — les consumers légers devraient importer depuis strip-html.ts
+export { stripHtmlToPlainText } from "@/lib/documents/strip-html";
+
 /** Détecte un fragment issu de TipTap (balises sûres) — pas une simple chaîne avec un `<` isolé. */
 const LOOKS_LIKE_RICH_HTML = /<\s*\/?\s*(p|ul|ol|li|strong|em|u|br|span)\b/i;
 
@@ -14,18 +17,6 @@ export function escapeHtmlPlain(s: string): string {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
-}
-
-/** Texte plat pour recherche / listes (approximation sans parseur DOM). */
-export function stripHtmlToPlainText(html: string): string {
-  return html
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 /**

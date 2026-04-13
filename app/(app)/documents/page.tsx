@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
+import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import {

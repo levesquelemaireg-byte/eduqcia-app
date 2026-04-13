@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils/cn";
-import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
+import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
 import { getCategoryIcon, getDocumentTypeIcon } from "@/lib/tae/document-categories-helpers";
 import {
   documentStructureBadgeLabel,

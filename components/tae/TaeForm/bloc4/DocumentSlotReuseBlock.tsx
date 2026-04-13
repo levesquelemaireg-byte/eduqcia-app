@@ -1,6 +1,6 @@
 "use client";
 
-import { stripHtmlToPlainText } from "@/lib/documents/source-citation-html";
+import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
 import type { DocumentSlotData } from "@/lib/tae/document-helpers";
 
 type Props = {
