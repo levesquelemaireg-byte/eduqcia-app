@@ -588,6 +588,17 @@ export const FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE = "Production attendue";
 /** Titre de section — grille d'évaluation ministérielle (vue détaillée tâche) */
 export const FICHE_SECTION_TITLE_GRILLE = "Grille d\u2019évaluation ministérielle";
 
+/* ─── Rail de la vue détaillée tâche ─────────────────────────────── */
+
+/** Préfixe date de création dans le rail. */
+export const FICHE_RAIL_DATE_CREATION = "Créée le";
+/** Préfixe date de mise à jour dans le rail. */
+export const FICHE_RAIL_DATE_MAJ = "Mise à jour le";
+/** Badge statut publiée. */
+export const FICHE_RAIL_STATUT_PUBLIEE = "Publiée";
+/** Badge statut brouillon. */
+export const FICHE_RAIL_STATUT_BROUILLON = "Brouillon";
+
 /** Bloc 2 — encadré paramètres verrouillés (`docs/UI-COPY.md` — Paramètres verrouillés) */
 export const BLOC2_BLUEPRINT_LOCKED_TITLE = "Paramètres verrouillés";
 

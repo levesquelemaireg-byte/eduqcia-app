@@ -1,6 +1,6 @@
 # Fiche tâche — Contexte d'implémentation (detail view lecture)
 
-**Dernière mise à jour :** 12 avril 2026 (session 3 — fin Phase 3)
+**Dernière mise à jour :** 12 avril 2026 (session 4 — fin Phase 4)
 **Spec de référence :** `docs/specs/fiche-tache-lecture.md`
 **Convention de nommage :** `CLAUDE.md` § Convention de nommage et structure des fichiers
 
@@ -8,16 +8,16 @@
 
 ## Tableau de bord de progression
 
-| Phase | Titre                              | Statut        | Notes                                     |
-| ----- | ---------------------------------- | ------------- | ----------------------------------------- |
-| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée |
-| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre            |
-| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre    |
-| 4     | Rail et layout desktop             | Non commencée | Prochaine phase                           |
-| 5     | Barre d'actions (TopNavBar)        | Non commencée |                                           |
-| 6     | Modale de fiche document embarquée | Non commencée |                                           |
-| 7     | Responsive tablet et mobile        | Non commencée |                                           |
-| 8     | Accessibilité et polish final      | Non commencée |                                           |
+| Phase | Titre                              | Statut        | Notes                                             |
+| ----- | ---------------------------------- | ------------- | ------------------------------------------------- |
+| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée         |
+| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                    |
+| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre            |
+| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre |
+| 5     | Barre d'actions (TopNavBar)        | Non commencée | Prochaine phase                                   |
+| 6     | Modale de fiche document embarquée | Non commencée |                                                   |
+| 7     | Responsive tablet et mobile        | Non commencée |                                                   |
+| 8     | Accessibilité et polish final      | Non commencée |                                                   |
 
 ---
 
@@ -377,3 +377,45 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 **Action obligatoire avant fin Phase 1 :** remplacer les 3 `select("*")` de `server-fiche-map.ts` (L67, L102, L144) par les colonnes explicites listées dans l'audit Axe 4.5.
 
 **Action obligatoire avant fin Phase 2 :** créer `lib/utils/safe-html.ts` avec la config restrictive TipTap de l'audit Axe 3.2.
+
+---
+
+## Journal de session — 12 avril 2026 (session 4)
+
+### Phase 4 — Rail et layout desktop (terminée)
+
+**Fichiers créés :**
+
+- `components/tache/vue-detaillee/rail.tsx` — `TacheRail` : `<aside role="complementary">` sticky à droite (280px, top 60px, bg-panel, border 0.5px, radius 12px, padding 16px). Contient dans l'ordre : ChipBar de 4 pills (niveau, discipline, aspects, chapitre connaissances) → gap 18px → MetaRowExpandable CD → MetaRowExpandable connaissances → MetaRowSimple documents/auteur/dates → StatusBadge footer. Consomme les 10 selectors atomiques du rail. SectionCD et SectionConnaissances passées en children des MetaRowExpandable comme boîtes noires.
+- `components/tache/vue-detaillee/layout.tsx` — `TacheVueDetailleeLayout` : CSS grid 2 colonnes (`grid-cols-[minmax(0,1fr)_280px]`, gap 40px, max-width 1080px centré). Accepte `children` (FluxLecture) et `rail` (TacheRail) comme props. Colonne gauche dans `<main>`, rail en slot droit.
+
+**Fichiers modifiés :**
+
+- `lib/ui/ui-copy.ts` — ajout de 4 constantes : `FICHE_RAIL_DATE_CREATION`, `FICHE_RAIL_DATE_MAJ`, `FICHE_RAIL_STATUT_PUBLIEE`, `FICHE_RAIL_STATUT_BROUILLON`.
+
+**Build :** propre, aucune erreur TS, ESLint propre, Prettier appliqué.
+
+### Décisions prises cette session
+
+**D13 — SectionCD/SectionConnaissances comme boîtes noires dans le rail :** les composants existants sont passés tels quels en children des MetaRowExpandable. Leur padding interne (px-5 pt-4 pb-4) et leur SectionLabel créent un peu de redondance visuelle avec le label du MetaRowExpandable, mais cela respecte la directive "boîtes noires, ne pas toucher". Un ajustement CSS (override de padding via className sur le wrapper) pourra être fait en Phase 8 (polish) si le développeur le souhaite.
+
+**D14 — Formatage des dates du rail :** utilise `formatDateFrCaMedium()` existant (`lib/utils/format-date-fr-ca.ts`) qui rend au format "12 avr. 2026" via `Intl.DateTimeFormat('fr-CA', { dateStyle: 'medium' })` avec fuseau fixe America/Toronto. Pas de nouveau formatter créé.
+
+**D15 — Layout comme Server Component :** `TacheVueDetailleeLayout` n'a pas besoin de `"use client"` — c'est un wrapper pur sans état ni interactivité. Il reste un Server Component pour minimiser le bundle client.
+
+**D16 — noBorderTop dynamique sur les MetaRows :** la première MetaRow après la ChipBar n'a pas de border-top (séparée par le gap 18px). Si la compétence est absente, c'est la ligne connaissances qui prend `noBorderTop`. Si les deux sont absentes, c'est la ligne documents. Cette logique cascade est implémentée via des conditions sur les props `noBorderTop`.
+
+---
+
+## Instructions pour reprendre (prochaine session)
+
+1. Lire `docs/specs/fiche-tache-lecture.md` en entier (spec de référence)
+2. Lire `CLAUDE.md` § Convention de nommage et structure des fichiers
+3. Lire ce fichier (`docs/specs/fiche-tache-implementation-context.md`)
+4. Vérifier l'état de progression dans le tableau de bord ci-dessus
+5. Attaquer la phase suivante non terminée (Phase 5 — Barre d'actions)
+6. En fin de session, mettre à jour ce fichier :
+   - Avancement dans le tableau de bord
+   - Nouvelles décisions architecturales prises
+   - Questions bloquantes découvertes
+   - Fichiers créés ou modifiés (liste)
