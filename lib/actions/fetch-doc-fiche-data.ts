@@ -21,7 +21,9 @@ export async function fetchDocFicheDataAction(docId: string): Promise<FetchResul
 
   const { data: doc, error } = await supabase
     .from("documents")
-    .select("*")
+    .select(
+      "id, titre, type, structure, elements, repere_temporel, auteur_id, is_published, niveaux_ids, disciplines_ids, connaissances_ids, aspects_societe, created_at",
+    )
     .eq("id", docId)
     .maybeSingle();
 

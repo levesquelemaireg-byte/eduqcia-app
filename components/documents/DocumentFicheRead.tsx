@@ -1,6 +1,7 @@
 import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImageLegendOverlay";
 import { MetaPill } from "@/components/tae/fiche/MetaPill";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
+import { sanitize } from "@/lib/fiche/helpers";
 import { isDocumentPdfUrl } from "@/lib/documents/is-document-pdf-url";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
@@ -154,7 +155,7 @@ export function DocumentFicheRead(props: DocumentFicheReadProps) {
                   "rounded-xl border border-border bg-panel-alt p-4 text-sm leading-relaxed text-deep sm:p-5",
                   "pl-[calc(1em+0.5rem)]",
                 )}
-                dangerouslySetInnerHTML={{ __html: contenuHtml }}
+                dangerouslySetInnerHTML={{ __html: sanitize(contenuHtml) }}
               />
             ) : null}
 

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImageLegendOverlay";
 import { extractFootnotes } from "@/lib/documents/extract-footnotes";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
+import { sanitize } from "@/lib/fiche/helpers";
 import type { DocumentElement } from "@/lib/types/document-renderer";
 import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
 
@@ -55,7 +56,7 @@ export function DocumentElementRenderer({
       ) : (
         <div
           className={`${styles.documentBody} ${styles.htmlFlow}`}
-          dangerouslySetInnerHTML={{ __html: element.contenu }}
+          dangerouslySetInnerHTML={{ __html: sanitize(element.contenu) }}
         />
       )}
 

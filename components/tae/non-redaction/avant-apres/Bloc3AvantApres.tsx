@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useLayoutEffect, useMemo, useState } from "react";
+import { sanitize } from "@/lib/fiche/helpers";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { SimpleModal } from "@/components/ui/SimpleModal";
@@ -73,6 +74,7 @@ export function Bloc3AvantApres() {
 
   useLayoutEffect(() => {
     setAnneeDraft(formatAvantApresAnneeForDisplay(p));
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync contrôlé : le draft texte suit p.anneeRepere/Fin
   }, [p.anneeRepere, p.anneeRepereFin]);
 
   const patchPayload = (patch: Partial<AvantApresPayload>) => {
@@ -226,7 +228,7 @@ export function Bloc3AvantApres() {
         <p className="text-sm text-muted">{NR_AVANT_APRES_GUIDAGE_FORM_LEAD}</p>
         <div
           className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm leading-relaxed text-deep [&_p]:m-0"
-          dangerouslySetInnerHTML={{ __html: fixedGuidageHtml }}
+          dangerouslySetInnerHTML={{ __html: sanitize(fixedGuidageHtml) }}
         />
       </section>
     </div>

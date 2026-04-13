@@ -18,6 +18,7 @@ import {
   resolveDocRefsForPreview,
   shouldShowGuidageOnStudentSheet,
 } from "@/lib/tae/consigne-helpers";
+import { sanitize } from "@/lib/fiche/helpers";
 import {
   formStateToTae,
   hasFicheContent,
@@ -63,7 +64,7 @@ export function PrintableHtml({
   return (
     <div
       className={cn(styles.htmlFlow, className)}
-      dangerouslySetInnerHTML={{ __html: resolved }}
+      dangerouslySetInnerHTML={{ __html: sanitize(resolved) }}
     />
   );
 }
@@ -179,7 +180,10 @@ export function PrintableDocumentCell({
           ) : null}
           {doc.type === "textuel" ? (
             hasTextBody ? (
-              <div className={styles.htmlFlow} dangerouslySetInnerHTML={{ __html: bodyHtml }} />
+              <div
+                className={styles.htmlFlow}
+                dangerouslySetInnerHTML={{ __html: sanitize(bodyHtml) }}
+              />
             ) : (
               <p className="m-0 text-[10pt] text-muted">{PRINTABLE_FICHE_SECTION_COPY.emptySlot}</p>
             )
@@ -187,7 +191,7 @@ export function PrintableDocumentCell({
           {doc.type === "iconographique" && hasFicheContent(bodyHtml) ? (
             <div
               className={cn(styles.htmlFlow, styles.htmlFlowAfterFigure)}
-              dangerouslySetInnerHTML={{ __html: bodyHtml }}
+              dangerouslySetInnerHTML={{ __html: sanitize(bodyHtml) }}
             />
           ) : null}
         </div>

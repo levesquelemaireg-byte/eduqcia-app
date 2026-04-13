@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useLayoutEffect, useMemo, useState } from "react";
+import { sanitize } from "@/lib/fiche/helpers";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { SimpleModal } from "@/components/ui/SimpleModal";
@@ -142,7 +143,7 @@ export function Bloc3OrdreChronologique() {
         <div
           className="rounded-lg border border-border bg-panel px-3 py-3 text-sm leading-relaxed text-steel [&_strong]:font-bold [&_em]:italic [&_u]:underline [&_ul]:list-disc [&_ul]:pl-4"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: fixedGuidageHtml }}
+          dangerouslySetInnerHTML={{ __html: sanitize(fixedGuidageHtml) }}
         />
       </section>
     </div>

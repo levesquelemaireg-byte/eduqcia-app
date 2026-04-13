@@ -87,7 +87,13 @@ export async function loadTaeFormStateForEdit(
   taeId: string,
   userId: string,
 ): Promise<TaeFormState | null> {
-  const { data: t, error } = await supabase.from("tae").select("*").eq("id", taeId).maybeSingle();
+  const { data: t, error } = await supabase
+    .from("tae")
+    .select(
+      "id, auteur_id, consigne, guidage, corrige, nb_lignes, oi_id, comportement_id, niveau_id, discipline_id, cd_id, connaissances_ids, aspects_societe, version, is_published, non_redaction_data, conception_mode",
+    )
+    .eq("id", taeId)
+    .maybeSingle();
   if (error || !t) return null;
   const row = t as Record<string, unknown>;
   if (row.auteur_id !== userId) return null;

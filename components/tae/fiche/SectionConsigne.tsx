@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { resolveConsigneHtmlForDisplay } from "@/lib/tae/consigne-helpers";
 import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import { hasFicheContent } from "@/lib/tae/fiche-helpers";
+import { sanitize } from "@/lib/fiche/helpers";
 import type { TaeFicheData } from "@/lib/types/fiche";
 import { GrilleEvaluationMetaButton } from "@/components/tae/fiche/GrilleEvaluationMetaButton";
 import { MetaPill } from "@/components/tae/fiche/MetaPill";
@@ -84,9 +85,11 @@ export function SectionConsigne({ tae, headerMenu }: Props) {
             className="mb-[1.2rem] text-xl font-semibold leading-relaxed tracking-tight text-deep md:text-2xl [&_strong]:font-bold [&_em]:italic [&_u]:underline [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5"
             suppressHydrationWarning
             dangerouslySetInnerHTML={{
-              __html: resolveConsigneHtmlForDisplay(
-                prepareNonRedactionConsigneForTeacherDisplay(tae.consigne),
-                tae.documents.length,
+              __html: sanitize(
+                resolveConsigneHtmlForDisplay(
+                  prepareNonRedactionConsigneForTeacherDisplay(tae.consigne),
+                  tae.documents.length,
+                ),
               ),
             }}
           />

@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useId, useLayoutEffect, useMemo, useState } from "react";
+import { sanitize } from "@/lib/fiche/helpers";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
@@ -58,6 +59,7 @@ export function Bloc3LigneDuTemps() {
         patch: initialLigneDuTempsPayload(),
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- seul bloc5.nonRedaction déclenche l'init
   }, [dispatch, state.bloc5.nonRedaction]);
 
   const fixedGuidageHtml = useMemo(() => buildLigneDuTempsGuidageHtml(), []);
@@ -156,7 +158,7 @@ export function Bloc3LigneDuTemps() {
         <div
           className="rounded-lg border border-border bg-panel px-3 py-3 text-sm font-semibold leading-relaxed text-deep [&_strong]:font-bold"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: introResolved }}
+          dangerouslySetInnerHTML={{ __html: sanitize(introResolved) }}
         />
       </div>
 
@@ -253,7 +255,7 @@ export function Bloc3LigneDuTemps() {
         <div
           className="rounded-lg border border-border bg-panel px-3 py-3 text-sm leading-relaxed text-steel [&_strong]:font-bold [&_em]:italic"
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: fixedGuidageHtml }}
+          dangerouslySetInnerHTML={{ __html: sanitize(fixedGuidageHtml) }}
         />
       </section>
     </div>

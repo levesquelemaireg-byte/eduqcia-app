@@ -19,7 +19,7 @@ export default async function DocumentPrintPage({ params }: PageProps) {
 
   const { data: doc, error } = await supabase
     .from("documents")
-    .select("*")
+    .select("id, titre, type, structure, elements, repere_temporel")
     .eq("id", id)
     .maybeSingle();
 

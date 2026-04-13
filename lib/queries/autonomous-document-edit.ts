@@ -44,7 +44,9 @@ export async function loadAutonomousDocumentForEditForm(
 ): Promise<AutonomousDocumentFormValues | null> {
   const { data: doc, error } = await supabase
     .from("documents")
-    .select("*")
+    .select(
+      "id, titre, type, structure, elements, repere_temporel, annee_normalisee, auteur_id, niveaux_ids, disciplines_ids, connaissances_ids, aspects_societe",
+    )
     .eq("id", documentId)
     .maybeSingle();
   if (error || !doc) return null;

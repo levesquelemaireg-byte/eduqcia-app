@@ -3,7 +3,6 @@
  * les éléments dans la colonne JSONB `elements`.
  */
 
-import type { Database } from "@/lib/types/database";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import type {
   DocumentElement,
@@ -16,13 +15,20 @@ import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
 
-type DocumentRow = Database["public"]["Tables"]["documents"]["Row"];
+/** Colonnes minimales requises pour hydrater un RendererDocument. */
+type DocumentHydrationInput = {
+  id: string;
+  titre: string;
+  structure: string | null;
+  elements: unknown;
+  repere_temporel: string | null;
+};
 
 /**
  * Construit un `RendererDocument` à partir de la ligne `documents`.
  * Les éléments sont lus depuis `doc.elements` (JSONB).
  */
-export function hydrateRendererDocument(doc: DocumentRow): RendererDocument {
+export function hydrateRendererDocument(doc: DocumentHydrationInput): RendererDocument {
   const structure: DocumentStructure = (["simple", "perspectives", "deux_temps"] as const).includes(
     doc.structure as DocumentStructure,
   )

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Field } from "@/components/ui/Field";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { sanitize } from "@/lib/fiche/helpers";
 import { resolveConsigneHtmlForDisplay } from "@/lib/tae/consigne-helpers";
 import {
   buildOi35FullHtml,
@@ -174,7 +175,7 @@ export function Oi35Bloc3Mockup() {
             <p className="text-xs font-medium uppercase text-muted">HTML assemblé (aperçu élève)</p>
             <div
               className="prose prose-sm max-w-none rounded-md border border-border bg-background p-4 text-sm leading-relaxed text-deep [&_p]:mb-2 [&_p:last-child]:mb-0"
-              dangerouslySetInnerHTML={{ __html: html }}
+              dangerouslySetInnerHTML={{ __html: sanitize(html) }}
             />
           </div>
 
@@ -185,7 +186,7 @@ export function Oi35Bloc3Mockup() {
             </p>
             <div
               className="prose prose-sm max-w-none rounded-md border border-border bg-background p-4 text-sm leading-relaxed text-deep [&_p]:mb-2 [&_p:last-child]:mb-0"
-              dangerouslySetInnerHTML={{ __html: resolvedHtml }}
+              dangerouslySetInnerHTML={{ __html: sanitize(resolvedHtml) }}
             />
           </div>
 

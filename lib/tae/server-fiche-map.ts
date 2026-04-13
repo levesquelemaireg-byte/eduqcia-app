@@ -64,7 +64,13 @@ export async function fetchTaeFicheBundle(
   supabase: SupabaseClient,
   id: string,
 ): Promise<{ fiche: TaeFicheData; votes: PeerVoteTally | null } | null> {
-  const { data: raw, error } = await supabase.from("tae").select("*").eq("id", id).maybeSingle();
+  const { data: raw, error } = await supabase
+    .from("tae")
+    .select(
+      "id, auteur_id, consigne, guidage, corrige, nb_lignes, oi_id, comportement_id, niveau_id, discipline_id, cd_id, connaissances_ids, aspects_societe, version, version_updated_at, is_published, created_at, updated_at",
+    )
+    .eq("id", id)
+    .maybeSingle();
 
   if (error || !raw) return null;
   const t = raw as unknown as TaeRow;
@@ -99,7 +105,9 @@ export async function fetchTaeFicheBundle(
       supabase.from("tae_documents").select("slot, document_id").eq("tae_id", id),
       supabase
         .from("vote_counts")
-        .select("*")
+        .select(
+          "tae_id, tae_version, rigueur_n1, rigueur_n2, rigueur_n3, clarte_n1, clarte_n2, clarte_n3, alignement_n1, alignement_n2, alignement_n3, total_votants",
+        )
         .eq("tae_id", id)
         .eq("tae_version", t.version)
         .maybeSingle(),
@@ -141,7 +149,10 @@ export async function fetchTaeFicheBundle(
   const docById = new Map<string, DocRow>();
 
   if (docIds.length > 0) {
-    const { data: docRows } = await supabase.from("documents").select("*").in("id", docIds);
+    const { data: docRows } = await supabase
+      .from("documents")
+      .select("id, titre, type, structure, elements, repere_temporel")
+      .in("id", docIds);
     if (Array.isArray(docRows)) {
       for (const d of docRows as DocRow[]) {
         docById.set(d.id, d);

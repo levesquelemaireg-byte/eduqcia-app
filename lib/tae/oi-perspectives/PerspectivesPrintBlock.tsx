@@ -3,6 +3,7 @@
  * Réutilisé par : aperçu wizard, fiche lecture, impression TAÉ, impression épreuve.
  * Spec : docs/SPEC-TEMPLATES-CONSIGNE.md § Composant d'impression générique
  */
+import { sanitize } from "@/lib/fiche/helpers";
 import { perspectiveSectionLabel } from "@/lib/tae/oi-perspectives/perspectives-helpers";
 import type { PerspectiveData } from "@/lib/tae/oi-perspectives/perspectives-types";
 
@@ -33,7 +34,7 @@ export function PerspectivesPrintBlock({ perspectives, titre, count }: Props) {
             {p.contenu ? (
               <div
                 className="prose-print text-sm leading-relaxed text-deep"
-                dangerouslySetInnerHTML={{ __html: p.contenu }}
+                dangerouslySetInnerHTML={{ __html: sanitize(p.contenu) }}
               />
             ) : null}
             <div className="space-y-0.5">
@@ -41,7 +42,7 @@ export function PerspectivesPrintBlock({ perspectives, titre, count }: Props) {
               {p.source ? (
                 <div
                   className="text-xs leading-relaxed text-muted"
-                  dangerouslySetInnerHTML={{ __html: p.source }}
+                  dangerouslySetInnerHTML={{ __html: sanitize(p.source) }}
                 />
               ) : (
                 <p className="text-xs text-muted">—</p>

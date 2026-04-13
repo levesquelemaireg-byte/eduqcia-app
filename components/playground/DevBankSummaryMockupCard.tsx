@@ -7,6 +7,7 @@ import {
   truncatePlainForBankMockup,
 } from "@/components/playground/dev-bank-mockup-shared";
 import { resolveConsigneHtmlForDisplay } from "@/lib/tae/consigne-helpers";
+import { sanitize } from "@/lib/fiche/helpers";
 import { hasFicheContent } from "@/lib/tae/fiche-helpers";
 import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
 import type { TaeFicheData } from "@/lib/types/fiche";
@@ -32,19 +33,17 @@ export function DevBankSummaryMockupCard({ tae }: Props) {
     [tae.consigne, tae.documents.length],
   );
 
-  const guidagePlain = useMemo(
-    () => stripHtmlToPlainText(tae.guidage ?? "").trim(),
-    [tae.guidage],
-  );
+  const guidagePlain = useMemo(() => stripHtmlToPlainText(tae.guidage ?? "").trim(), [tae.guidage]);
 
   const corrigePresent = hasFicheContent(tae.corrige);
   const aspectsShown = aspectLabelsForBankMockup(tae.aspects_societe);
   const firstConn = tae.connaissances[0];
-  const cdLine = tae.cd
-    ? `${tae.cd.competence} · ${tae.cd.composante} · ${tae.cd.critere}`
-    : null;
+  const cdLine = tae.cd ? `${tae.cd.competence} · ${tae.cd.composante} · ${tae.cd.critere}` : null;
 
-  const auteursLine = tae.auteurs.map((a) => a.full_name.trim()).filter(Boolean).join(", ");
+  const auteursLine = tae.auteurs
+    .map((a) => a.full_name.trim())
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <article
@@ -67,9 +66,7 @@ export function DevBankSummaryMockupCard({ tae }: Props) {
           <span>{truncatePlainForBankMockup(tae.comportement.enonce, 220)}</span>
         </p>
         {tae.outilEvaluation ? (
-          <p className="mt-2 font-mono text-xs text-muted">
-            Grille : {tae.outilEvaluation}
-          </p>
+          <p className="mt-2 font-mono text-xs text-muted">Grille : {tae.outilEvaluation}</p>
         ) : null}
       </header>
 
@@ -135,7 +132,7 @@ export function DevBankSummaryMockupCard({ tae }: Props) {
             !consigneExpanded && "line-clamp-5",
           )}
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: consigneHtml }}
+          dangerouslySetInnerHTML={{ __html: sanitize(consigneHtml) }}
         />
         <button
           type="button"
@@ -174,7 +171,10 @@ export function DevBankSummaryMockupCard({ tae }: Props) {
                 {doc.letter}
               </span>
               <span className="font-medium text-deep">{doc.titre}</span>
-              <span className="text-muted"> — {doc.type === "textuel" ? "Textuel" : "Iconographique"}</span>
+              <span className="text-muted">
+                {" "}
+                — {doc.type === "textuel" ? "Textuel" : "Iconographique"}
+              </span>
               <details className="ml-8 mt-1">
                 <summary className="cursor-pointer text-xs text-accent underline-offset-2 hover:underline">
                   Source
@@ -209,7 +209,7 @@ export function DevBankSummaryMockupCard({ tae }: Props) {
             <div
               className="mt-2 max-w-none text-sm leading-relaxed text-steel [&_strong]:font-semibold"
               suppressHydrationWarning
-              dangerouslySetInnerHTML={{ __html: tae.corrige }}
+              dangerouslySetInnerHTML={{ __html: sanitize(tae.corrige) }}
             />
           </details>
         ) : null}

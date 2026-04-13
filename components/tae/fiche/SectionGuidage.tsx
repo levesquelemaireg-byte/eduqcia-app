@@ -1,4 +1,5 @@
 import { hasFicheContent } from "@/lib/tae/fiche-helpers";
+import { sanitize } from "@/lib/fiche/helpers";
 import { FICHE_SECTION_BODY_INSET, FICHE_SECTION_TITLE_CLASS } from "@/lib/ui/fiche-layout";
 
 type Props = {
@@ -20,7 +21,7 @@ export function SectionGuidage({ guidage }: Props) {
       <div
         className={`${FICHE_SECTION_BODY_INSET} text-sm leading-relaxed text-steel [&_strong]:font-bold [&_em]:italic [&_u]:underline [&_ul]:list-disc [&_ul]:pl-4`}
         suppressHydrationWarning
-        dangerouslySetInnerHTML={{ __html: guidage }}
+        dangerouslySetInnerHTML={{ __html: sanitize(guidage) }}
       />
     </section>
   );
