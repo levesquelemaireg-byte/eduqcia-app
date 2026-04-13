@@ -68,7 +68,26 @@ export async function loginAction(
     .eq("id", authData.user.id)
     .maybeSingle();
 
-  if (!profile || profile.status !== "active") {
+  if (!profile) {
+    await supabase.auth.signOut();
+    return { error: { code: "inactive", message: MSG.inactive } };
+  }
+
+  // Si Supabase a accepté le mot de passe, l'email est confirmé côté auth.
+  // Profil encore pending → l'activer automatiquement (rattrapage si callback a échoué).
+  if (profile.status === "pending") {
+    const { error: activateError } = await admin
+      .from("profiles")
+      .update({ status: "active", activated_at: new Date().toISOString(), activation_token: null })
+      .eq("id", authData.user.id);
+    if (activateError) {
+      console.error("[login] auto-activation failed:", activateError.message);
+      await supabase.auth.signOut();
+      return { error: { code: "inactive", message: MSG.inactive } };
+    }
+  }
+
+  if (profile.status === "suspended") {
     await supabase.auth.signOut();
     return { error: { code: "inactive", message: MSG.inactive } };
   }

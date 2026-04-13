@@ -35,6 +35,8 @@ export async function GET(request: Request) {
 
     if (profileError) {
       console.error("[auth/callback] profile activation failed:", profileError.message);
+      // Ne pas rediriger avec ?activated=1 si l'activation a échoué
+      return NextResponse.redirect(new URL("/activate?error=activation", request.url));
     }
   }
 
