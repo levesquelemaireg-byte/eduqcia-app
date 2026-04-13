@@ -64,6 +64,12 @@ export function AppShellClient({
 
   return (
     <div className="app-shell-root flex min-h-[100dvh] flex-1 bg-bg">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-md focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:outline-none"
+      >
+        Aller au contenu principal
+      </a>
       <Sidebar
         displayName={displayName}
         email={email}
@@ -109,7 +115,9 @@ export function AppShellClient({
           <span className="ml-auto max-w-[40%] truncate text-xs text-muted">{displayName}</span>
         </header>
 
-        <main className="main--app flex-1 p-4 md:p-6">{children}</main>
+        <main id="main-content" className="main--app flex-1 p-4 md:p-6">
+          {children}
+        </main>
       </div>
     </div>
   );

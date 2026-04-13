@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { isDocumentReadyForBank } from "@/lib/documents/document-bank-ready";
@@ -87,6 +88,9 @@ export async function updateDocumentBankFieldsAction(
   if (upErr) {
     return { ok: false, code: "db", message: upErr.message };
   }
+
+  revalidatePath("/documents");
+  revalidatePath("/bank");
 
   return { ok: true, isPublished: nextPublished };
 }

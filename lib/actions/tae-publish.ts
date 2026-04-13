@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizeHydratedState } from "@/lib/tae/tae-form-hydrate";
 import {
@@ -52,6 +53,8 @@ export async function publishTaeAction(
 
       const updateResult = await updateTaeFromFormState(supabase, user.id, editId, state);
       if (!updateResult.ok) return { ok: false, code: "publish", failure: updateResult.code };
+      revalidatePath("/questions");
+      revalidatePath("/dashboard");
       return {
         ok: true,
         taeId: editId,
@@ -64,6 +67,8 @@ export async function publishTaeAction(
     if (!result.ok) return { ok: false, code: "publish", failure: result.code };
 
     // Suppression brouillon : assurée par la RPC publish_tae_transaction (atomique).
+    revalidatePath("/questions");
+    revalidatePath("/dashboard");
 
     return {
       ok: true,

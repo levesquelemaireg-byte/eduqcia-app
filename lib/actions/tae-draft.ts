@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { sanitizeHydratedState, serializeTaeFormState } from "@/lib/tae/tae-form-hydrate";
 
@@ -32,6 +33,7 @@ export async function saveWizardDraftAction(payload: unknown): Promise<SaveWizar
   });
 
   if (error) return { ok: false, error: "database" };
+  revalidatePath("/dashboard");
   return { ok: true };
 }
 
@@ -48,5 +50,6 @@ export async function deleteWizardDraftAction(): Promise<DeleteWizardDraftResult
   const { error } = await supabase.from("tae_wizard_drafts").delete().eq("user_id", user.id);
 
   if (error) return { ok: false, error: "database" };
+  revalidatePath("/dashboard");
   return { ok: true };
 }

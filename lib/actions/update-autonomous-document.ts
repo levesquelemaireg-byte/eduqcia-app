@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { autonomousDocumentUpdateFormSchema } from "@/lib/schemas/autonomous-document";
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
@@ -112,6 +113,9 @@ export async function updateAutonomousDocumentAction(
   if (upErr) {
     return { ok: false, code: "db", message: upErr.message };
   }
+
+  revalidatePath("/documents");
+  revalidatePath("/bank");
 
   return { ok: true };
 }

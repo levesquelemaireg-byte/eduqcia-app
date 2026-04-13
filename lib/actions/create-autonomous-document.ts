@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { autonomousDocumentFormSchema } from "@/lib/schemas/autonomous-document";
 import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
 import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
@@ -109,6 +110,10 @@ export async function createAutonomousDocumentAction(
       message: error?.message ?? undefined,
     };
   }
+
+  revalidatePath("/documents");
+  revalidatePath("/bank");
+  revalidatePath("/dashboard");
 
   return { ok: true, documentId: data.id as string };
 }

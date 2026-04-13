@@ -4,7 +4,12 @@
 **Source :** `docs/specs/mvp-v1-audit-completude.md`
 **Usage :** cocher `[x]` au fur et à mesure des livraisons. Un item coché = code mergé + fonctionnel.
 
-### Règle de clôture de lot
+### Règles concernant l'implémentation des lots
+
+Avant le lancement de l'implémentation de chaque nouveau lot :
+
+1. Lire `EDUQCIA-APP/CLAUDE.md`
+2. Respecter à la lettre les règles qui s'y trouvent pour implémenter le lot
 
 Après chaque lot complété, Claude doit **obligatoirement** :
 
@@ -27,11 +32,11 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Lot 2 — Quick wins (< 1h chacun)
 
-- [ ] **QW-1** Ajouter `revalidatePath` après `publishTaeAction` (C10)
-- [ ] **QW-2** Ajouter `revalidatePath` sur les actions manquantes (`tae-draft`, actions document)
-- [ ] **QW-3** `prefers-reduced-motion` dans `globals.css`
-- [ ] **QW-4** Skip-to-content link
-- [ ] **QW-5** Configurer `formats: ['image/avif']` dans `next.config.ts`
+- [x] **QW-1** Ajouter `revalidatePath` après `publishTaeAction` (C10)
+- [x] **QW-2** Ajouter `revalidatePath` sur les actions manquantes (`tae-draft`, actions document)
+- [x] **QW-3** `prefers-reduced-motion` dans `globals.css`
+- [x] **QW-4** Skip-to-content link
+- [x] **QW-5** Configurer `formats: ['image/avif']` dans `next.config.ts`
 
 ## Lot 3 — Loading / Error states
 
@@ -90,19 +95,19 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Résumé d'avancement
 
-| Lot                    | Items  | Faits | %      |
-| ---------------------- | ------ | ----- | ------ |
-| 1 — Sécurité           | 3      | 3     | 100%   |
-| 2 — Quick wins         | 5      | 0     | 0%     |
-| 3 — Loading/Error      | 4      | 0     | 0%     |
-| 4 — CRUD manquant      | 2      | 0     | 0%     |
-| 5 — Compte             | 4      | 0     | 0%     |
-| 6 — Finitions création | 4      | 0     | 0%     |
-| 7 — Dashboard          | 2      | 0     | 0%     |
-| 8 — Favoris            | 4      | 0     | 0%     |
-| 9 — Export PDF         | 6      | 0     | 0%     |
-| 10 — Tests             | 3      | 0     | 0%     |
-| **Total**              | **37** | **3** | **8%** |
+| Lot                    | Items  | Faits | %       |
+| ---------------------- | ------ | ----- | ------- |
+| 1 — Sécurité           | 3      | 3     | 100%    |
+| 2 — Quick wins         | 5      | 5     | 100%    |
+| 3 — Loading/Error      | 4      | 0     | 0%      |
+| 4 — CRUD manquant      | 2      | 0     | 0%      |
+| 5 — Compte             | 4      | 0     | 0%      |
+| 6 — Finitions création | 4      | 0     | 0%      |
+| 7 — Dashboard          | 2      | 0     | 0%      |
+| 8 — Favoris            | 4      | 0     | 0%      |
+| 9 — Export PDF         | 6      | 0     | 0%      |
+| 10 — Tests             | 3      | 0     | 0%      |
+| **Total**              | **37** | **8** | **22%** |
 
 ---
 
