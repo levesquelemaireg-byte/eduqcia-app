@@ -19,8 +19,13 @@ import {
   isActiveLigneDuTempsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tae/non-redaction/wizard-variant";
+import {
+  isPerspectivesStepComplete,
+  isMomentsStepComplete,
+} from "@/lib/tae/oi-perspectives/perspectives-helpers";
 import { isRedactionSliceReadyForCdGate } from "@/lib/tae/redaction-helpers";
 import { getRedactionSliceForPreview } from "@/lib/tae/tae-form-state-types";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
 import {
   nonRedactionAvantApresPayload,
   nonRedactionLignePayload,
@@ -44,7 +49,25 @@ export function isCdStepGateOk(state: TaeFormState): boolean {
   const b = state.bloc2;
   const blueprintGate = isBlueprintFieldsComplete(b) && b.blueprintLocked;
   if (!blueprintGate) return false;
-  if (!isDocumentsStepComplete(b.documentSlots, state.bloc4.documents)) return false;
+
+  // Perspectives groupé (OI3 · 3.3/3.4/3.5) et moments groupé (OI6 · 6.3) stockent les
+  // données dans bloc4.perspectives / bloc4.moments, pas dans bloc4.documents.
+  // En mode séparé, les DocumentSlotPanel peuplent bloc4.documents normalement.
+  const blocConfig = getWizardBlocConfig(b.comportementId);
+  if (blocConfig?.bloc4.type === "perspectives" && state.bloc3.perspectivesMode === "groupe") {
+    if (
+      !isPerspectivesStepComplete(
+        state.bloc4.perspectives,
+        blocConfig.bloc4.count,
+        state.bloc4.perspectivesTitre,
+      )
+    )
+      return false;
+  } else if (blocConfig?.bloc4.type === "moments") {
+    if (!isMomentsStepComplete(state.bloc4.moments, 2, state.bloc4.momentsTitre)) return false;
+  } else {
+    if (!isDocumentsStepComplete(b.documentSlots, state.bloc4.documents)) return false;
+  }
 
   if (isActiveOrdreChronologiqueVariant(state)) {
     const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));

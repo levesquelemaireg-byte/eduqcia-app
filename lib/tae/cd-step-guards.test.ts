@@ -62,4 +62,50 @@ describe("isCdStepGateOk", () => {
     state.bloc5.corrige = "";
     expect(isCdStepGateOk(state)).toBe(false);
   });
+
+  it("perspectives groupé (3.3) : ouvre Bloc 6 si perspectives et corrigé complets", () => {
+    const state = minimalRedactionStateForCdGate();
+    state.bloc2.comportementId = "3.3";
+    state.bloc2.nbDocuments = 2;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }, { slotId: "doc_B" }];
+    state.bloc3.perspectivesMode = "groupe";
+    state.bloc4.perspectives = [
+      {
+        acteur: "François de Lévis",
+        contenu: "<p>Extrait A</p>",
+        source: "<p>Source A</p>",
+        type: "textuel",
+        sourceType: "primaire",
+      },
+      {
+        acteur: "James Wolfe",
+        contenu: "<p>Extrait B</p>",
+        source: "<p>Source B</p>",
+        type: "textuel",
+        sourceType: "secondaire",
+      },
+    ];
+    state.bloc4.perspectivesTitre = "Titre du document";
+    expect(isCdStepGateOk(state)).toBe(true);
+  });
+
+  it("perspectives groupé (3.3) : refuse si perspectives incomplètes", () => {
+    const state = minimalRedactionStateForCdGate();
+    state.bloc2.comportementId = "3.3";
+    state.bloc2.nbDocuments = 2;
+    state.bloc2.documentSlots = [{ slotId: "doc_A" }, { slotId: "doc_B" }];
+    state.bloc3.perspectivesMode = "groupe";
+    state.bloc4.perspectives = null;
+    state.bloc4.perspectivesTitre = "";
+    expect(isCdStepGateOk(state)).toBe(false);
+  });
+
+  it("perspectives séparé (3.3) : utilise les documentSlots standard", () => {
+    const state = minimalRedactionStateForCdGate();
+    state.bloc2.comportementId = "3.3";
+    state.bloc2.nbDocuments = 2;
+    state.bloc2.documentSlots = [];
+    state.bloc3.perspectivesMode = "separe";
+    expect(isCdStepGateOk(state)).toBe(true);
+  });
 });
