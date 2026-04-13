@@ -24,7 +24,7 @@ export async function GET(request: Request) {
 
   if (user) {
     const admin = createServiceClient();
-    await admin
+    const { error: profileError } = await admin
       .from("profiles")
       .update({
         status: "active",
@@ -32,6 +32,10 @@ export async function GET(request: Request) {
         activation_token: null,
       })
       .eq("id", user.id);
+
+    if (profileError) {
+      console.error("[auth/callback] profile activation failed:", profileError.message);
+    }
   }
 
   return NextResponse.redirect(new URL(next, request.url));
