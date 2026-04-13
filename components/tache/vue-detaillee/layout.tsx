@@ -16,7 +16,7 @@ type Props = {
  */
 export function TacheVueDetailleeLayout({ children, rail }: Props) {
   return (
-    <div className="mx-auto max-w-[1080px] px-4 py-6 md:px-6 md:py-8 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
+    <div className="mx-auto max-w-[1080px] px-4 py-6 md:px-6 md:py-8 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10 print:block print:max-w-none print:px-0 print:py-0">
       {/* Rail — rendu au-dessus du flux en tablet/mobile, en colonne droite en desktop */}
       <div className="mb-8 lg:order-2 lg:mb-0">{rail}</div>
       <main className="min-w-0 lg:order-1">{children}</main>

@@ -195,7 +195,7 @@ export function FicheModale({ docId, surFermer }: Props) {
           <button
             type="button"
             onClick={surFermer}
-            className="inline-flex items-center gap-1 text-sm font-medium text-steel md:hidden"
+            className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-steel md:hidden"
             aria-label="Fermer"
           >
             <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
@@ -224,7 +224,7 @@ export function FicheModale({ docId, surFermer }: Props) {
             <button
               type="button"
               onClick={surFermer}
-              className="hidden h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep md:inline-flex"
+              className="hidden min-h-11 min-w-11 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep md:inline-flex"
               aria-label="Fermer"
             >
               <span className="material-symbols-outlined text-[22px]" aria-hidden="true">

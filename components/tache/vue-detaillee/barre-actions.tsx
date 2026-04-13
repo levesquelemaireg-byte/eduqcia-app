@@ -80,13 +80,13 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
   /* ─── Styles partagés ──────────────────────────────────────── */
 
   const boutonIcone =
-    "flex h-9 w-9 items-center justify-center rounded-lg border-[0.5px] border-border bg-panel text-steel transition-colors hover:bg-surface hover:text-deep";
+    "flex min-h-11 min-w-11 items-center justify-center rounded-lg border-[0.5px] border-border bg-panel text-steel transition-colors hover:bg-surface hover:text-deep";
 
   const menuItem =
-    "flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-steel transition-colors hover:bg-surface";
+    "flex w-full min-h-11 items-center gap-3 px-4 py-2.5 text-left text-sm text-steel transition-colors hover:bg-surface";
 
   return (
-    <header className="sticky top-0 z-10 flex items-center justify-between border-b-[0.5px] border-border bg-panel px-6 py-2.5">
+    <header className="sticky top-0 z-10 flex items-center justify-between border-b-[0.5px] border-border bg-panel px-6 py-2.5 print:hidden">
       {/* ─── Gauche : retour ─────────────────────────────────── */}
       <Link
         href="/questions"
@@ -104,7 +104,7 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
         <button
           type="button"
           onClick={surAjouterEpreuve}
-          className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-accent px-2.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent/90 md:px-3.5"
+          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-accent px-2.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent/90 md:px-3.5"
           title={FICHE_BARRE_AJOUTER_EPREUVE}
         >
           <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
@@ -135,7 +135,7 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
         {estAuteur ? (
           <Link
             href={`/questions/${taeId}/edit`}
-            className="hidden min-h-9 items-center gap-1.5 rounded-lg border-[0.5px] border-border bg-panel px-3 py-2 text-[13px] font-medium text-deep transition-colors hover:bg-surface md:inline-flex"
+            className="hidden min-h-11 items-center gap-1.5 rounded-lg border-[0.5px] border-border bg-panel px-3 py-2 text-[13px] font-medium text-deep transition-colors hover:bg-surface md:inline-flex"
           >
             <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
               edit_document

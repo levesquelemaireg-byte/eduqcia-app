@@ -20,6 +20,8 @@ type Props = {
   peutVoter: boolean;
   /** Handler de clic sur une DocCard — ouvre la modale fiche document. Phase 6. */
   surClicDocument?: (docId: string) => void;
+  /** Ref sur le h1 du hero — focus initial programmatique. Phase 8. */
+  heroRef?: React.Ref<HTMLHeadingElement>;
 };
 
 /**
@@ -27,7 +29,7 @@ type Props = {
  * Itère les sections dans l'ordre de la spec avec ~48px de whitespace entre elles.
  * Pas de carte englobante, pas de hairlines — whitespace comme séparateur.
  */
-export function FluxLecture({ tae, votes, peutVoter, surClicDocument }: Props) {
+export function FluxLecture({ tae, votes, peutVoter, surClicDocument, heroRef }: Props) {
   const hero = useMemo(() => selectHero(tae), [tae]);
   const documents = useMemo(() => selectDocuments(tae), [tae]);
   const guidage = useMemo(() => selectGuidage(tae), [tae]);
@@ -37,7 +39,7 @@ export function FluxLecture({ tae, votes, peutVoter, surClicDocument }: Props) {
   return (
     <div className="flex flex-col gap-12">
       {/* Hero — toujours rendu */}
-      <SectionHero data={hero} />
+      <SectionHero data={hero} heroRef={heroRef} />
 
       {/* Documents — conditionnel (null si 0 documents) */}
       {documents ? <SectionDocuments data={documents} surClicDocument={surClicDocument} /> : null}

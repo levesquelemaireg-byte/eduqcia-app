@@ -1,6 +1,11 @@
 # Fiche tâche — Contexte d'implémentation (detail view lecture)
 
-**Dernière mise à jour :** 12 avril 2026 (session 6 — fin Phase 7)
+**Statut** : FERMÉ — spec complétée à 100%
+
+> **Date de création** : 11 avril 2026
+> **Date de fermeture** : 12 avril 2026
+
+**Dernière mise à jour :** 12 avril 2026 (session 7 — fin Phase 8 + branchement page)
 **Spec de référence :** `docs/specs/fiche-tache-lecture.md`
 **Convention de nommage :** `CLAUDE.md` § Convention de nommage et structure des fichiers
 
@@ -8,16 +13,16 @@
 
 ## Tableau de bord de progression
 
-| Phase | Titre                              | Statut        | Notes                                                            |
-| ----- | ---------------------------------- | ------------- | ---------------------------------------------------------------- |
-| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée                        |
-| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                                   |
-| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre                           |
-| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre                |
-| 5     | Barre d'actions (TopNavBar)        | **Terminée**  | TacheBarreActions, handlers placeholder, build propre            |
-| 6     | Modale de fiche document embarquée | **Terminée**  | useFicheModale + FicheModale + TacheVueDetaillee, build propre   |
-| 7     | Responsive tablet et mobile        | **Terminée**  | 3 breakpoints, accordéon mobile, modale fullscreen, build propre |
-| 8     | Accessibilité et polish final      | Non commencée | Prochaine phase                                                  |
+| Phase | Titre                              | Statut       | Notes                                                            |
+| ----- | ---------------------------------- | ------------ | ---------------------------------------------------------------- |
+| 1     | Tokens et primitives de base       | **Terminée** | Build propre, rétrocompatibilité vérifiée                        |
+| 2     | Selectors de la fiche tâche        | **Terminée** | 5 flux + 10 rail, build propre                                   |
+| 3     | Configuration et sections          | **Terminée** | 5 sections + FluxLecture, build propre                           |
+| 4     | Rail et layout desktop             | **Terminée** | TacheRail + TacheVueDetailleeLayout, build propre                |
+| 5     | Barre d'actions (TopNavBar)        | **Terminée** | TacheBarreActions, handlers placeholder, build propre            |
+| 6     | Modale de fiche document embarquée | **Terminée** | useFicheModale + FicheModale + TacheVueDetaillee, build propre   |
+| 7     | Responsive tablet et mobile        | **Terminée** | 3 breakpoints, accordéon mobile, modale fullscreen, build propre |
+| 8     | Accessibilité et polish final      | **Terminée** | a11y, zones tactiles, print, branchement page, build propre      |
 
 ---
 
@@ -491,15 +496,55 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 
 ---
 
-## Instructions pour reprendre (prochaine session)
+## Journal de session — 12 avril 2026 (session 7)
 
-1. Lire `docs/specs/fiche-tache-lecture.md` en entier (spec de référence)
-2. Lire `CLAUDE.md` § Convention de nommage et structure des fichiers
-3. Lire ce fichier (`docs/specs/fiche-tache-implementation-context.md`)
-4. Vérifier l'état de progression dans le tableau de bord ci-dessus
-5. Attaquer la phase suivante non terminée (Phase 8 — Accessibilité et polish final)
-6. En fin de session, mettre à jour ce fichier :
-   - Avancement dans le tableau de bord
-   - Nouvelles décisions architecturales prises
-   - Questions bloquantes découvertes
-   - Fichiers créés ou modifiés (liste)
+### Phase 8 — Accessibilité et polish final (terminée)
+
+**Fichiers modifiés :**
+
+- `components/tache/vue-detaillee/sections/hero.tsx` — ajout `heroRef` prop + `tabIndex={-1}` + `outline-none` sur le h1 pour focus initial programmatique par les lecteurs d'écran.
+- `components/tache/vue-detaillee/flux-lecture.tsx` — ajout prop `heroRef` passée à `SectionHero`.
+- `components/tache/vue-detaillee/index.tsx` — ajout `useRef<HTMLHeadingElement>` + `useEffect` qui focus le h1 du hero au premier rendu. Ref passée via `FluxLecture`.
+- `components/tache/vue-detaillee/barre-actions.tsx` — zones tactiles : `h-9 w-9` → `min-h-11 min-w-11` sur les boutons icône, `min-h-9` → `min-h-11` sur le bouton primaire et le lien Modifier, `min-h-11` ajouté aux items du kebab menu. Ajout `print:hidden` sur le `<header>`.
+- `components/tache/vue-detaillee/rail.tsx` — ajout `useId()` + `aria-controls` sur l'accordéon mobile + `id` sur le contenu. Ajout `print:hidden` sur les 3 `<aside>`.
+- `components/tache/vue-detaillee/layout.tsx` — ajout `print:block print:max-w-none print:px-0 print:py-0` pour que le flux prenne toute la largeur en impression.
+- `components/partagees/fiche-modale/index.tsx` — zones tactiles : bouton mobile retour `min-h-11`, bouton fermeture croix `min-h-11 min-w-11`.
+- `app/(app)/questions/[id]/page.tsx` — **branchement complet** : remplacé l'ancien `FicheLecture` + `FicheRetourLink` + `SectionVotes` wrapper par `TacheVueDetaillee`. Props `estAuteur` et `peutVoter` calculées dans le Server Component et passées à l'orchestrateur client.
+
+### Vérification ARIA — état des lieux
+
+| Composant             | Attribut                                         | Statut                         |
+| --------------------- | ------------------------------------------------ | ------------------------------ |
+| MetaRowExpandable     | `aria-expanded`, `aria-controls`                 | Déjà en place (Ph. 1)          |
+| Bouton épingler       | `aria-pressed`, `aria-label`                     | Déjà en place (Ph. 5)          |
+| FicheModale           | `role="dialog"`, `aria-modal`, `aria-labelledby` | Déjà en place (Ph. 6)          |
+| Kebab                 | `aria-haspopup="menu"`, `aria-expanded`          | Déjà en place (Ph. 5)          |
+| Accordéon mobile rail | `aria-expanded`, `aria-controls`                 | `aria-controls` ajouté (Ph. 8) |
+| h1 hero               | `tabIndex={-1}` + focus programmatique           | Ajouté (Ph. 8)                 |
+
+### Décisions prises — Phase 8
+
+**D31 — Focus initial via ref dans l'orchestrateur :** plutôt qu'un `useEffect` dans `SectionHero` (qui ne sait pas s'il est utilisé en lecture ou en apercu), le focus est géré dans `TacheVueDetaillee` via un `ref` passé à travers `FluxLecture` → `SectionHero`. Seule la vue détaillée focus le h1 au montage.
+
+**D32 — Zones tactiles 44px via min-h-11 / min-w-11 :** utilisation de `min-h-11` (`44px`) et `min-w-11` (`44px`) plutôt que des tailles fixes `h-11 w-11` pour ne pas casser le layout des boutons qui ont du contenu textuel. Le `min-` garantit la zone tactile minimum sans forcer une taille si le contenu naturel est plus grand.
+
+**D33 — Print via classes Tailwind :** utilisation de `print:hidden` et `print:block` plutôt que des règles `@media print` dans `globals.css`. Conforme à CLAUDE.md § Co-localisation des styles (styles de composant → Tailwind dans le JSX).
+
+**D34 — Branchement page /questions/[id] :** la page remplacée calculait `canVote` et passait `userId` à `FicheLecture`. La nouvelle version calcule `estAuteur` et `peutVoter` dans le Server Component et passe ces booléens à `TacheVueDetaillee`. Les anciens composants (`FicheLecture`, `FicheRetourLink`) ne sont pas supprimés — ils restent disponibles pour d'autres usages éventuels.
+
+---
+
+## Implémentation complète — toutes les phases terminées
+
+La vue détaillée tâche est entièrement implémentée et branchée sur la route `/questions/[id]`. Les 8 phases du plan de travail sont terminées.
+
+### Résumé des livrables
+
+- **7 composants** dans `components/tache/vue-detaillee/` : orchestrateur, layout, barre d'actions, flux, rail, 5 sections
+- **1 composant partagé** dans `components/partagees/fiche-modale/`
+- **15 selectors** dans `lib/fiche/selectors/tache/` (5 flux + 10 rail)
+- **1 hook** dans `hooks/partagees/use-fiche-modale.ts`
+- **1 Server Action** dans `lib/actions/fetch-doc-fiche-data.ts`
+- **Extensions rétrocompatibles** sur 3 primitives (`IconBadge`, `MetaRow`, `DocCard`)
+- **1 token** `--color-corrige` ajouté
+- **Page branchée** — `/questions/[id]` utilise `TacheVueDetaillee`

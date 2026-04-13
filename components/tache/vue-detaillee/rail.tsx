@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import type { TaeFicheData } from "@/lib/types/fiche";
 import type { FicheMode } from "@/lib/fiche/types";
 import type { CompetenceData, ConnaissancesData } from "@/lib/fiche/types";
@@ -64,6 +64,7 @@ export function TacheRail({ tae }: Props) {
   const statutVariant = statut.statut === "publiee" ? "published" : "draft";
 
   /* ── Accordéon mobile ──────────────────────────────────────── */
+  const accordeonContenuId = useId();
   const [accordeonOuvert, setAccordeonOuvert] = useState(false);
 
   /* ── Contenu partagé (chips + metarows + statut) ───────────── */
@@ -136,12 +137,13 @@ export function TacheRail({ tae }: Props) {
       {/* ── Mobile <768px : accordéon replié par défaut ────────── */}
       <aside
         role="complementary"
-        className="rounded-xl border-[0.5px] border-border bg-panel md:hidden"
+        className="rounded-xl border-[0.5px] border-border bg-panel print:hidden md:hidden"
       >
         <div
           role="button"
           tabIndex={0}
           aria-expanded={accordeonOuvert}
+          aria-controls={accordeonContenuId}
           onClick={() => setAccordeonOuvert((v) => !v)}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
@@ -160,13 +162,17 @@ export function TacheRail({ tae }: Props) {
             expand_more
           </span>
         </div>
-        {accordeonOuvert ? <div className="px-4 pb-4">{contenuRail}</div> : null}
+        {accordeonOuvert ? (
+          <div id={accordeonContenuId} className="px-4 pb-4">
+            {contenuRail}
+          </div>
+        ) : null}
       </aside>
 
       {/* ── Tablet 768-1023px : pleine largeur, non sticky ────── */}
       <aside
         role="complementary"
-        className="hidden rounded-xl border-[0.5px] border-border bg-panel p-4 md:block lg:hidden"
+        className="hidden rounded-xl border-[0.5px] border-border bg-panel p-4 print:hidden md:block lg:hidden"
       >
         {contenuRail}
       </aside>
@@ -174,7 +180,7 @@ export function TacheRail({ tae }: Props) {
       {/* ── Desktop ≥1024px : sticky 280px ────────────────────── */}
       <aside
         role="complementary"
-        className="sticky top-[60px] hidden h-fit w-[280px] rounded-xl border-[0.5px] border-border bg-panel p-4 lg:block"
+        className="sticky top-17 hidden h-fit w-70 rounded-xl border-[0.5px] border-border bg-panel p-4 print:hidden lg:block"
       >
         {contenuRail}
       </aside>

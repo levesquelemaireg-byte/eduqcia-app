@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils/cn";
+import { TIPTAP_HTML_STYLES } from "@/lib/fiche/primitives/tiptap-html-styles";
 
 type Props = {
   /** HTML déjà sanitisé (dans le selector). Ce composant ne sanitise PAS. */
@@ -18,7 +19,7 @@ export function ContentBlock({ html, className, clamp }: Props) {
   return (
     <div
       className={cn(
-        "text-base font-medium leading-relaxed [&_strong]:font-bold [&_em]:italic [&_u]:underline [&_ul]:list-disc [&_ul]:space-y-1 [&_ul]:pl-4",
+        `text-base font-medium leading-relaxed ${TIPTAP_HTML_STYLES}`,
         clamp && `line-clamp-${clamp}`,
         className,
       )}

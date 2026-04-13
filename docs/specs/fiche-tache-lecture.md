@@ -1,5 +1,10 @@
 # Fiche tâche — Detail view en mode lecture
 
+**Statut** : FERMÉ — spec complétée à 100%
+
+> **Date de création** : 11 avril 2026
+> **Date de fermeture** : 12 avril 2026
+
 **Projet :** EduQc.IA
 **Version :** 1.0
 **Date :** 12 avril 2026

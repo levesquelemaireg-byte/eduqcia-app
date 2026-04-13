@@ -1,9 +1,11 @@
 # Spec — Rendu des documents historiques
 
-**Statut** : v0.3 finale, prête pour implémentation
-**Date** : 9 avril 2026
-**Auteurs** : Guillaume Lemaire-Levesque + Claude, avec critiques de Grok, NotebookLM, Copilot, Gemini
-**Version** : 0.3
+**Statut** : FERMÉ — spec complétée à 100%
+
+> **Date de création** : 9 avril 2026
+> **Date de fermeture** : 12 avril 2026
+> **Auteurs** : Gabriel Lemaire-Levesque + Claude, avec critiques de Grok, NotebookLM, Copilot, Gemini
+> **Version** : 0.3
 
 ## 1. Contexte et objectifs
 

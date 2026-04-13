@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
 import { useFicheModale } from "@/hooks/partagees/use-fiche-modale";
 import { TacheBarreActions } from "@/components/tache/vue-detaillee/barre-actions";
@@ -23,6 +23,12 @@ type Props = {
  */
 export function TacheVueDetaillee({ tae, votes, peutVoter, estAuteur }: Props) {
   const { modaleOuverte, cibleModale, ouvrirFicheModale, fermerFicheModale } = useFicheModale();
+  const heroRef = useRef<HTMLHeadingElement>(null);
+
+  /* Focus initial sur le h1 du hero pour les lecteurs d'écran */
+  useEffect(() => {
+    heroRef.current?.focus();
+  }, []);
 
   const surClicDocument = useCallback(
     (docId: string) => {
@@ -41,6 +47,7 @@ export function TacheVueDetaillee({ tae, votes, peutVoter, estAuteur }: Props) {
           votes={votes}
           peutVoter={peutVoter}
           surClicDocument={surClicDocument}
+          heroRef={heroRef}
         />
       </TacheVueDetailleeLayout>
 
