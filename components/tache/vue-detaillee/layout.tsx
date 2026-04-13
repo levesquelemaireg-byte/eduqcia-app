@@ -3,20 +3,23 @@ import type { ReactNode } from "react";
 type Props = {
   /** Colonne gauche — flux principal (FluxLecture). */
   children: ReactNode;
-  /** Colonne droite — rail de métadonnées (TacheRail). */
+  /** Colonne droite (desktop) / au-dessus (tablet/mobile) — rail de métadonnées. */
   rail: ReactNode;
 };
 
 /**
- * Layout 2 colonnes desktop de la vue détaillée tâche.
- * CSS grid : flux principal (1fr) + rail fixe (280px), gap 40px, max-width 1080px centré.
- * En dessous de 1024px, le grid passe en 1 colonne (responsive Phase 7).
+ * Layout responsive de la vue détaillée tâche.
+ *
+ * - Desktop ≥1024px : grid 2 colonnes (flux 1fr + rail 280px), gap 40px, max-width 1080px.
+ * - Tablet 768-1023px : 1 colonne, rail au-dessus du flux (non sticky), margin-bottom 32px.
+ * - Mobile <768px : 1 colonne, padding 16px, rail au-dessus (rendu en accordéon par TacheRail).
  */
 export function TacheVueDetailleeLayout({ children, rail }: Props) {
   return (
-    <div className="mx-auto grid max-w-[1080px] grid-cols-[minmax(0,1fr)_280px] gap-10 px-6 py-8">
-      <main className="min-w-0">{children}</main>
-      {rail}
+    <div className="mx-auto max-w-[1080px] px-4 py-6 md:px-6 md:py-8 lg:grid lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-10">
+      {/* Rail — rendu au-dessus du flux en tablet/mobile, en colonne droite en desktop */}
+      <div className="mb-8 lg:order-2 lg:mb-0">{rail}</div>
+      <main className="min-w-0 lg:order-1">{children}</main>
     </div>
   );
 }

@@ -55,7 +55,6 @@ function SkeletonModale() {
  */
 export function FicheModale({ docId, surFermer }: Props) {
   const titleId = useId();
-  const fermerBtnRef = useRef<HTMLButtonElement>(null);
   const panneauRef = useRef<HTMLDivElement>(null);
 
   const [etat, setEtat] = useState<EtatChargement>({ statut: "chargement" });
@@ -89,10 +88,20 @@ export function FicheModale({ docId, surFermer }: Props) {
     };
   }, []);
 
-  /* ── Focus initial sur le bouton fermeture ──────────────────── */
+  /* ── Focus initial sur le premier bouton visible ─────────────── */
 
   useEffect(() => {
-    fermerBtnRef.current?.focus();
+    /* Le panneau contient deux boutons fermeture (mobile back + desktop close).
+       On focus le premier visible (offsetParent !== null). */
+    const panneau = panneauRef.current;
+    if (!panneau) return;
+    const boutons = panneau.querySelectorAll<HTMLElement>("button, a[href]");
+    for (const btn of boutons) {
+      if (btn.offsetParent !== null) {
+        btn.focus();
+        break;
+      }
+    }
   }, []);
 
   /* ── Escape ferme ───────────────────────────────────────────── */
@@ -158,32 +167,45 @@ export function FicheModale({ docId, surFermer }: Props) {
   /* ── Rendu ──────────────────────────────────────────────────── */
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-10" role="presentation">
-      {/* Backdrop */}
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-0 md:p-3 lg:p-10"
+      role="presentation"
+    >
+      {/* Backdrop — masqué sur mobile (plein écran) */}
       <button
         type="button"
-        className="absolute inset-0 cursor-pointer"
+        className="absolute inset-0 hidden cursor-pointer md:block"
         style={{ background: "rgba(28, 37, 54, 0.55)" }}
         aria-label="Fermer la fenêtre"
         onClick={surFermer}
       />
 
-      {/* Panneau modal */}
+      {/* Panneau modal — plein écran mobile, marge tablet, centré desktop */}
       <div
         ref={panneauRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
         onKeyDown={gererTabTrap}
-        className="relative z-10 flex flex-col overflow-hidden rounded-2xl bg-bg shadow-[0_20px_60px_rgba(0,0,0,0.3)]"
-        style={{
-          width: "min(1080px, 90vw)",
-          height: "min(90vh, 900px)",
-        }}
+        className="relative z-10 flex h-full w-full flex-col overflow-hidden bg-bg md:h-[95vh] md:max-h-[900px] md:w-[calc(100vw-48px)] md:max-w-[1080px] md:rounded-2xl md:shadow-[0_20px_60px_rgba(0,0,0,0.3)] lg:h-[min(90vh,900px)] lg:w-[min(1080px,90vw)]"
       >
-        {/* Header */}
-        <header className="flex shrink-0 items-center justify-between border-b border-border px-5 py-3">
-          <h2 id={titleId} className="text-sm font-semibold text-deep">
+        {/* Header — bouton retour sur mobile, croix sur tablet/desktop */}
+        <header className="flex shrink-0 items-center justify-between border-b border-border px-4 py-3 md:px-5">
+          {/* Mobile : bouton retour chevron gauche */}
+          <button
+            type="button"
+            onClick={surFermer}
+            className="inline-flex items-center gap-1 text-sm font-medium text-steel md:hidden"
+            aria-label="Fermer"
+          >
+            <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
+              arrow_back
+            </span>
+            {FICHE_MODALE_TITRE_DOCUMENT}
+          </button>
+
+          {/* Tablet/Desktop : titre seul */}
+          <h2 id={titleId} className="hidden text-sm font-semibold text-deep md:block">
             {FICHE_MODALE_TITRE_DOCUMENT}
           </h2>
 
@@ -195,14 +217,14 @@ export function FicheModale({ docId, surFermer }: Props) {
               <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
                 open_in_new
               </span>
-              {FICHE_MODALE_OUVRIR_PLEIN_ECRAN}
+              <span className="hidden md:inline">{FICHE_MODALE_OUVRIR_PLEIN_ECRAN}</span>
             </Link>
 
+            {/* Bouton fermeture croix — tablet/desktop uniquement */}
             <button
-              ref={fermerBtnRef}
               type="button"
               onClick={surFermer}
-              className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep"
+              className="hidden h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep md:inline-flex"
               aria-label="Fermer"
             >
               <span className="material-symbols-outlined text-[22px]" aria-hidden="true">

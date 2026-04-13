@@ -100,23 +100,24 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
 
       {/* ─── Droite : actions ────────────────────────────────── */}
       <div className="flex items-center gap-1.5">
-        {/* Ajouter à une épreuve — bouton primaire */}
+        {/* Ajouter à une épreuve — bouton primaire, icône seule sur mobile */}
         <button
           type="button"
           onClick={surAjouterEpreuve}
-          className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-accent px-3.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent/90"
+          className="inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-accent px-2.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent/90 md:px-3.5"
+          title={FICHE_BARRE_AJOUTER_EPREUVE}
         >
           <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
             snippet_folder
           </span>
-          {FICHE_BARRE_AJOUTER_EPREUVE}
+          <span className="hidden md:inline">{FICHE_BARRE_AJOUTER_EPREUVE}</span>
         </button>
 
-        {/* Épingler — bouton icône toggle */}
+        {/* Épingler — bouton icône toggle, masqué sur mobile (dans kebab) */}
         <button
           type="button"
           onClick={surEpingler}
-          className={cn(boutonIcone, epinglee && "bg-panel-alt")}
+          className={cn(boutonIcone, "hidden md:flex", epinglee && "bg-panel-alt")}
           title={FICHE_BARRE_EPINGLER}
           aria-label={FICHE_BARRE_EPINGLER}
           aria-pressed={epinglee}
@@ -130,11 +131,11 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
           </span>
         </button>
 
-        {/* Modifier — auteur uniquement */}
+        {/* Modifier — auteur uniquement, masqué sur mobile (dans kebab) */}
         {estAuteur ? (
           <Link
             href={`/questions/${taeId}/edit`}
-            className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border-[0.5px] border-border bg-panel px-3 py-2 text-[13px] font-medium text-deep transition-colors hover:bg-surface"
+            className="hidden min-h-9 items-center gap-1.5 rounded-lg border-[0.5px] border-border bg-panel px-3 py-2 text-[13px] font-medium text-deep transition-colors hover:bg-surface md:inline-flex"
           >
             <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
               edit_document
@@ -170,6 +171,40 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
                 className="absolute right-0 top-full z-20 mt-1 min-w-[180px] rounded-xl border border-border bg-panel py-1 shadow-lg"
                 role="menu"
               >
+                {/* Mobile-only: Épingler dans le kebab */}
+                <button
+                  type="button"
+                  className={cn(menuItem, "md:hidden")}
+                  role="menuitem"
+                  onClick={() => {
+                    setKebabOuvert(false);
+                    surEpingler();
+                  }}
+                >
+                  <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
+                    file_save
+                  </span>
+                  {FICHE_BARRE_EPINGLER}
+                </button>
+
+                {/* Mobile-only: Modifier dans le kebab (auteur) */}
+                {estAuteur ? (
+                  <Link
+                    href={`/questions/${taeId}/edit`}
+                    className={cn(menuItem, "md:hidden")}
+                    role="menuitem"
+                    onClick={() => setKebabOuvert(false)}
+                  >
+                    <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
+                      edit_document
+                    </span>
+                    {FICHE_BARRE_MODIFIER}
+                  </Link>
+                ) : null}
+
+                {/* Divider entre items mobile et items globaux (mobile only) */}
+                <div className="my-1 border-t-[0.5px] border-border md:hidden" />
+
                 {/* Partager */}
                 <button type="button" className={menuItem} role="menuitem" onClick={surPartager}>
                   <span className="material-symbols-outlined text-[1em]" aria-hidden="true">

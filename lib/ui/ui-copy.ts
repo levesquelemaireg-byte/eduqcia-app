@@ -631,6 +631,11 @@ export const FICHE_MODALE_OUVRIR_PLEIN_ECRAN = "Ouvrir en plein écran";
 /** État vide si le document n'est plus disponible (`docs/specs/fiche-tache-lecture.md` §12). */
 export const FICHE_MODALE_DOCUMENT_INDISPONIBLE = "Ce document n'est plus disponible";
 
+/* ─── Rail responsive ────────────────────────────────────────── */
+
+/** Label de l'accordéon rail mobile (`docs/specs/fiche-tache-lecture.md` §11). */
+export const FICHE_RAIL_ACCORDEON_LABEL = "Informations sur la tâche";
+
 /** Bloc 2 — encadré paramètres verrouillés (`docs/UI-COPY.md` — Paramètres verrouillés) */
 export const BLOC2_BLUEPRINT_LOCKED_TITLE = "Paramètres verrouillés";
 

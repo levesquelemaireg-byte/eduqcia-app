@@ -1,6 +1,6 @@
 # Fiche tâche — Contexte d'implémentation (detail view lecture)
 
-**Dernière mise à jour :** 12 avril 2026 (session 5 — fin Phase 6)
+**Dernière mise à jour :** 12 avril 2026 (session 6 — fin Phase 7)
 **Spec de référence :** `docs/specs/fiche-tache-lecture.md`
 **Convention de nommage :** `CLAUDE.md` § Convention de nommage et structure des fichiers
 
@@ -8,16 +8,16 @@
 
 ## Tableau de bord de progression
 
-| Phase | Titre                              | Statut        | Notes                                                          |
-| ----- | ---------------------------------- | ------------- | -------------------------------------------------------------- |
-| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée                      |
-| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                                 |
-| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre                         |
-| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre              |
-| 5     | Barre d'actions (TopNavBar)        | **Terminée**  | TacheBarreActions, handlers placeholder, build propre          |
-| 6     | Modale de fiche document embarquée | **Terminée**  | useFicheModale + FicheModale + TacheVueDetaillee, build propre |
-| 7     | Responsive tablet et mobile        | Non commencée | Prochaine phase                                                |
-| 8     | Accessibilité et polish final      | Non commencée |                                                                |
+| Phase | Titre                              | Statut        | Notes                                                            |
+| ----- | ---------------------------------- | ------------- | ---------------------------------------------------------------- |
+| 1     | Tokens et primitives de base       | **Terminée**  | Build propre, rétrocompatibilité vérifiée                        |
+| 2     | Selectors de la fiche tâche        | **Terminée**  | 5 flux + 10 rail, build propre                                   |
+| 3     | Configuration et sections          | **Terminée**  | 5 sections + FluxLecture, build propre                           |
+| 4     | Rail et layout desktop             | **Terminée**  | TacheRail + TacheVueDetailleeLayout, build propre                |
+| 5     | Barre d'actions (TopNavBar)        | **Terminée**  | TacheBarreActions, handlers placeholder, build propre            |
+| 6     | Modale de fiche document embarquée | **Terminée**  | useFicheModale + FicheModale + TacheVueDetaillee, build propre   |
+| 7     | Responsive tablet et mobile        | **Terminée**  | 3 breakpoints, accordéon mobile, modale fullscreen, build propre |
+| 8     | Accessibilité et polish final      | Non commencée | Prochaine phase                                                  |
 
 ---
 
@@ -462,13 +462,42 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 
 ---
 
+## Journal de session — 12 avril 2026 (session 6)
+
+### Phase 7 — Responsive tablet et mobile (terminée)
+
+**Fichiers modifiés :**
+
+- `components/tache/vue-detaillee/layout.tsx` — `TacheVueDetailleeLayout` : grid 2 colonnes uniquement en `lg:` (≥1024px). En dessous, 1 colonne avec rail au-dessus du flux via `lg:order-*`. Padding réduit sur mobile (`px-4` → `md:px-6`).
+- `components/tache/vue-detaillee/rail.tsx` — `TacheRail` : 3 rendus conditionnels via classes Tailwind responsive. Mobile (`md:hidden`) : accordéon replié par défaut avec label "Informations sur la tâche", chevron animé, `role="button"`, `aria-expanded`, keyboard support (Enter/Space). Tablet (`md:block lg:hidden`) : pleine largeur, non sticky, padding 16px. Desktop (`lg:block`) : sticky 280px (inchangé). Le contenu est partagé via une variable `contenuRail` pour éviter la duplication.
+- `components/tache/vue-detaillee/barre-actions.tsx` — `TacheBarreActions` : bouton "Ajouter à une épreuve" icon-only sur mobile (`<span className="hidden md:inline">`), texte visible sur tablet+. Boutons épingler et Modifier masqués sur mobile (`hidden md:flex` / `hidden md:inline-flex`) et ajoutés en tête du kebab menu avec `md:hidden`. Divider mobile-only entre les items déplacés et les items globaux.
+- `components/tache/vue-detaillee/sections/hero.tsx` — `SectionHero` : IconBadge 40px sur mobile, 52px sur `md:`. h1 consigne 19px mobile, 21px `md:`. Gap réduit à `gap-3` mobile, `md:gap-4`.
+- `components/partagees/fiche-modale/index.tsx` — `FicheModale` : mobile plein écran (`h-full w-full`, pas de rounded ni shadow), header avec bouton retour chevron gauche au lieu de croix. Tablet : `w-[calc(100vw-48px)]`, `h-[95vh]`, rounded+shadow. Desktop : `min(1080px,90vw)` × `min(90vh,900px)` (inchangé). Backdrop masqué sur mobile. Focus initial dynamique sur le premier bouton visible (`offsetParent !== null`). Lien "Ouvrir en plein écran" : texte masqué sur mobile, icône seule.
+- `lib/ui/ui-copy.ts` — ajout constante `FICHE_RAIL_ACCORDEON_LABEL`.
+
+**Build :** propre, aucune erreur TS, ESLint propre (0 nouvelles erreurs), Prettier appliqué.
+
+### Décisions prises — Phase 7
+
+**D26 — Trois rendus conditionnels pour le rail :** plutôt qu'un seul `<aside>` avec des classes responsive complexes (qui ne peuvent pas changer `sticky` vs non-sticky de manière fiable), trois blocs `<aside>` sont rendus avec `md:hidden` / `md:block lg:hidden` / `lg:block`. Seul un est visible à la fois. Le contenu est factorisé dans une variable `contenuRail` pour zéro duplication. Pas de hook `useMediaQuery` — tout est CSS.
+
+**D27 — Accordéon mobile avec `role="button"` :** conformément �� CLAUDE.md (« Header = `<div role="button">` jamais `<button>` ��� le contenu peut contenir des éléments interactifs »), le header de l'accordéon mobile utilise `role="button"` + `tabIndex={0}` + keyboard handlers. Le contenu déplié contient des `MetaRowExpandable` qui sont eux-mêmes interactifs.
+
+**D28 — Actions dans le kebab sur mobile :** épingler et Modifier (auteur) sont dupliqués : visibles comme boutons séparés en `md:` et comme items du kebab en mobile. Les items kebab mobile utilisent `md:hidden` pour dispara��tre quand les boutons séparés redeviennent visibles. Un divider `md:hidden` sépare les items déplacés des items globaux.
+
+**D29 — Focus initial dynamique dans la modale :** le `fermerBtnRef` est supprimé. Le focus initial parcourt les éléments focusables du panneau et s'arrête sur le premier visible (`offsetParent !== null`). Sur mobile c'est le bouton retour, sur desktop c'est le lien "Ouvrir en plein écran" (premier élément focusable visible du header).
+
+**D30 — IconBadge responsive via double rendu :** deux instances d'`IconBadge` (40px et 52px) sont rendues avec `md:hidden` / `hidden md:block` plutôt qu'un prop responsive. `IconBadge` ne supporte pas de classes responsive sur sa prop `size` (c'est un nombre, pas une classe). Le double rendu est le pattern le plus simple.
+
+---
+
 ## Instructions pour reprendre (prochaine session)
 
 1. Lire `docs/specs/fiche-tache-lecture.md` en entier (spec de référence)
 2. Lire `CLAUDE.md` § Convention de nommage et structure des fichiers
 3. Lire ce fichier (`docs/specs/fiche-tache-implementation-context.md`)
 4. Vérifier l'état de progression dans le tableau de bord ci-dessus
-5. Attaquer la phase suivante non terminée (Phase 7 — Responsive tablet et mobile)
+5. Attaquer la phase suivante non terminée (Phase 8 — Accessibilité et polish final)
 6. En fin de session, mettre à jour ce fichier :
    - Avancement dans le tableau de bord
    - Nouvelles décisions architecturales prises
