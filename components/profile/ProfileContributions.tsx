@@ -56,7 +56,7 @@ export function ProfileContributions({
       <div
         role="tablist"
         aria-label="Contributions publiées"
-        className="flex border-b border-slate-200"
+        className="flex border-b border-border"
       >
         {TABS.map((tab) => {
           const count = countMap[tab.id];
@@ -88,13 +88,13 @@ export function ProfileContributions({
               tabIndex={isActive ? 0 : -1}
               className={cn(
                 "relative min-h-[48px] flex-1 px-4 py-3 text-center text-sm font-medium transition-colors duration-150",
-                isActive ? "text-teal-600 font-semibold" : "text-slate-500 hover:text-slate-700",
+                isActive ? "text-accent font-semibold" : "text-muted hover:text-deep",
               )}
               aria-label={`${count} ${label} ${pluralize(count, "publiée", "publiées")}`}
             >
               {label} ({count})
               {isActive && (
-                <span className="absolute right-0 bottom-0 left-0 h-[3px] rounded-t-sm bg-teal-600" />
+                <span className="absolute right-0 bottom-0 left-0 h-[3px] rounded-t-sm bg-accent" />
               )}
             </button>
           );

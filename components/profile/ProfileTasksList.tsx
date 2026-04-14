@@ -38,13 +38,10 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
   if (totalCount === 0) {
     return (
       <div className="py-8 text-center">
-        <span
-          className="material-symbols-outlined mb-2 text-[32px] text-slate-400"
-          aria-hidden="true"
-        >
+        <span className="material-symbols-outlined mb-2 text-[32px] text-muted" aria-hidden="true">
           quiz
         </span>
-        <p className="text-base font-medium text-slate-700">
+        <p className="text-base font-medium text-deep">
           {isOwner
             ? "Vous n'avez pas encore publié de tâche."
             : "Cet enseignant n'a pas encore partagé de tâche."}
@@ -52,7 +49,7 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
         {isOwner && (
           <Link
             href="/questions/new"
-            className="mt-2 inline-block text-sm font-medium text-teal-600 hover:bg-teal-50"
+            className="mt-2 inline-block text-sm font-medium text-accent hover:bg-accent/10"
           >
             Créer une tâche →
           </Link>
@@ -75,12 +72,12 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
             <li key={task.id}>
               <Link
                 href={`/questions/${task.id}`}
-                className="block rounded-xl border border-slate-200 bg-white p-4 transition-all duration-150 hover:border-slate-300 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+                className="block rounded-xl border border-border bg-panel p-4 transition-all duration-150 hover:border-border hover:shadow-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
               >
-                <p className="font-medium text-slate-900">{consignePreview}</p>
-                <div className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+                <p className="font-medium text-deep">{consignePreview}</p>
+                <div className="mt-1.5 flex flex-wrap items-center gap-2 text-sm text-muted">
                   {task.oiTitre && (
-                    <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
+                    <span className="inline-flex items-center gap-1 rounded-md bg-surface px-2 py-0.5 text-xs font-medium text-muted">
                       {task.oiTitre}
                     </span>
                   )}
@@ -92,10 +89,10 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
                     </>
                   )}
                 </div>
-                <div className="mt-1.5 flex items-center gap-3 text-sm text-slate-500">
+                <div className="mt-1.5 flex items-center gap-3 text-sm text-muted">
                   <span>{new Date(task.createdAt).toLocaleDateString("fr-CA")}</span>
                   {task.usageCount > 0 && (
-                    <span className="font-medium text-teal-600">
+                    <span className="font-medium text-accent">
                       Utilisée {task.usageCount} {pluralize(task.usageCount, "fois", "fois")}
                     </span>
                   )}
@@ -111,7 +108,7 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
             type="button"
             onClick={loadMore}
             disabled={loading}
-            className="text-sm font-medium text-teal-600 hover:bg-teal-50 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
+            className="text-sm font-medium text-accent hover:bg-accent/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
           >
             {loading
               ? "Chargement…"

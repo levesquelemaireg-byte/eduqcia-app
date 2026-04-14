@@ -56,7 +56,7 @@ export function CollaborateurCard({
     <Link
       href={`/profile/${id}`}
       prefetch={false}
-      className="block rounded-xl border border-slate-200 bg-white p-4 transition-all duration-150 hover:border-slate-300 hover:shadow-sm focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+      className="block rounded-xl border border-border bg-panel p-4 transition-all duration-150 hover:border-border hover:shadow-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
       aria-label={`${displayName}${cssName ? ` — ${cssName}` : ""}`}
     >
       <div className="flex items-start gap-3">
@@ -65,15 +65,15 @@ export function CollaborateurCard({
         <div className="min-w-0 flex-1">
           {/* Ligne 1 : Nom + badge rôle */}
           <div className="flex flex-wrap items-center gap-2">
-            <span className="text-base font-semibold text-slate-900">{displayName}</span>
+            <span className="text-base font-semibold text-deep">{displayName}</span>
             <RoleBadge role={role} className="!h-6 !px-2.5 !text-xs" />
           </div>
 
           {/* Ligne 2 : École + compteurs */}
-          <p className="mt-0.5 text-sm text-slate-600">
+          <p className="mt-0.5 text-sm text-muted">
             {cssName && <span>{cssName} · </span>}
             {totalContributions === 0 ? (
-              <span className="italic text-slate-400">Aucune contribution pour le moment</span>
+              <span className="italic text-muted">Aucune contribution pour le moment</span>
             ) : (
               <>
                 {docCount} {pluralize(docCount, "document", "documents")} · {taskCount}{" "}
@@ -85,7 +85,7 @@ export function CollaborateurCard({
 
           {/* Ligne 3 : Courriel + copier */}
           <div className="mt-0.5 flex items-center gap-1">
-            <span className="truncate text-sm text-slate-500">{email}</span>
+            <span className="truncate text-sm text-muted">{email}</span>
             <CopyButton text={email} className="!h-7 !w-7" />
           </div>
 

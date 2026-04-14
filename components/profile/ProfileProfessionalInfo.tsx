@@ -42,17 +42,17 @@ export function ProfileProfessionalInfo({
   return (
     <section
       aria-labelledby="profile-pro-heading"
-      className="rounded-xl border border-slate-200 bg-white p-5 md:p-6"
+      className="rounded-xl border border-border bg-panel p-5 md:p-6"
     >
       <div className="mb-4 flex items-center justify-between">
-        <h2 id="profile-pro-heading" className="text-lg font-semibold text-slate-900">
+        <h2 id="profile-pro-heading" className="text-lg font-semibold text-deep">
           Informations professionnelles
         </h2>
         {isOwner && onEditClick && (
           <button
             type="button"
             onClick={onEditClick}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
             aria-label="Modifier les informations professionnelles"
           >
             <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
@@ -66,7 +66,7 @@ export function ProfileProfessionalInfo({
         {/* Niveaux */}
         {(isOwner || hasNiveaux) && (
           <div>
-            <p className="mb-1.5 text-sm font-medium text-slate-700">
+            <p className="mb-1.5 text-sm font-medium text-deep">
               {pluralize(niveaux.length, "Niveau enseigné", "Niveaux enseignés")}
             </p>
             {hasNiveaux ? (
@@ -76,7 +76,7 @@ export function ProfileProfessionalInfo({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-slate-400 italic">
+              <p className="text-sm text-muted italic">
                 Non renseigné — précisez vos niveaux pour faciliter la collaboration.
               </p>
             )}
@@ -86,7 +86,7 @@ export function ProfileProfessionalInfo({
         {/* Disciplines */}
         {(isOwner || hasDisciplines) && (
           <div>
-            <p className="mb-1.5 text-sm font-medium text-slate-700">
+            <p className="mb-1.5 text-sm font-medium text-deep">
               {pluralize(disciplines.length, "Discipline enseignée", "Disciplines enseignées")}
             </p>
             {hasDisciplines ? (
@@ -96,7 +96,7 @@ export function ProfileProfessionalInfo({
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-slate-400 italic">
+              <p className="text-sm text-muted italic">
                 Non renseigné — ajoutez vos disciplines pour mieux contextualiser vos contenus.
               </p>
             )}
@@ -106,14 +106,14 @@ export function ProfileProfessionalInfo({
         {/* Expérience */}
         {(isOwner || hasExperience) && (
           <div>
-            <p className="mb-1.5 text-sm font-medium text-slate-700">Expérience</p>
+            <p className="mb-1.5 text-sm font-medium text-deep">Expérience</p>
             {hasExperience ? (
               <MetaPill
                 icon="schedule"
                 label={`${yearsExperience} ${pluralize(yearsExperience, "année", "années")} d'expérience`}
               />
             ) : (
-              <p className="text-sm text-slate-400 italic">
+              <p className="text-sm text-muted italic">
                 Non renseigné — indiquez vos années d&apos;expérience pour situer votre parcours.
               </p>
             )}

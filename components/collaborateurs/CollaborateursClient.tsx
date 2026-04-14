@@ -131,7 +131,7 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
       {/* Barre de recherche */}
       <div className="relative mb-4">
         <span className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-          <span className="material-symbols-outlined text-[20px] text-slate-400" aria-hidden="true">
+          <span className="material-symbols-outlined text-[20px] text-muted" aria-hidden="true">
             search
           </span>
         </span>
@@ -140,12 +140,12 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Rechercher un enseignant…"
-          className="w-full rounded-xl border border-slate-200 bg-white py-3 pr-4 pl-10 text-sm text-slate-900 shadow-sm focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+          className="auth-input w-full rounded-xl border border-border bg-panel py-3 pr-4 pl-10 text-sm text-deep shadow-sm"
           aria-label="Rechercher un enseignant"
         />
       </div>
 
-      {isSyncing && <p className="mb-3 text-xs text-slate-500">Mise à jour des résultats…</p>}
+      {isSyncing && <p className="mb-3 text-xs text-muted">Mise à jour des résultats…</p>}
 
       <div aria-live="polite" ref={liveRef} className="sr-only" />
 
@@ -173,15 +173,15 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
         <div className="py-8 text-center">
           {isSearchMode ? (
             <>
-              <p className="text-base font-medium text-slate-700">
+              <p className="text-base font-medium text-deep">
                 Aucun enseignant trouvé pour « {query.trim()} ».
               </p>
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-muted">
                 Vérifiez l&apos;orthographe ou essayez un autre terme.
               </p>
             </>
           ) : (
-            <p className="text-base font-medium text-slate-700">
+            <p className="text-base font-medium text-deep">
               Aucun collaborateur inscrit pour le moment.
             </p>
           )}
@@ -197,7 +197,7 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
               type="button"
               onClick={loadMore}
               disabled={loadingMore}
-              className="text-sm font-medium text-teal-600 hover:bg-teal-50 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
+              className="text-sm font-medium text-accent hover:bg-accent/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
             >
               {loadingMore
                 ? "Chargement…"
@@ -208,13 +208,13 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
       )}
 
       {!isSearchMode && remaining <= 0 && items.length > 0 && (
-        <p className="mt-6 text-center text-sm text-slate-500">
+        <p className="mt-6 text-center text-sm text-muted">
           Vous avez vu tous les enseignants inscrits.
         </p>
       )}
 
       {isSearchMode && total > 50 && (
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-muted">
           Affinez votre recherche pour voir plus de résultats.
         </p>
       )}

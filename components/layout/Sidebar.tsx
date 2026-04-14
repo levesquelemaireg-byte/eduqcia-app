@@ -200,7 +200,7 @@ export function Sidebar({
                         {item.badge != null && item.badge > 0 ? (
                           item.badgeStyle === "alert" ? (
                             <span
-                              className={`pointer-events-none shrink-0 self-center rounded-full bg-red-600 px-1.5 py-0.5 text-[9px] font-medium leading-none text-white ${
+                              className={`pointer-events-none shrink-0 self-center rounded-full bg-error px-1.5 py-0.5 text-[9px] font-medium leading-none text-white ${
                                 collapsed
                                   ? "lg:absolute lg:right-0 lg:top-0 lg:translate-x-[70%] lg:-translate-y-1/2"
                                   : ""

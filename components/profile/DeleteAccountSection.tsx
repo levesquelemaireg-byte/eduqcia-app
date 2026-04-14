@@ -24,11 +24,11 @@ export function DeleteAccountSection() {
 
   return (
     <>
-      <div className="border-t border-slate-200 pt-8">
+      <div className="border-t border-border pt-8">
         <button
           type="button"
           onClick={() => setModalOpen(true)}
-          className="text-sm font-medium text-red-600 hover:text-red-700"
+          className="text-sm font-medium text-error hover:text-error"
         >
           Supprimer mon compte
         </button>
@@ -44,36 +44,33 @@ export function DeleteAccountSection() {
         title="Suppression définitive du compte"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-700">
+          <p className="text-sm text-deep">
             En vertu de la Loi 25 sur la protection des renseignements personnels, cette action
             entraîne la suppression irréversible de toutes vos données personnelles :
           </p>
-          <ul className="list-disc space-y-1 pl-5 text-sm text-slate-700">
+          <ul className="list-disc space-y-1 pl-5 text-sm text-deep">
             <li>Votre nom, courriel et informations d&apos;établissement</li>
             <li>Vos niveaux, disciplines et années d&apos;expérience</li>
             <li>Vos brouillons non publiés (tâches, documents, épreuves)</li>
             <li>Vos votes, favoris et notifications</li>
           </ul>
-          <p className="text-sm text-slate-700">
+          <p className="text-sm text-deep">
             <strong>Vos contributions publiées</strong> (tâches, documents et épreuves) resteront
             accessibles dans la banque collaborative, mais votre nom sera remplacé par « [Compte
             supprimé] ».
           </p>
-          <p className="text-sm font-semibold text-red-700">
+          <p className="text-sm font-semibold text-error">
             Cette action est irréversible. Vous ne pourrez pas récupérer votre compte.
           </p>
 
           {error && (
-            <p className="rounded-md bg-red-50 p-3 text-sm text-red-700" role="alert">
+            <p className="rounded-md bg-error/10 p-3 text-sm text-error" role="alert">
               {error}
             </p>
           )}
 
           <div>
-            <label
-              htmlFor="delete-confirm"
-              className="mb-1 block text-sm font-medium text-slate-700"
-            >
+            <label htmlFor="delete-confirm" className="mb-1 block text-sm font-medium text-deep">
               Tapez SUPPRIMER pour confirmer
             </label>
             <input
@@ -82,7 +79,7 @@ export function DeleteAccountSection() {
               value={confirmation}
               onChange={(e) => setConfirmation(e.target.value)}
               autoComplete="off"
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-red-500 focus:ring-2 focus:ring-red-500 focus:outline-none"
+              className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
             />
           </div>
 
@@ -94,7 +91,7 @@ export function DeleteAccountSection() {
                 setConfirmation("");
                 setError(null);
               }}
-              className="rounded-md px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100"
+              className="rounded-md px-4 py-2 text-sm font-medium text-muted hover:bg-surface"
             >
               Annuler
             </button>
@@ -102,7 +99,7 @@ export function DeleteAccountSection() {
               type="button"
               onClick={handleDelete}
               disabled={confirmation !== "SUPPRIMER" || deleting}
-              className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              className="rounded-md bg-error px-4 py-2 text-sm font-medium text-white hover:bg-error/90 disabled:opacity-50"
             >
               {deleting ? "Suppression…" : "Supprimer définitivement"}
             </button>

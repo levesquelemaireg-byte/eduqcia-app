@@ -39,7 +39,7 @@ export function ProfileHero({
   return (
     <section
       aria-labelledby="profile-hero-heading"
-      className="rounded-xl border border-slate-200 bg-white p-5 md:p-6"
+      className="rounded-xl border border-border bg-panel p-5 md:p-6"
     >
       <div className="flex flex-col items-center gap-4 md:flex-row md:items-start">
         <AvatarInitials initials={initials} size="lg" />
@@ -48,7 +48,7 @@ export function ProfileHero({
           <div className="flex flex-col items-center gap-2 md:flex-row">
             <h1
               id="profile-hero-heading"
-              className="text-2xl font-extrabold tracking-tight text-slate-900"
+              className="text-2xl font-extrabold tracking-tight text-deep"
             >
               {displayName}
             </h1>
@@ -56,7 +56,7 @@ export function ProfileHero({
               <button
                 type="button"
                 onClick={onEditClick}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
                 aria-label="Modifier les informations d'identité"
               >
                 <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
@@ -72,17 +72,17 @@ export function ProfileHero({
           </div>
 
           {(cssName || schoolName) && (
-            <p className="mt-2 text-sm text-slate-600">
+            <p className="mt-2 text-sm text-muted">
               {[cssName, schoolName].filter(Boolean).join(" · ")}
             </p>
           )}
 
           <div className="mt-1 flex items-center justify-center gap-1 md:justify-start">
-            <span className="text-sm text-slate-500">{email}</span>
+            <span className="text-sm text-muted">{email}</span>
             <CopyButton text={email} />
           </div>
 
-          <p className="mt-1 text-sm text-slate-500">Membre depuis {memberSince}</p>
+          <p className="mt-1 text-sm text-muted">Membre depuis {memberSince}</p>
         </div>
       </div>
     </section>

@@ -111,7 +111,7 @@ export function ProfileEditProfessional({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-md px-4 py-2 text-sm font-medium text-teal-600 hover:bg-teal-50"
+            className="rounded-md px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10"
           >
             Annuler
           </button>
@@ -119,7 +119,7 @@ export function ProfileEditProfessional({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 disabled:opacity-50"
           >
             {saving ? "Enregistrement…" : "Enregistrer"}
           </button>
@@ -128,14 +128,14 @@ export function ProfileEditProfessional({
     >
       <div className="space-y-6">
         {error && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-700" role="alert">
+          <p className="rounded-md bg-error/10 p-3 text-sm text-error" role="alert">
             {error}
           </p>
         )}
 
         {/* Niveaux — multi-select chips */}
         <fieldset>
-          <legend className="mb-2 text-sm font-medium text-slate-700">Niveau enseigné</legend>
+          <legend className="mb-2 text-sm font-medium text-deep">Niveau enseigné</legend>
           <div className="flex flex-wrap gap-2">
             {NIVEAUX_OPTIONS.map((n) => {
               const selected = niveaux.includes(n.code);
@@ -146,9 +146,9 @@ export function ProfileEditProfessional({
                   onClick={() => toggleNiveau(n.code)}
                   className={`inline-flex h-8 items-center gap-1 rounded-lg border px-4 text-sm font-medium transition-colors ${
                     selected
-                      ? "border-teal-500 bg-teal-50 text-teal-700"
-                      : "border-slate-200 bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  } focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none`}
+                      ? "border-accent bg-accent/10 text-accent"
+                      : "border-border bg-surface text-deep hover:bg-surface"
+                  } focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none`}
                   aria-pressed={selected}
                 >
                   <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
@@ -163,7 +163,7 @@ export function ProfileEditProfessional({
 
         {/* Disciplines — multi-select chips */}
         <fieldset>
-          <legend className="mb-2 text-sm font-medium text-slate-700">Discipline enseignée</legend>
+          <legend className="mb-2 text-sm font-medium text-deep">Discipline enseignée</legend>
           <div className="flex flex-wrap gap-2">
             {DISCIPLINES_OPTIONS.map((d) => {
               const selected = disciplines.includes(d.code);
@@ -174,9 +174,9 @@ export function ProfileEditProfessional({
                   onClick={() => toggleDiscipline(d.code)}
                   className={`inline-flex h-8 items-center gap-1 rounded-lg border px-4 text-sm font-medium transition-colors ${
                     selected
-                      ? "border-teal-500 bg-teal-50 text-teal-700"
-                      : "border-slate-200 bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  } focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none`}
+                      ? "border-accent bg-accent/10 text-accent"
+                      : "border-border bg-surface text-deep hover:bg-surface"
+                  } focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none`}
                   aria-pressed={selected}
                 >
                   <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
@@ -191,7 +191,7 @@ export function ProfileEditProfessional({
 
         {/* Années d'expérience */}
         <div>
-          <label htmlFor="edit-years-exp" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="edit-years-exp" className="mb-1 block text-sm font-medium text-deep">
             Années d&apos;expérience
           </label>
           <input
@@ -202,7 +202,7 @@ export function ProfileEditProfessional({
             value={yearsExp}
             onChange={(e) => setYearsExp(e.target.value)}
             placeholder="Ex : 12"
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
           />
         </div>
       </div>

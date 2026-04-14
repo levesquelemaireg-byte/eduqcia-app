@@ -96,7 +96,7 @@ export function ProfileEditIdentity({
           <button
             type="button"
             onClick={handleClose}
-            className="px-4 py-2 text-sm font-medium text-teal-600 hover:bg-teal-50 rounded-md"
+            className="px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10 rounded-md"
           >
             Annuler
           </button>
@@ -104,7 +104,7 @@ export function ProfileEditIdentity({
             type="button"
             onClick={handleSave}
             disabled={saving}
-            className="rounded-md bg-teal-600 px-4 py-2 text-sm font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 disabled:opacity-50"
           >
             {saving ? "Enregistrement…" : "Enregistrer"}
           </button>
@@ -113,16 +113,13 @@ export function ProfileEditIdentity({
     >
       <div className="space-y-5">
         {error && (
-          <p className="rounded-md bg-red-50 p-3 text-sm text-red-700" role="alert">
+          <p className="rounded-md bg-error/10 p-3 text-sm text-error" role="alert">
             {error}
           </p>
         )}
 
         <div>
-          <label
-            htmlFor="edit-first-name"
-            className="mb-1 block text-sm font-medium text-slate-700"
-          >
+          <label htmlFor="edit-first-name" className="mb-1 block text-sm font-medium text-deep">
             Prénom
           </label>
           <input
@@ -130,12 +127,12 @@ export function ProfileEditIdentity({
             type="text"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
           />
         </div>
 
         <div>
-          <label htmlFor="edit-last-name" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="edit-last-name" className="mb-1 block text-sm font-medium text-deep">
             Nom
           </label>
           <input
@@ -143,12 +140,12 @@ export function ProfileEditIdentity({
             type="text"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
           />
         </div>
 
         <div>
-          <label htmlFor="edit-css" className="mb-1 block text-sm font-medium text-slate-700">
+          <label htmlFor="edit-css" className="mb-1 block text-sm font-medium text-deep">
             Centre de services scolaire
           </label>
           <select
@@ -158,7 +155,7 @@ export function ProfileEditIdentity({
               setSelectedCssId(e.target.value);
               setSchoolId("");
             }}
-            className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
           >
             <option value="">Sélectionner un CSS</option>
             {cssOptions.map((css) => (
@@ -171,14 +168,14 @@ export function ProfileEditIdentity({
 
         {selectedCssId && (
           <div>
-            <label htmlFor="edit-school" className="mb-1 block text-sm font-medium text-slate-700">
+            <label htmlFor="edit-school" className="mb-1 block text-sm font-medium text-deep">
               Établissement
             </label>
             <select
               id="edit-school"
               value={schoolId}
               onChange={(e) => setSchoolId(e.target.value)}
-              className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-teal-500 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+              className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
             >
               <option value="">Sélectionner un établissement</option>
               {filteredSchools.map((s) => (
@@ -191,12 +188,12 @@ export function ProfileEditIdentity({
         )}
 
         <div>
-          <p className="text-sm text-slate-500">
-            <span className="font-medium text-slate-700">Rôle</span> — non modifiable (action admin)
+          <p className="text-sm text-muted">
+            <span className="font-medium text-deep">Rôle</span> — non modifiable (action admin)
           </p>
-          <p className="mt-1 text-sm text-slate-500">
-            <span className="font-medium text-slate-700">Courriel</span> — non modifiable (lié à
-            votre compte)
+          <p className="mt-1 text-sm text-muted">
+            <span className="font-medium text-deep">Courriel</span> — non modifiable (lié à votre
+            compte)
           </p>
         </div>
       </div>
