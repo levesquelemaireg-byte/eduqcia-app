@@ -1,40 +1,27 @@
 "use client";
 
 /**
- * Listes CSS / école : uniquement `public/data/css-ecoles.json`.
+ * Formulaire d'inscription — CSS et écoles chargés depuis les tables `css`/`schools`.
  * Voir `docs/ARCHITECTURE.md` (auth Next.js) et `docs/DESIGN-SYSTEM.md` (Formulaires).
  */
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { registerAction } from "@/lib/actions/auth-register";
-import type { CssEcolesMap } from "@/lib/data/load-css-ecoles";
 import { registerSchema, type RegisterFormValues } from "@/lib/schemas/auth";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
-import { ListboxField } from "@/components/ui/ListboxField";
 import { PasswordField } from "@/components/ui/PasswordField";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
-import { RequiredMark } from "@/components/ui/RequiredMark";
 import { PasswordStrengthMeter } from "@/components/auth/PasswordStrengthMeter";
-import {
-  SELECT_PLACEHOLDER_CSS,
-  SELECT_PLACEHOLDER_ECOLE,
-  SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE,
-} from "@/lib/ui/ui-copy";
+import { CssSchoolCascade } from "@/components/auth/CssSchoolCascade";
+import type { CssOption, SchoolOption } from "@/lib/queries/css-schools";
+import { Controller } from "react-hook-form";
 
 const REGISTER_DRAFT_KEY = "eduqcia-register-draft-v1";
-
-const NIVEAUX = [
-  "Secondaire 1",
-  "Secondaire 2",
-  "Secondaire 3",
-  "Secondaire 4",
-  "Secondaire 5",
-] as const;
 
 function defaultRegisterValues(): RegisterFormValues {
   return {
@@ -44,25 +31,20 @@ function defaultRegisterValues(): RegisterFormValues {
     password: "",
     password_confirm: "",
     profile_type: "enseignant",
-    css: "",
-    school: "",
-    niveau: "",
+    css_id: "",
+    school_id: "",
   };
 }
 
 type Props = {
-  cssEcoles: CssEcolesMap;
+  cssList: CssOption[];
+  allSchools: SchoolOption[];
 };
 
-export function RegisterForm({ cssEcoles }: Props) {
+export function RegisterForm({ cssList, allSchools }: Props) {
   const [success, setSuccess] = useState(false);
   const hydratedRef = useRef(false);
-  /** Évite la double soumission si le handler est invoqué deux fois avant le prochain rendu. */
   const submitLockRef = useRef(false);
-  const cssKeys = useMemo(
-    () => Object.keys(cssEcoles).sort((a, b) => a.localeCompare(b, "fr")),
-    [cssEcoles],
-  );
 
   const {
     register,
@@ -79,9 +61,8 @@ export function RegisterForm({ cssEcoles }: Props) {
   });
 
   const profileType = watch("profile_type");
-  const css = watch("css");
+  const cssId = watch("css_id");
   const password = watch("password");
-  const schools = css ? (cssEcoles[css] ?? []) : [];
 
   useEffect(() => {
     if (hydratedRef.current) return;
@@ -114,14 +95,15 @@ export function RegisterForm({ cssEcoles }: Props) {
     return () => clearTimeout(id);
   }, [formValues]);
 
+  // Reset école quand on change de CSS
   useEffect(() => {
-    setValue("school", "");
-  }, [css, setValue]);
+    setValue("school_id", "");
+  }, [cssId, setValue]);
 
+  // Reset école quand on passe en conseiller
   useEffect(() => {
     if (profileType === "conseiller") {
-      setValue("school", "");
-      setValue("niveau", "");
+      setValue("school_id", "");
     }
   }, [profileType, setValue]);
 
@@ -247,102 +229,14 @@ export function RegisterForm({ cssEcoles }: Props) {
         )}
       />
 
-      <div className="flex flex-col gap-[var(--space-2)]">
-        <label htmlFor="css" className="text-sm font-medium text-deep">
-          Centre de services scolaires
-        </label>
-        <Controller
-          name="css"
-          control={control}
-          render={({ field }) => (
-            <ListboxField
-              id="css"
-              ref={field.ref}
-              value={field.value}
-              onChange={field.onChange}
-              onBlur={field.onBlur}
-              allowEmpty
-              placeholder={SELECT_PLACEHOLDER_CSS}
-              error={!!errors.css}
-              aria-invalid={errors.css ? true : undefined}
-              aria-describedby={errors.css ? "css-error" : undefined}
-              options={cssKeys.map((k) => ({ value: k, label: k }))}
-            />
-          )}
-        />
-        {errors.css ? (
-          <p id="css-error" className="text-sm font-medium text-error" role="alert">
-            {errors.css.message}
-          </p>
-        ) : null}
-      </div>
-
-      {profileType === "enseignant" ? (
-        <>
-          <div className="flex flex-col gap-[var(--space-2)]">
-            <label htmlFor="school" className="text-sm font-medium text-deep">
-              École secondaire <RequiredMark />
-            </label>
-            <Controller
-              key={css || "none"}
-              name="school"
-              control={control}
-              render={({ field }) => (
-                <ListboxField
-                  id="school"
-                  ref={field.ref}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  disabled={!css}
-                  allowEmpty
-                  placeholder={SELECT_PLACEHOLDER_ECOLE}
-                  error={!!errors.school}
-                  aria-invalid={errors.school ? true : undefined}
-                  aria-describedby={errors.school ? "school-error" : undefined}
-                  aria-required
-                  options={schools.map((s) => ({ value: s, label: s }))}
-                />
-              )}
-            />
-            {errors.school ? (
-              <p id="school-error" className="text-sm font-medium text-error" role="alert">
-                {errors.school.message}
-              </p>
-            ) : null}
-          </div>
-          <div className="flex flex-col gap-[var(--space-2)]">
-            <label htmlFor="niveau" className="text-sm font-medium text-deep">
-              Niveau scolaire <RequiredMark />
-            </label>
-            <Controller
-              name="niveau"
-              control={control}
-              render={({ field }) => (
-                <ListboxField
-                  id="niveau"
-                  ref={field.ref}
-                  value={field.value}
-                  onChange={field.onChange}
-                  onBlur={field.onBlur}
-                  allowEmpty
-                  placeholder={SELECT_PLACEHOLDER_NIVEAU_SCOLAIRE}
-                  error={!!errors.niveau}
-                  aria-invalid={errors.niveau ? true : undefined}
-                  aria-describedby={errors.niveau ? "niveau-error" : undefined}
-                  aria-required
-                  options={NIVEAUX.map((n) => ({ value: n, label: n }))}
-                />
-              )}
-            />
-            {errors.niveau ? (
-              <p id="niveau-error" className="text-sm font-medium text-error" role="alert">
-                {errors.niveau.message}
-              </p>
-            ) : null}
-          </div>
-        </>
-      ) : null}
+      <CssSchoolCascade
+        cssList={cssList}
+        allSchools={allSchools}
+        control={control}
+        errors={errors}
+        cssId={cssId}
+        showSchool={profileType === "enseignant"}
+      />
 
       <Button
         type="submit"

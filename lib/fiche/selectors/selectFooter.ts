@@ -1,7 +1,7 @@
 import { ready } from "@/lib/fiche/helpers";
 import type { SectionState, FooterData, SelectorRefs } from "@/lib/fiche/types";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { sortAuteursByFamilyName } from "@/lib/tae/auteur-display-sort";
+import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tae/auteur-display-sort";
 import { isActiveNonRedactionVariant } from "@/lib/tae/non-redaction/wizard-variant";
 import { BLUEPRINT_INITIAL_NB_LIGNES } from "@/lib/tae/blueprint-helpers";
 
@@ -11,7 +11,8 @@ import { BLUEPRINT_INITIAL_NB_LIGNES } from "@/lib/tae/blueprint-helpers";
  */
 export function selectFooter(state: TaeFormState, refs: SelectorRefs): SectionState<FooterData> {
   const fallbackAuthor = refs.previewMeta.authorFullName?.trim() || "—";
-  const auteurPrincipal = { id: "draft-local", full_name: fallbackAuthor };
+  const principalSplit = splitDisplayName(fallbackAuthor);
+  const auteurPrincipal = { id: "draft-local", ...principalSplit };
 
   const auteursRaw =
     state.bloc1.modeConception === "equipe"
@@ -19,7 +20,7 @@ export function selectFooter(state: TaeFormState, refs: SelectorRefs): SectionSt
           auteurPrincipal,
           ...state.bloc1.collaborateurs.map((c) => ({
             id: c.id,
-            full_name: c.displayName,
+            ...splitDisplayName(c.displayName),
           })),
         ]
       : [auteurPrincipal];

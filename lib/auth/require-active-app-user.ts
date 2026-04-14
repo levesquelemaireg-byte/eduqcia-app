@@ -6,7 +6,8 @@ export type ActiveAppUser = {
   userId: string;
   email: string;
   profileId: string;
-  fullName: string;
+  firstName: string;
+  lastName: string;
 };
 
 /**
@@ -25,7 +26,7 @@ export async function requireActiveAppUser(): Promise<ActiveAppUser> {
   const admin = createServiceClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("id, full_name, status")
+    .select("id, first_name, last_name, status")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -37,6 +38,7 @@ export async function requireActiveAppUser(): Promise<ActiveAppUser> {
     userId: user.id,
     email: user.email ?? "",
     profileId: profile.id,
-    fullName: profile.full_name,
+    firstName: profile.first_name,
+    lastName: profile.last_name,
   };
 }

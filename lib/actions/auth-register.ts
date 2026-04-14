@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
-import { loadCssEcoles, validateCssAndSchool } from "@/lib/data/load-css-ecoles";
 import { isInstitutionalEmail } from "@/lib/utils/emailValidation";
 import type { UserRole } from "@/lib/types";
 import { RegisterSchema } from "@/lib/schemas/auth";
@@ -28,9 +27,8 @@ export async function registerAction(
     const password = input.password;
     const passwordConfirm = input.password_confirm;
     const profileType = input.profile_type;
-    const css = input.css.trim();
-    const school = input.school.trim();
-    const niveau = input.niveau.trim();
+    const cssId = input.css_id.trim();
+    const schoolId = input.school_id.trim();
 
     if (!firstName || !lastName || !email || !password || !passwordConfirm) {
       return { error: { code: "empty_fields", message: MSG.empty_fields } };
@@ -51,33 +49,41 @@ export async function registerAction(
     const isEnseignant = profileType === "enseignant";
     const role: UserRole = isEnseignant ? "enseignant" : "conseiller_pedagogique";
 
-    let schoolJson: string | null = null;
+    const admin = createServiceClient();
+
+    // Valider la cohérence CSS ↔ école côté serveur
+    let validatedSchoolId: string | null = null;
 
     if (isEnseignant) {
-      if (!css || !school || !niveau) {
+      if (!cssId || !schoolId) {
         return { error: { code: "empty_fields", message: MSG.empty_fields } };
       }
-      const map = await loadCssEcoles();
-      if (!validateCssAndSchool(map, css, school)) {
-        return { error: { code: "failed", message: "Centre de services ou école invalide." } };
+      const { data: school } = await admin
+        .from("schools")
+        .select("id, css_id")
+        .eq("id", schoolId)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (!school || school.css_id !== cssId) {
+        return { error: { code: "failed", message: "École ou centre de services invalide." } };
       }
-      schoolJson = JSON.stringify({ css, ecole: school, niveau });
-    } else {
-      if (css) {
-        const map = await loadCssEcoles();
-        if (!(css in map)) {
-          return { error: { code: "failed", message: "Centre de services invalide." } };
-        }
+      validatedSchoolId = school.id;
+    } else if (cssId) {
+      // Conseiller : CSS optionnel, pas d'école
+      const { data: css } = await admin
+        .from("css")
+        .select("id")
+        .eq("id", cssId)
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (!css) {
+        return { error: { code: "failed", message: "Centre de services invalide." } };
       }
-      schoolJson = JSON.stringify({
-        css: css || null,
-        ecole: null,
-        niveau: null,
-      });
     }
 
     const supabase = await createClient();
-    const fullName = `${firstName} ${lastName}`;
     const redirectNext = encodeURIComponent("/activate?activated=1");
 
     const { data: authData, error: signUpError } = await supabase.auth.signUp({
@@ -86,7 +92,8 @@ export async function registerAction(
       options: {
         emailRedirectTo: `${authSiteUrl()}/auth/callback?next=${redirectNext}`,
         data: {
-          full_name: fullName,
+          first_name: firstName,
+          last_name: lastName,
           role,
         },
       },
@@ -109,7 +116,6 @@ export async function registerAction(
       return { error: { code: "failed", message: MSG.failed } };
     }
 
-    const admin = createServiceClient();
     const hasSession = Boolean(authData.session);
     const now = new Date().toISOString();
 
@@ -117,10 +123,11 @@ export async function registerAction(
       {
         id: authData.user.id,
         email,
-        full_name: fullName,
+        first_name: firstName,
+        last_name: lastName,
         role,
         status: hasSession ? "active" : "pending",
-        school: schoolJson,
+        school_id: isEnseignant ? validatedSchoolId : null,
         activated_at: hasSession ? now : null,
         activation_token: null,
       },

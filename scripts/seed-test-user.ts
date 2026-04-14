@@ -36,9 +36,7 @@ loadEnvLocal();
 
 const EMAIL = "gllemaire@csslaval.gouv.qc.ca";
 const PASSWORD = "12345678";
-const FULL_NAME = "Gabriel Lévesque-Lemaire";
-const ECOLE = "École secondaire de la Croisée";
-const CSS = "Centre de services scolaire de Laval";
+const ECOLE = "École de la Croisée";
 
 function createServiceClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -69,11 +67,16 @@ async function findUserIdByEmail(
 async function main(): Promise<void> {
   const supabase = createServiceClient();
 
-  const schoolJson = JSON.stringify({
-    css: CSS,
-    ecole: ECOLE,
-    niveau: "Secondaire 5",
-  });
+  // Chercher l'école dans la table schools par nom
+  const { data: schoolRow } = await supabase
+    .from("schools")
+    .select("id")
+    .eq("nom_officiel", ECOLE)
+    .maybeSingle();
+  const schoolId = schoolRow?.id ?? null;
+  if (!schoolId) {
+    console.warn(`⚠ École "${ECOLE}" introuvable dans schools — school_id sera null`);
+  }
 
   let userId: string;
 
@@ -122,10 +125,11 @@ async function main(): Promise<void> {
     {
       id: userId,
       email: EMAIL,
-      full_name: FULL_NAME,
+      first_name: "Gabriel",
+      last_name: "Lévesque-Lemaire",
       role: "admin",
       status: "active",
-      school: schoolJson,
+      school_id: schoolId,
       activation_token: null,
       activated_at: now,
     },

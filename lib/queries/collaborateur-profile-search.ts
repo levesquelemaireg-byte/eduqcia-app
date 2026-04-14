@@ -1,10 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { getSortKey } from "@/lib/utils/profile-display";
 
 export type CollaborateurProfileSearchRow = {
   id: string;
-  full_name: string;
+  first_name: string;
+  last_name: string;
   email: string;
-  school: string | null;
+  school_id: string | null;
 };
 
 const LIMIT_EACH = 12;
@@ -13,14 +15,14 @@ const LIMIT_MERGED = 20;
 function profilesSearchQuery(supabase: SupabaseClient, excludeUserId: string) {
   return supabase
     .from("profiles")
-    .select("id, full_name, email, school")
+    .select("id, first_name, last_name, email, school_id")
     .eq("status", "active")
     .neq("id", excludeUserId);
 }
 
 /**
- * Profils actifs correspondant au terme (nom, courriel, établissement) — hors utilisateur courant.
- * Trois requêtes `ilike` pour éviter les pièges d’échappement PostgREST sur `or()`.
+ * Profils actifs correspondant au terme (prénom, nom, courriel) — hors utilisateur courant.
+ * Recherche sur first_name et last_name séparément.
  */
 export async function searchCollaborateurProfiles(
   supabase: SupabaseClient,
@@ -28,15 +30,17 @@ export async function searchCollaborateurProfiles(
 ): Promise<CollaborateurProfileSearchRow[]> {
   const pattern = `%${params.term}%`;
 
-  const [byName, byEmail, bySchool] = await Promise.all([
+  const [byFirstName, byLastName, byEmail] = await Promise.all([
     profilesSearchQuery(supabase, params.excludeUserId)
-      .ilike("full_name", pattern)
+      .ilike("first_name", pattern)
+      .limit(LIMIT_EACH),
+    profilesSearchQuery(supabase, params.excludeUserId)
+      .ilike("last_name", pattern)
       .limit(LIMIT_EACH),
     profilesSearchQuery(supabase, params.excludeUserId).ilike("email", pattern).limit(LIMIT_EACH),
-    profilesSearchQuery(supabase, params.excludeUserId).ilike("school", pattern).limit(LIMIT_EACH),
   ]);
 
-  if (byName.error || byEmail.error || bySchool.error) return [];
+  if (byFirstName.error || byLastName.error || byEmail.error) return [];
 
   const merged = new Map<string, CollaborateurProfileSearchRow>();
   const pushRows = (rows: CollaborateurProfileSearchRow[] | null) => {
@@ -46,11 +50,16 @@ export async function searchCollaborateurProfiles(
     }
   };
 
-  pushRows(byName.data as CollaborateurProfileSearchRow[]);
+  pushRows(byFirstName.data as CollaborateurProfileSearchRow[]);
+  pushRows(byLastName.data as CollaborateurProfileSearchRow[]);
   pushRows(byEmail.data as CollaborateurProfileSearchRow[]);
-  pushRows(bySchool.data as CollaborateurProfileSearchRow[]);
 
   return [...merged.values()]
-    .sort((a, b) => a.full_name.localeCompare(b.full_name, "fr-CA"))
+    .sort((a, b) =>
+      getSortKey(a.first_name, a.last_name).localeCompare(
+        getSortKey(b.first_name, b.last_name),
+        "fr-CA",
+      ),
+    )
     .slice(0, LIMIT_MERGED);
 }

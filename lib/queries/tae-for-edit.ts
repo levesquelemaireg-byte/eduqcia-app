@@ -221,14 +221,14 @@ export async function fetchTaeFormStateForEdit(
   if (collabIds.length > 0) {
     const { data: profs } = await supabase
       .from("profiles")
-      .select("id, full_name")
+      .select("id, first_name, last_name")
       .in("id", collabIds);
     if (Array.isArray(profs)) {
       collaborateurs = profs.map((p) => {
-        const row = p as { id: string; full_name: string };
+        const row = p as { id: string; first_name: string; last_name: string };
         return {
           id: row.id,
-          displayName: String(row.full_name ?? "").trim() || "—",
+          displayName: `${row.first_name ?? ""} ${row.last_name ?? ""}`.trim() || "—",
         };
       });
     }

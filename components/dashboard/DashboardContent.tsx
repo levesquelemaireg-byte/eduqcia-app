@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { DashboardWidget } from "@/components/dashboard/DashboardWidget";
-import { getDashboardStats, parseSchoolJson } from "@/lib/queries/dashboard";
+import { getDashboardStats } from "@/lib/queries/dashboard";
+import { getDisplayName } from "@/lib/utils/profile-display";
 import {
   CTA_CREER_UNE_TACHE,
   DASHBOARD_INCOMPLETE_DOCUMENTS_COUNT,
@@ -21,16 +22,19 @@ export async function DashboardContent({ userId }: { userId: string }) {
   const admin = createServiceClient();
   const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, school")
+    .select("first_name, last_name, school_id, schools(nom_officiel, css:css(nom_officiel))")
     .eq("id", userId)
     .maybeSingle();
 
   const stats = await getDashboardStats(userId);
-  const school = parseSchoolJson(profile?.school ?? null);
 
-  const fullName = profile?.full_name ?? "";
-  const ecoleLabel = school.ecole?.trim() || "École non renseignée";
-  const cssLabel = school.css?.trim() || "Centre de services non renseigné";
+  const fullName = profile ? getDisplayName(profile.first_name ?? "", profile.last_name ?? "") : "";
+  const schoolData = profile?.schools as {
+    nom_officiel: string;
+    css: { nom_officiel: string } | null;
+  } | null;
+  const ecoleLabel = schoolData?.nom_officiel?.trim() || "École non renseignée";
+  const cssLabel = schoolData?.css?.nom_officiel?.trim() || "Centre de services non renseigné";
 
   return (
     <>

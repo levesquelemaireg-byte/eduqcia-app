@@ -32,11 +32,13 @@ export default async function EditQuestionPage({ params }: PageProps) {
   let authorFullName = "—";
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name")
+    .select("first_name, last_name")
     .eq("id", user.id)
     .maybeSingle();
-  const name = profile?.full_name?.trim();
-  if (name) authorFullName = name;
+  if (profile) {
+    const name = `${profile.first_name ?? ""} ${profile.last_name ?? ""}`.trim();
+    if (name) authorFullName = name;
+  }
 
   const wizardPreviewMeta = {
     authorFullName,

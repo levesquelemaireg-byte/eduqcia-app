@@ -1,27 +1,30 @@
 /**
- * Ordre d’affichage des auteurs (pied de fiche / sommaire) : tri par nom de famille.
- * `profiles.full_name` est souvent « Prénom Nom » ; si « Nom, Prénom », la partie avant la virgule sert de clé.
+ * Ordre d'affichage des auteurs (pied de fiche / sommaire) : tri par nom de famille.
  */
 
-export function familyNameSortKey(fullName: string): string {
-  const t = fullName.trim();
-  if (!t) return "";
-  const comma = t.indexOf(",");
-  if (comma !== -1) {
-    return t.slice(0, comma).trim();
-  }
-  const parts = t.split(/\s+/u);
-  return parts.length > 0 ? parts[parts.length - 1]! : t;
-}
+import { getSortKey } from "@/lib/utils/profile-display";
 
-export function sortAuteursByFamilyName<T extends { full_name: string }>(
+export function sortAuteursByFamilyName<T extends { first_name: string; last_name: string }>(
   auteurs: readonly T[],
 ): T[] {
   return [...auteurs].sort((a, b) => {
-    const ka = familyNameSortKey(a.full_name);
-    const kb = familyNameSortKey(b.full_name);
-    const cmp = ka.localeCompare(kb, "fr-CA", { sensitivity: "base" });
-    if (cmp !== 0) return cmp;
-    return a.full_name.localeCompare(b.full_name, "fr-CA", { sensitivity: "base" });
+    const ka = getSortKey(a.first_name, a.last_name);
+    const kb = getSortKey(b.first_name, b.last_name);
+    return ka.localeCompare(kb, "fr-CA", { sensitivity: "base" });
   });
+}
+
+/**
+ * Découpe un « displayName » (ex. "Prénom Nom") en first_name/last_name.
+ * Utilisé pour les collaborateurs du wizard dont on n'a que displayName.
+ */
+export function splitDisplayName(displayName: string): { first_name: string; last_name: string } {
+  const t = displayName.trim();
+  if (!t) return { first_name: "", last_name: "" };
+  const lastSpace = t.lastIndexOf(" ");
+  if (lastSpace === -1) return { first_name: t, last_name: "" };
+  return {
+    first_name: t.slice(0, lastSpace),
+    last_name: t.slice(lastSpace + 1),
+  };
 }

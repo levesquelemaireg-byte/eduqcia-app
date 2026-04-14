@@ -14,7 +14,7 @@ import type { TaeFicheData, DocumentFiche } from "@/lib/types/fiche";
 import type { OiEntryJson } from "@/lib/types/oi";
 import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
-import { sortAuteursByFamilyName } from "@/lib/tae/auteur-display-sort";
+import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tae/auteur-display-sort";
 import {
   buildAvantApresConsigneHtml,
   buildAvantApresCorrigeHtml,
@@ -111,15 +111,16 @@ export function formStateToTae(
   );
 
   const fallbackAuthor = previewMeta?.authorFullName?.trim() || "—";
-  const auteurPrincipal = { id: "draft-local", full_name: fallbackAuthor };
+  const principalSplit = splitDisplayName(fallbackAuthor);
+  const auteurPrincipal = { id: "draft-local", ...principalSplit };
 
-  const auteursRaw: { id: string; full_name: string }[] =
+  const auteursRaw: { id: string; first_name: string; last_name: string }[] =
     state.bloc1.modeConception === "equipe"
       ? [
           auteurPrincipal,
           ...state.bloc1.collaborateurs.map((c) => ({
             id: c.id,
-            full_name: c.displayName,
+            ...splitDisplayName(c.displayName),
           })),
         ]
       : [auteurPrincipal];

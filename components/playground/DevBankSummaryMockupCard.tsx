@@ -41,7 +41,7 @@ export function DevBankSummaryMockupCard({ tae }: Props) {
   const cdLine = tae.cd ? `${tae.cd.competence} · ${tae.cd.composante} · ${tae.cd.critere}` : null;
 
   const auteursLine = tae.auteurs
-    .map((a) => a.full_name.trim())
+    .map((a) => `${a.first_name} ${a.last_name}`.trim())
     .filter(Boolean)
     .join(", ");
 

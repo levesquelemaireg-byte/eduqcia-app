@@ -3,6 +3,7 @@
 import type { FooterData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { formatFicheDate } from "@/lib/tae/fiche-helpers";
+import { getDisplayName } from "@/lib/utils/profile-display";
 import { SkeletonFooterNbLignes } from "@/components/tae/fiche/FicheSkeletons";
 import { MetaRow } from "@/lib/fiche/primitives/MetaRow";
 import type { MetaRowItem } from "@/lib/fiche/primitives/MetaRow";
@@ -11,7 +12,7 @@ type Props = { data: FooterData; mode: FicheMode };
 
 /** Pied de fiche — auteurs, date, nb lignes, statut publication, version. */
 export function FicheFooter({ data, mode: _mode }: Props) {
-  const auteurs = data.auteurs.map((a) => a.full_name).join(" · ");
+  const auteurs = data.auteurs.map((a) => getDisplayName(a.first_name, a.last_name)).join(" · ");
 
   const items: MetaRowItem[] = [
     { icon: "person", label: auteurs || "—" },

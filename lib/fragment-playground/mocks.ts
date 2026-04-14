@@ -81,13 +81,12 @@ function baseRedactionTae(
   },
   extra?: Partial<TaeFicheData>,
 ): TaeFicheData {
-  const guidage =
-    input.guidage ?? "<p>Guidage complémentaire factice pour le playground.</p>";
+  const guidage = input.guidage ?? "<p>Guidage complémentaire factice pour le playground.</p>";
   const corrige = input.corrige ?? "<p>Corrigé type factice — réponse attendue décrite ici.</p>";
   return {
     id: `playground-${input.comportementId}`,
     auteur_id: "playground-user",
-    auteurs: [{ id: "playground-user", full_name: "Enseignant·e playground" }],
+    auteurs: [{ id: "playground-user", first_name: "Enseignant·e", last_name: "playground" }],
     consigne: input.consigne,
     guidage,
     corrige,
@@ -332,8 +331,7 @@ export const MOCK_TAE_FICHE_BY_COMPORTEMENT_ID: Record<string, TaeFicheData> = {
   }),
   "4.2": baseRedactionTae({
     comportementId: "4.2",
-    comportementEnonce:
-      "Indiquer un fait qui découle d'une réalité historique (réponse écrite)",
+    comportementEnonce: "Indiquer un fait qui découle d'une réalité historique (réponse écrite)",
     oiId: "OI4",
     oiTitre: "Déterminer des causes et des conséquences",
     oiIcone: "manufacturing",

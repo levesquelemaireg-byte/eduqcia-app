@@ -18,7 +18,7 @@ import {
   BLOC1_COLLAB_SEARCH_PICK_FROM_LIST,
 } from "@/lib/ui/ui-copy";
 import { cn } from "@/lib/utils/cn";
-import { formatSchoolForDisplay } from "@/lib/profiles/school-json";
+import { getDisplayName } from "@/lib/utils/profile-display";
 import type { CollaborateurProfileSearchRow } from "@/lib/queries/collaborateur-profile-search";
 import { useWizardSession } from "@/components/tae/TaeForm/WizardSessionContext";
 import { useCollaborateurProfileSearch } from "@/components/tae/TaeForm/useCollaborateurProfileSearch";
@@ -34,10 +34,7 @@ type Props = {
 };
 
 function formatProfileSubline(row: CollaborateurProfileSearchRow): string {
-  const parts = [row.email.trim()];
-  const schoolLine = formatSchoolForDisplay(row.school);
-  if (schoolLine) parts.push(schoolLine);
-  return parts.filter(Boolean).join(" · ");
+  return row.email.trim();
 }
 
 export function CollaborateurSearchField({ fieldId, excludeIds, onPick }: Props) {
@@ -198,7 +195,9 @@ export function CollaborateurSearchField({ fieldId, excludeIds, onPick }: Props)
                 onMouseEnter={() => setActiveIndex(idx)}
                 onClick={() => pickRow(row)}
               >
-                <span className="font-medium text-deep">{row.full_name}</span>
+                <span className="font-medium text-deep">
+                  {getDisplayName(row.first_name, row.last_name)}
+                </span>
                 <span className="text-xs text-muted">{formatProfileSubline(row)}</span>
               </button>
             </li>

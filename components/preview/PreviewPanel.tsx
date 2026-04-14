@@ -77,7 +77,9 @@ export function PreviewPanel({
           ) : null}
         </div>
       ) : null}
-      <div className="min-h-0 flex-1">{children(currentModeId, currentSubModeId)}</div>
+      <div className="min-h-0 flex-1 overflow-hidden">
+        {children(currentModeId, currentSubModeId)}
+      </div>
     </div>
   );
 }

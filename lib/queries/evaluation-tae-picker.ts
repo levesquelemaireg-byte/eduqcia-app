@@ -29,7 +29,10 @@ type JoinRow = {
   created_at: string;
   updated_at: string;
   is_published: boolean;
-  profiles: { full_name: string } | { full_name: string }[] | null;
+  profiles:
+    | { first_name: string; last_name: string }
+    | { first_name: string; last_name: string }[]
+    | null;
   oi: { titre: string } | { titre: string }[] | null;
   niveaux: { label: string } | { label: string }[] | null;
   disciplines: { label: string } | { label: string }[] | null;
@@ -47,7 +50,7 @@ function mapJoinRow(row: JoinRow, source: EvaluationPickerSource): EvaluationPic
     consigne: row.consigne,
     created_at: row.created_at,
     updated_at: row.updated_at,
-    auteur_nom: p?.full_name ?? null,
+    auteur_nom: p ? `${p.first_name} ${p.last_name}`.trim() : null,
     oi_titre: o?.titre ?? null,
     niveau_label: n?.label ?? null,
     discipline_label: d?.label ?? null,
@@ -63,7 +66,7 @@ const taeSelect = `
   created_at,
   updated_at,
   is_published,
-  profiles!tae_auteur_id_fkey ( full_name ),
+  profiles!tae_auteur_id_fkey ( first_name, last_name ),
   oi!tae_oi_id_fkey ( titre ),
   niveaux!tae_niveau_id_fkey ( label ),
   disciplines!tae_discipline_id_fkey ( label ),

@@ -31,7 +31,7 @@ export function Bloc1AuteursTache() {
       dispatch({
         type: "ADD_COLLABORATEUR",
         id: row.id,
-        displayName: row.full_name.trim() || "—",
+        displayName: `${row.first_name} ${row.last_name}`.trim() || "—",
       });
     },
     [dispatch],

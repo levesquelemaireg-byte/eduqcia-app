@@ -65,7 +65,7 @@ export async function getBankPublishedEvaluationsPage(
       titre,
       updated_at,
       auteur_id,
-      profiles!evaluations_auteur_id_fkey ( full_name )
+      profiles!evaluations_auteur_id_fkey ( first_name, last_name )
     `,
       { count: "exact" },
     )
@@ -88,7 +88,10 @@ export async function getBankPublishedEvaluationsPage(
     titre: string;
     updated_at: string;
     auteur_id: string;
-    profiles: { full_name: string } | { full_name: string }[] | null;
+    profiles:
+      | { first_name: string; last_name: string }
+      | { first_name: string; last_name: string }[]
+      | null;
   };
 
   const rawRows = data as unknown as Raw[];
@@ -102,7 +105,7 @@ export async function getBankPublishedEvaluationsPage(
       id: r.id,
       titre: r.titre,
       updated_at: r.updated_at,
-      auteur_nom: prof?.full_name ?? null,
+      auteur_nom: prof ? `${prof.first_name} ${prof.last_name}`.trim() : null,
       nb_taches: taskCounts.get(r.id) ?? 0,
       canEdit: r.auteur_id === opts.viewerId,
     };

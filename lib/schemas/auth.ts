@@ -26,9 +26,8 @@ export const registerSchema = z
     password: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
     password_confirm: z.string().min(1, "Confirmation requise"),
     profile_type: z.enum(["enseignant", "conseiller"]),
-    css: z.string(),
-    school: z.string(),
-    niveau: z.string(),
+    css_id: z.string(),
+    school_id: z.string(),
   })
   .superRefine((data, ctx) => {
     if (data.password !== data.password_confirm) {
@@ -39,34 +38,27 @@ export const registerSchema = z
       });
     }
     if (data.profile_type === "enseignant") {
-      if (!data.css.trim()) {
+      if (!data.css_id.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Choisissez un centre de services scolaires",
-          path: ["css"],
+          path: ["css_id"],
         });
       }
-      if (!data.school.trim()) {
+      if (!data.school_id.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Choisissez une école secondaire",
-          path: ["school"],
-        });
-      }
-      if (!data.niveau.trim()) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Choisissez un niveau scolaire",
-          path: ["niveau"],
+          path: ["school_id"],
         });
       }
     }
     if (data.profile_type === "conseiller") {
-      if (!data.css.trim()) {
+      if (!data.css_id.trim()) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "Choisissez un centre de services scolaires",
-          path: ["css"],
+          path: ["css_id"],
         });
       }
     }

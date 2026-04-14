@@ -52,7 +52,7 @@ export type ConnaissanceSelection = {
 export type TaeFicheData = {
   id: string;
   auteur_id: string;
-  auteurs: { id: string; full_name: string }[];
+  auteurs: { id: string; first_name: string; last_name: string }[];
   consigne: string;
   guidage: string;
   corrige: string;

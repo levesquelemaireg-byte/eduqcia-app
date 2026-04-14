@@ -77,7 +77,7 @@ export async function fetchTaeFicheBundle(
 
   const [auteurRes, oiRes, compRes, niveauRes, discRes, cdRes, collabRes, docLinksRes, voteRes] =
     await Promise.all([
-      supabase.from("profiles").select("full_name").eq("id", t.auteur_id).maybeSingle(),
+      supabase.from("profiles").select("first_name, last_name").eq("id", t.auteur_id).maybeSingle(),
       t.oi_id
         ? supabase.from("oi").select("id, titre, icone").eq("id", t.oi_id).maybeSingle()
         : Promise.resolve({ data: null }),
@@ -113,9 +113,13 @@ export async function fetchTaeFicheBundle(
         .maybeSingle(),
     ]);
 
-  const auteurs: { id: string; full_name: string }[] = [];
-  if (auteurRes.data && "full_name" in auteurRes.data) {
-    auteurs.push({ id: t.auteur_id, full_name: String(auteurRes.data.full_name) });
+  const auteurs: { id: string; first_name: string; last_name: string }[] = [];
+  if (auteurRes.data && "first_name" in auteurRes.data) {
+    auteurs.push({
+      id: t.auteur_id,
+      first_name: String(auteurRes.data.first_name ?? ""),
+      last_name: String(auteurRes.data.last_name ?? ""),
+    });
   }
 
   const collabIds =
@@ -125,12 +129,12 @@ export async function fetchTaeFicheBundle(
   if (collabIds.length > 0) {
     const { data: collabProfiles } = await supabase
       .from("profiles")
-      .select("id, full_name")
+      .select("id, first_name, last_name")
       .in("id", collabIds);
     if (Array.isArray(collabProfiles)) {
       for (const p of collabProfiles) {
-        const row = p as { id: string; full_name: string };
-        auteurs.push({ id: row.id, full_name: row.full_name });
+        const row = p as { id: string; first_name: string; last_name: string };
+        auteurs.push({ id: row.id, first_name: row.first_name, last_name: row.last_name });
       }
     }
   }

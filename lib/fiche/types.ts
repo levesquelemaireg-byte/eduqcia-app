@@ -150,7 +150,7 @@ export interface ConnaissancesData {
 }
 
 export interface FooterData {
-  auteurs: { id: string; full_name: string }[];
+  auteurs: { id: string; first_name: string; last_name: string }[];
   createdAt: string;
   isPublished: boolean;
   nbLignes: number;

@@ -26,7 +26,7 @@ function makeFiche(overrides: Partial<TaeFicheData> = {}): TaeFicheData {
   return {
     id: "tae-1",
     auteur_id: "user-1",
-    auteurs: [{ id: "user-1", full_name: "Jean Tremblay" }],
+    auteurs: [{ id: "user-1", first_name: "Jean", last_name: "Tremblay" }],
     consigne: "<p>Consigne test</p>",
     guidage: "<p>Guidage test</p>",
     corrige: "<p>Corrigé test</p>",
@@ -210,7 +210,8 @@ describe("selectLectureFooter", () => {
     expect(result.status).toBe("ready");
     if (result.status !== "ready") return;
     expect(result.data.auteurs).toHaveLength(1);
-    expect(result.data.auteurs[0].full_name).toBe("Jean Tremblay");
+    expect(result.data.auteurs[0].first_name).toBe("Jean");
+    expect(result.data.auteurs[0].last_name).toBe("Tremblay");
     expect(result.data.isPublished).toBe(true);
     expect(result.data.version).toBe(2);
     expect(result.data.nbLignes).toBe(8);

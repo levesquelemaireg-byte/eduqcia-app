@@ -1,6 +1,7 @@
 import type { TaeFicheData } from "@/lib/types/fiche";
 import { BLUEPRINT_INITIAL_NB_LIGNES } from "@/lib/tae/blueprint-helpers";
 import { formatFicheDate } from "@/lib/tae/fiche-helpers";
+import { getDisplayName } from "@/lib/utils/profile-display";
 import { SkeletonFooterLine, SkeletonFooterNbLignes } from "@/components/tae/fiche/FicheSkeletons";
 
 type Props = {
@@ -12,7 +13,7 @@ type Props = {
 };
 
 export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
-  const auteurs = tae.auteurs.map((a) => a.full_name).join(" · ");
+  const auteurs = tae.auteurs.map((a) => getDisplayName(a.first_name, a.last_name)).join(" · ");
   const hasMeta = auteurs.length > 0 || tae.created_at;
   const hideNbLignesInFooter = tae.showStudentAnswerLines === false;
   const sommaireNbLignesSkeleton =

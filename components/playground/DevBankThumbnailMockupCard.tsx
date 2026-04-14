@@ -29,7 +29,10 @@ export function DevBankThumbnailMockupCard({ tae }: Props) {
   const letters = tae.documents.map((d) => d.letter).join(", ");
   const titresJoined = tae.documents.map((d) => d.titre).join(" · ");
   const titresShort = truncatePlainForBankMockup(titresJoined, 64);
-  const auteursLine = tae.auteurs.map((a) => a.full_name.trim()).filter(Boolean).join(", ");
+  const auteursLine = tae.auteurs
+    .map((a) => `${a.first_name} ${a.last_name}`.trim())
+    .filter(Boolean)
+    .join(", ");
 
   return (
     <article
@@ -64,7 +67,9 @@ export function DevBankThumbnailMockupCard({ tae }: Props) {
       </div>
 
       {/* 3 — Consigne (vedette lecture rapide) */}
-      <p className="mt-3 line-clamp-3 text-sm font-medium leading-relaxed text-deep">{previewSnippet}</p>
+      <p className="mt-3 line-clamp-3 text-sm font-medium leading-relaxed text-deep">
+        {previewSnippet}
+      </p>
 
       {/* 4 — Documents */}
       <p className="mt-2 text-[11px] leading-snug text-muted">
@@ -88,7 +93,11 @@ export function DevBankThumbnailMockupCard({ tae }: Props) {
             {aspectsLine}
           </span>
         ) : null}
-        {aspectsLine ? <span className="text-muted" aria-hidden="true">·</span> : null}
+        {aspectsLine ? (
+          <span className="text-muted" aria-hidden="true">
+            ·
+          </span>
+        ) : null}
         <span className="shrink-0">{modeLine}</span>
         <span className="text-muted" aria-hidden="true">
           ·
@@ -113,7 +122,9 @@ export function DevBankThumbnailMockupCard({ tae }: Props) {
             {BANK_TASK_LIST_BADGE_PUBLISHED}
           </span>
         ) : (
-          <span className="rounded-full bg-border/60 px-2 py-0.5 font-medium text-steel">Non publiée</span>
+          <span className="rounded-full bg-border/60 px-2 py-0.5 font-medium text-steel">
+            Non publiée
+          </span>
         )}
         <span aria-hidden="true">·</span>
         <span className="min-w-0 truncate">

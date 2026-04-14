@@ -44,7 +44,7 @@ export async function fetchDocFicheDataAction(docId: string): Promise<FetchResul
     connIds.length
       ? supabase.from("connaissances").select("enonce").in("id", connIds)
       : Promise.resolve({ data: [] as { enonce: string }[] }),
-    supabase.from("profiles").select("full_name").eq("id", doc.auteur_id).maybeSingle(),
+    supabase.from("profiles").select("first_name, last_name").eq("id", doc.auteur_id).maybeSingle(),
   ]);
 
   const niveauLabels = (niveauRows.data ?? []).map((r) => r.label).join(", ");
@@ -52,8 +52,8 @@ export async function fetchDocFicheDataAction(docId: string): Promise<FetchResul
   const connLabels = (connRows.data ?? []).map((r) => r.enonce).join(" · ");
   const aspectsStr = (doc.aspects_societe ?? []).join(", ");
   const authorName =
-    profileRow.data && "full_name" in profileRow.data
-      ? String(profileRow.data.full_name ?? "")
+    profileRow.data && "first_name" in profileRow.data
+      ? `${String(profileRow.data.first_name ?? "")} ${String(profileRow.data.last_name ?? "")}`.trim()
       : "";
   const created = doc.created_at
     ? new Date(doc.created_at).toLocaleDateString("fr-CA", {

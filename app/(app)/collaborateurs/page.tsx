@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { getAllActiveCollaborateurs } from "@/lib/queries/collaborateurs-list";
-import { parseSchoolJson } from "@/lib/profiles/school-json";
+import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 import { redirect } from "next/navigation";
 
 export default async function CollaborateursPage() {
@@ -28,12 +28,8 @@ export default async function CollaborateursPage() {
       {collaborateurs.length > 0 ? (
         <ul className="divide-y divide-border rounded-lg border border-border bg-panel">
           {collaborateurs.map((c) => {
-            const initials = c.full_name
-              .split(/\s+/)
-              .slice(0, 2)
-              .map((w) => w[0]?.toUpperCase() ?? "")
-              .join("");
-            const school = parseSchoolJson(c.school);
+            const displayName = getDisplayName(c.first_name, c.last_name);
+            const initials = getInitials(c.first_name, c.last_name);
 
             return (
               <li key={c.id} className="flex items-center gap-4 px-5 py-4">
@@ -41,11 +37,11 @@ export default async function CollaborateursPage() {
                   {initials || "?"}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-semibold text-deep">{c.full_name}</p>
+                  <p className="truncate text-sm font-semibold text-deep">{displayName}</p>
                   <p className="truncate text-xs text-muted">{c.email}</p>
-                  {(school.ecole || school.css || school.niveau) && (
+                  {(c.school_name || c.css_name) && (
                     <p className="mt-0.5 truncate text-xs text-muted">
-                      {[school.ecole, school.css, school.niveau].filter(Boolean).join(" · ")}
+                      {[c.school_name, c.css_name].filter(Boolean).join(" · ")}
                     </p>
                   )}
                 </div>

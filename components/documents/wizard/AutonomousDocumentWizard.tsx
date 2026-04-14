@@ -356,7 +356,7 @@ export function AutonomousDocumentWizard({
             modes={PREVIEW_MODES}
             defaultModeId="sommaire"
             switcherClassName="pointer-events-auto absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-lg bg-panel/80 px-1 py-1 shadow-md backdrop-blur-sm"
-            className="relative"
+            className="relative min-h-0 flex-1"
           >
             {(modeId, _subModeId) => (
               <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-[80px] pt-16">

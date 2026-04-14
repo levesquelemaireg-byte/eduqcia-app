@@ -1,9 +1,4 @@
 import { createServiceClient } from "@/lib/supabase/admin";
-import type { ParsedSchool } from "@/lib/profiles/school-json";
-import { parseSchoolJson } from "@/lib/profiles/school-json";
-
-export type { ParsedSchool };
-export { parseSchoolJson };
 
 function voteLevelToNumber(v: string): number {
   const n = Number.parseInt(v, 10);

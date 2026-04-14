@@ -168,6 +168,39 @@ export type Database = {
           },
         ];
       };
+      css: {
+        Row: {
+          created_at: string;
+          gov_id: string;
+          id: string;
+          is_active: boolean;
+          nom_court: string;
+          nom_officiel: string;
+          type_cs: Database["public"]["Enums"]["css_type"];
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          gov_id: string;
+          id?: string;
+          is_active?: boolean;
+          nom_court: string;
+          nom_officiel: string;
+          type_cs: Database["public"]["Enums"]["css_type"];
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          gov_id?: string;
+          id?: string;
+          is_active?: boolean;
+          nom_court?: string;
+          nom_officiel?: string;
+          type_cs?: Database["public"]["Enums"]["css_type"];
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
       disciplines: {
         Row: {
           cd_json_file: string | null;
@@ -505,10 +538,11 @@ export type Database = {
           activation_token: string | null;
           created_at: string;
           email: string;
-          full_name: string;
+          first_name: string;
           id: string;
+          last_name: string;
           role: Database["public"]["Enums"]["user_role"];
-          school: string | null;
+          school_id: string | null;
           status: Database["public"]["Enums"]["activation_status"];
           updated_at: string;
         };
@@ -517,10 +551,11 @@ export type Database = {
           activation_token?: string | null;
           created_at?: string;
           email: string;
-          full_name: string;
+          first_name: string;
           id: string;
+          last_name: string;
           role?: Database["public"]["Enums"]["user_role"];
-          school?: string | null;
+          school_id?: string | null;
           status?: Database["public"]["Enums"]["activation_status"];
           updated_at?: string;
         };
@@ -529,14 +564,61 @@ export type Database = {
           activation_token?: string | null;
           created_at?: string;
           email?: string;
-          full_name?: string;
+          first_name?: string;
           id?: string;
+          last_name?: string;
           role?: Database["public"]["Enums"]["user_role"];
-          school?: string | null;
+          school_id?: string | null;
           status?: Database["public"]["Enums"]["activation_status"];
           updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "profiles_school_id_fkey";
+            columns: ["school_id"];
+            isOneToOne: false;
+            referencedRelation: "schools";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      schools: {
+        Row: {
+          created_at: string;
+          css_id: string;
+          gov_id: string;
+          id: string;
+          is_active: boolean;
+          nom_officiel: string;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          css_id: string;
+          gov_id: string;
+          id?: string;
+          is_active?: boolean;
+          nom_officiel: string;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          css_id?: string;
+          gov_id?: string;
+          id?: string;
+          is_active?: boolean;
+          nom_officiel?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "schools_css_id_fkey";
+            columns: ["css_id"];
+            isOneToOne: false;
+            referencedRelation: "css";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       tae: {
         Row: {
@@ -547,6 +629,7 @@ export type Database = {
           conception_mode: Database["public"]["Enums"]["conception_mode"];
           connaissances_ids: number[];
           consigne: string | null;
+          consigne_search_plain: string | null;
           corrige: string | null;
           created_at: string;
           discipline_id: number | null;
@@ -571,6 +654,7 @@ export type Database = {
           conception_mode?: Database["public"]["Enums"]["conception_mode"];
           connaissances_ids?: number[];
           consigne?: string | null;
+          consigne_search_plain?: string | null;
           corrige?: string | null;
           created_at?: string;
           discipline_id?: number | null;
@@ -595,6 +679,7 @@ export type Database = {
           conception_mode?: Database["public"]["Enums"]["conception_mode"];
           connaissances_ids?: number[];
           consigne?: string | null;
+          consigne_search_plain?: string | null;
           corrige?: string | null;
           created_at?: string;
           discipline_id?: number | null;
@@ -1028,9 +1113,12 @@ export type Database = {
           alignement_n3: number | null;
           apercu: string | null;
           aspects_societe: Database["public"]["Enums"]["aspect_societe"][] | null;
+          auteur_css: string | null;
           auteur_ecole: string | null;
           auteur_id: string | null;
           auteur_nom: string | null;
+          auteur_prenom: string | null;
+          bank_popularity_score: number | null;
           cd_id: number | null;
           clarte_n1: number | null;
           clarte_n2: number | null;
@@ -1038,6 +1126,8 @@ export type Database = {
           comportement_enonce: string | null;
           comportement_id: string | null;
           connaissances_ids: number[] | null;
+          consigne: string | null;
+          consigne_search_plain: string | null;
           created_at: string | null;
           cycle: number | null;
           discipline_id: number | null;
@@ -1242,6 +1332,7 @@ export type Database = {
       activation_status: "pending" | "active" | "suspended";
       aspect_societe: "Économique" | "Politique" | "Social" | "Culturel" | "Territorial";
       conception_mode: "seul" | "equipe";
+      css_type: "Franco" | "Anglo" | "Statut";
       doc_type: "textuel" | "iconographique";
       document_categorie_textuelle:
         | "documents_officiels"
@@ -1388,6 +1479,7 @@ export const Constants = {
       activation_status: ["pending", "active", "suspended"],
       aspect_societe: ["Économique", "Politique", "Social", "Culturel", "Territorial"],
       conception_mode: ["seul", "equipe"],
+      css_type: ["Franco", "Anglo", "Statut"],
       doc_type: ["textuel", "iconographique"],
       document_categorie_textuelle: [
         "documents_officiels",

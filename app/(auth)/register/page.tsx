@@ -1,8 +1,10 @@
 import { RegisterForm } from "@/components/auth/RegisterForm";
-import { loadCssEcoles } from "@/lib/data/load-css-ecoles";
+import { getAllCss, getAllSchools } from "@/lib/queries/css-schools";
+
+export const dynamic = "force-dynamic";
 
 export default async function RegisterPage() {
-  const cssEcoles = await loadCssEcoles();
+  const [cssList, allSchools] = await Promise.all([getAllCss(), getAllSchools()]);
 
   return (
     <>
@@ -14,7 +16,7 @@ export default async function RegisterPage() {
         <span className="whitespace-nowrap font-medium text-steel">(@*.gouv.qc.ca)</span> sont
         acceptés.
       </p>
-      <RegisterForm cssEcoles={cssEcoles} />
+      <RegisterForm cssList={cssList} allSchools={allSchools} />
     </>
   );
 }

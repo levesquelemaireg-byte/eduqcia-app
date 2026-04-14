@@ -61,6 +61,7 @@ Ne jamais modifier un fichier `docs/` de sa propre initiative. Exception : une d
 - Changer la structure des dossiers
 - Écrire de la copy UI non listée dans `docs/UI-COPY.md`
 - Renommer un composant ou une constante existante
+- Créer des migrations SQL sans signaler au développeur les étapes d'application (voir « Règle absolue — signalement des migrations SQL »)
 
 ---
 
@@ -839,6 +840,18 @@ Checklist avant merge :
 - Zéro `any` TypeScript
 - Documentation de progression complète
 - RLS non contournée — tester avec deux comptes si la feature touche les données
+- **Migrations SQL** — si des fichiers ont été créés dans `supabase/migrations/`, **informer explicitement le développeur** avant de clore la session (voir règle ci-dessous)
+
+### Règle absolue — signalement des migrations SQL
+
+Toute session qui crée ou modifie un fichier dans `supabase/migrations/` DOIT se terminer par un **bloc récapitulatif clair** adressé au développeur, contenant :
+
+1. La liste ordonnée des migrations à appliquer (noms de fichiers)
+2. L'ordre d'exécution strict (si des dépendances existent entre migrations et seeds)
+3. Les commandes exactes à exécuter (`supabase db push`, `npm run seed:schools`, `npm run gen:types`, etc.)
+4. Les précautions éventuelles (données à migrer, ordre seed vs migration, rollback)
+
+**Ne jamais considérer le travail comme terminé** si des migrations existent et que le développeur n'a pas été informé. Les migrations non appliquées cassent silencieusement le build ou le runtime — c'est un risque critique.
 
 ---
 

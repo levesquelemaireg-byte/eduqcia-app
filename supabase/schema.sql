@@ -90,6 +90,52 @@ CREATE TYPE version_trigger AS ENUM (
   'major_bump'
 );
 
+CREATE TYPE css_type AS ENUM ('Franco', 'Anglo', 'Statut');
+
+-- ============================================================
+-- TABLES DE RÉFÉRENCE : CSS et écoles
+-- ============================================================
+
+CREATE TABLE css (
+  id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  gov_id       TEXT NOT NULL UNIQUE,
+  nom_officiel TEXT NOT NULL,
+  nom_court    TEXT NOT NULL,
+  type_cs      css_type NOT NULL,
+  is_active    BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE schools (
+  id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  gov_id       TEXT NOT NULL UNIQUE,
+  css_id       UUID NOT NULL REFERENCES css(id) ON DELETE RESTRICT,
+  nom_officiel TEXT NOT NULL,
+  is_active    BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX idx_css_gov_id        ON css (gov_id);
+CREATE INDEX idx_css_active        ON css (is_active) WHERE is_active = TRUE;
+CREATE INDEX idx_schools_gov_id    ON schools (gov_id);
+CREATE INDEX idx_schools_css_id    ON schools (css_id);
+CREATE INDEX idx_schools_active    ON schools (is_active) WHERE is_active = TRUE;
+CREATE INDEX idx_schools_nom_trgm  ON schools USING GIN (nom_officiel gin_trgm_ops);
+CREATE INDEX idx_css_nom_trgm      ON css USING GIN (nom_officiel gin_trgm_ops);
+
+ALTER TABLE css     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE schools ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "ref_select" ON css     FOR SELECT USING (auth_is_active());
+CREATE POLICY "ref_select" ON schools FOR SELECT USING (auth_is_active());
+CREATE POLICY "ref_admin" ON css     FOR ALL USING (auth_role() = 'admin');
+CREATE POLICY "ref_admin" ON schools FOR ALL USING (auth_role() = 'admin');
+
+CREATE TRIGGER trg_css_updated_at     BEFORE UPDATE ON css     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER trg_schools_updated_at BEFORE UPDATE ON schools FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
 -- ============================================================
 -- TABLE : profiles
 -- ============================================================
@@ -97,10 +143,11 @@ CREATE TYPE version_trigger AS ENUM (
 CREATE TABLE profiles (
   id               UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email            TEXT NOT NULL UNIQUE,
-  full_name        TEXT NOT NULL,
+  first_name       TEXT NOT NULL,
+  last_name        TEXT NOT NULL,
   role             user_role NOT NULL DEFAULT 'enseignant',
   status           activation_status NOT NULL DEFAULT 'pending',
-  school           TEXT,
+  school_id        UUID REFERENCES schools(id) ON DELETE SET NULL,
   activation_token TEXT UNIQUE,
   activated_at     TIMESTAMPTZ,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -581,6 +628,8 @@ CREATE INDEX idx_collab_tae           ON tae_collaborateurs (tae_id);
 CREATE INDEX idx_profiles_token       ON profiles (activation_token) WHERE activation_token IS NOT NULL;
 CREATE INDEX idx_profiles_status      ON profiles (status);
 CREATE INDEX idx_profiles_role        ON profiles (role);
+CREATE INDEX idx_profiles_school_id   ON profiles (school_id);
+CREATE INDEX idx_profiles_last_name   ON profiles (last_name);
 
 -- Commentaires
 CREATE INDEX idx_comm_tae             ON commentaires (tae_id, created_at DESC);
@@ -1264,8 +1313,9 @@ AS
 SELECT
   t.id,
   t.auteur_id,
-  p.full_name                       AS auteur_nom,
-  p.school                          AS auteur_ecole,
+  p.first_name || ' ' || p.last_name AS auteur_nom,
+  s.nom_officiel                     AS auteur_ecole,
+  cs.nom_officiel                    AS auteur_css,
   left(trim(t.consigne), 80)        AS apercu,
   t.consigne,
   t.consigne_search_plain,
@@ -1300,6 +1350,8 @@ SELECT
   vc.alignement_n1, vc.alignement_n2, vc.alignement_n3
 FROM tae t
 JOIN profiles p           ON p.id  = t.auteur_id
+LEFT JOIN schools s       ON s.id  = p.school_id
+LEFT JOIN css cs          ON cs.id = s.css_id
 LEFT JOIN oi              ON oi.id = t.oi_id
 LEFT JOIN comportements c ON c.id  = t.comportement_id
 LEFT JOIN niveaux n       ON n.id  = t.niveau_id

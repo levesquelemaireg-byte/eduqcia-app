@@ -303,12 +303,15 @@ export async function loadTaeFormStateForEdit(
   if (collabIds.length > 0) {
     const { data: profiles } = await supabase
       .from("profiles")
-      .select("id, full_name")
+      .select("id, first_name, last_name")
       .in("id", collabIds);
     if (Array.isArray(profiles)) {
       for (const p of profiles) {
-        const pr = p as { id: string; full_name: string };
-        collaborateurs.push({ id: pr.id, displayName: pr.full_name || "—" });
+        const pr = p as { id: string; first_name: string; last_name: string };
+        collaborateurs.push({
+          id: pr.id,
+          displayName: `${pr.first_name} ${pr.last_name}`.trim() || "—",
+        });
       }
     }
   }
