@@ -532,6 +532,66 @@ export type Database = {
         };
         Relationships: [];
       };
+      profile_disciplines: {
+        Row: {
+          discipline_code: string;
+          profile_id: string;
+        };
+        Insert: {
+          discipline_code: string;
+          profile_id: string;
+        };
+        Update: {
+          discipline_code?: string;
+          profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profile_disciplines_discipline_code_fkey";
+            columns: ["discipline_code"];
+            isOneToOne: false;
+            referencedRelation: "disciplines";
+            referencedColumns: ["code"];
+          },
+          {
+            foreignKeyName: "profile_disciplines_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      profile_niveaux: {
+        Row: {
+          niveau_code: string;
+          profile_id: string;
+        };
+        Insert: {
+          niveau_code: string;
+          profile_id: string;
+        };
+        Update: {
+          niveau_code?: string;
+          profile_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "profile_niveaux_niveau_code_fkey";
+            columns: ["niveau_code"];
+            isOneToOne: false;
+            referencedRelation: "niveaux";
+            referencedColumns: ["code"];
+          },
+          {
+            foreignKeyName: "profile_niveaux_profile_id_fkey";
+            columns: ["profile_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           activated_at: string | null;
@@ -545,6 +605,7 @@ export type Database = {
           school_id: string | null;
           status: Database["public"]["Enums"]["activation_status"];
           updated_at: string;
+          years_experience: number | null;
         };
         Insert: {
           activated_at?: string | null;
@@ -558,6 +619,7 @@ export type Database = {
           school_id?: string | null;
           status?: Database["public"]["Enums"]["activation_status"];
           updated_at?: string;
+          years_experience?: number | null;
         };
         Update: {
           activated_at?: string | null;
@@ -571,6 +633,7 @@ export type Database = {
           school_id?: string | null;
           status?: Database["public"]["Enums"]["activation_status"];
           updated_at?: string;
+          years_experience?: number | null;
         };
         Relationships: [
           {
@@ -1287,6 +1350,10 @@ export type Database = {
       };
       bump_tae_version: {
         Args: { p_tae_id: string; p_trigger_field: string };
+        Returns: undefined;
+      };
+      delete_account_anonymize: {
+        Args: { p_user_id: string };
         Returns: undefined;
       };
       get_field_version_type: {

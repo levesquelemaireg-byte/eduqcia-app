@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState } from "react";
+import Link from "next/link";
 import type { TaeFicheData } from "@/lib/types/fiche";
 import type { FicheMode } from "@/lib/fiche/types";
 import type { CompetenceData, ConnaissancesData } from "@/lib/fiche/types";
@@ -109,8 +110,22 @@ export function TacheRail({ tae }: Props) {
           />
         ) : null}
 
-        {/* 5. MetaRow — Auteur */}
-        <MetaRowSimple icon="person" label={auteur.nom} />
+        {/* 5. MetaRow — Auteur (lien vers profil si id disponible) */}
+        <div className="flex items-center gap-1.5 border-t-[0.5px] border-border py-2.75 text-xs text-deep">
+          <span className="material-symbols-outlined text-[14px] text-accent" aria-hidden="true">
+            person
+          </span>
+          {auteur.id ? (
+            <Link
+              href={`/profile/${auteur.id}`}
+              className="font-medium text-accent hover:underline"
+            >
+              {auteur.nom}
+            </Link>
+          ) : (
+            <span className="font-medium">{auteur.nom}</span>
+          )}
+        </div>
 
         {/* 6. MetaRow — Date de création */}
         <MetaRowSimple

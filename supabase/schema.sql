@@ -147,11 +147,12 @@ CREATE TABLE profiles (
   last_name        TEXT NOT NULL,
   role             user_role NOT NULL DEFAULT 'enseignant',
   status           activation_status NOT NULL DEFAULT 'pending',
-  school_id        UUID REFERENCES schools(id) ON DELETE SET NULL,
-  activation_token TEXT UNIQUE,
-  activated_at     TIMESTAMPTZ,
-  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  school_id         UUID REFERENCES schools(id) ON DELETE SET NULL,
+  years_experience  SMALLINT NULL,
+  activation_token  TEXT UNIQUE,
+  activated_at      TIMESTAMPTZ,
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
   -- Pas de contrainte CHECK statique sur l'email :
   -- la validation domaine est gérée par le trigger trg_check_email_domain
   -- qui couvre à la fois @*.gouv.qc.ca et email_domains_whitelist
@@ -207,6 +208,19 @@ CREATE TABLE disciplines (
   label          TEXT NOT NULL,
   cd_json_file   TEXT,   -- 'hec-cd.json' | 'hqc-cd.json' | null
   conn_json_file TEXT    -- 'hec-sec1-2.json' | 'hqc-sec3-4.json' | null
+);
+
+-- Tables pivot profil ↔ disciplines / niveaux (profil-ux-spec §7.2)
+CREATE TABLE profile_disciplines (
+  profile_id      UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  discipline_code TEXT NOT NULL REFERENCES disciplines(code) ON DELETE CASCADE,
+  PRIMARY KEY (profile_id, discipline_code)
+);
+
+CREATE TABLE profile_niveaux (
+  profile_id  UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  niveau_code TEXT NOT NULL REFERENCES niveaux(code) ON DELETE CASCADE,
+  PRIMARY KEY (profile_id, niveau_code)
 );
 
 -- Opérations intellectuelles — 8 OI (DOMAIN §2)
@@ -616,6 +630,13 @@ CREATE INDEX idx_eval_tae_ref         ON evaluation_tae (tae_id);
 CREATE INDEX idx_favoris_user         ON favoris (user_id);
 CREATE INDEX idx_favoris_item         ON favoris (type, item_id);
 
+-- Profil : contributions et pivot tables
+CREATE INDEX idx_tae_auteur_published       ON tae (auteur_id, is_published, created_at DESC);
+CREATE INDEX idx_documents_auteur_published ON documents (auteur_id, is_published, created_at DESC);
+CREATE INDEX idx_evaluations_auteur_published ON evaluations (auteur_id, is_published, created_at DESC);
+CREATE INDEX idx_profile_disciplines_profile ON profile_disciplines (profile_id);
+CREATE INDEX idx_profile_niveaux_profile     ON profile_niveaux (profile_id);
+
 -- Notifications
 CREATE INDEX idx_notif_user_unread    ON notifications (user_id, is_read) WHERE is_read = FALSE;
 CREATE INDEX idx_notif_created        ON notifications (created_at DESC);
@@ -670,6 +691,8 @@ ALTER TABLE evaluations             ENABLE ROW LEVEL SECURITY;
 ALTER TABLE evaluation_tae          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE favoris                 ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profile_disciplines     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profile_niveaux         ENABLE ROW LEVEL SECURITY;
 
 -- -------------------------------------------------------
 -- Fonctions helper (SECURITY DEFINER — évite la récursion RLS)
@@ -1098,6 +1121,28 @@ CREATE POLICY "notif_admin"
   ON notifications FOR ALL
   USING (auth_role() = 'admin');
 
+-- -------------------------------------------------------
+-- RLS : profile_disciplines / profile_niveaux
+-- -------------------------------------------------------
+
+CREATE POLICY "profile_disciplines_select_all"
+  ON profile_disciplines FOR SELECT TO authenticated
+  USING (true);
+
+CREATE POLICY "profile_disciplines_modify_own"
+  ON profile_disciplines FOR ALL TO authenticated
+  USING (profile_id = auth.uid())
+  WITH CHECK (profile_id = auth.uid());
+
+CREATE POLICY "profile_niveaux_select_all"
+  ON profile_niveaux FOR SELECT TO authenticated
+  USING (true);
+
+CREATE POLICY "profile_niveaux_modify_own"
+  ON profile_niveaux FOR ALL TO authenticated
+  USING (profile_id = auth.uid())
+  WITH CHECK (profile_id = auth.uid());
+
 -- ============================================================
 -- FONCTIONS MÉTIER
 -- ============================================================
@@ -1257,6 +1302,36 @@ $$;
 CREATE TRIGGER trg_favori_sync_usage
   AFTER INSERT ON favoris
   FOR EACH ROW EXECUTE FUNCTION sync_usage_on_favori();
+
+-- -----------------------------------------------------------
+-- delete_account_anonymize — Loi 25 (suppression de compte)
+-- -----------------------------------------------------------
+CREATE OR REPLACE FUNCTION delete_account_anonymize(p_user_id UUID)
+RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER AS $$
+BEGIN
+  IF p_user_id != auth.uid() THEN
+    RAISE EXCEPTION 'Non autorisé';
+  END IF;
+
+  DELETE FROM tae WHERE auteur_id = p_user_id AND is_published = false;
+  DELETE FROM documents WHERE auteur_id = p_user_id AND is_published = false;
+  DELETE FROM evaluations WHERE auteur_id = p_user_id AND is_published = false;
+
+  DELETE FROM profile_disciplines WHERE profile_id = p_user_id;
+  DELETE FROM profile_niveaux WHERE profile_id = p_user_id;
+
+  UPDATE profiles SET
+    first_name = '[Compte',
+    last_name = 'supprimé]',
+    email = 'deleted-' || p_user_id || '@anonymized.local',
+    school_id = NULL,
+    years_experience = NULL,
+    status = 'suspended',
+    activation_token = NULL,
+    updated_at = NOW()
+  WHERE id = p_user_id;
+END;
+$$;
 
 -- ============================================================
 -- VUES

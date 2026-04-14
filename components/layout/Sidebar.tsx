@@ -10,6 +10,8 @@ type NavItem = {
   icon: string;
   /** Badge numérique (ex. notifications) */
   badge?: number;
+  /** Style du badge : "accent" (défaut, teal) ou "alert" (rouge, profil incomplet) */
+  badgeStyle?: "accent" | "alert";
 };
 
 type Section = { title: string; items: NavItem[] };
@@ -73,6 +75,7 @@ type Props = {
   email: string;
   profileId: string;
   unreadNotifications: number;
+  missingProInfoCount: number;
   collapsed: boolean;
   onToggleCollapsed: () => void;
   mobileOpen: boolean;
@@ -85,6 +88,7 @@ export function Sidebar({
   email,
   profileId,
   unreadNotifications,
+  missingProInfoCount,
   collapsed,
   onToggleCollapsed,
   mobileOpen,
@@ -96,7 +100,12 @@ export function Sidebar({
     ...sec,
     items: sec.items.map((item) => {
       if (item.href === "/profile") {
-        return { ...item, href: `/profile/${profileId}` };
+        return {
+          ...item,
+          href: `/profile/${profileId}`,
+          badge: missingProInfoCount > 0 ? missingProInfoCount : undefined,
+          badgeStyle: "alert" as const,
+        };
       }
       if (item.href === "/dashboard" && unreadNotifications > 0) {
         return { ...item, badge: unreadNotifications };
@@ -169,6 +178,11 @@ export function Sidebar({
                           active ? "bg-white/15 font-medium text-white" : ""
                         } ${collapsed ? "lg:justify-center lg:gap-0" : ""}`}
                         aria-current={active ? "page" : undefined}
+                        aria-label={
+                          item.badgeStyle === "alert" && item.badge
+                            ? `${item.label} — ${item.badge} information${item.badge > 1 ? "s" : ""} à compléter`
+                            : undefined
+                        }
                         data-tooltip={collapsed ? item.label : undefined}
                         onClick={onCloseMobile}
                       >
@@ -184,13 +198,26 @@ export function Sidebar({
                           {item.label}
                         </span>
                         {item.badge != null && item.badge > 0 ? (
-                          <span
-                            className={`shrink-0 self-center rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white ${
-                              collapsed ? "lg:absolute lg:right-1 lg:top-1" : ""
-                            }`}
-                          >
-                            {item.badge > 99 ? "99+" : item.badge}
-                          </span>
+                          item.badgeStyle === "alert" ? (
+                            <span
+                              className={`pointer-events-none shrink-0 self-center rounded-full bg-red-600 px-1.5 py-0.5 text-[9px] font-medium leading-none text-white ${
+                                collapsed
+                                  ? "lg:absolute lg:right-0 lg:top-0 lg:translate-x-[70%] lg:-translate-y-1/2"
+                                  : ""
+                              }`}
+                              aria-hidden="true"
+                            >
+                              {item.badge}
+                            </span>
+                          ) : (
+                            <span
+                              className={`shrink-0 self-center rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white ${
+                                collapsed ? "lg:absolute lg:right-1 lg:top-1" : ""
+                              }`}
+                            >
+                              {item.badge > 99 ? "99+" : item.badge}
+                            </span>
+                          )
                         ) : null}
                       </Link>
                     </li>

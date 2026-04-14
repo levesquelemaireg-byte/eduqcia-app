@@ -12,6 +12,7 @@ type Props = {
   email: string;
   profileId: string;
   unreadNotifications: number;
+  missingProInfoCount: number;
 };
 
 export function AppShellClient({
@@ -20,6 +21,7 @@ export function AppShellClient({
   email,
   profileId,
   unreadNotifications,
+  missingProInfoCount,
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -75,6 +77,7 @@ export function AppShellClient({
         email={email}
         profileId={profileId}
         unreadNotifications={unreadNotifications}
+        missingProInfoCount={missingProInfoCount}
         collapsed={hydrated ? collapsed : false}
         onToggleCollapsed={toggleCollapsed}
         mobileOpen={mobileOpen}

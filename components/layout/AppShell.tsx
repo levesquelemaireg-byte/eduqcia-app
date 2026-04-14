@@ -7,15 +7,24 @@ type Props = {
   email: string;
   profileId: string;
   unreadNotifications: number;
+  missingProInfoCount: number;
 };
 
-export function AppShell({ children, displayName, email, profileId, unreadNotifications }: Props) {
+export function AppShell({
+  children,
+  displayName,
+  email,
+  profileId,
+  unreadNotifications,
+  missingProInfoCount,
+}: Props) {
   return (
     <AppShellClient
       displayName={displayName}
       email={email}
       profileId={profileId}
       unreadNotifications={unreadNotifications}
+      missingProInfoCount={missingProInfoCount}
     >
       {children}
     </AppShellClient>

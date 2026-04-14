@@ -3,7 +3,7 @@
 **Projet :** ÉduQc.IA — Application pour enseignants Québec
 **Scope :** `/profile/[id]` (vue propriétaire + vue publique) + refonte `/collaborateurs`
 **Date :** Avril 2026
-**Statut :** Spec finale après **7 passes de revue + 6 itérations de proto interactif** (5 sur profil, 1 sur collaborateurs). Prête pour le développement.
+**Statut :** **FERMÉE** — Phase 1 (§21 items 1-30) livrée le 14 avril 2026. Phase 2 (liens auteur banque/docs/épreuves, tri « plus utilisées ») reportée. Phase 3 (filtres collaborateurs, optimistic UI, cursor pagination) reportée V2/V3. Spec issue de 7 passes de revue + 6 itérations de proto interactif.
 **Design language :** Patterns M3 (Material Design 3) adaptés en Tailwind — pas de librairie tierce.
 
 **Terminologie :** Trois catégories de contenus créés ou recherchés : **Tâches**, **Documents**, **Épreuves**. Le terme « TAÉ » n'est plus utilisé dans l'UI ni dans la spec — uniquement dans le code legacy/SQL où il subsiste pour compatibilité.
