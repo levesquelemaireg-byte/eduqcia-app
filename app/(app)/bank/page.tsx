@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 /** La banque affiche les tâches publiées par tous les utilisateurs — jamais cacher. */
@@ -6,6 +7,7 @@ import { BankDocumentsPanel } from "@/components/bank/BankDocumentsPanel";
 import { BankEvaluationsPanel } from "@/components/bank/BankEvaluationsPanel";
 import { BankOnglets } from "@/components/bank/BankOnglets";
 import { BankTasksPanel } from "@/components/bank/BankTasksPanel";
+import { CardGridSkeleton } from "@/components/ui/CardGridSkeleton";
 import {
   parseBankDocumentIconoCategories,
   type BankDocumentFilters,
@@ -66,13 +68,21 @@ export default async function BankPage({ searchParams }: PageProps) {
       <BankOnglets actif={onglet} />
 
       {onglet === "taches" ? (
-        <BankTasksPanel query={parseBankTaeQueryFromSearchParams(sp)} />
+        <Suspense fallback={<CardGridSkeleton count={6} cols={2} />}>
+          <BankTasksPanel query={parseBankTaeQueryFromSearchParams(sp)} />
+        </Suspense>
       ) : null}
 
-      {onglet === "documents" ? <BankDocumentsPanel filters={docFilters} page={listPage} /> : null}
+      {onglet === "documents" ? (
+        <Suspense fallback={<CardGridSkeleton count={6} cols={2} />}>
+          <BankDocumentsPanel filters={docFilters} page={listPage} />
+        </Suspense>
+      ) : null}
 
       {onglet === "evaluations" ? (
-        <BankEvaluationsPanel viewerId={user.id} q={evalQ} page={listPage} />
+        <Suspense fallback={<CardGridSkeleton count={6} cols={2} />}>
+          <BankEvaluationsPanel viewerId={user.id} q={evalQ} page={listPage} />
+        </Suspense>
       ) : null}
     </div>
   );

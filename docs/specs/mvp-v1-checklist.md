@@ -40,10 +40,10 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Lot 3 — Loading / Error states
 
-- [ ] **LE-1** `loading.tsx` pour les routes principales (`dashboard`, `questions`, `documents`, `evaluations`, `bank`)
-- [ ] **LE-2** `error.tsx` pour les mêmes routes
-- [ ] **LE-3** Créer 2-3 composants Skeleton dans `components/ui/`
-- [ ] **LE-4** Ajouter `<Suspense>` boundaries sur dashboard + banque
+- [x] **LE-1** `loading.tsx` pour les routes principales (`dashboard`, `questions`, `documents`, `evaluations`, `bank`)
+- [x] **LE-2** `error.tsx` pour les mêmes routes
+- [x] **LE-3** Créer 2-3 composants Skeleton dans `components/ui/`
+- [x] **LE-4** Ajouter `<Suspense>` boundaries sur dashboard + banque
 
 ## Lot 4 — CRUD manquant
 
@@ -95,19 +95,19 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Résumé d'avancement
 
-| Lot                    | Items  | Faits | %       |
-| ---------------------- | ------ | ----- | ------- |
-| 1 — Sécurité           | 3      | 3     | 100%    |
-| 2 — Quick wins         | 5      | 5     | 100%    |
-| 3 — Loading/Error      | 4      | 0     | 0%      |
-| 4 — CRUD manquant      | 2      | 0     | 0%      |
-| 5 — Compte             | 4      | 0     | 0%      |
-| 6 — Finitions création | 4      | 0     | 0%      |
-| 7 — Dashboard          | 2      | 0     | 0%      |
-| 8 — Favoris            | 4      | 0     | 0%      |
-| 9 — Export PDF         | 6      | 0     | 0%      |
-| 10 — Tests             | 3      | 0     | 0%      |
-| **Total**              | **37** | **8** | **22%** |
+| Lot                    | Items  | Faits  | %       |
+| ---------------------- | ------ | ------ | ------- |
+| 1 — Sécurité           | 3      | 3      | 100%    |
+| 2 — Quick wins         | 5      | 5      | 100%    |
+| 3 — Loading/Error      | 4      | 4      | 100%    |
+| 4 — CRUD manquant      | 2      | 0      | 0%      |
+| 5 — Compte             | 4      | 0      | 0%      |
+| 6 — Finitions création | 4      | 0      | 0%      |
+| 7 — Dashboard          | 2      | 0      | 0%      |
+| 8 — Favoris            | 4      | 0      | 0%      |
+| 9 — Export PDF         | 6      | 0      | 0%      |
+| 10 — Tests             | 3      | 0      | 0%      |
+| **Total**              | **37** | **12** | **32%** |
 
 ---
 

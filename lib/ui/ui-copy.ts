@@ -901,6 +901,13 @@ export const PAGE_APP_NOT_FOUND_DESCRIPTION = "Cette page n'existe pas ou vous n
 export const PAGE_APP_NOT_FOUND_CTA_DASHBOARD = "Tableau de bord";
 export const PAGE_APP_NOT_FOUND_CTA_EVALUATIONS = "Mes épreuves";
 
+/** Coquille connectée — `error` sous `(app)` (`docs/UI-COPY.md`) */
+export const PAGE_APP_ERROR_TITLE = "Une erreur est survenue";
+export const PAGE_APP_ERROR_DESCRIPTION =
+  "Quelque chose ne s'est pas déroulé comme prévu. Réessayez ou revenez au tableau de bord.";
+export const PAGE_APP_ERROR_CTA_RETRY = "Réessayer";
+export const PAGE_APP_ERROR_CTA_DASHBOARD = "Tableau de bord";
+
 /** Étape 1 — Recherche collaborateurs (`docs/UI-COPY.md`) */
 export const BLOC1_COLLAB_SEARCH_MIN_CHARS =
   "Saisissez au moins deux caractères pour lancer la recherche.";

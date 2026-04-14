@@ -88,6 +88,15 @@ Route `app/(app)/not-found.tsx` : affiché lorsque `notFound()` est invoqué (re
 - Tableau de bord (lien)
 - Mes épreuves (lien)
 
+### État — erreur inattendue (app connectée)
+
+Route `app/(app)/error.tsx` : affiché lorsqu'une erreur non gérée survient dans une page de la coquille connectée. Constantes `PAGE_APP_ERROR_*` dans `lib/ui/ui-copy.ts`.
+
+- Une erreur est survenue
+- Quelque chose ne s'est pas déroulé comme prévu. Réessayez ou revenez au tableau de bord.
+- Réessayer (bouton)
+- Tableau de bord (lien)
+
 ---
 
 ## Page — Tableau de bord / Profil privé

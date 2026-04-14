@@ -1,12 +1,8 @@
-import { Suspense } from "react";
-import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { DashboardContent } from "@/components/dashboard/DashboardContent";
 import { CardGridSkeleton } from "@/components/ui/CardGridSkeleton";
 
-function DashboardSkeleton() {
+export default function DashboardLoading() {
   return (
-    <>
+    <div className="mx-auto flex max-w-6xl flex-col gap-6">
       {/* En-tête profil */}
       <div className="animate-pulse rounded-xl border border-border bg-panel p-4 shadow-sm md:p-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
@@ -25,26 +21,9 @@ function DashboardSkeleton() {
           ))}
         </div>
       </div>
+
+      {/* Widgets */}
       <CardGridSkeleton count={4} cols={2} />
-    </>
-  );
-}
-
-export default async function DashboardPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-6">
-      <Suspense fallback={<DashboardSkeleton />}>
-        <DashboardContent userId={user.id} />
-      </Suspense>
     </div>
   );
 }
