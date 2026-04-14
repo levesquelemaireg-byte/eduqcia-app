@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { DeleteEvaluationButton } from "@/components/evaluations/DeleteEvaluationButton";
 import { createClient } from "@/lib/supabase/server";
 import { getMyEvaluationsList } from "@/lib/queries/user-content";
 import { EVAL_LIST_LINK_EDIT } from "@/lib/ui/ui-copy";
@@ -68,12 +69,15 @@ export default async function EvaluationsPage() {
                     <span>Modifiée le {dateLabel}</span>
                   </div>
                 </div>
-                <Link
-                  href={`/evaluations/${row.id}/edit`}
-                  className="inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-border bg-panel px-3 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
-                >
-                  {EVAL_LIST_LINK_EDIT}
-                </Link>
+                <div className="flex shrink-0 gap-2">
+                  <Link
+                    href={`/evaluations/${row.id}/edit`}
+                    className="inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-3 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"
+                  >
+                    {EVAL_LIST_LINK_EDIT}
+                  </Link>
+                  <DeleteEvaluationButton evaluationId={row.id} />
+                </div>
               </li>
             );
           })}

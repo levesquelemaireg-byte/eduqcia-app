@@ -47,8 +47,8 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Lot 4 — CRUD manquant
 
-- [ ] **CRUD-1** Supprimer un document (C5) — action + guard FK `tae_documents` + bouton + modale
-- [ ] **CRUD-2** Supprimer une épreuve (C21) — action + cascade `evaluation_tae` + bouton + modale
+- [x] **CRUD-1** Supprimer un document (C5) — action + guard FK `tae_documents` + bouton + modale
+- [x] **CRUD-2** Supprimer une épreuve (C21) — action + cascade `evaluation_tae` + bouton + modale
 
 ## Lot 5 — Gestion du compte
 
@@ -100,14 +100,14 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 1 — Sécurité           | 3      | 3      | 100%    |
 | 2 — Quick wins         | 5      | 5      | 100%    |
 | 3 — Loading/Error      | 4      | 4      | 100%    |
-| 4 — CRUD manquant      | 2      | 0      | 0%      |
+| 4 — CRUD manquant      | 2      | 2      | 100%    |
 | 5 — Compte             | 4      | 0      | 0%      |
 | 6 — Finitions création | 4      | 0      | 0%      |
 | 7 — Dashboard          | 2      | 0      | 0%      |
 | 8 — Favoris            | 4      | 0      | 0%      |
 | 9 — Export PDF         | 6      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **37** | **12** | **32%** |
+| **Total**              | **37** | **14** | **38%** |
 
 ---
 

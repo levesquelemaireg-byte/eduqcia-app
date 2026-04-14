@@ -208,6 +208,38 @@ Route `app/(app)/error.tsx` : affiché lorsqu'une erreur non gérée survient da
 
 - Impossible de supprimer cette tâche : elle figure dans une ou plusieurs épreuves. Retirez-la des épreuves concernées, puis réessayez.
 
+---
+
+## Page — Mes documents
+
+### Modale de suppression
+
+Route `app/(app)/documents/page.tsx`. Constantes `MY_DOCUMENTS_DELETE_*` dans `lib/ui/ui-copy.ts`.
+
+- Supprimer ce document ?
+- Cette opération est irréversible. Le document sera définitivement supprimé.
+- Annuler
+- Supprimer
+
+### Suppression impossible (document lié à une tâche)
+
+- Impossible de supprimer ce document : il est utilisé dans une ou plusieurs tâches d'apprentissage et d'évaluation. Retirez-le des tâches concernées, puis réessayez.
+
+---
+
+## Page — Mes épreuves
+
+### Modale de suppression
+
+Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dans `lib/ui/ui-copy.ts`.
+
+- Supprimer cette épreuve ?
+- Cette opération est irréversible. L'épreuve et ses associations seront définitivement supprimées.
+- Annuler
+- Supprimer
+
+---
+
 ### Édition guidée (`/questions/[id]/edit`)
 
 - Titre : « Modifier une tâche »

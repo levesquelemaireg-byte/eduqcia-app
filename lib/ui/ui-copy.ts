@@ -742,6 +742,26 @@ export const TOAST_MES_QUESTIONS_WIZARD_DRAFT_DELETED = "Le brouillon a été su
 export const TOAST_MES_QUESTIONS_WIZARD_DRAFT_DELETE_FAILED =
   "Impossible de supprimer le brouillon. Réessayez.";
 
+/** Page `/documents` — modale suppression (`docs/UI-COPY.md` — Mes documents) */
+export const MY_DOCUMENTS_DELETE_MODAL_TITLE = "Supprimer ce document ?";
+export const MY_DOCUMENTS_DELETE_MODAL_BODY =
+  "Cette opération est irréversible. Le document sera définitivement supprimé.";
+export const MY_DOCUMENTS_DELETE_MODAL_CANCEL = "Annuler";
+export const MY_DOCUMENTS_DELETE_MODAL_CONFIRM = "Supprimer";
+export const MY_DOCUMENTS_DELETE_BLOCKED_IN_TAE =
+  "Impossible de supprimer ce document : il est utilisé dans une ou plusieurs tâches d'apprentissage et d'évaluation. Retirez-le des tâches concernées, puis réessayez.";
+export const TOAST_MES_DOCUMENTS_DELETED = "Le document a été supprimé.";
+export const TOAST_MES_DOCUMENTS_DELETE_FAILED = "Impossible de supprimer le document. Réessayez.";
+
+/** Page `/evaluations` — modale suppression (`docs/UI-COPY.md` — Mes épreuves) */
+export const MY_EVALUATIONS_DELETE_MODAL_TITLE = "Supprimer cette épreuve ?";
+export const MY_EVALUATIONS_DELETE_MODAL_BODY =
+  "Cette opération est irréversible. L'épreuve et ses associations seront définitivement supprimées.";
+export const MY_EVALUATIONS_DELETE_MODAL_CANCEL = "Annuler";
+export const MY_EVALUATIONS_DELETE_MODAL_CONFIRM = "Supprimer";
+export const TOAST_MES_EVALUATIONS_DELETED = "L'épreuve a été supprimée.";
+export const TOAST_MES_EVALUATIONS_DELETE_FAILED = "Impossible de supprimer l'épreuve. Réessayez.";
+
 /** Page `/bank` — `docs/UI-COPY.md` — Banque collaborative */
 export const PAGE_BANK_TITLE = "Banque collaborative";
 export const PAGE_BANK_TAB_TASKS = "Tâches";

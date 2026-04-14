@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { DeleteDocumentButton } from "@/components/documents/DeleteDocumentButton";
 import { createClient } from "@/lib/supabase/server";
 import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
@@ -90,15 +91,18 @@ export default async function MesDocumentsPage() {
                   </p>
                   <p className="mt-1 text-xs text-muted">{formatDateFrCaMedium(doc.created_at)}</p>
                 </div>
-                <Link
-                  href={`/documents/${doc.id}`}
-                  className={cn(
-                    "inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg border border-border px-4 text-sm font-semibold text-accent",
-                    "hover:bg-accent/5",
-                  )}
-                >
-                  Voir
-                </Link>
+                <div className="flex shrink-0 gap-2">
+                  <Link
+                    href={`/documents/${doc.id}`}
+                    className={cn(
+                      "inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-4 text-sm font-semibold text-accent",
+                      "hover:bg-accent/5",
+                    )}
+                  >
+                    Voir
+                  </Link>
+                  <DeleteDocumentButton documentId={doc.id} />
+                </div>
               </li>
             );
           })}
