@@ -116,7 +116,7 @@ export function WarningModal({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-50 p-4",
+        "fixed inset-0 z-70 p-4",
         fitContentHeight ? "overflow-y-auto" : "flex items-center justify-center",
       )}
       role="presentation"

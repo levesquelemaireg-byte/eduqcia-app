@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils/cn";
+import { MetaPill } from "@/components/tae/fiche/MetaPill";
 
 export type ExperienceLevel = "nouveau" | "neutre" | "actif" | "experimente";
 
@@ -22,17 +22,17 @@ type Props = {
   className?: string;
 };
 
-/** Indicateur d'expérience neutre — affiché à côté du badge rôle (§5.5). */
+/** Badge statut contribution — MetaPill avec icône award_star (§5.5). */
 export function ExperienceBadge({ level, totalContributions, className }: Props) {
   const label = LABELS[level];
   if (!label) return null;
 
   return (
-    <span
-      className={cn("text-sm font-medium text-muted", className)}
-      aria-label={`${label} — basé sur ${totalContributions} contribution${totalContributions > 1 ? "s" : ""} publiée${totalContributions > 1 ? "s" : ""}`}
-    >
-      {label}
-    </span>
+    <MetaPill
+      icon="award_star"
+      label={label}
+      ariaLabel={`${label} — basé sur ${totalContributions} contribution${totalContributions > 1 ? "s" : ""} publiée${totalContributions > 1 ? "s" : ""}`}
+      className={className}
+    />
   );
 }

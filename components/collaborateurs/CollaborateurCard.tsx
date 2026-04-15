@@ -72,8 +72,11 @@ export function CollaborateurCard({
           </p>
 
           {/* Ligne 3 : Courriel + copier */}
-          <div className="mt-0.5 flex items-center gap-1">
-            <span className="truncate text-sm text-muted">{email}</span>
+          <div className="mt-0.5 flex items-center gap-[0.35em] text-sm text-muted">
+            <span className="material-symbols-outlined text-[1em] leading-none" aria-hidden="true">
+              mail
+            </span>
+            <span className="truncate">{email}</span>
             <CopyButton text={email} className="!h-7 !w-7" />
           </div>
 

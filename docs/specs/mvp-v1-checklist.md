@@ -52,10 +52,10 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Lot 5 — Gestion du compte
 
-- [ ] **AUTH-1** Modifier son mot de passe (A4) — route/modale + action + schéma Zod + composant
-- [ ] **AUTH-2** Afficher son profil (A5) — query + composant de rendu (mutualisé avec D9)
-- [ ] **AUTH-3** Modifier son profil (A6) — route + action + schéma + formulaire (CSS/école/niveaux)
-- [ ] **AUTH-4** Profil public enseignant (D9) — mutualisé avec A5
+- [x] **AUTH-1** Modifier son mot de passe (A4) — section profil collapsible + `updatePasswordAction` + `changePasswordSchema` + `ChangePasswordSection`
+- [x] **AUTH-2** Afficher son profil (A5) — `/profile/[id]` Server Component, `fetchProfileOverview`, `ProfileHero`, `ProfileContributions` (3 onglets)
+- [x] **AUTH-3** Modifier son profil (A6) — `ProfileEditSheet` (Side Sheet identité + professionnel), actions `profile-update-identity`/`profile-update-professional`, schemas Zod, cascade CSS/école, pivot tables `profile_niveaux`/`profile_disciplines`, `DeleteAccountSection` Loi 25
+- [x] **AUTH-4** Profil public enseignant (D9) — même route `/profile/[id]` avec `isOwner` flag, refonte `/collaborateurs` (cards, recherche hybride, scroll infini)
 
 ## Lot 6 — Finitions parcours création
 
@@ -101,13 +101,13 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 2 — Quick wins         | 5      | 5      | 100%    |
 | 3 — Loading/Error      | 4      | 4      | 100%    |
 | 4 — CRUD manquant      | 2      | 2      | 100%    |
-| 5 — Compte             | 4      | 0      | 0%      |
+| 5 — Compte             | 4      | 4      | 100%    |
 | 6 — Finitions création | 4      | 0      | 0%      |
 | 7 — Dashboard          | 2      | 0      | 0%      |
 | 8 — Favoris            | 4      | 0      | 0%      |
 | 9 — Export PDF         | 6      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **37** | **14** | **38%** |
+| **Total**              | **37** | **18** | **49%** |
 
 ---
 

@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { ProfileHero } from "@/components/profile/ProfileHero";
-import { ProfileProfessionalInfo } from "@/components/profile/ProfileProfessionalInfo";
 import { ProfileContributions } from "@/components/profile/ProfileContributions";
-import { ProfileEditIdentity } from "@/components/profile/ProfileEditIdentity";
-import { ProfileEditProfessional } from "@/components/profile/ProfileEditProfessional";
+import { ProfileEditSheet } from "@/components/profile/ProfileEditSheet";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
+import { ChangePasswordSection } from "@/components/profile/ChangePasswordSection";
 import type { ProfileOverview } from "@/lib/queries/profile-overview";
 import type {
   ProfileDocument,
@@ -31,8 +30,7 @@ export function ProfilePageClient({
   cssOptions,
   schoolOptions,
 }: Props) {
-  const [editIdentityOpen, setEditIdentityOpen] = useState(false);
-  const [editProOpen, setEditProOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
 
   const { profile, counts, experienceLabel, isOwner } = overview;
 
@@ -48,16 +46,11 @@ export function ProfilePageClient({
         createdAt={profile.createdAt}
         experienceLabel={experienceLabel}
         totalContributions={counts.total}
-        isOwner={isOwner}
-        onEditClick={() => setEditIdentityOpen(true)}
-      />
-
-      <ProfileProfessionalInfo
         niveaux={profile.niveaux}
         disciplines={profile.disciplines}
         yearsExperience={profile.yearsExperience}
         isOwner={isOwner}
-        onEditClick={() => setEditProOpen(true)}
+        onEditClick={() => setEditOpen(true)}
       />
 
       <ProfileContributions
@@ -69,39 +62,26 @@ export function ProfilePageClient({
         initialEvaluations={initialEvaluations}
       />
 
+      {isOwner && <ChangePasswordSection />}
+
       {isOwner && <DeleteAccountSection />}
 
-      {/* Side Sheets */}
       {isOwner && (
-        <>
-          <ProfileEditIdentity
-            open={editIdentityOpen}
-            onClose={() => setEditIdentityOpen(false)}
-            currentFirstName={profile.firstName}
-            currentLastName={profile.lastName}
-            currentSchoolId={
-              // Trouver l'ID école depuis le nom — on a les options
-              schoolOptions.find((s) => s.nomOfficiel === profile.schoolName)?.id ?? null
-            }
-            cssOptions={cssOptions}
-            schoolOptions={schoolOptions}
-            onChainToProInfo={() => {
-              setEditIdentityOpen(false);
-              setTimeout(() => setEditProOpen(true), 300);
-            }}
-          />
-          <ProfileEditProfessional
-            open={editProOpen}
-            onClose={() => setEditProOpen(false)}
-            currentNiveaux={profile.niveaux}
-            currentDisciplines={profile.disciplines}
-            currentYearsExperience={profile.yearsExperience}
-            onChainToIdentity={() => {
-              setEditProOpen(false);
-              setTimeout(() => setEditIdentityOpen(true), 300);
-            }}
-          />
-        </>
+        <ProfileEditSheet
+          open={editOpen}
+          onClose={() => setEditOpen(false)}
+          currentFirstName={profile.firstName}
+          currentLastName={profile.lastName}
+          currentSchoolId={
+            schoolOptions.find((s) => s.nomOfficiel === profile.schoolName)?.id ?? null
+          }
+          currentNiveaux={profile.niveaux}
+          currentDisciplines={profile.disciplines}
+          currentYearsExperience={profile.yearsExperience}
+          cssOptions={cssOptions}
+          schoolOptions={schoolOptions}
+          profileId={profile.id}
+        />
       )}
     </div>
   );

@@ -22,3 +22,22 @@ export type ProfileProfessionalInput = z.infer<typeof profileProfessionalSchema>
 export const deleteAccountSchema = z.object({
   confirmation: z.literal("SUPPRIMER"),
 });
+
+/** Validation changement de mot de passe (AUTH-1) */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Mot de passe actuel requis"),
+    newPassword: z.string().min(8, "Le mot de passe doit contenir au moins 8 caractères"),
+    passwordConfirm: z.string().min(1, "Confirmation requise"),
+  })
+  .superRefine((data, ctx) => {
+    if (data.newPassword !== data.passwordConfirm) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Les mots de passe ne correspondent pas",
+        path: ["passwordConfirm"],
+      });
+    }
+  });
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;

@@ -9,7 +9,7 @@ import {
 } from "@/lib/ui/ui-copy";
 
 const linkClass =
-  "inline-flex items-center justify-center rounded-[var(--radius-md)] border border-border bg-panel-alt px-4 py-2.5 text-sm font-semibold text-deep transition-[background-color] hover:bg-surface";
+  "inline-flex items-center justify-center rounded-[var(--radius-md)] border border-border bg-panel-alt px-4 py-2.5 font-sans text-sm font-semibold text-deep transition-[background-color] hover:bg-surface";
 
 export default function AppError({
   reset,
