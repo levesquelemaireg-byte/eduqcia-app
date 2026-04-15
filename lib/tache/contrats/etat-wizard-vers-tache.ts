@@ -1,0 +1,290 @@
+/**
+ * Mapper officiel wizard → DonneesTache (print-engine v2.1 §4.5).
+ *
+ * Fonction pure. Remplace `formStateToTae()` (dépréciée) pour la chaîne d'impression.
+ * Les selectors de `lib/fiche/selectors/` restent pour le sommaire wizard.
+ *
+ * D0 partiel : coexiste avec l'ancien code — aucun consommateur n'est modifié.
+ */
+
+import { DISCIPLINE_LABEL, NIVEAUX } from "@/components/tae/TaeForm/bloc2/constants";
+import { getSlotData } from "@/lib/tae/document-helpers";
+import type { NiveauCode, DisciplineCode } from "@/lib/tae/blueprint-helpers";
+import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
+import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+import { getRedactionSliceForPreview, type TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { cdSelectionToFicheSlice } from "@/lib/tae/cd-helpers";
+import { connaissancesToFicheSlice } from "@/lib/tae/connaissances-selection";
+import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tae/auteur-display-sort";
+import type { OiEntryJson } from "@/lib/types/oi";
+import {
+  isActiveAvantApresVariant,
+  isActiveLigneDuTempsVariant,
+  isActiveNonRedactionVariant,
+  isActiveOrdreChronologiqueVariant,
+} from "@/lib/tae/non-redaction/wizard-variant";
+import {
+  nonRedactionAvantApresPayload,
+  nonRedactionLignePayload,
+  nonRedactionOrdrePayload,
+} from "@/lib/tae/wizard-state-nr";
+import {
+  buildAvantApresConsigneHtml,
+  buildAvantApresCorrigeHtml,
+  buildAvantApresGuidageHtml,
+  normalizeAvantApresPayload,
+} from "@/lib/tae/non-redaction/avant-apres-payload";
+import {
+  buildLigneDuTempsConsigneHtml,
+  buildLigneDuTempsCorrigeHtml,
+  buildLigneDuTempsGuidageHtml,
+  normalizeLigneDuTempsPayload,
+} from "@/lib/tae/non-redaction/ligne-du-temps-payload";
+import {
+  buildOrdreChronologiqueConsigneHtml,
+  buildOrdreChronologiqueCorrigeHtml,
+  buildOrdreChronologiqueGuidageHtml,
+  normalizeOrdreChronologiquePayload,
+} from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+
+import type {
+  DonneesTache,
+  DocumentReference,
+  EspaceProduction,
+  Guidage,
+  OutilEvaluation,
+  Critere,
+} from "./donnees";
+
+/* -------------------------------------------------------------------------- */
+/*  Types d'entrée                                                            */
+/* -------------------------------------------------------------------------- */
+
+/** Entrée minimale de `grilles-evaluation.json` nécessaire à la résolution. */
+export type GrilleEvaluationEntree = {
+  id: string;
+  oi: string;
+  comportement_enonce: string;
+  bareme: {
+    echelle: { points: number; label: string; description: string }[];
+  };
+};
+
+/** Métadonnées affichées dans le pied de fiche (auteur, date). */
+export type MetaApercu = {
+  authorFullName: string;
+  draftStartedAtIso: string;
+};
+
+/* -------------------------------------------------------------------------- */
+/*  Helpers internes                                                          */
+/* -------------------------------------------------------------------------- */
+
+/** Supprime les ancres HTML `<!--eduqcia:...-->` des consignes NR. */
+function supprimerAncres(html: string): string {
+  return html.replace(/<!--eduqcia:[^>]+-->/g, "");
+}
+
+/** Résout l'outil d'évaluation depuis les grilles JSON. */
+function resoudreOutilEvaluation(
+  outilId: string | null,
+  grilles: GrilleEvaluationEntree[],
+): OutilEvaluation {
+  if (!outilId) {
+    return { oi: "redactionnel", criteres: [] };
+  }
+
+  const grille = grilles.find((g) => g.id === outilId);
+  if (!grille) {
+    return { oi: "redactionnel", criteres: [] };
+  }
+
+  const critere: Critere = {
+    libelle: grille.comportement_enonce,
+    descripteurs: grille.bareme.echelle.map((e) => ({
+      niveau: e.label,
+      description: e.description,
+      points: e.points,
+    })),
+  };
+
+  const oi = grille.oi as OutilEvaluation["oi"];
+  return { oi, criteres: [critere] };
+}
+
+/** Déduit l'espace de production depuis l'état du wizard. */
+function deduireEspaceProduction(state: TaeFormState): EspaceProduction {
+  if (isActiveOrdreChronologiqueVariant(state)) {
+    return { type: "cases", options: ["A", "B", "C", "D"] };
+  }
+  if (isActiveLigneDuTempsVariant(state) || isActiveAvantApresVariant(state)) {
+    return { type: "libre" };
+  }
+  return { type: "lignes", nbLignes: state.bloc2.nbLignes ?? 5 };
+}
+
+/** Construit le guidage structuré. */
+function construireGuidage(state: TaeFormState): Guidage {
+  if (isActiveNonRedactionVariant(state)) {
+    const ordreNorm = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
+    if (isActiveOrdreChronologiqueVariant(state) && ordreNorm) {
+      const html = buildOrdreChronologiqueGuidageHtml();
+      return html ? { content: html } : null;
+    }
+    const ligneNorm = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+    if (isActiveLigneDuTempsVariant(state) && ligneNorm) {
+      const html = buildLigneDuTempsGuidageHtml();
+      return html ? { content: html } : null;
+    }
+    const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+    if (isActiveAvantApresVariant(state) && avantNorm) {
+      const html = buildAvantApresGuidageHtml();
+      return html ? { content: html } : null;
+    }
+    return null;
+  }
+
+  const guidageText = state.bloc3.guidage.trim();
+  return guidageText ? { content: guidageText } : null;
+}
+
+/** Construit la consigne (HTML propre, sans ancre). */
+function construireConsigne(state: TaeFormState): string {
+  const ordreNorm = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
+  if (isActiveOrdreChronologiqueVariant(state) && ordreNorm) {
+    return supprimerAncres(buildOrdreChronologiqueConsigneHtml(ordreNorm));
+  }
+  const ligneNorm = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+  if (isActiveLigneDuTempsVariant(state) && ligneNorm) {
+    return supprimerAncres(buildLigneDuTempsConsigneHtml(ligneNorm));
+  }
+  const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+  if (isActiveAvantApresVariant(state) && avantNorm) {
+    return supprimerAncres(buildAvantApresConsigneHtml(avantNorm));
+  }
+  return getRedactionSliceForPreview(state).consigne;
+}
+
+/** Construit le corrigé. */
+function construireCorrige(state: TaeFormState): string {
+  const ordreNorm = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
+  if (isActiveOrdreChronologiqueVariant(state) && ordreNorm) {
+    return buildOrdreChronologiqueCorrigeHtml(ordreNorm);
+  }
+  const ligneNorm = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
+  if (isActiveLigneDuTempsVariant(state) && ligneNorm) {
+    return buildLigneDuTempsCorrigeHtml(ligneNorm);
+  }
+  const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
+  if (isActiveAvantApresVariant(state) && avantNorm) {
+    return buildAvantApresCorrigeHtml(avantNorm);
+  }
+  return getRedactionSliceForPreview(state).corrige;
+}
+
+/** Mappe les slots document vers `DocumentReference[]`. */
+function construireDocuments(state: TaeFormState): DocumentReference[] {
+  return state.bloc2.documentSlots.map(({ slotId }) => {
+    const slot = getSlotData(state.bloc4.documents, slotId);
+    return {
+      id: slotId,
+      kind: slot.type,
+      titre: slot.titre,
+      contenu: slot.contenu,
+      ...(slot.type === "iconographique" ? { echelle: slot.printImpressionScale } : {}),
+    };
+  });
+}
+
+/** Construit la liste des auteurs triés par nom de famille. */
+function construireAuteurs(
+  state: TaeFormState,
+  meta?: MetaApercu | null,
+): { id: string; first_name: string; last_name: string }[] {
+  const fallbackAuthor = meta?.authorFullName?.trim() || "—";
+  const principalSplit = splitDisplayName(fallbackAuthor);
+  const auteurPrincipal = { id: "draft-local", ...principalSplit };
+
+  const auteursRaw =
+    state.bloc1.modeConception === "equipe"
+      ? [
+          auteurPrincipal,
+          ...state.bloc1.collaborateurs.map((c) => ({
+            id: c.id,
+            ...splitDisplayName(c.displayName),
+          })),
+        ]
+      : [auteurPrincipal];
+
+  return sortAuteursByFamilyName(auteursRaw);
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Mapper principal                                                          */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Transforme l'état du wizard en `DonneesTache` structuré.
+ *
+ * Fonction pure — toutes les données de référence sont passées en paramètre.
+ * Le résultat est prêt pour la chaîne d'impression (consigne propre, guidage
+ * structuré, outilEvaluation résolu, espaceProduction déduit).
+ */
+export function etatWizardVersTache(
+  etat: TaeFormState,
+  oiList: OiEntryJson[],
+  grilles: GrilleEvaluationEntree[],
+  meta?: MetaApercu | null,
+): DonneesTache {
+  const oiEntry = oiList.find((o) => o.id === etat.bloc2.oiId);
+  const comportement = oiEntry?.comportements_attendus.find(
+    (c) => c.id === etat.bloc2.comportementId,
+  );
+
+  const redaction = getRedactionSliceForPreview(etat);
+  const aspectsSociete = (Object.entries(redaction.aspects) as [AspectSocieteKey, boolean][])
+    .filter(([, v]) => v)
+    .map(([k]) => ASPECT_LABEL[k]);
+
+  const niveauLabel =
+    NIVEAUX.find((n) => n.value === (etat.bloc2.niveau as NiveauCode))?.label ?? "";
+  const disc = etat.bloc2.discipline;
+  const disciplineLabel =
+    disc && disc in DISCIPLINE_LABEL ? DISCIPLINE_LABEL[disc as DisciplineCode] : "";
+
+  return {
+    id: "draft",
+    auteur_id: "draft-local",
+    auteurs: construireAuteurs(etat, meta),
+
+    titre: comportement?.enonce ?? "",
+    consigne: construireConsigne(etat),
+    guidage: construireGuidage(etat),
+    documents: construireDocuments(etat),
+    espaceProduction: deduireEspaceProduction(etat),
+    outilEvaluation: resoudreOutilEvaluation(etat.bloc2.outilEvaluation, grilles),
+    corrige: construireCorrige(etat),
+
+    aspects_societe: aspectsSociete,
+    nb_lignes: etat.bloc2.nbLignes ?? 5,
+    niveau: { label: niveauLabel },
+    discipline: { label: disciplineLabel },
+    oi: {
+      id: etat.bloc2.oiId,
+      titre: oiEntry?.titre ?? "",
+      icone: oiEntry?.icone ?? "cognition",
+    },
+    comportement: {
+      id: etat.bloc2.comportementId,
+      enonce: comportement?.enonce ?? "",
+    },
+    cd: cdSelectionToFicheSlice(etat.bloc6.cd.selection),
+    connaissances: connaissancesToFicheSlice(etat.bloc7.connaissances),
+
+    version: 1,
+    version_updated_at: null,
+    is_published: false,
+    created_at: meta?.draftStartedAtIso ?? "",
+    updated_at: meta?.draftStartedAtIso ?? "",
+  };
+}
