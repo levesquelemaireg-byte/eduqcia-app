@@ -41,6 +41,8 @@
     "@tiptap/pm": "^3.20.4",
     "@tiptap/react": "^3.20.4",
     "@tiptap/starter-kit": "^3.20.4",
+    "@vercel/kv": "^3.0.0",
+    "client-only": "^0.0.1",
     "clsx": "^2.1.1",
     "isomorphic-dompurify": "^3.8.0",
     "material-symbols": "^0.44.0",

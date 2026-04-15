@@ -94,6 +94,8 @@ supabase/migrations/ # SQL incrémental (ex. RPC manquante sur projet existant)
 | `/profile/[id]`                                              | Profil enseignant (mode propriétaire/visiteur) — `ProfileHero` (avatar, badges rôle genré/expérience, courriel copie), `ProfileProfessionalInfo` (MetaPills niveaux/disciplines/expérience), `ProfileContributions` (3 onglets Documents/Tâches/Épreuves, load more), Side Sheets édition identité (+ genre) + professionnel, `DeleteAccountSection` (Loi 25) ; queries `fetchProfileOverview`, `fetchProfileDocuments/Tasks/Evaluations` ; helper `getRoleLabel(role, genre)` ; spec `profil-ux-spec.md` FERMÉE |
 | `/collaborateurs`                                            | Répertoire collaborateurs — `CollaborateurCard` (4 lignes cliquable → profil), recherche hybride local+serveur (`api/collaborateurs/search`), scroll infini `IntersectionObserver` ; query enrichie `collaborateurs-list.ts` (compteurs doc/task/eval, disciplines, niveaux)                                                                                                                                                                                                                                     |
 | `/api/collaborateurs/search`                                 | Route handler GET — recherche serveur collaborateurs (first_name, last_name, email ilike) avec AbortController support                                                                                                                                                                                                                                                                                                                                                                                           |
+| `/apercu/[token]`                                            | Route SSR impression — vérifie token HMAC, fetch payload depuis Vercel KV (draft) ou DB (publié), pagine via `epreuveVersPaginee`, rend `ApercuImpression` ; layout `(apercu)` minimal sans AppShell ; print-engine D1                                                                                                                                                                                                                                                                                           |
+| `/api/impression/token-draft`                                | Route handler POST — reçoit `DonneesEpreuve` en JSON, stocke dans Vercel KV (TTL 10 min), retourne token HMAC signé ; auth Supabase requise                                                                                                                                                                                                                                                                                                                                                                      |
 
 ## Authentification (Next.js + Supabase)
 
@@ -101,12 +103,15 @@ Implémentation actuelle : pages `(auth)`, Server Actions dans `lib/actions/auth
 
 ## Variables d’environnement
 
-| Variable                        | Rôle                                |
-| ------------------------------- | ----------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | URL projet Supabase                 |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon (navigateur + serveur)     |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Rôle service — **jamais** au client |
-| `NEXT_PUBLIC_SITE_URL`          | URL canonique (callbacks, emails)   |
+| Variable                        | Rôle                                                               |
+| ------------------------------- | ------------------------------------------------------------------ |
+| `NEXT_PUBLIC_SUPABASE_URL`      | URL projet Supabase                                                |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon (navigateur + serveur)                                    |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Rôle service — **jamais** au client                                |
+| `NEXT_PUBLIC_SITE_URL`          | URL canonique (callbacks, emails)                                  |
+| `DRAFT_TOKEN_SECRET`            | Clé HMAC draft-token impression (≥ 32 car.) — **jamais** au client |
+| `KV_REST_API_URL`               | Vercel KV — URL REST (draft-token storage)                         |
+| `KV_REST_API_TOKEN`             | Vercel KV — token REST                                             |
 
 Dupliquer **Production** et **Preview** sur l’hôte (ex. Vercel) ; pour Preview, `NEXT_PUBLIC_SITE_URL` doit être l’URL de preview. Local : `.env.local` depuis `.env.example` (non versionné). La CI injecte des placeholders — pas de secrets dans le workflow.
 
