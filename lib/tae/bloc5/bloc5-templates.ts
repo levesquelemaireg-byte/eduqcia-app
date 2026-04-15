@@ -28,8 +28,7 @@ const TEMPLATES: Record<Bloc5TemplateKey, string | null> = {
   "accord-desaccord":
     "[Nom acteur A] et [Nom acteur B] sont [en désaccord / d'accord] sur [point précis].",
 
-  cause:
-    "[Reprise du sujet de la consigne] parce que [fait historique précis tiré du document].",
+  cause: "[Reprise du sujet de la consigne] parce que [fait historique précis tiré du document].",
 
   consequence:
     "[Sujet historique explicite] [verbe au présent montrant l'effet] [résultat concret du document].",
@@ -37,8 +36,7 @@ const TEMPLATES: Record<Bloc5TemplateKey, string | null> = {
   changement:
     "Ce qui change, c'est que [sujet explicite] [verbe d'action] [fait précis tiré du document].",
 
-  continuite:
-    "Ce qui demeure, c'est que [sujet explicite] [verbe] [fait précis tiré du document].",
+  continuite: "Ce qui demeure, c'est que [sujet explicite] [verbe] [fait précis tiré du document].",
 
   "changement-continuite": null,
 

@@ -192,7 +192,9 @@ export function PlaygroundFicheRenderer({ tae, mode, viewMode, isolatedFragmentI
   const selected = blocks[isolatedFragmentId];
   if (!selected) {
     return (
-      <p className="text-sm text-zinc-500 dark:text-zinc-400">Fragment inconnu : {isolatedFragmentId}</p>
+      <p className="text-sm text-zinc-500 dark:text-zinc-400">
+        Fragment inconnu : {isolatedFragmentId}
+      </p>
     );
   }
 

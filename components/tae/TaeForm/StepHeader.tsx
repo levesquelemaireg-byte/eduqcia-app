@@ -11,8 +11,11 @@ type Props = {
 export function StepHeader({ stepLabel, stepIndex, comportementId, defaultDescription }: Props) {
   const stepDescriptions = STEP_DESCRIPTIONS[stepIndex];
   const description = stepDescriptions
-    ? (comportementId && stepDescriptions[comportementId]) ?? stepDescriptions["default"] ?? defaultDescription ?? null
-    : defaultDescription ?? null;
+    ? ((comportementId && stepDescriptions[comportementId]) ??
+      stepDescriptions["default"] ??
+      defaultDescription ??
+      null)
+    : (defaultDescription ?? null);
 
   return (
     <>

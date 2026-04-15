@@ -163,9 +163,7 @@ export async function updateTaeFromFormState(
   }
 
   const wasMajorBump =
-    snapshot !== null
-      ? detectVersionTrigger(snapshot, payload) === "major_bump"
-      : false;
+    snapshot !== null ? detectVersionTrigger(snapshot, payload) === "major_bump" : false;
 
   return {
     ok: true,

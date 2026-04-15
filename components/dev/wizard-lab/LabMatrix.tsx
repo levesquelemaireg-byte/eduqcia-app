@@ -25,16 +25,22 @@ function resolveLabel(comportementId: string, bloc: 3 | 4 | 5): string {
 
   if (bloc === 3) {
     switch (config.bloc3.type) {
-      case "modele_souple": return "ModeleSouple";
-      case "structure": return "Structure";
-      case "pur": return `Pur (${config.bloc3.variante})`;
+      case "modele_souple":
+        return "ModeleSouple";
+      case "structure":
+        return "Structure";
+      case "pur":
+        return `Pur (${config.bloc3.variante})`;
     }
   }
   if (bloc === 4) {
     switch (config.bloc4.type) {
-      case "standard": return "Standard";
-      case "perspectives": return `Perspectives (${config.bloc4.count})`;
-      case "moments": return "Moments";
+      case "standard":
+        return "Standard";
+      case "perspectives":
+        return `Perspectives (${config.bloc4.count})`;
+      case "moments":
+        return "Moments";
     }
   }
   if (bloc === 5) {
@@ -106,8 +112,8 @@ export function LabMatrix({ oiList, selectedComportementId, onRowClick }: Props)
                     }`}
                   >
                     <td className="px-3 py-2 font-medium text-deep">
-                      <span className="text-muted">{oi.id}</span>{" "}
-                      {c.id} — {c.enonce.slice(0, 50)}{c.enonce.length > 50 ? "…" : ""}
+                      <span className="text-muted">{oi.id}</span> {c.id} — {c.enonce.slice(0, 50)}
+                      {c.enonce.length > 50 ? "…" : ""}
                     </td>
                     {(["bloc3", "bloc4", "bloc5"] as const).map((bloc, i) => {
                       const checked = isChecked(c.id, bloc);
@@ -117,7 +123,10 @@ export function LabMatrix({ oiList, selectedComportementId, onRowClick }: Props)
                           key={bloc}
                           className={`px-3 py-2 ${checked ? "bg-success/10 text-success" : "text-muted"}`}
                         >
-                          <label className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
+                          <label
+                            className="flex items-center gap-1.5"
+                            onClick={(e) => e.stopPropagation()}
+                          >
                             <input
                               type="checkbox"
                               checked={checked}

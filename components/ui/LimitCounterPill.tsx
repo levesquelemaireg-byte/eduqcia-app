@@ -66,12 +66,17 @@ export function LimitCounterPill({
   const inRamp = rampT != null;
 
   const capAsWarning = atOrOverMax && !showDangerAtMax;
-  const pillStyle =
-    capAsWarning ? warningMixStyle(1) : rampT != null ? warningMixStyle(rampT) : undefined;
+  const pillStyle = capAsWarning
+    ? warningMixStyle(1)
+    : rampT != null
+      ? warningMixStyle(rampT)
+      : undefined;
 
   const pillClassName = cn(
     "inline-flex shrink-0 items-center rounded-full border px-2 py-0.5 text-[12px] font-medium leading-none transition-[background-color,color,border-color] duration-300 ease-out",
-    current <= warningAfter && !atOrOverMax && "border-transparent bg-background-secondary text-tertiary",
+    current <= warningAfter &&
+      !atOrOverMax &&
+      "border-transparent bg-background-secondary text-tertiary",
     inRamp && "border-warning/25",
     capAsWarning && "border-warning/35",
     atOrOverMax &&

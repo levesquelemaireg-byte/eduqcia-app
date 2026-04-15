@@ -86,9 +86,7 @@ export function DocumentLegendTextField({
           rows={2}
           placeholder={placeholder}
           className="py-2"
-          aria-invalid={
-            showWordsError || legendWords > DOCUMENT_LEGEND_MAX_WORDS || undefined
-          }
+          aria-invalid={showWordsError || legendWords > DOCUMENT_LEGEND_MAX_WORDS || undefined}
         />
         {showWordsError || legendWords > DOCUMENT_LEGEND_MAX_WORDS ? (
           <p className="text-sm text-error" role="alert">

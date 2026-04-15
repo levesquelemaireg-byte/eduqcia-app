@@ -105,7 +105,9 @@ export function DocumentLegendPositionGrid({ value, onChange, showPositionError 
                 <span
                   className={cn(
                     "material-symbols-outlined text-[1.35em]",
-                    selected ? "text-[color:var(--color-text-info)]" : "text-[color:var(--color-text-secondary)]",
+                    selected
+                      ? "text-[color:var(--color-text-info)]"
+                      : "text-[color:var(--color-text-secondary)]",
                     p.mirror && "scale-x-[-1]",
                   )}
                   aria-hidden="true"

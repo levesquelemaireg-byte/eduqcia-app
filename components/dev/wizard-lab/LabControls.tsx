@@ -26,9 +26,10 @@ export function LabControls({
   onToggleSommaire,
 }: Props) {
   const selectedOi = oiList.find((o) => o.id === selectedOiId);
-  const comportements = selectedOi?.comportements_attendus.filter(
-    (c) => (c.status ?? "active") === "active" && c.nb_documents != null,
-  ) ?? [];
+  const comportements =
+    selectedOi?.comportements_attendus.filter(
+      (c) => (c.status ?? "active") === "active" && c.nb_documents != null,
+    ) ?? [];
 
   return (
     <div className="flex flex-wrap items-end gap-4">
@@ -67,7 +68,8 @@ export function LabControls({
           <option value="">Choisir un comportement attendu</option>
           {comportements.map((c) => (
             <option key={c.id} value={c.id}>
-              {c.id} — {c.enonce.slice(0, 60)}{c.enonce.length > 60 ? "…" : ""}
+              {c.id} — {c.enonce.slice(0, 60)}
+              {c.enonce.length > 60 ? "…" : ""}
             </option>
           ))}
         </select>

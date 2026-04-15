@@ -21,12 +21,18 @@ export function PlaygroundBehaviorSelector({ oiList, selectedId, onSelect }: Pro
   return (
     <aside className="flex w-[22rem] shrink-0 flex-col overflow-hidden border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
       <div className="border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Comportement attendu</h2>
+        <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+          Comportement attendu
+        </h2>
         <p className="mt-1 text-[11px] leading-snug text-zinc-500 dark:text-zinc-400">
-          Source <span className="font-mono">/data/oi.json</span> — mocks <span className="font-mono">TaeFicheData</span>.
+          Source <span className="font-mono">/data/oi.json</span> — mocks{" "}
+          <span className="font-mono">TaeFicheData</span>.
         </p>
       </div>
-      <nav className="flex-1 overflow-y-auto px-2 py-3" aria-label="Comportements par opération intellectuelle">
+      <nav
+        className="flex-1 overflow-y-auto px-2 py-3"
+        aria-label="Comportements par opération intellectuelle"
+      >
         {oiList.map((oi) => (
           <div key={oi.id} className="mb-4">
             <div className="flex flex-wrap items-center gap-2 px-2 pb-1">

@@ -93,5 +93,3 @@ if (TAE_FORM_STEPS.length !== TAE_FORM_STEP_COUNT) {
     `TAE_FORM_STEPS.length (${TAE_FORM_STEPS.length}) doit égaler TAE_FORM_STEP_COUNT (${TAE_FORM_STEP_COUNT}).`,
   );
 }
-
-

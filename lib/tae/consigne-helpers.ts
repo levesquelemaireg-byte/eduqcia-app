@@ -37,7 +37,9 @@ export function plainConsigneForMiniature(
   nbDocuments?: number,
 ): string {
   const s = html ?? "";
-  return stripAmorceDocumentaireForMiniature(stripHtml(resolveConsigneHtmlForDisplay(s, nbDocuments)));
+  return stripAmorceDocumentaireForMiniature(
+    stripHtml(resolveConsigneHtmlForDisplay(s, nbDocuments)),
+  );
 }
 
 /** Texte brut sans balises — cartes, extraits (TaeCard). */

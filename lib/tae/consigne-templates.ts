@@ -33,15 +33,12 @@ export const CONSIGNE_TEMPLATES = {
   "oi3-similitude":
     "À l'aide du document {{doc_A}}, indiquez une ressemblance" +
     " entre [X] et [Y] concernant [thème].",
-  "oi4-cause":
-    "À l'aide du document {{doc_A}}, indiquez une cause" +
-    " de [réalité historique].",
+  "oi4-cause": "À l'aide du document {{doc_A}}, indiquez une cause" + " de [réalité historique].",
   "oi4-consequence":
     "À l'aide du document {{doc_A}}, indiquez une conséquence" +
     " de [événement / réalité] sur [domaine].",
   "oi6-changement":
-    "À l'aide du document {{doc_A}}, indiquez un changement" +
-    " dans [enjeu] à [période].",
+    "À l'aide du document {{doc_A}}, indiquez un changement" + " dans [enjeu] à [période].",
   "oi6-continuite":
     "À partir du document {{doc_A}}, indiquez un élément" +
     " de continuité dans [enjeu] entre [période 1] et [période 2].",

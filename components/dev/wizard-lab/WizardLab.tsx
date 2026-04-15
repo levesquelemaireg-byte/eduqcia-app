@@ -117,9 +117,7 @@ function LabBlocNav({
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-surface px-4 py-3">
       <div className="min-w-0 space-y-0.5">
-        <p className="text-xs font-medium text-muted">
-          {oi ? `${oi.id} — ${oi.titre}` : "—"}
-        </p>
+        <p className="text-xs font-medium text-muted">{oi ? `${oi.id} — ${oi.titre}` : "—"}</p>
         <p className="text-sm font-semibold text-deep">
           {comp ? `${comp.id} — ${comp.enonce}` : "—"}
         </p>

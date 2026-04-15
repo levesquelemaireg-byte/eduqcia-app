@@ -230,7 +230,10 @@ function MomentsAccordion({
                 {momentStatusText(displayStatus)}
               </span>
               {!isLocked ? (
-                <span className="material-symbols-outlined ml-auto text-[20px] text-muted" aria-hidden="true">
+                <span
+                  className="material-symbols-outlined ml-auto text-[20px] text-muted"
+                  aria-hidden="true"
+                >
                   {isOpen ? "expand_less" : "expand_more"}
                 </span>
               ) : null}

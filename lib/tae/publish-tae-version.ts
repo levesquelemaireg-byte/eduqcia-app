@@ -37,10 +37,7 @@ export function detectVersionTrigger(
   // connaissances_ids : comparaison ensembles triés
   const sortedCurrent = [...(snapshot.connaissances_ids ?? [])].sort((a, b) => a - b);
   const sortedNew = [...tae.connaissances_ids].sort((a, b) => a - b);
-  if (
-    sortedCurrent.length !== sortedNew.length ||
-    sortedCurrent.some((v, i) => v !== sortedNew[i])
-  )
+  if (sortedCurrent.length !== sortedNew.length || sortedCurrent.some((v, i) => v !== sortedNew[i]))
     return "major_bump";
 
   // documents : nouveau document créé → majeur
