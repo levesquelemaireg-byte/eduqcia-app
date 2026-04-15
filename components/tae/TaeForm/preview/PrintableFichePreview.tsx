@@ -19,11 +19,13 @@ import {
   shouldShowGuidageOnStudentSheet,
 } from "@/lib/tae/consigne-helpers";
 import { sanitize } from "@/lib/fiche/helpers";
+import { hasFicheContent, type WizardFichePreviewMeta } from "@/lib/tae/fiche-helpers";
 import {
-  formStateToTae,
-  hasFicheContent,
-  type WizardFichePreviewMeta,
-} from "@/lib/tae/fiche-helpers";
+  etatWizardVersTache,
+  type GrilleEvaluationEntree,
+} from "@/lib/tache/contrats/etat-wizard-vers-tache";
+import { getSlotData, slotLetter } from "@/lib/tae/document-helpers";
+import { isActiveNonRedactionVariant } from "@/lib/tae/non-redaction/wizard-variant";
 import type { DocumentFiche, TaeFicheData } from "@/lib/types/fiche";
 import { shouldPrintDocumentFullWidth } from "@/lib/tae/print-document-full-width";
 import { cn } from "@/lib/utils/cn";
@@ -32,9 +34,7 @@ import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImage
 import { AvantApresPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/AvantApresPrintableQuestionnaireCore";
 import { LigneDuTempsPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore";
 import { OrdreChronologiquePrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore";
-import { parseAvantApresConsigneForStudentPrint } from "@/lib/tae/non-redaction/avant-apres-payload";
-import { parseLigneDuTempsConsigneForStudentPrint } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
-import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
 
 type WizardProps = {
   previewMeta: WizardFichePreviewMeta;
@@ -270,11 +270,12 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
 
   const lineCount = tae.nb_lignes ?? 5;
   const showAnswerLines = tae.showStudentAnswerLines !== false;
-  const ordreChronoAnchored = parseOrdreChronologiqueConsigneForStudentPrint(tae.consigne) !== null;
-  const ligneTempsAnchored = parseLigneDuTempsConsigneForStudentPrint(tae.consigne) !== null;
-  const avantApresAnchored = parseAvantApresConsigneForStudentPrint(tae.consigne) !== null;
+  const variantSlug = getVariantSlugForComportementId(tae.comportement.id);
+  const isOrdreChronologique = variantSlug === "ordre-chronologique";
+  const isLigneDuTemps = variantSlug === "ligne-du-temps";
+  const isAvantApres = variantSlug === "avant-apres";
   const structuredNonRedactionQuestionnaire =
-    ordreChronoAnchored || ligneTempsAnchored || avantApresAnchored;
+    isOrdreChronologique || isLigneDuTemps || isAvantApres;
 
   return (
     <div className={styles.postDocumentsPrintGroup}>
@@ -282,21 +283,21 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
         className={cn(styles.sectionBlock, styles.sectionTightToNext)}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.consigne}
       >
-        {ordreChronoAnchored ? (
+        {isOrdreChronologique ? (
           <OrdreChronologiquePrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}
             documentSlotCount={tae.documents.length}
             showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
           />
-        ) : ligneTempsAnchored ? (
+        ) : isLigneDuTemps ? (
           <LigneDuTempsPrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}
             documentSlotCount={tae.documents.length}
             showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
           />
-        ) : avantApresAnchored ? (
+        ) : isAvantApres ? (
           <AvantApresPrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}
@@ -386,16 +387,78 @@ export function PrintableFicheFromTaeData({
 }
 
 /**
- * Aperçu impression wizard — `useTaeForm` + `formStateToTae`.
+ * Aperçu impression wizard — `etatWizardVersTache` + adaptateur local vers `TaeFicheData`.
  */
 export function PrintableFichePreview({ previewMeta, className, feuillet }: WizardProps) {
   const { state } = useTaeForm();
   const { oiList } = useOiData();
+  const grilles = useGrilles();
 
   const tae = useMemo(() => {
     if (!oiList || oiList.length === 0) return null;
-    return formStateToTae(state, oiList, previewMeta);
-  }, [state, oiList, previewMeta]);
+    if (!grilles) return null;
+
+    const grillesEntrees: GrilleEvaluationEntree[] = grilles.map((g) => ({
+      id: g.id,
+      oi: g.operation,
+      comportement_enonce: g.comportement_enonce,
+      bareme: g.bareme,
+    }));
+
+    const donnees = etatWizardVersTache(state, oiList, grillesEntrees, previewMeta);
+
+    /* Documents : DonneesTache.documents est trop léger pour le rendu
+       (pas d'image_url, source_citation, etc.). On construit DocumentFiche[]
+       depuis les slots du wizard — identique à l'ancien formStateToTae. */
+    const documents: DocumentFiche[] = state.bloc2.documentSlots.map(({ slotId }) => {
+      const slot = getSlotData(state.bloc4.documents, slotId);
+      const legendTrim = slot.image_legende.trim();
+      const hasLegend = legendTrim.length > 0;
+      const pos = slot.image_legende_position;
+      return {
+        letter: slotLetter(slotId),
+        titre: slot.titre,
+        contenu: slot.contenu,
+        source_citation: slot.source_citation,
+        type: slot.type,
+        image_url: slot.imageUrl,
+        imagePixelWidth: slot.imagePixelWidth,
+        imagePixelHeight: slot.imagePixelHeight,
+        printImpressionScale: 1,
+        imageLegende: hasLegend ? legendTrim : null,
+        imageLegendePosition: hasLegend && pos ? pos : null,
+      };
+    });
+
+    /* Adaptateur DonneesTache → TaeFicheData (provisoire — D0 print-engine §7). */
+    const taeFiche: TaeFicheData = {
+      id: donnees.id,
+      auteur_id: donnees.auteur_id,
+      auteurs: donnees.auteurs,
+      consigne: donnees.consigne,
+      guidage: donnees.guidage?.content ?? "",
+      corrige: donnees.corrige,
+      aspects_societe: donnees.aspects_societe,
+      nb_lignes: donnees.nb_lignes,
+      showStudentAnswerLines: !isActiveNonRedactionVariant(state),
+      showGuidageOnStudentSheet: undefined,
+      niveau: donnees.niveau,
+      discipline: donnees.discipline,
+      oi: donnees.oi,
+      comportement: donnees.comportement,
+      outilEvaluation: state.bloc2.outilEvaluation,
+      cd: donnees.cd,
+      connaissances: donnees.connaissances,
+      documents,
+      version: donnees.version,
+      version_updated_at: donnees.version_updated_at,
+      is_published: donnees.is_published,
+      created_at: donnees.created_at,
+      updated_at: donnees.updated_at,
+    };
+
+    return taeFiche;
+  }, [state, oiList, grilles, previewMeta]);
 
   if (!tae) {
     return (

@@ -76,9 +76,6 @@ export type AvantApresPayload = {
   generated: boolean;
 };
 
-export const AVANT_APRES_STUDENT_SHEET_GUIDAGE_ANCHOR =
-  "<!--eduqcia:avant-apres-student-sheet-guidage-anchor-->";
-
 const AVANT_STUDENT_ROOT_OPEN =
   '<div data-avant-apres-student="true" class="avant-apres-student-root">';
 const AVANT_STUDENT_ROOT_CLOSE = "</div>";
@@ -183,9 +180,7 @@ function coerceRepereAnnees(o: Record<string, unknown>): {
 } {
   const raw = o.anneeRepere;
   if (typeof raw === "string") {
-    const range = raw
-      .trim()
-      .match(/^(\d{4})\s*[\u2013\-]\s*(\d{4})$/u);
+    const range = raw.trim().match(/^(\d{4})\s*[\u2013\-]\s*(\d{4})$/u);
     if (range) {
       const a = parseInt(range[1]!, 10);
       const b = parseInt(range[2]!, 10);
@@ -508,7 +503,7 @@ export function buildAvantApresConsigneHtml(p: AvantApresPayload): string {
   const body = `<tbody>${bodyRows}</tbody>`;
   const table = `<table class="avant-apres-student-table" role="grid" aria-label="${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_OPTIONS_GROUP_ARIA)}">${head}${body}</table>`;
   const reponse = `<div class="avant-apres-student-reponse"><span class="avant-apres-student-reponse-label">${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="avant-apres-student-reponse-box" aria-hidden="true"></span></div>`;
-  return `${AVANT_STUDENT_ROOT_OPEN}${intro}${AVANT_APRES_STUDENT_SHEET_GUIDAGE_ANCHOR}${table}${reponse}${AVANT_STUDENT_ROOT_CLOSE}`;
+  return `${AVANT_STUDENT_ROOT_OPEN}${intro}${table}${reponse}${AVANT_STUDENT_ROOT_CLOSE}`;
 }
 
 export function buildAvantApresCorrigeHtml(p: AvantApresPayload): string {
@@ -523,37 +518,10 @@ export function buildAvantApresGuidageHtml(): string {
   return `<p>${escapeHtml(NR_AVANT_APRES_STUDENT_GUIDAGE)}</p>`;
 }
 
-export function parseAvantApresConsigneForStudentPrint(
-  consigne: string,
-): { beforeGuidage: string; afterGuidage: string } | null {
-  const t = consigne.trim();
-  if (!t.includes(AVANT_APRES_STUDENT_SHEET_GUIDAGE_ANCHOR)) return null;
-  if (!t.startsWith(AVANT_STUDENT_ROOT_OPEN) || !t.endsWith(AVANT_STUDENT_ROOT_CLOSE)) return null;
-  const inner = t.slice(AVANT_STUDENT_ROOT_OPEN.length, t.length - AVANT_STUDENT_ROOT_CLOSE.length);
-  const idx = inner.indexOf(AVANT_APRES_STUDENT_SHEET_GUIDAGE_ANCHOR);
-  if (idx === -1) return null;
-  const introBit = inner.slice(0, idx);
-  const taskBit = inner.slice(idx + AVANT_APRES_STUDENT_SHEET_GUIDAGE_ANCHOR.length);
-  return {
-    beforeGuidage: `${AVANT_STUDENT_ROOT_OPEN}${introBit}${AVANT_STUDENT_ROOT_CLOSE}`,
-    afterGuidage: `${AVANT_STUDENT_ROOT_OPEN}${taskBit}${AVANT_STUDENT_ROOT_CLOSE}`,
-  };
-}
-
-export function stripAvantApresStudentSheetGuidageAnchorForDisplay(consigne: string): string {
-  return consigne.split(AVANT_APRES_STUDENT_SHEET_GUIDAGE_ANCHOR).join("");
-}
-
 export function stripAvantApresStudentSheetResponseBlockForDisplay(consigne: string): string {
   return consigne.replace(/<div class="avant-apres-student-reponse"[^>]*>[\s\S]*?<\/div>/, "");
 }
 
 export function prepareAvantApresConsigneForTeacherDisplay(consigne: string): string {
-  return stripAvantApresStudentSheetResponseBlockForDisplay(
-    stripAvantApresStudentSheetGuidageAnchorForDisplay(consigne),
-  );
-}
-
-export function isAvantApresStudentConsigneHtml(consigne: string): boolean {
-  return parseAvantApresConsigneForStudentPrint(consigne) !== null;
+  return stripAvantApresStudentSheetResponseBlockForDisplay(consigne);
 }

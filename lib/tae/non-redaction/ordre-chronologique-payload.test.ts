@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR,
   buildOrdreChronologiqueConsigneHtml,
   buildOrdreChronologiqueGuidageHtml,
   buildOrdreChronologiqueIntroHtml,
@@ -11,9 +10,7 @@ import {
   initialOrdreChronologiquePayload,
   normalizeOrdreChronologiquePayload,
   ordreChronologiqueCorrectPermutation,
-  parseOrdreChronologiqueConsigneForStudentPrint,
   prepareOrdreChronologiqueConsigneForTeacherDisplay,
-  stripOrdreChronologiqueStudentSheetGuidageAnchorForDisplay,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import type { OrdrePermutation } from "@/lib/tae/non-redaction/ordre-chronologique-permutations";
 
@@ -77,7 +74,7 @@ describe("ordre-chronologique-payload", () => {
     expect(h).not.toContain("<script>");
   });
 
-  it("buildOrdreChronologiqueConsigneHtml assemble intro + ancre + grille + réponse (sans guidage dans consigne)", () => {
+  it("buildOrdreChronologiqueConsigneHtml assemble intro + grille + réponse (sans ancre — D0)", () => {
     const row: OrdrePermutation = [1, 2, 3, 4];
     const html = buildOrdreChronologiqueConsigneHtml({
       consigneTheme: "x",
@@ -91,42 +88,14 @@ describe("ordre-chronologique-payload", () => {
     });
     expect(html).toContain("data-ordre-chrono-student");
     expect(html).toContain("{{doc_A}}");
-    expect(html).toContain(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
-    expect(html).not.toContain("data-ordre-chrono-embedded-guidage");
+    expect(html).not.toContain("<!--eduqcia:");
     const iIntro = html.indexOf("ordre-chrono-student-intro");
-    const iAnchor = html.indexOf(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
     const iGrid = html.indexOf("ordre-chrono-student-grid");
     expect(iIntro).toBeGreaterThan(-1);
-    expect(iAnchor).toBeGreaterThan(iIntro);
-    expect(iGrid).toBeGreaterThan(iAnchor);
+    expect(iGrid).toBeGreaterThan(iIntro);
   });
 
-  it("parseOrdreChronologiqueConsigneForStudentPrint et strip pour affichage enseignant", () => {
-    const row: OrdrePermutation = [1, 2, 3, 4];
-    const html = buildOrdreChronologiqueConsigneHtml({
-      consigneTheme: "t",
-      optionA: row,
-      optionB: [2, 1, 4, 3],
-      optionC: [3, 4, 1, 2],
-      optionD: [4, 3, 2, 1],
-      correctLetter: "A",
-      optionsJustification: "",
-      manualTieBreakSequence: null,
-    });
-    const parts = parseOrdreChronologiqueConsigneForStudentPrint(html);
-    expect(parts).not.toBeNull();
-    const merged = `${parts!.beforeGuidage}${buildOrdreChronologiqueGuidageHtml()}${parts!.afterGuidage}`;
-    expect(merged).not.toContain(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
-    expect(merged).toContain("ordre-chrono-student-intro");
-    expect(merged).toContain("ordre-chrono-student-grid");
-    const stripped = stripOrdreChronologiqueStudentSheetGuidageAnchorForDisplay(html);
-    expect(stripped).not.toContain(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
-    expect(stripped.indexOf("ordre-chrono-student-intro")).toBeLessThan(
-      stripped.indexOf("ordre-chrono-student-grid"),
-    );
-  });
-
-  it("prepareOrdreChronologiqueConsigneForTeacherDisplay retire ancre et bloc Réponse élève", () => {
+  it("prepareOrdreChronologiqueConsigneForTeacherDisplay retire le bloc Réponse élève", () => {
     const row: OrdrePermutation = [1, 2, 3, 4];
     const html = buildOrdreChronologiqueConsigneHtml({
       consigneTheme: "t",
@@ -139,12 +108,11 @@ describe("ordre-chronologique-payload", () => {
       manualTieBreakSequence: null,
     });
     const prep = prepareOrdreChronologiqueConsigneForTeacherDisplay(html);
-    expect(prep).not.toContain(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
     expect(prep).not.toContain("ordre-chrono-student-reponse");
     expect(prep).toContain("ordre-chrono-student-grid");
   });
 
-  it("ordreChronologiqueCorrectPermutation lit la ligne de l’option correcte", () => {
+  it("ordreChronologiqueCorrectPermutation lit la ligne de l'option correcte", () => {
     const row: OrdrePermutation = [3, 1, 4, 2];
     const p = {
       consigneTheme: "t",

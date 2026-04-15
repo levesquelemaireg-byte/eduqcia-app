@@ -20,9 +20,7 @@ import {
   rewriteTaeHtmlDocRefsForEvaluationPrint,
 } from "@/lib/evaluations/evaluation-print-doc-map";
 import { shouldShowGuidageOnStudentSheet } from "@/lib/tae/consigne-helpers";
-import { parseAvantApresConsigneForStudentPrint } from "@/lib/tae/non-redaction/avant-apres-payload";
-import { parseLigneDuTempsConsigneForStudentPrint } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
-import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
 import type { TaeFicheData } from "@/lib/types/fiche";
 import { cn } from "@/lib/utils/cn";
 
@@ -44,11 +42,12 @@ function PrintableEvaluationQuestionBlock({
   const lineCount = tae.nb_lignes ?? 5;
   const consigneHtml = rewriteTaeHtmlDocRefsForEvaluationPrint(tae.consigne, taeIndex, fiches);
   const guidageHtml = rewriteTaeHtmlDocRefsForEvaluationPrint(tae.guidage, taeIndex, fiches);
-  const ordreChronoAnchored = parseOrdreChronologiqueConsigneForStudentPrint(consigneHtml) !== null;
-  const ligneTempsAnchored = parseLigneDuTempsConsigneForStudentPrint(consigneHtml) !== null;
-  const avantApresAnchored = parseAvantApresConsigneForStudentPrint(consigneHtml) !== null;
+  const variantSlug = getVariantSlugForComportementId(tae.comportement.id);
+  const isOrdreChronologique = variantSlug === "ordre-chronologique";
+  const isLigneDuTemps = variantSlug === "ligne-du-temps";
+  const isAvantApres = variantSlug === "avant-apres";
   const structuredNonRedactionQuestionnaire =
-    ordreChronoAnchored || ligneTempsAnchored || avantApresAnchored;
+    isOrdreChronologique || isLigneDuTemps || isAvantApres;
 
   return (
     <div className={cn(styles.postDocumentsPrintGroup, "print:break-inside-avoid")}>
@@ -59,21 +58,21 @@ function PrintableEvaluationQuestionBlock({
         className={cn(styles.sectionBlock, styles.sectionTightToNext)}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.consigne}
       >
-        {ordreChronoAnchored ? (
+        {isOrdreChronologique ? (
           <OrdreChronologiquePrintableQuestionnaireCore
             consigneHtml={consigneHtml}
             guidageHtml={guidageHtml}
             documentSlotCount={tae.documents.length}
             showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
           />
-        ) : ligneTempsAnchored ? (
+        ) : isLigneDuTemps ? (
           <LigneDuTempsPrintableQuestionnaireCore
             consigneHtml={consigneHtml}
             guidageHtml={guidageHtml}
             documentSlotCount={tae.documents.length}
             showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
           />
-        ) : avantApresAnchored ? (
+        ) : isAvantApres ? (
           <AvantApresPrintableQuestionnaireCore
             consigneHtml={consigneHtml}
             guidageHtml={guidageHtml}

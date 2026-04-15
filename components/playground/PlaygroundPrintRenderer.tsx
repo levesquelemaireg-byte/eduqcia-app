@@ -18,9 +18,7 @@ import {
 import { AvantApresPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/AvantApresPrintableQuestionnaireCore";
 import { LigneDuTempsPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore";
 import { OrdreChronologiquePrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore";
-import { parseAvantApresConsigneForStudentPrint } from "@/lib/tae/non-redaction/avant-apres-payload";
-import { parseLigneDuTempsConsigneForStudentPrint } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
-import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
 import type { TaeFicheData } from "@/lib/types/fiche";
 import { cn } from "@/lib/utils/cn";
 import { PlaygroundFragmentWrapper } from "@/components/playground/PlaygroundFragmentWrapper";
@@ -60,11 +58,13 @@ function PlaygroundPrintQuestionnaireBody({ tae }: { tae: TaeFicheData }) {
 
   const lineCount = tae.nb_lignes ?? 5;
   const showAnswerLines = tae.showStudentAnswerLines !== false;
-  const ordreChronoAnchored = parseOrdreChronologiqueConsigneForStudentPrint(tae.consigne) !== null;
-  const ligneTempsAnchored = parseLigneDuTempsConsigneForStudentPrint(tae.consigne) !== null;
-  const avantApresAnchored = parseAvantApresConsigneForStudentPrint(tae.consigne) !== null;
+  /** PROVISOIRE — PlaygroundPrintRenderer cassé temporairement par D0 (print-engine.md §7). */
+  const variantSlug = getVariantSlugForComportementId(tae.comportement.id);
+  const isOrdreChronologique = variantSlug === "ordre-chronologique";
+  const isLigneDuTemps = variantSlug === "ligne-du-temps";
+  const isAvantApres = variantSlug === "avant-apres";
   const structuredNonRedactionQuestionnaire =
-    ordreChronoAnchored || ligneTempsAnchored || avantApresAnchored;
+    isOrdreChronologique || isLigneDuTemps || isAvantApres;
 
   return (
     <div className={styles.postDocumentsPrintGroup}>
@@ -72,21 +72,21 @@ function PlaygroundPrintQuestionnaireBody({ tae }: { tae: TaeFicheData }) {
         className={cn(styles.sectionBlock, styles.sectionTightToNext)}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.consigne}
       >
-        {ordreChronoAnchored ? (
+        {isOrdreChronologique ? (
           <OrdreChronologiquePrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}
             documentSlotCount={tae.documents.length}
             showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
           />
-        ) : ligneTempsAnchored ? (
+        ) : isLigneDuTemps ? (
           <LigneDuTempsPrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}
             documentSlotCount={tae.documents.length}
             showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
           />
-        ) : avantApresAnchored ? (
+        ) : isAvantApres ? (
           <AvantApresPrintableQuestionnaireCore
             consigneHtml={tae.consigne}
             guidageHtml={tae.guidage}

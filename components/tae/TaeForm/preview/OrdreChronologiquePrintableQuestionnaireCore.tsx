@@ -1,6 +1,5 @@
 "use client";
 
-import { parseOrdreChronologiqueConsigneForStudentPrint } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 import { shouldShowGuidageOnStudentSheet } from "@/lib/tae/consigne-helpers";
 import { cn } from "@/lib/utils/cn";
 import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
@@ -13,38 +12,25 @@ type Props = {
   showGuidageOnStudentSheet?: boolean;
 };
 
-/** Intro + guidage (si affiché) + grille ordre chrono ; voir `parseOrdreChronologiqueConsigneForStudentPrint`. */
+/** Consigne ordre chrono + guidage (si affiché) — rendu séquentiel (D0 : plus d'ancre). */
 export function OrdreChronologiquePrintableQuestionnaireCore({
   consigneHtml,
   guidageHtml,
   documentSlotCount,
   showGuidageOnStudentSheet,
 }: Props) {
-  const parts = parseOrdreChronologiqueConsigneForStudentPrint(consigneHtml);
   const showGuidage = shouldShowGuidageOnStudentSheet(guidageHtml, showGuidageOnStudentSheet);
-
-  const guidageWrap = showGuidage ? (
-    <div data-ordre-chrono-student="true">
-      <div className={cn(styles.guidageBlock, "ordre-chrono-student-guidage")}>
-        <PrintableHtml html={guidageHtml} documentSlotCount={documentSlotCount} />
-      </div>
-    </div>
-  ) : null;
-
-  if (!parts) {
-    return (
-      <>
-        <PrintableHtml html={consigneHtml} documentSlotCount={documentSlotCount} />
-        {guidageWrap}
-      </>
-    );
-  }
 
   return (
     <>
-      <PrintableHtml html={parts.beforeGuidage} documentSlotCount={documentSlotCount} />
-      {guidageWrap}
-      <PrintableHtml html={parts.afterGuidage} documentSlotCount={documentSlotCount} />
+      <PrintableHtml html={consigneHtml} documentSlotCount={documentSlotCount} />
+      {showGuidage ? (
+        <div data-ordre-chrono-student="true">
+          <div className={cn(styles.guidageBlock, "ordre-chrono-student-guidage")}>
+            <PrintableHtml html={guidageHtml} documentSlotCount={documentSlotCount} />
+          </div>
+        </div>
+      ) : null}
     </>
   );
 }

@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR,
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsGuidageHtml,
   initialLigneDuTempsPayload,
   ligneDuTempsPartialPreviewBoundaries,
   mergeLigneDuTempsPayload,
   normalizeLigneDuTempsPayload,
-  parseLigneDuTempsConsigneForStudentPrint,
   prepareLigneDuTempsConsigneForTeacherDisplay,
   prepareNonRedactionConsigneForTeacherDisplay,
 } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
@@ -42,7 +40,7 @@ describe("ligne-du-temps-payload", () => {
     expect(ligneDuTempsPartialPreviewBoundaries(p)).toEqual([125, 335]);
   });
 
-  it("ligneDuTempsPartialPreviewBoundaries s’arrête avant une date non croissante", () => {
+  it("ligneDuTempsPartialPreviewBoundaries s'arrête avant une date non croissante", () => {
     const p = {
       ...sampleComplete3,
       segmentCount: 4 as const,
@@ -51,46 +49,37 @@ describe("ligne-du-temps-payload", () => {
     expect(ligneDuTempsPartialPreviewBoundaries(p)).toEqual([125, 335]);
   });
 
-  it("buildLigneDuTempsConsigneHtml assemble intro + ancre + frise + réponse", () => {
+  it("buildLigneDuTempsConsigneHtml assemble intro + frise + réponse (sans ancre — D0)", () => {
     const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
     expect(html).toContain('data-ligne-temps-student="true"');
     expect(html).toContain("ligne-temps-student-intro");
-    expect(html).toContain(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR);
+    expect(html).not.toContain("<!--eduqcia:");
     expect(html).toContain("ligne-temps-frise");
     expect(html).toContain("ligne-temps-ribbon-svg");
     expect(html).toContain("clipPath");
     expect(html).toContain('<line x1="45"');
-    expect(html).not.toContain("ligne-temps-dates");
     const iIntro = html.indexOf("ligne-temps-student-intro");
-    const iAnchor = html.indexOf(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR);
     const iFrise = html.indexOf("ligne-temps-frise");
     expect(iIntro).toBeGreaterThan(-1);
-    expect(iAnchor).toBeGreaterThan(iIntro);
-    expect(iFrise).toBeGreaterThan(iAnchor);
+    expect(iFrise).toBeGreaterThan(iIntro);
   });
 
-  it("parseLigneDuTempsConsigneForStudentPrint permet de réinjecter le guidage", () => {
-    const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
-    const parts = parseLigneDuTempsConsigneForStudentPrint(html);
-    expect(parts).not.toBeNull();
-    const merged = `${parts!.beforeGuidage}${buildLigneDuTempsGuidageHtml()}${parts!.afterGuidage}`;
-    expect(merged).not.toContain(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR);
-    expect(merged).toContain("ligne-temps-student-intro");
-    expect(merged).toContain("ligne-temps-frise");
+  it("buildLigneDuTempsGuidageHtml produit un guidage séparé", () => {
+    const h = buildLigneDuTempsGuidageHtml();
+    expect(h).toContain("<p>");
+    expect(h.length).toBeGreaterThan(0);
   });
 
-  it("prepareLigneDuTempsConsigneForTeacherDisplay retire ancre et bloc réponse élève", () => {
+  it("prepareLigneDuTempsConsigneForTeacherDisplay retire le bloc réponse élève", () => {
     const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
     const prep = prepareLigneDuTempsConsigneForTeacherDisplay(html);
-    expect(prep).not.toContain(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR);
     expect(prep).not.toContain("ligne-temps-student-reponse");
     expect(prep).toContain("ligne-temps-frise");
   });
 
-  it("prepareNonRedactionConsigneForTeacherDisplay enchaîne ordre puis ligne (noop si pas d’ordre)", () => {
+  it("prepareNonRedactionConsigneForTeacherDisplay enchaîne ordre puis ligne (noop si pas d'ordre)", () => {
     const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
     const prep = prepareNonRedactionConsigneForTeacherDisplay(html);
-    expect(prep).not.toContain(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR);
     expect(prep).toContain("ligne-temps-frise");
   });
 });

@@ -1,0 +1,101 @@
+/**
+ * CSS impression statique — print-engine v2.1.
+ *
+ * Variables de dimension (Letter portrait 96 dpi), @page,
+ * et defense en profondeur `break-inside: avoid` sur les blocs atomiques.
+ *
+ * Importe par la route SSR `/apercu/[token]` et le layout d'impression.
+ */
+
+/* -------------------------------------------------------------------------- */
+/*  Variables de dimension (miroir des constantes TS)                          */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  --print-page-width: 816px;
+  --print-page-height: 1056px;
+  --print-page-margin: 2cm;
+  --print-header-height: 80px;
+  --print-content-max-height: 825px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  @page — geometrie Letter portrait                                          */
+/* -------------------------------------------------------------------------- */
+
+@page {
+  size: letter portrait;
+  margin: 2cm;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Page physique                                                               */
+/* -------------------------------------------------------------------------- */
+
+.page {
+  box-sizing: border-box;
+  width: var(--print-page-width);
+  height: var(--print-page-height);
+  padding: var(--print-page-margin);
+  font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: #000;
+  background: #fff;
+  overflow: hidden;
+  page-break-after: always;
+  break-after: page;
+}
+
+.page:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Zone de contenu (sous l'en-tete)                                           */
+/* -------------------------------------------------------------------------- */
+
+.page-content {
+  max-height: var(--print-content-max-height);
+  overflow: hidden;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Defense en profondeur — blocs atomiques insecables                          */
+/* -------------------------------------------------------------------------- */
+
+.bloc-document,
+.bloc-quadruplet,
+.bloc-espace-production,
+.bloc-outil-evaluation,
+.bloc-corrige {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Print media — nettoyage                                                    */
+/* -------------------------------------------------------------------------- */
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  .page {
+    /* En impression, la page est geree par @page — pas de padding double. */
+    padding: 0;
+    height: auto;
+    box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .page:last-child {
+    page-break-after: auto;
+    break-after: auto;
+  }
+}

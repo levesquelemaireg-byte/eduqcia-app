@@ -32,46 +32,6 @@ import {
 } from "@/lib/tae/document-helpers";
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 
-/**
- * Ancre HTML (commentaire) entre l’intro et la grille sur la feuille élève.
- * Retirée à l’affichage FicheTache / sommaire ; sert à composer intro → guidage → options à l’impression
- * à partir de `tae.guidage` (masquage sommatif futur sans parser le HTML publié).
- */
-export const ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR =
-  "<!--eduqcia:ordre-chrono-student-sheet-guidage-anchor-->";
-
-const ORDRE_STUDENT_ROOT_OPEN =
-  '<div data-ordre-chrono-student="true" class="ordre-chrono-student-root">';
-const ORDRE_STUDENT_ROOT_CLOSE = "</div>";
-
-/**
- * Découpe `tae.consigne` pour insérer le guidage entre intro et grille ; `null` si ancre absente (brouillon legacy avec guidage intégré, etc.).
- * Chaque segment est une racine `data-ordre-chrono-student` **fermée** : plusieurs `PrintableHtml` consécutifs conservent les styles impression (`app/globals.css`).
- */
-export function parseOrdreChronologiqueConsigneForStudentPrint(
-  consigne: string,
-): { beforeGuidage: string; afterGuidage: string } | null {
-  const t = consigne.trim();
-  if (!t.includes(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR)) return null;
-  if (!t.startsWith(ORDRE_STUDENT_ROOT_OPEN) || !t.endsWith(ORDRE_STUDENT_ROOT_CLOSE)) return null;
-  const inner = t.slice(ORDRE_STUDENT_ROOT_OPEN.length, t.length - ORDRE_STUDENT_ROOT_CLOSE.length);
-  const idx = inner.indexOf(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR);
-  if (idx === -1) return null;
-  const introBit = inner.slice(0, idx);
-  const taskBit = inner.slice(idx + ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR.length);
-  return {
-    beforeGuidage: `${ORDRE_STUDENT_ROOT_OPEN}${introBit}${ORDRE_STUDENT_ROOT_CLOSE}`,
-    afterGuidage: `${ORDRE_STUDENT_ROOT_OPEN}${taskBit}${ORDRE_STUDENT_ROOT_CLOSE}`,
-  };
-}
-
-/** FicheTache / sommaire : intro et grille contigus (sans trou visuel). */
-export function stripOrdreChronologiqueStudentSheetGuidageAnchorForDisplay(
-  consigne: string,
-): string {
-  return consigne.split(ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR).join("");
-}
-
 /** Enseignant / sommaire : masquer la zone « Réponse : » + case (réservée à la feuille élève imprimée). */
 export function stripOrdreChronologiqueStudentSheetResponseBlockForDisplay(
   consigne: string,
@@ -79,11 +39,9 @@ export function stripOrdreChronologiqueStudentSheetResponseBlockForDisplay(
   return consigne.replace(/<div class="ordre-chrono-student-reponse"[^>]*>[\s\S]*?<\/div>/, "");
 }
 
-/** Consigne ordre chrono affichée côté enseignant (fiche, sommaire) : sans ancre ni bloc réponse élève. */
+/** Consigne ordre chrono affichée côté enseignant (fiche, sommaire) : sans bloc réponse élève. */
 export function prepareOrdreChronologiqueConsigneForTeacherDisplay(consigne: string): string {
-  return stripOrdreChronologiqueStudentSheetResponseBlockForDisplay(
-    stripOrdreChronologiqueStudentSheetGuidageAnchorForDisplay(consigne),
-  );
+  return stripOrdreChronologiqueStudentSheetResponseBlockForDisplay(consigne);
 }
 
 /** Longueur max du thème (zone éditable ministérielle). */
@@ -389,14 +347,14 @@ export function buildOrdreChronologiqueIntroHtml(themeTrimmed: string): string {
 }
 
 /**
- * HTML stocké en `tae.consigne` — intro, ancre (`ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR`), grille 2×2 (A–D), zone « Réponse : ».
+ * HTML stocké en `tae.consigne` — intro, grille 2×2 (A–D), zone « Réponse : ».
  * Le texte de guidage élève est dans `tae.guidage` (`buildOrdreChronologiqueGuidageHtml`) ; l’impression compose l’ordre intro → guidage → options.
  */
 export function buildOrdreChronologiqueConsigneHtml(p: OrdreChronologiquePayload): string {
   const intro = buildOrdreChronologiqueIntroHtml(p.consigneTheme.trim());
   const grid = `<div class="ordre-chrono-student-grid" role="group" aria-label="${escapeHtml(NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA)}">${ordreStudentOptionRowHtml("A", p.optionA)}${ordreStudentOptionRowHtml("B", p.optionB)}${ordreStudentOptionRowHtml("C", p.optionC)}${ordreStudentOptionRowHtml("D", p.optionD)}</div>`;
   const reponse = `<div class="ordre-chrono-student-reponse"><span class="ordre-chrono-student-reponse-label">${escapeHtml(NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="ordre-chrono-student-reponse-box" aria-hidden="true"></span></div>`;
-  return `<div data-ordre-chrono-student="true" class="ordre-chrono-student-root">${intro}${ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR}${grid}${reponse}</div>`;
+  return `<div data-ordre-chrono-student="true" class="ordre-chrono-student-root">${intro}${grid}${reponse}</div>`;
 }
 
 /** Texte enseignant — `tae.corrige`. */

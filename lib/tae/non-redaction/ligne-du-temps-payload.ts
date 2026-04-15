@@ -50,9 +50,6 @@ export type LigneDuTempsPayload = {
   correctLetter: LigneDuTempsCorrectLetter;
 };
 
-export const LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR =
-  "<!--eduqcia:ligne-temps-student-sheet-guidage-anchor-->";
-
 const LIGNE_STUDENT_ROOT_OPEN =
   '<div data-ligne-temps-student="true" class="ligne-temps-student-root">';
 const LIGNE_STUDENT_ROOT_CLOSE = "</div>";
@@ -256,7 +253,7 @@ export function buildLigneDuTempsConsigneHtml(p: LigneDuTempsPayload): string {
   const intro = buildLigneDuTempsIntroHtml(p.segmentCount);
   const frise = buildLigneDuTempsTimelineHtml(nums, p.segmentCount);
   const reponse = buildLigneDuTempsStudentReponseHtml();
-  return `${LIGNE_STUDENT_ROOT_OPEN}${intro}${LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR}${frise}${reponse}${LIGNE_STUDENT_ROOT_CLOSE}`;
+  return `${LIGNE_STUDENT_ROOT_OPEN}${intro}${frise}${reponse}${LIGNE_STUDENT_ROOT_CLOSE}`;
 }
 
 export function buildLigneDuTempsCorrigeText(p: LigneDuTempsPayload): string {
@@ -273,38 +270,12 @@ export function buildLigneDuTempsGuidageHtml(): string {
   return `<p>${escapeHtml(NR_LIGNE_TEMPS_STUDENT_GUIDAGE)}</p>`;
 }
 
-/**
- * Découpe pour impression élève (guidage entre intro et frise). Deux racines fermées pour `PrintableHtml`.
- */
-export function parseLigneDuTempsConsigneForStudentPrint(
-  consigne: string,
-): { beforeGuidage: string; afterGuidage: string } | null {
-  const t = consigne.trim();
-  if (!t.includes(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR)) return null;
-  if (!t.startsWith(LIGNE_STUDENT_ROOT_OPEN) || !t.endsWith(LIGNE_STUDENT_ROOT_CLOSE)) return null;
-  const inner = t.slice(LIGNE_STUDENT_ROOT_OPEN.length, t.length - LIGNE_STUDENT_ROOT_CLOSE.length);
-  const idx = inner.indexOf(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR);
-  if (idx === -1) return null;
-  const introBit = inner.slice(0, idx);
-  const rest = inner.slice(idx + LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR.length);
-  return {
-    beforeGuidage: `${LIGNE_STUDENT_ROOT_OPEN}${introBit}${LIGNE_STUDENT_ROOT_CLOSE}`,
-    afterGuidage: `${LIGNE_STUDENT_ROOT_OPEN}${rest}${LIGNE_STUDENT_ROOT_CLOSE}`,
-  };
-}
-
-export function stripLigneDuTempsStudentSheetGuidageAnchorForDisplay(consigne: string): string {
-  return consigne.split(LIGNE_TEMPS_STUDENT_SHEET_GUIDAGE_ANCHOR).join("");
-}
-
 export function stripLigneDuTempsStudentSheetResponseBlockForDisplay(consigne: string): string {
   return consigne.replace(/<div class="ligne-temps-student-reponse"[^>]*>[\s\S]*?<\/div>/, "");
 }
 
 export function prepareLigneDuTempsConsigneForTeacherDisplay(consigne: string): string {
-  return stripLigneDuTempsStudentSheetResponseBlockForDisplay(
-    stripLigneDuTempsStudentSheetGuidageAnchorForDisplay(consigne),
-  );
+  return stripLigneDuTempsStudentSheetResponseBlockForDisplay(consigne);
 }
 
 /** Chaîne affichée fiche / sommaire : applique ordre puis ligne du temps puis avant / après. */

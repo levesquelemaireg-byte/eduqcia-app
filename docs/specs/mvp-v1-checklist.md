@@ -61,8 +61,8 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 > **Prérequis obligatoire :** lire `docs/specs/print-engine.md` en entier avant d'attaquer PDF-1. Chaque item ci-dessous suppose que la spec v2.1 est le référentiel, pas cette checklist. En cas de doute, la spec gagne.
 
-- [ ] **PDF-1** D0 partiel — types `DonneesTache` + mapper `etatWizardVersTache` + tests unitaires
-- [ ] **PDF-2** D0 complet — wipe alpha (`DELETE FROM tae;`) + migration ~18 fichiers consommateurs
+- [x] **PDF-1** D0 partiel — types `DonneesTache` + mapper `etatWizardVersTache` + tests unitaires
+- [x] **PDF-2** D0 complet — wipe alpha (`DELETE FROM tae;`) + migration ~18 fichiers consommateurs
 - [ ] **PDF-3** D6 — en-tête d'épreuve 80px + `SectionPage` + constantes pagination
 - [ ] **PDF-4** D3 — transformation `epreuveVersPaginee` + renumérotation + tests unitaires
 - [ ] **PDF-5** D2 — pager isomorphe greedy first-fit + mesure offscreen
@@ -110,12 +110,12 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 3 — Loading/Error      | 4      | 4      | 100%    |
 | 4 — CRUD manquant      | 2      | 2      | 100%    |
 | 5 — Compte             | 4      | 4      | 100%    |
-| 6 — Export PDF         | 12     | 0      | 0%      |
+| 6 — Export PDF         | 12     | 2      | 17%     |
 | 7 — Finitions création | 4      | 0      | 0%      |
 | 8 — Dashboard          | 2      | 0      | 0%      |
 | 9 — Favoris            | 4      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **43** | **18** | **42%** |
+| **Total**              | **43** | **20** | **47%** |
 
 ---
 
