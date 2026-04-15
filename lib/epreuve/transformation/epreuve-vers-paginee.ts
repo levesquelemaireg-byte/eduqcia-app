@@ -116,7 +116,7 @@ function construireBlocsDossierDocumentaire(
 }
 
 /** Contenu d'un bloc quadruplet (consigne + guidage + espace de production + outil d'évaluation). */
-type ContenuQuadruplet = {
+export type ContenuQuadruplet = {
   tacheIndex: number;
   titre: string;
   consigne: string;
@@ -126,7 +126,7 @@ type ContenuQuadruplet = {
 };
 
 /** Contenu d'un bloc corrigé. */
-type ContenuCorrige = {
+export type ContenuCorrige = {
   tacheIndex: number;
   titre: string;
   corrige: string;
