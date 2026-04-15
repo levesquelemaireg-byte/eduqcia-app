@@ -5,19 +5,7 @@ import { CopyButton } from "@/components/ui/CopyButton";
 import { MetaPill } from "@/components/tae/fiche/MetaPill";
 import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 import { pluralize } from "@/lib/utils/pluralize";
-
-const NIVEAU_LABELS: Record<string, string> = {
-  sec1: "Sec. 1",
-  sec2: "Sec. 2",
-  sec3: "Sec. 3",
-  sec4: "Sec. 4",
-};
-
-const DISCIPLINE_LABELS: Record<string, string> = {
-  HEC: "Histoire",
-  GEO: "Géographie",
-  HQC: "Hist. Qc et Canada",
-};
+import { NIVEAU_LABELS, DISCIPLINE_LABELS } from "@/lib/utils/profile-labels";
 
 type Props = {
   id: string;

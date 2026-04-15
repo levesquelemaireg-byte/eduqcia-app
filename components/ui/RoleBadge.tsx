@@ -1,3 +1,4 @@
+import { MetaPill } from "@/components/tae/fiche/MetaPill";
 import { cn } from "@/lib/utils/cn";
 
 const ROLE_LABELS: Record<string, string> = {
@@ -11,16 +12,9 @@ type Props = {
   className?: string;
 };
 
-/** Assist Chip M3 — badge rôle (§5.5). */
+/** Assist Chip M3 — badge rôle (§5.5). Wrapper MetaPill sans icône. */
 export function RoleBadge({ role, className }: Props) {
   return (
-    <span
-      className={cn(
-        "inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-100 px-4 text-sm font-medium text-slate-700",
-        className,
-      )}
-    >
-      {ROLE_LABELS[role] ?? role}
-    </span>
+    <MetaPill label={ROLE_LABELS[role] ?? role} className={cn("text-sm font-medium", className)} />
   );
 }

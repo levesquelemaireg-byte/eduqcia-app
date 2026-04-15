@@ -2,6 +2,7 @@ import { AvatarInitials } from "@/components/ui/AvatarInitials";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { ExperienceBadge, type ExperienceLevel } from "@/components/ui/ExperienceBadge";
 import { CopyButton } from "@/components/ui/CopyButton";
+import { IconButton } from "@/components/ui/IconButton";
 import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 
 type Props = {
@@ -53,16 +54,11 @@ export function ProfileHero({
               {displayName}
             </h1>
             {isOwner && onEditClick && (
-              <button
-                type="button"
-                onClick={onEditClick}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
+              <IconButton
+                icon="edit"
                 aria-label="Modifier les informations d'identité"
-              >
-                <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
-                  edit
-                </span>
-              </button>
+                onClick={onEditClick}
+              />
             )}
           </div>
 

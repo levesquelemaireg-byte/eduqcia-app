@@ -8,6 +8,8 @@ import {
   type ProfileEvaluation,
 } from "@/lib/queries/profile-contributions";
 import { pluralize } from "@/lib/utils/pluralize";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 
 type Props = {
   profileId: string;
@@ -36,15 +38,14 @@ export function ProfileEvaluationsList({ profileId, isOwner, totalCount, initial
 
   if (totalCount === 0) {
     return (
-      <div className="py-8 text-center">
-        <span className="material-symbols-outlined mb-2 text-[32px] text-muted" aria-hidden="true">
-          assignment
-        </span>
-        <p className="text-base font-medium text-deep">
-          {isOwner
+      <EmptyState
+        icon="assignment"
+        message={
+          isOwner
             ? "Vous n'avez pas encore publié d'épreuve."
-            : "Cet enseignant n'a pas encore partagé d'épreuve."}
-        </p>
+            : "Cet enseignant n'a pas encore partagé d'épreuve."
+        }
+      >
         {isOwner && (
           <Link
             href="/evaluations/new"
@@ -53,7 +54,7 @@ export function ProfileEvaluationsList({ profileId, isOwner, totalCount, initial
             Créer une épreuve →
           </Link>
         )}
-      </div>
+      </EmptyState>
     );
   }
 
@@ -80,18 +81,7 @@ export function ProfileEvaluationsList({ profileId, isOwner, totalCount, initial
         ))}
       </ul>
       {remaining > 0 && (
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={loadMore}
-            disabled={loading}
-            className="text-sm font-medium text-accent hover:bg-accent/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
-          >
-            {loading
-              ? "Chargement…"
-              : `Voir plus (${remaining} ${pluralize(remaining, "restant", "restants")})`}
-          </button>
-        </div>
+        <LoadMoreButton remaining={remaining} loading={loading} onClick={loadMore} />
       )}
     </>
   );

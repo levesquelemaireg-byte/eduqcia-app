@@ -4,6 +4,10 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SideSheet } from "@/components/ui/SideSheet";
+import { Field } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
+import { InlineAlert } from "@/components/ui/InlineAlert";
+import { ToggleChip } from "@/components/ui/ToggleChip";
 import { updateProfileProfessional } from "@/lib/actions/profile-update-professional";
 
 const NIVEAUX_OPTIONS = [
@@ -108,56 +112,31 @@ export function ProfileEditProfessional({
       title="Informations professionnelles"
       footer={
         <div className="flex flex-col-reverse gap-2 md:flex-row md:justify-end">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="rounded-md px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10"
-          >
+          <Button variant="ghost" onClick={handleClose}>
             Annuler
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 disabled:opacity-50"
-          >
+          </Button>
+          <Button variant="primary" onClick={handleSave} disabled={saving}>
             {saving ? "Enregistrement…" : "Enregistrer"}
-          </button>
+          </Button>
         </div>
       }
     >
       <div className="space-y-6">
-        {error && (
-          <p className="rounded-md bg-error/10 p-3 text-sm text-error" role="alert">
-            {error}
-          </p>
-        )}
+        {error && <InlineAlert variant="error">{error}</InlineAlert>}
 
         {/* Niveaux — multi-select chips */}
         <fieldset>
           <legend className="mb-2 text-sm font-medium text-deep">Niveau enseigné</legend>
           <div className="flex flex-wrap gap-2">
-            {NIVEAUX_OPTIONS.map((n) => {
-              const selected = niveaux.includes(n.code);
-              return (
-                <button
-                  key={n.code}
-                  type="button"
-                  onClick={() => toggleNiveau(n.code)}
-                  className={`inline-flex h-8 items-center gap-1 rounded-lg border px-4 text-sm font-medium transition-colors ${
-                    selected
-                      ? "border-accent bg-accent/10 text-accent"
-                      : "border-border bg-surface text-deep hover:bg-surface"
-                  } focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none`}
-                  aria-pressed={selected}
-                >
-                  <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                    school
-                  </span>
-                  {n.label}
-                </button>
-              );
-            })}
+            {NIVEAUX_OPTIONS.map((n) => (
+              <ToggleChip
+                key={n.code}
+                label={n.label}
+                icon="school"
+                selected={niveaux.includes(n.code)}
+                onClick={() => toggleNiveau(n.code)}
+              />
+            ))}
           </div>
         </fieldset>
 
@@ -165,46 +144,29 @@ export function ProfileEditProfessional({
         <fieldset>
           <legend className="mb-2 text-sm font-medium text-deep">Discipline enseignée</legend>
           <div className="flex flex-wrap gap-2">
-            {DISCIPLINES_OPTIONS.map((d) => {
-              const selected = disciplines.includes(d.code);
-              return (
-                <button
-                  key={d.code}
-                  type="button"
-                  onClick={() => toggleDiscipline(d.code)}
-                  className={`inline-flex h-8 items-center gap-1 rounded-lg border px-4 text-sm font-medium transition-colors ${
-                    selected
-                      ? "border-accent bg-accent/10 text-accent"
-                      : "border-border bg-surface text-deep hover:bg-surface"
-                  } focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none`}
-                  aria-pressed={selected}
-                >
-                  <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                    menu_book
-                  </span>
-                  {d.label}
-                </button>
-              );
-            })}
+            {DISCIPLINES_OPTIONS.map((d) => (
+              <ToggleChip
+                key={d.code}
+                label={d.label}
+                icon="menu_book"
+                selected={disciplines.includes(d.code)}
+                onClick={() => toggleDiscipline(d.code)}
+              />
+            ))}
           </div>
         </fieldset>
 
         {/* Années d'expérience */}
-        <div>
-          <label htmlFor="edit-years-exp" className="mb-1 block text-sm font-medium text-deep">
-            Années d&apos;expérience
-          </label>
-          <input
-            id="edit-years-exp"
-            type="number"
-            min={0}
-            max={50}
-            value={yearsExp}
-            onChange={(e) => setYearsExp(e.target.value)}
-            placeholder="Ex : 12"
-            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
-          />
-        </div>
+        <Field
+          label="Années d'expérience"
+          id="edit-years-exp"
+          type="number"
+          min={0}
+          max={50}
+          value={yearsExp}
+          onChange={(e) => setYearsExp(e.target.value)}
+          placeholder="Ex : 12"
+        />
       </div>
     </SideSheet>
   );

@@ -29,7 +29,7 @@ export function ExperienceBadge({ level, totalContributions, className }: Props)
 
   return (
     <span
-      className={cn("text-sm font-medium text-slate-500", className)}
+      className={cn("text-sm font-medium text-muted", className)}
       aria-label={`${label} — basé sur ${totalContributions} contribution${totalContributions > 1 ? "s" : ""} publiée${totalContributions > 1 ? "s" : ""}`}
     >
       {label}

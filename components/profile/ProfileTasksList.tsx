@@ -5,6 +5,8 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { fetchProfileTasks, type ProfileTask } from "@/lib/queries/profile-contributions";
 import { pluralize } from "@/lib/utils/pluralize";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
@@ -37,15 +39,14 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
 
   if (totalCount === 0) {
     return (
-      <div className="py-8 text-center">
-        <span className="material-symbols-outlined mb-2 text-[32px] text-muted" aria-hidden="true">
-          quiz
-        </span>
-        <p className="text-base font-medium text-deep">
-          {isOwner
+      <EmptyState
+        icon="quiz"
+        message={
+          isOwner
             ? "Vous n'avez pas encore publié de tâche."
-            : "Cet enseignant n'a pas encore partagé de tâche."}
-        </p>
+            : "Cet enseignant n'a pas encore partagé de tâche."
+        }
+      >
         {isOwner && (
           <Link
             href="/questions/new"
@@ -54,7 +55,7 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
             Créer une tâche →
           </Link>
         )}
-      </div>
+      </EmptyState>
     );
   }
 
@@ -103,18 +104,7 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
         })}
       </ul>
       {remaining > 0 && (
-        <div className="mt-4 text-center">
-          <button
-            type="button"
-            onClick={loadMore}
-            disabled={loading}
-            className="text-sm font-medium text-accent hover:bg-accent/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
-          >
-            {loading
-              ? "Chargement…"
-              : `Voir plus (${remaining} ${pluralize(remaining, "restant", "restants")})`}
-          </button>
-        </div>
+        <LoadMoreButton remaining={remaining} loading={loading} onClick={loadMore} />
       )}
     </>
   );

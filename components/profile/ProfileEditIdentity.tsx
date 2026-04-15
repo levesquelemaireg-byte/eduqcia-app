@@ -4,6 +4,10 @@ import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { SideSheet } from "@/components/ui/SideSheet";
+import { Field } from "@/components/ui/Field";
+import { FieldLayout } from "@/components/ui/FieldLayout";
+import { Button } from "@/components/ui/Button";
+import { InlineAlert } from "@/components/ui/InlineAlert";
 import { updateProfileIdentity } from "@/lib/actions/profile-update-identity";
 
 type Props = {
@@ -93,61 +97,35 @@ export function ProfileEditIdentity({
       title="Modifier l'identité"
       footer={
         <div className="flex flex-col-reverse gap-2 md:flex-row md:justify-end">
-          <button
-            type="button"
-            onClick={handleClose}
-            className="px-4 py-2 text-sm font-medium text-accent hover:bg-accent/10 rounded-md"
-          >
+          <Button variant="ghost" onClick={handleClose}>
             Annuler
-          </button>
-          <button
-            type="button"
-            onClick={handleSave}
-            disabled={saving}
-            className="rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent/90 disabled:opacity-50"
-          >
+          </Button>
+          <Button variant="primary" onClick={handleSave} disabled={saving}>
             {saving ? "Enregistrement…" : "Enregistrer"}
-          </button>
+          </Button>
         </div>
       }
     >
       <div className="space-y-5">
-        {error && (
-          <p className="rounded-md bg-error/10 p-3 text-sm text-error" role="alert">
-            {error}
-          </p>
-        )}
+        {error && <InlineAlert variant="error">{error}</InlineAlert>}
 
-        <div>
-          <label htmlFor="edit-first-name" className="mb-1 block text-sm font-medium text-deep">
-            Prénom
-          </label>
-          <input
-            id="edit-first-name"
-            type="text"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
-          />
-        </div>
+        <Field
+          label="Prénom"
+          id="edit-first-name"
+          type="text"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
 
-        <div>
-          <label htmlFor="edit-last-name" className="mb-1 block text-sm font-medium text-deep">
-            Nom
-          </label>
-          <input
-            id="edit-last-name"
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
-          />
-        </div>
+        <Field
+          label="Nom"
+          id="edit-last-name"
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
 
-        <div>
-          <label htmlFor="edit-css" className="mb-1 block text-sm font-medium text-deep">
-            Centre de services scolaire
-          </label>
+        <FieldLayout label="Centre de services scolaire" htmlFor="edit-css">
           <select
             id="edit-css"
             value={selectedCssId}
@@ -155,7 +133,7 @@ export function ProfileEditIdentity({
               setSelectedCssId(e.target.value);
               setSchoolId("");
             }}
-            className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
+            className="auth-input min-h-11 w-full rounded-md border border-border bg-panel px-3 py-2.5 text-sm text-deep"
           >
             <option value="">Sélectionner un CSS</option>
             {cssOptions.map((css) => (
@@ -164,18 +142,15 @@ export function ProfileEditIdentity({
               </option>
             ))}
           </select>
-        </div>
+        </FieldLayout>
 
         {selectedCssId && (
-          <div>
-            <label htmlFor="edit-school" className="mb-1 block text-sm font-medium text-deep">
-              Établissement
-            </label>
+          <FieldLayout label="Établissement" htmlFor="edit-school">
             <select
               id="edit-school"
               value={schoolId}
               onChange={(e) => setSchoolId(e.target.value)}
-              className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
+              className="auth-input min-h-11 w-full rounded-md border border-border bg-panel px-3 py-2.5 text-sm text-deep"
             >
               <option value="">Sélectionner un établissement</option>
               {filteredSchools.map((s) => (
@@ -184,7 +159,7 @@ export function ProfileEditIdentity({
                 </option>
               ))}
             </select>
-          </div>
+          </FieldLayout>
         )}
 
         <div>

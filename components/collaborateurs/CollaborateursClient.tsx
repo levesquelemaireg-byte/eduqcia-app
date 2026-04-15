@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { CollaborateurCard } from "@/components/collaborateurs/CollaborateurCard";
+import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 import { pluralize } from "@/lib/utils/pluralize";
 import type { CollaborateurListRow } from "@/lib/queries/collaborateurs-list";
 
@@ -192,18 +193,7 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
       {!isSearchMode && remaining > 0 && (
         <>
           <div ref={sentinelRef} className="h-1" aria-hidden="true" />
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={loadMore}
-              disabled={loadingMore}
-              className="text-sm font-medium text-accent hover:bg-accent/10 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-50"
-            >
-              {loadingMore
-                ? "Chargement…"
-                : `Voir plus (${remaining} ${pluralize(remaining, "restant", "restants")})`}
-            </button>
-          </div>
+          <LoadMoreButton remaining={remaining} loading={loadingMore} onClick={loadMore} />
         </>
       )}
 

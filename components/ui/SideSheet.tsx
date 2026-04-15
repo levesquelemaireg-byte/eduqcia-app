@@ -105,19 +105,19 @@ export function SideSheet({ open, onClose, title, children, footer }: Props) {
         aria-labelledby="side-sheet-title"
         tabIndex={-1}
         className={cn(
-          "flex h-full w-full flex-col bg-white shadow-xl transition-transform duration-300 ease-out md:w-[400px]",
+          "flex h-full w-full flex-col bg-panel shadow-xl transition-transform duration-300 ease-out md:w-[400px]",
           "animate-in slide-in-from-right",
         )}
       >
         {/* Header sticky */}
-        <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-5 py-4">
-          <h2 id="side-sheet-title" className="text-lg font-semibold text-slate-900">
+        <div className="flex shrink-0 items-center justify-between border-b border-border px-5 py-4">
+          <h2 id="side-sheet-title" className="text-lg font-semibold text-deep">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:outline-none"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
             aria-label="Fermer"
           >
             <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
@@ -130,7 +130,7 @@ export function SideSheet({ open, onClose, title, children, footer }: Props) {
         <div className="flex-1 overflow-y-auto px-5 py-5">{children}</div>
 
         {/* Footer sticky */}
-        {footer && <div className="shrink-0 border-t border-slate-200 px-5 py-4">{footer}</div>}
+        {footer && <div className="shrink-0 border-t border-border px-5 py-4">{footer}</div>}
       </div>
     </div>
   );

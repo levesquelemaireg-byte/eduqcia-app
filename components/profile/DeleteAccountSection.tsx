@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { WarningModal } from "@/components/ui/WarningModal";
+import { Field } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
+import { InlineAlert } from "@/components/ui/InlineAlert";
 import { deleteAccountAction } from "@/lib/actions/account-delete";
 
 /** Section suppression de compte Loi 25 — mode propriétaire uniquement (§17.5). */
@@ -22,6 +25,12 @@ export function DeleteAccountSection() {
     }
   }
 
+  function handleCloseModal() {
+    setModalOpen(false);
+    setConfirmation("");
+    setError(null);
+  }
+
   return (
     <>
       <div className="border-t border-border pt-8">
@@ -36,11 +45,7 @@ export function DeleteAccountSection() {
 
       <WarningModal
         open={modalOpen}
-        onClose={() => {
-          setModalOpen(false);
-          setConfirmation("");
-          setError(null);
-        }}
+        onClose={handleCloseModal}
         title="Suppression définitive du compte"
       >
         <div className="space-y-4">
@@ -63,46 +68,28 @@ export function DeleteAccountSection() {
             Cette action est irréversible. Vous ne pourrez pas récupérer votre compte.
           </p>
 
-          {error && (
-            <p className="rounded-md bg-error/10 p-3 text-sm text-error" role="alert">
-              {error}
-            </p>
-          )}
+          {error && <InlineAlert variant="error">{error}</InlineAlert>}
 
-          <div>
-            <label htmlFor="delete-confirm" className="mb-1 block text-sm font-medium text-deep">
-              Tapez SUPPRIMER pour confirmer
-            </label>
-            <input
-              id="delete-confirm"
-              type="text"
-              value={confirmation}
-              onChange={(e) => setConfirmation(e.target.value)}
-              autoComplete="off"
-              className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep"
-            />
-          </div>
+          <Field
+            label="Tapez SUPPRIMER pour confirmer"
+            id="delete-confirm"
+            type="text"
+            value={confirmation}
+            onChange={(e) => setConfirmation(e.target.value)}
+            autoComplete="off"
+          />
 
           <div className="flex justify-end gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => {
-                setModalOpen(false);
-                setConfirmation("");
-                setError(null);
-              }}
-              className="rounded-md px-4 py-2 text-sm font-medium text-muted hover:bg-surface"
-            >
+            <Button variant="ghost" onClick={handleCloseModal}>
               Annuler
-            </button>
-            <button
-              type="button"
+            </Button>
+            <Button
               onClick={handleDelete}
               disabled={confirmation !== "SUPPRIMER" || deleting}
-              className="rounded-md bg-error px-4 py-2 text-sm font-medium text-white hover:bg-error/90 disabled:opacity-50"
+              className="bg-error text-white hover:bg-error/90 hover:opacity-100"
             >
               {deleting ? "Suppression…" : "Supprimer définitivement"}
-            </button>
+            </Button>
           </div>
         </div>
       </WarningModal>

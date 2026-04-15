@@ -163,7 +163,61 @@ Bannières informatives non bloquantes, sans modale ni question. L'enseignant vo
 
 **Quand l'utiliser** : champ optionnel dont l'absence mérite d'être signalée (titre textuel vide, source absente, débordement de page, etc.).
 
-**Quand ne PAS l'utiliser** : erreur de validation bloquante (utiliser `text-error` inline sous le champ), message de succès (utiliser toast), aide contextuelle permanente (utiliser `text-muted`).
+**Quand ne PAS l'utiliser** : message de succès (utiliser toast), aide contextuelle permanente (utiliser `text-muted`).
+
+### Alertes inline (warning + erreur)
+
+Variante étendue d'`InlineWarning` pour les contextes d'erreur bloquante (formulaire, Server Action). **Un seul composant** : `components/ui/InlineAlert.tsx`.
+
+| Propriété     | `variant="warning"` (défaut) | `variant="error"` |
+| ------------- | ---------------------------- | ----------------- |
+| Composant     | `InlineAlert`                | `InlineAlert`     |
+| Couleur texte | `text-warning`               | `text-error`      |
+| Fond          | aucun                        | `bg-error/10`     |
+| Icône défaut  | `info`                       | `error`           |
+| Rôle ARIA     | `role="status"`              | `role="alert"`    |
+
+`InlineWarning` reste disponible pour les usages existants (rétrocompatible).
+
+### Bouton icône (IconButton)
+
+Bouton rond ghost pour actions secondaires (modifier, fermer, etc.). **Un seul composant** : `components/ui/IconButton.tsx`.
+
+| Propriété | Valeur                                                |
+| --------- | ----------------------------------------------------- |
+| Taille    | `h-10 w-10` (44px tactile)                            |
+| Forme     | `rounded-full`                                        |
+| Couleur   | `text-muted` + `hover:bg-surface`                     |
+| Focus     | `ring-accent`                                         |
+| Props     | `icon` (glyphe Material) + `aria-label` (obligatoire) |
+
+### Chip multi-sélection (ToggleChip)
+
+Chip toggle avec `aria-pressed` pour sélection multiple (niveaux, disciplines). `components/ui/ToggleChip.tsx`.
+
+| État          | Classes                                  |
+| ------------- | ---------------------------------------- |
+| Non sélection | `border-border bg-surface text-deep`     |
+| Sélectionné   | `border-accent bg-accent/10 text-accent` |
+
+### État vide (EmptyState)
+
+Placeholder pour les listes et onglets vides. `components/ui/EmptyState.tsx`.
+
+| Propriété | Valeur                                    |
+| --------- | ----------------------------------------- |
+| Icône     | Material Symbols `text-[32px] text-muted` |
+| Message   | `text-base font-medium text-deep`         |
+| CTA       | Slot `children` optionnel                 |
+
+### Bouton « Voir plus » (LoadMoreButton)
+
+Bouton de pagination en bas de liste. `components/ui/LoadMoreButton.tsx`.
+
+| Propriété | Valeur                                |
+| --------- | ------------------------------------- |
+| Style     | `text-accent` ghost, compteur restant |
+| Props     | `remaining`, `loading`, `onClick`     |
 
 ### Actions destructrices
 

@@ -1,20 +1,7 @@
 import { MetaPill } from "@/components/tae/fiche/MetaPill";
+import { IconButton } from "@/components/ui/IconButton";
 import { pluralize } from "@/lib/utils/pluralize";
-
-/** Mapping niveaux codes → labels courts pour MetaPill */
-const NIVEAU_LABELS: Record<string, string> = {
-  sec1: "Sec. 1",
-  sec2: "Sec. 2",
-  sec3: "Sec. 3",
-  sec4: "Sec. 4",
-};
-
-/** Mapping disciplines codes → labels courts pour MetaPill */
-const DISCIPLINE_LABELS: Record<string, string> = {
-  HEC: "Histoire",
-  GEO: "Géographie",
-  HQC: "Hist. Qc et Canada",
-};
+import { NIVEAU_LABELS, DISCIPLINE_LABELS } from "@/lib/utils/profile-labels";
 
 type Props = {
   niveaux: string[];
@@ -49,16 +36,11 @@ export function ProfileProfessionalInfo({
           Informations professionnelles
         </h2>
         {isOwner && onEditClick && (
-          <button
-            type="button"
-            onClick={onEditClick}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full text-muted hover:bg-surface focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
+          <IconButton
+            icon="edit"
             aria-label="Modifier les informations professionnelles"
-          >
-            <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
-              edit
-            </span>
-          </button>
+            onClick={onEditClick}
+          />
         )}
       </div>
 
