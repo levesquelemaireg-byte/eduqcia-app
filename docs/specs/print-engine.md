@@ -1,13 +1,23 @@
-# Print Engine — Spécification d'architecture (v2)
+# Print Engine — Spécification d'architecture (v2.1)
 
 **Statut :** verrouillé après audit 6 agents + audit d'implémentabilité Claude Code (2026-04)
 **Portée :** chaîne de rendu wizard → aperçu → carrousel → PDF Puppeteer
 **Contexte :** ÉduQc.IA, plateforme solo Next.js 15 / Supabase / TipTap, création d'épreuves d'histoire pour le secondaire québécois
-**Version :** 2.0 — intègre les corrections d'implémentabilité + arbitrages des 3 questions ouvertes + conventions de nommage
+**Version :** 2.1 — intègre les corrections d'implémentabilité + arbitrages des 3 questions ouvertes + conventions de nommage + clarifications audit v2
 
 ---
 
-## Changements depuis la v1
+## Changements depuis la v2
+
+1. **Renommage `FicheTache` → `DonneesTache`** : type pivot unique pour toutes les données d'une tâche. Plus de type parallèle — un seul type, des `Pick` locaux là où seul un sous-ensemble est nécessaire.
+2. **Emplacements de fichiers ajustés** : `lib/tache/contrats/donnees.ts` (était `fiche.ts`), `lib/tache/contrats/etat-wizard-vers-tache.ts` (était `etat-wizard-vers-fiche.ts`).
+3. **Hydratation `EspaceProduction` et `OutilEvaluation`** détaillée dans D0 avec mapping explicite depuis les champs legacy.
+4. **Cohabitation avec les selectors existants** : note explicite — les selectors de `lib/fiche/selectors/` restent pour le sommaire wizard, `etatWizardVersTache` est le mapper officiel pour la chaîne d'impression. Pas de refactor des selectors dans D0.
+5. **Wipe alpha explicité** : `DELETE FROM tae;` manuel avant le merge de D0. Toutes les TAÉ (rédactionnelles et NR) sont supprimées. Utilisateurs alpha prévenus.
+6. **Scope des `window.print()` supprimés clarifié** : épreuves uniquement (`TaeFichePrintView`, `EvaluationFichePrintView`, `PrintPreviewModal`). Les fichiers d'impression de documents individuels (`DocumentPrintView`, `DocumentWizardPrintModal`) restent sur `window.print()`.
+7. **Type pivot unique** : l'audit v2 proposait un type parallèle ; tranché vers l'extension du type existant `TaeFicheData` → `DonneesTache`.
+
+### Changements depuis la v1 (historique)
 
 1. **Nommage** : conforme à la convention du repo (kebab-case, français, entité `tache`/`epreuve`, pas de préfixe technique dans les noms). Le legacy `tae` est grandfathered, le nouveau code utilise `tache`.
 2. **Contexte alpha** : pas de migration de données. Les TAÉ NR publiées avec des ancres HTML sont **wipées** avant déploiement de D0. Aucun parser de compatibilité legacy.
@@ -52,17 +62,38 @@ Ce sont deux concepts orthogonaux. Un quadruplet a un `EspaceProduction` **et** 
 
 ## 2. Décisions verrouillées
 
-### D0 — Contrat de données `FicheTache` v2
+### D0 — Contrat de données `DonneesTache`
 
-**Décision :** refactor préalable et bloquant du contrat de données. Blast radius estimé à **25-30 fichiers** (voir section 8).
+**Décision :** refactor préalable et bloquant du contrat de données. Blast radius estimé à **~18 fichiers** (voir section 8).
 
 **Pourquoi bloquant :**
 
 - Le pager isomorphe doit mesurer consigne, guidage et espace de production **séparément** pour décider d'un saut de page. Le guidage encodé dans une string HTML monolithique avec ancre `<!--eduqcia:...-->` force un split par regex au rendu, ce qui tue les performances et rend les mesures non-déterministes.
 - Aucun test de régression visuel ne détectera une **absence silencieuse de contenu sémantique** (ex: guidage disparu après re-sérialisation Puppeteer). Seul un contrat structuré l'empêche.
-- En alpha, les données existantes sont wipées. Pas de migration SQL, pas de parser legacy. Les TAÉ NR avec ancres sont supprimées avant le merge de D0.
+- En alpha, les données existantes sont wipées. Wipe alpha = `DELETE FROM tae;` manuel exécuté avant le merge de D0. Toutes les TAÉ (rédactionnelles et non-rédactionnelles) sont supprimées. Pas de script de migration, pas de parser legacy. Les utilisateurs alpha sont prévenus.
 
-**Type nouveau :**
+**Type pivot unique — `DonneesTache` :**
+
+`DonneesTache` est le type pivot unique pour toutes les données d'une tâche. Il remplace le legacy `TaeFicheData` et contient tout ce que le wizard "Créer une tâche" récolte : métadonnées métier (oi, comportement, connaissances, niveau, discipline, version, is_published, etc.), consigne, guidage structuré, documents, espaceProduction, outilEvaluation résolu, corrigé.
+
+Pas de type parallèle. Le print-engine consomme un sous-ensemble via un `Pick` local dans le fichier de pagination ou de transformation, pas un type nommé séparé :
+
+```typescript
+// Dans lib/epreuve/transformation/epreuve-vers-paginee.ts
+type TacheImpression = Pick<
+  DonneesTache,
+  | "id"
+  | "titre"
+  | "consigne"
+  | "guidage"
+  | "documents"
+  | "espaceProduction"
+  | "outilEvaluation"
+  | "corrige"
+>;
+```
+
+**Type `Guidage` :**
 
 ```typescript
 type Guidage = { content: string } | null;
@@ -80,7 +111,16 @@ Pas de champ `position`. Visibilité décidée par le mode d'impression dans la 
 - Visibles en mode `formatif`.
 - Masqués en mode `sommatif-standard` et `epreuve-ministerielle` (documents anonymes, seule la matière compte).
 
-**Remplacement de `formStateToTae` :** la fonction existante `lib/tae/fiche-helpers.ts:formStateToTae` marquée `@deprecated` est supprimée. Remplacée par `lib/tache/contrats/etat-wizard-vers-fiche.ts:etatWizardVersFiche`, pure, testée unitairement.
+**Remplacement de `formStateToTae` :** la fonction existante `lib/tae/fiche-helpers.ts:formStateToTae` marquée `@deprecated` est supprimée. Remplacée par `lib/tache/contrats/etat-wizard-vers-tache.ts:etatWizardVersTache`, pure, testée unitairement.
+
+**Hydratation dans `etatWizardVersTache` :**
+
+- `espaceProduction.type = 'lignes'` si `showStudentAnswerLines === true` (comportement rédactionnel), avec `nbLignes` depuis le champ existant `nb_lignes`.
+- `espaceProduction.type = 'cases'` si `nonRedactionData.type === 'ordre-chronologique'`, avec `options: ['A', 'B', 'C', 'D']`.
+- `espaceProduction.type = 'libre'` pour les variantes ligne du temps et avant/après.
+- `outilEvaluation` : le champ legacy est une string (ID de grille dans `grilles-evaluation.json`). Le mapper charge le contenu du JSON et le résout en `OutilEvaluation` avec `criteres: Critere[]` pré-résolus. L'hydratation se fait **une seule fois** dans le mapper, pas au rendu. Coût : ~50 lignes dans le mapper.
+
+**Cohabitation avec les selectors existants :** les selectors de `lib/fiche/selectors/` restent pour le sommaire wizard (affichage des métadonnées en UI live). `etatWizardVersTache` est le mapper officiel pour la chaîne d'impression. Responsabilités séparées, pas de refactor des selectors dans D0. La duplication de ~90% de logique entre les deux chemins est acceptée.
 
 **Builders NR à modifier :** les trois builders qui injectent actuellement des ancres (`ordre-chronologique-payload.ts`, `ligne-du-temps-payload.ts`, `avant-apres-payload.ts`) doivent émettre du JSON structuré (consigne nettoyée + guidage séparé). Les parsers correspondants (`parse*ConsigneForStudentPrint`) sont supprimés.
 
@@ -215,7 +255,7 @@ export const MAX_CONTENT_HEIGHT_PX = PAGE_HEIGHT_PX - PAGE_MARGIN_PX - HEADER_HE
 ```
 ┌──────────────────────────────────────────────────────────────┐
 │                         WIZARD                                │
-│  FormState ──┬─→ etatWizardVersFiche ──→ FicheTache v2       │
+│  FormState ──┬─→ etatWizardVersTache ──→ DonneesTache v2     │
 │              │                              │                 │
 │              │                              ▼                 │
 │              │                      DonneesEpreuve v2         │
@@ -267,10 +307,10 @@ export const MAX_CONTENT_HEIGHT_PX = PAGE_HEIGHT_PX - PAGE_MARGIN_PX - HEADER_HE
 
 ## 4. Contrats TypeScript
 
-### 4.1 Contrat de données `FicheTache` v2
+### 4.1 Contrat de données `DonneesTache`
 
 ```typescript
-// lib/tache/contrats/fiche.ts
+// lib/tache/contrats/donnees.ts
 
 export type Guidage = { content: string } | null;
 
@@ -297,7 +337,10 @@ export type EspaceProduction =
   | { type: "cases"; options: string[] } // ex: ['A', 'B', 'C', 'D']
   | { type: "libre" };
 
-export type FicheTache = {
+// Type pivot unique — remplace le legacy TaeFicheData.
+// Contient TOUTES les données d'une tâche (métier + impression).
+// Le print-engine consomme un sous-ensemble via Pick<DonneesTache, ...> local.
+export type DonneesTache = {
   id: string;
   titre: string;
   consigne: string; // HTML propre, sans ancre
@@ -306,6 +349,10 @@ export type FicheTache = {
   espaceProduction: EspaceProduction;
   outilEvaluation: OutilEvaluation;
   corrige?: string; // HTML du corrigé
+  // + tous les champs métier existants de TaeFicheData :
+  // auteur_id, auteurs, oi, comportement, niveau, discipline,
+  // aspects_societe, cd, connaissances, version, is_published,
+  // created_at, updated_at, etc.
 };
 ```
 
@@ -327,7 +374,7 @@ export type DonneesEpreuve = {
   id: string;
   titre: string;
   enTete: EnTeteEpreuve; // répété sur chaque page, injecté par SectionPage
-  taches: FicheTache[];
+  taches: DonneesTache[];
 };
 ```
 
@@ -406,9 +453,9 @@ export function epreuveVersPaginee(
 ### 4.5 Mapper wizard
 
 ```typescript
-// lib/tache/contrats/etat-wizard-vers-fiche.ts
+// lib/tache/contrats/etat-wizard-vers-tache.ts
 
-export function etatWizardVersFiche(etat: EtatFormulaireWizard): FicheTache;
+export function etatWizardVersTache(etat: EtatFormulaireWizard): DonneesTache;
 ```
 
 ### 4.6 Draft-token signé
@@ -432,9 +479,9 @@ export function verifierTokenDraft(token: string): { valide: boolean; payloadId?
 
 ### Contrats et mappers
 
-- `lib/tache/contrats/fiche.ts` — types `FicheTache v2`, `Guidage`, `DocumentReference`, `OutilEvaluation`, `EspaceProduction`.
+- `lib/tache/contrats/donnees.ts` — types `DonneesTache`, `Guidage`, `DocumentReference`, `OutilEvaluation`, `EspaceProduction`.
 - `lib/epreuve/contrats/donnees.ts` — types `DonneesEpreuve`, `EnTeteEpreuve`.
-- `lib/tache/contrats/etat-wizard-vers-fiche.ts` — fonction `etatWizardVersFiche()`, pure, testée.
+- `lib/tache/contrats/etat-wizard-vers-tache.ts` — fonction `etatWizardVersTache()`, pure, testée.
 - `lib/epreuve/contrats/empreinte.ts` — `calculerEmpreinte(payload, mode, estCorrige)`.
 
 ### Pagination
@@ -485,7 +532,7 @@ export function verifierTokenDraft(token: string): { valide: boolean; payloadId?
 
 ### Tests
 
-- `tests/unit/tache/etat-wizard-vers-fiche.test.ts`
+- `tests/unit/tache/etat-wizard-vers-tache.test.ts`
 - `tests/unit/epreuve/renumerotation.test.ts`
 - `tests/unit/epreuve/epreuve-vers-paginee.test.ts`
 - `tests/unit/epreuve/pager.test.ts`
@@ -496,14 +543,14 @@ export function verifierTokenDraft(token: string): { valide: boolean; payloadId?
 
 ## 6. Fichiers à supprimer
 
-| Fichier                                                                           | Remplacé par                               | Impact                                               |
-| --------------------------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------- |
-| `EvaluationPrintableBody`                                                         | `ApercuImpression` + `epreuveVersPaginee`  | Tout appelant passe par la route SSR                 |
-| Les trois `PrintableQuestionnaireCore*`                                           | Composition dans `epreuve-vers-paginee.ts` | Aucun composant ne fait plus de composition par mode |
-| Tout parsing de `<!--eduqcia:...-->`                                              | Champ `guidage` structuré                  | Les builders NR émettent du JSON structuré           |
-| `formStateToTae()` déprécié                                                       | `etatWizardVersFiche()`                    | Tous les imports mis à jour                          |
-| Les trois `parse*ConsigneForStudentPrint`                                         | Suppression sèche                          | Le guidage vient du payload structuré                |
-| Tentatives existantes de `window.print()` ou `document.documentElement.outerHTML` | Route SSR                                  | Zéro sérialisation DOM manuelle                      |
+| Fichier                                                    | Remplacé par                               | Impact                                                                                                                                                                                                                                                                                                            |
+| ---------------------------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EvaluationPrintableBody`                                  | `ApercuImpression` + `epreuveVersPaginee`  | Tout appelant passe par la route SSR                                                                                                                                                                                                                                                                              |
+| Les trois `PrintableQuestionnaireCore*`                    | Composition dans `epreuve-vers-paginee.ts` | Aucun composant ne fait plus de composition par mode                                                                                                                                                                                                                                                              |
+| Tout parsing de `<!--eduqcia:...-->`                       | Champ `guidage` structuré                  | Les builders NR émettent du JSON structuré                                                                                                                                                                                                                                                                        |
+| `formStateToTae()` déprécié                                | `etatWizardVersTache()`                    | Tous les imports mis à jour                                                                                                                                                                                                                                                                                       |
+| Les trois `parse*ConsigneForStudentPrint`                  | Suppression sèche                          | Le guidage vient du payload structuré                                                                                                                                                                                                                                                                             |
+| `window.print()` dans les fichiers **épreuves** uniquement | Route SSR                                  | `TaeFichePrintView`, `EvaluationFichePrintView`, `PrintPreviewModal`. Les fichiers d'impression de documents individuels (`DocumentPrintView`, `DocumentWizardPrintModal`) ne sont **pas** concernés — ils restent sur `window.print()`. Le périmètre du print-engine est les épreuves, pas les documents isolés. |
 
 ---
 
@@ -515,17 +562,17 @@ export function verifierTokenDraft(token: string): { valide: boolean; payloadId?
 
 ## 8. Blast radius de D0 (audit Claude Code)
 
-Selon l'audit d'implémentabilité, D0 touche **25-30 fichiers** :
+Selon l'audit d'implémentabilité, D0 touche **~18 fichiers** directement (ceux qui lisent `guidage` comme string ou qui construisent des données de tâche). Le type legacy `TaeFicheData` est importé par ~49 fichiers au total, mais la majorité ne touche pas `guidage` ni les ancres — ils lisent des champs métier (oi, comportement, etc.) qui restent inchangés dans `DonneesTache`.
 
 **Builders NR (3) :** `ordre-chronologique-payload.ts`, `ligne-du-temps-payload.ts`, `avant-apres-payload.ts`
 **Parsers à supprimer (3) :** `parse*ConsigneForStudentPrint` dans les mêmes fichiers
 **Composants de rendu (3+) :** les `*PrintableQuestionnaireCore`
-**Helpers :** `lib/tae/fiche-helpers.ts:formStateToTae`, `lib/tae/consigne-helpers.ts:shouldShowGuidageOnStudentSheet`
-**Publication :** `publish-tae-payload.ts` (écriture du payload RPC)
-**Impression d'évaluations :** `lib/evaluations/evaluation-print-doc-map.ts:rewriteTaeHtmlDocRefsForEvaluationPrint`
-**Consommateurs de `TaeFicheData` :** ~49 imports selon l'audit. Tous les fichiers qui lisent `tae.guidage` comme string doivent être migrés.
+**Helpers (2) :** `lib/tae/fiche-helpers.ts:formStateToTae`, `lib/tae/consigne-helpers.ts:shouldShowGuidageOnStudentSheet`
+**Publication (1) :** `publish-tae-payload.ts` (écriture du payload RPC)
+**Impression d'évaluations (1) :** `lib/evaluations/evaluation-print-doc-map.ts:rewriteTaeHtmlDocRefsForEvaluationPrint`
+**Renommage import type (reste) :** les fichiers qui importent `TaeFicheData` doivent être mis à jour vers `DonneesTache` — changement mécanique sans logique.
 
-**Coût estimé :** 4-5 jours de travail concentré.
+**Coût estimé :** 3-4 jours de travail concentré.
 
 ---
 
@@ -546,14 +593,14 @@ Selon l'audit d'implémentabilité, D0 touche **25-30 fichiers** :
 L'ordre v1 plaçait le pager avant l'en-tête. C'était faux : le pager a besoin de connaître la hauteur de l'en-tête. La v2 résout ce problème en fixant la hauteur en constante (80px) mais garde l'en-tête avant le pager pour une implémentation linéaire.
 
 1. **D0 partiel — types et mapper**
-   - Créer `lib/tache/contrats/fiche.ts` avec `FicheTache v2`, `Guidage`, `EspaceProduction`, `OutilEvaluation`.
+   - Créer `lib/tache/contrats/donnees.ts` avec `DonneesTache`, `Guidage`, `EspaceProduction`, `OutilEvaluation`.
    - Créer `lib/epreuve/contrats/donnees.ts` avec `DonneesEpreuve`, `EnTeteEpreuve`.
-   - Créer `etatWizardVersFiche()` avec tests unitaires.
+   - Créer `etatWizardVersTache()` avec tests unitaires.
    - Ne pas toucher aux consommateurs encore.
 
 2. **D0 complet — wipe alpha + migration des consommateurs**
-   - **Wipe des TAÉ NR publiées** en base Supabase (contexte alpha).
-   - Mise à jour des 25-30 fichiers consommateurs : builders NR, parsers, helpers, composants, `rewriteTaeHtmlDocRefsForEvaluationPrint`.
+   - **Wipe alpha** : `DELETE FROM tae;` manuel en base Supabase. Toutes les TAÉ (rédactionnelles et NR) sont supprimées. Utilisateurs alpha prévenus.
+   - Mise à jour des ~18 fichiers consommateurs : builders NR, parsers, helpers, composants, `rewriteTaeHtmlDocRefsForEvaluationPrint`.
    - Suppression des parsers d'ancres et de `formStateToTae`.
    - Documenter `PlaygroundPrintRenderer` comme cassé temporairement.
    - Grep exhaustif sur `.guidage.replace`, `.guidage.indexOf`, `.guidage.trim` pour éviter les régressions silencieuses.
@@ -627,18 +674,18 @@ Ces questions n'ont pas besoin d'être tranchées avant l'implémentation, mais 
 ## 13. Angles morts couverts par le cadrage
 
 - Ancres HTML → contrat structuré (D0).
-- Wizard in-progress → `etatWizardVersFiche` élevé au rang de contrat officiel.
+- Wizard in-progress → `etatWizardVersTache` élevé au rang de contrat officiel.
 - Politique d'assets → neutralisée par austérité Arial + N&B.
 - Contraintes Vercel → explicites en section 9.
 - En-tête d'épreuve → `EnTeteEpreuve` au niveau `DonneesEpreuve`, injecté par `SectionPage`, hauteur fixe 80px.
 - Pagination physique → `numeroPage` / `totalPages` injectés par le pager.
 - Invalidation du carrousel → bannière empreinte.
 - Indicateur de remplissage dans le wizard → jauge debouncée, rouge à 97%.
-- Migration des consommateurs de `TaeFicheData` → reconnue comme blast radius majeur (section 8).
+- Migration des consommateurs de `TaeFicheData` → `DonneesTache`, reconnue comme blast radius ~18 fichiers (section 8).
 - Sécurité du draft-token → signature HMAC.
 - Chicken-and-egg en-tête vs pager → hauteur fixe 80px.
 - Distinction `EspaceProduction` vs `OutilEvaluation` → deux types distincts (section 1).
 
 ---
 
-**Fin de la spécification v2. Toute modification doit être discutée et versionnée.**
+**Fin de la spécification v2.1. Toute modification doit être discutée et versionnée.**

@@ -39,22 +39,22 @@ Auteur : session de conception claude.ai
 
 ### Inclus — parcours rédactionnels
 
-| OI | Comportements | Type |
-|----|--------------|------|
-| OI0 | 0.1 | Rédactionnel libre |
-| OI3 | 3.1, 3.2 | Rédactionnel souple |
+| OI  | Comportements | Type                   |
+| --- | ------------- | ---------------------- |
+| OI0 | 0.1           | Rédactionnel libre     |
+| OI3 | 3.1, 3.2      | Rédactionnel souple    |
 | OI3 | 3.3, 3.4, 3.5 | Rédactionnel structuré |
-| OI4 | 4.1, 4.2 | Rédactionnel souple |
+| OI4 | 4.1, 4.2      | Rédactionnel souple    |
 | OI6 | 6.1, 6.2, 6.3 | Rédactionnel structuré |
-| OI7 | 7.1 | Rédactionnel pur |
+| OI7 | 7.1           | Rédactionnel pur       |
 
 ### Hors périmètre — parcours non rédactionnels (specs séparées)
 
-| OI | Comportements | Raison |
-|----|--------------|--------|
+| OI  | Comportements | Raison                                        |
+| --- | ------------- | --------------------------------------------- |
 | OI1 | 1.1, 1.2, 1.3 | Déjà livrés — wizard-oi-non-redactionnelle.md |
-| OI4 | 4.3, 4.4 | NR — réponse = numéros de documents |
-| OI5 | 5.x | NR — association de documents |
+| OI4 | 4.3, 4.4      | NR — réponse = numéros de documents           |
+| OI5 | 5.x           | NR — association de documents                 |
 
 ---
 
@@ -115,93 +115,90 @@ Jamais                   = un composant one-shot par comportement
 // lib/tae/wizard-bloc-config.ts
 
 type Bloc3Config =
-  | { type: 'libre' }
-  | { type: 'modele_souple'; templateKey: ConsigneTemplateKey }
-  | { type: 'structure'; variante: 'compare' }
-  | { type: 'pur'; variante: 'triple' | 'oi6' | 'oi7' }
+  | { type: "libre" }
+  | { type: "modele_souple"; templateKey: ConsigneTemplateKey }
+  | { type: "structure"; variante: "compare" }
+  | { type: "pur"; variante: "triple" | "oi6" | "oi7" };
 
 type Bloc4Config =
-  | { type: 'standard' }
-  | { type: 'perspectives'; count: 2 | 3; modeGroupeDefaut: boolean }
-  | { type: 'moments'; count: 2; modeGroupeDefaut: boolean }
+  | { type: "standard" }
+  | { type: "perspectives"; count: 2 | 3; modeGroupeDefaut: boolean }
+  | { type: "moments"; count: 2; modeGroupeDefaut: boolean };
 
-type Bloc5Config =
-  | { type: 'standard' }
-  | { type: 'intrus'; perspectiveCount: 2 | 3 }
+type Bloc5Config = { type: "standard" } | { type: "intrus"; perspectiveCount: 2 | 3 };
 
 type WizardBlocConfig = {
-  bloc3: Bloc3Config
-  bloc4: Bloc4Config
-  bloc5?: Bloc5Config
-}
+  bloc3: Bloc3Config;
+  bloc4: Bloc4Config;
+  bloc5?: Bloc5Config;
+};
 
 export const WIZARD_BLOC_CONFIGS: Record<string, WizardBlocConfig> = {
-
   // OI0
-  '0.1': {
-    bloc3: { type: 'libre' },
-    bloc4: { type: 'standard' },
+  "0.1": {
+    bloc3: { type: "libre" },
+    bloc4: { type: "standard" },
   },
 
   // OI3 — différence / similitude
-  '3.1': {
-    bloc3: { type: 'modele_souple', templateKey: 'oi3-difference' },
-    bloc4: { type: 'standard' },
+  "3.1": {
+    bloc3: { type: "modele_souple", templateKey: "oi3-difference" },
+    bloc4: { type: "standard" },
   },
-  '3.2': {
-    bloc3: { type: 'modele_souple', templateKey: 'oi3-similitude' },
-    bloc4: { type: 'standard' },
+  "3.2": {
+    bloc3: { type: "modele_souple", templateKey: "oi3-similitude" },
+    bloc4: { type: "standard" },
   },
 
   // OI3 — désaccord / accord
-  '3.3': {
-    bloc3: { type: 'structure', variante: 'compare' },
-    bloc4: { type: 'perspectives', count: 2, modeGroupeDefaut: true },
-    bloc5: { type: 'redactionnel', templateKey: 'accord-desaccord' },
+  "3.3": {
+    bloc3: { type: "structure", variante: "compare" },
+    bloc4: { type: "perspectives", count: 2, modeGroupeDefaut: true },
+    bloc5: { type: "redactionnel", templateKey: "accord-desaccord" },
   },
-  '3.4': {
-    bloc3: { type: 'structure', variante: 'compare' },
-    bloc4: { type: 'perspectives', count: 2, modeGroupeDefaut: true },
-    bloc5: { type: 'redactionnel', templateKey: 'accord-desaccord' },
+  "3.4": {
+    bloc3: { type: "structure", variante: "compare" },
+    bloc4: { type: "perspectives", count: 2, modeGroupeDefaut: true },
+    bloc5: { type: "redactionnel", templateKey: "accord-desaccord" },
   },
 
   // OI3 — trois points de vue
-  '3.5': {
-    bloc3: { type: 'pur', variante: 'triple' },
-    bloc4: { type: 'perspectives', count: 3, modeGroupeDefaut: true },
-    bloc5: { type: 'intrus', perspectiveCount: 3 },
+  "3.5": {
+    bloc3: { type: "pur", variante: "triple" },
+    bloc4: { type: "perspectives", count: 3, modeGroupeDefaut: true },
+    bloc5: { type: "intrus", perspectiveCount: 3 },
   },
 
   // OI4 — cause / conséquence
-  '4.1': {
-    bloc3: { type: 'modele_souple', templateKey: 'oi4-cause' },
-    bloc4: { type: 'standard' },
+  "4.1": {
+    bloc3: { type: "modele_souple", templateKey: "oi4-cause" },
+    bloc4: { type: "standard" },
   },
-  '4.2': {
-    bloc3: { type: 'modele_souple', templateKey: 'oi4-consequence' },
-    bloc4: { type: 'standard' },
+  "4.2": {
+    bloc3: { type: "modele_souple", templateKey: "oi4-consequence" },
+    bloc4: { type: "standard" },
   },
 
   // OI6 — changements et continuités
-  '6.1': {
-    bloc3: { type: 'modele_souple', templateKey: 'oi6-changement' },
-    bloc4: { type: 'moments', count: 2, modeGroupeDefaut: true },
+  "6.1": {
+    bloc3: { type: "modele_souple", templateKey: "oi6-changement" },
+    bloc4: { type: "moments", count: 2, modeGroupeDefaut: true },
   },
-  '6.2': {
-    bloc3: { type: 'modele_souple', templateKey: 'oi6-continuite' },
-    bloc4: { type: 'moments', count: 2, modeGroupeDefaut: true },
+  "6.2": {
+    bloc3: { type: "modele_souple", templateKey: "oi6-continuite" },
+    bloc4: { type: "moments", count: 2, modeGroupeDefaut: true },
   },
-  '6.3': {
-    bloc3: { type: 'pur', variante: 'oi6' },
-    bloc4: { type: 'moments', count: 2, modeGroupeDefaut: true },
+  "6.3": {
+    bloc3: { type: "pur", variante: "oi6" },
+    bloc4: { type: "moments", count: 2, modeGroupeDefaut: true },
   },
 
   // OI7 — liens de causalité
-  '7.1': {
-    bloc3: { type: 'pur', variante: 'oi7' },
-    bloc4: { type: 'standard' },
+  "7.1": {
+    bloc3: { type: "pur", variante: "oi7" },
+    bloc4: { type: "standard" },
   },
-}
+};
 ```
 
 ---
@@ -212,33 +209,30 @@ export const WIZARD_BLOC_CONFIGS: Record<string, WizardBlocConfig> = {
 // lib/tae/consigne-templates.ts
 
 export type ConsigneTemplateKey =
-  | 'oi3-difference'
-  | 'oi3-similitude'
-  | 'oi4-cause'
-  | 'oi4-consequence'
-  | 'oi6-changement'
-  | 'oi6-continuite'
+  | "oi3-difference"
+  | "oi3-similitude"
+  | "oi4-cause"
+  | "oi4-consequence"
+  | "oi6-changement"
+  | "oi6-continuite";
 
 export const CONSIGNE_TEMPLATES = {
-  'oi3-difference':
-    'À l\'aide du document {{doc_A}}, indiquez une différence' +
-    ' entre [X] et [Y] concernant [thème].',
-  'oi3-similitude':
-    'À l\'aide du document {{doc_A}}, indiquez une ressemblance' +
-    ' entre [X] et [Y] concernant [thème].',
-  'oi4-cause':
-    'À l\'aide du document {{doc_A}}, indiquez une cause' +
-    ' de [réalité historique].',
-  'oi4-consequence':
-    'À l\'aide du document {{doc_A}}, indiquez une conséquence' +
-    ' de [événement / réalité] sur [domaine].',
-  'oi6-changement':
-    'À l\'aide du document {{doc_A}}, indiquez un changement' +
-    ' dans [enjeu] à [période].',
-  'oi6-continuite':
-    'À partir du document {{doc_A}}, indiquez un élément de' +
-    ' continuité dans [enjeu] entre [période 1] et [période 2].',
-} satisfies Record<ConsigneTemplateKey, string>
+  "oi3-difference":
+    "À l'aide du document {{doc_A}}, indiquez une différence" +
+    " entre [X] et [Y] concernant [thème].",
+  "oi3-similitude":
+    "À l'aide du document {{doc_A}}, indiquez une ressemblance" +
+    " entre [X] et [Y] concernant [thème].",
+  "oi4-cause": "À l'aide du document {{doc_A}}, indiquez une cause" + " de [réalité historique].",
+  "oi4-consequence":
+    "À l'aide du document {{doc_A}}, indiquez une conséquence" +
+    " de [événement / réalité] sur [domaine].",
+  "oi6-changement":
+    "À l'aide du document {{doc_A}}, indiquez un changement" + " dans [enjeu] à [période].",
+  "oi6-continuite":
+    "À partir du document {{doc_A}}, indiquez un élément de" +
+    " continuité dans [enjeu] entre [période 1] et [période 2].",
+} satisfies Record<ConsigneTemplateKey, string>;
 
 // OI7·7.1 : pas de clé — consigne générée depuis champs de formulaire.
 ```
@@ -275,11 +269,11 @@ l'enseignant doit le faire avant de voir l'aperçu.
 
 ### Disponibilité par comportement
 
-| Comportement | Groupé | Séparé |
-|-------------|--------|--------|
-| 3.3 | ✅ défaut | ✅ |
-| 3.4 | ✅ défaut | ✅ |
-| 3.5 | ✅ défaut | ✅ |
+| Comportement | Groupé    | Séparé |
+| ------------ | --------- | ------ |
+| 3.3          | ✅ défaut | ✅     |
+| 3.4          | ✅ défaut | ✅     |
+| 3.5          | ✅ défaut | ✅     |
 
 **3.5 offre aussi le choix** — trois documents distincts
 est un cas valide et pédagogiquement riche.
@@ -287,6 +281,7 @@ est un cas valide et pédagogiquement riche.
 ### Formules générées selon le mode
 
 **3.3 groupé :**
+
 ```
 Le document {{doc_A}} présente deux points de vue
 d'acteurs [contexte].
@@ -294,6 +289,7 @@ Sur quel point précis ces acteurs sont-ils en désaccord ?
 ```
 
 **3.3 séparé :**
+
 ```
 À l'aide des documents {{doc_A}} et {{doc_B}}, indiquez
 le point précis sur lequel ces acteurs sont en désaccord
@@ -301,6 +297,7 @@ le point précis sur lequel ces acteurs sont en désaccord
 ```
 
 **3.4 groupé :**
+
 ```
 Le document {{doc_A}} présente deux points de vue
 d'acteurs [contexte].
@@ -308,6 +305,7 @@ Sur quel point précis ces acteurs sont-ils d'accord ?
 ```
 
 **3.4 séparé :**
+
 ```
 À l'aide des documents {{doc_A}} et {{doc_B}}, indiquez
 le point précis sur lequel ces acteurs sont d'accord
@@ -315,6 +313,7 @@ le point précis sur lequel ces acteurs sont d'accord
 ```
 
 **3.5 groupé :**
+
 ```
 Le document {{doc_A}} présente trois points de vue
 d'acteurs [contexte].
@@ -323,6 +322,7 @@ Puis, comparez ce point de vue à celui des deux autres acteurs.
 ```
 
 **3.5 séparé :**
+
 ```
 À l'aide des documents {{doc_A}}, {{doc_B}} et {{doc_C}},
 nommez l'acteur qui présente un point de vue différent.
@@ -338,6 +338,7 @@ Quand l'enseignant change le mode (groupé ↔ séparé),
 les données sont **transférées automatiquement** — pas effacées.
 
 **Groupé → Séparé :**
+
 ```
 perspectiveA.contenu → doc_A.contenu
 perspectiveA.source  → doc_A.source
@@ -347,6 +348,7 @@ perspectiveC...      → doc_C... (3.5)
 ```
 
 **Séparé → Groupé :**
+
 ```
 doc_A.contenu → perspectiveA.contenu
 doc_A.source  → perspectiveA.source
@@ -356,19 +358,21 @@ doc_C...      → perspectiveC... (3.5)
 ```
 
 **Implémentation — fonctions pures testables :**
+
 ```typescript
 // lib/tae/oi-perspectives/perspectives-helpers.ts
 
 function migratePerspectivesToSlots(
-  perspectives: PerspectiveData[]
-): Partial<Record<DocumentSlotId, DocumentSlotData>>
+  perspectives: PerspectiveData[],
+): Partial<Record<DocumentSlotId, DocumentSlotData>>;
 
 function migrateSlotsToPerpsectives(
-  slots: Partial<Record<DocumentSlotId, DocumentSlotData>>
-): PerspectiveData[]
+  slots: Partial<Record<DocumentSlotId, DocumentSlotData>>,
+): PerspectiveData[];
 ```
 
 **Action reducer :**
+
 ```typescript
 | {
     type: 'SET_PERSPECTIVES_MODE_WITH_MIGRATION'
@@ -383,14 +387,14 @@ function migrateSlotsToPerpsectives(
 Déclenché uniquement si des données existent déjà dans
 le bloc perspectives (pas au premier choix).
 
-| Surface | Libellé |
-|---------|---------|
-| Titre | Modifier la structure du document |
-| Corps | Les contenus saisis (extraits, sources, acteurs) seront transférés dans la nouvelle structure. |
-| Sous-texte si → groupé | Un seul document physique divisé en [deux / trois] perspectives côte à côte. |
-| Sous-texte si → séparé | [Deux / Trois] documents indépendants, réutilisables dans la banque. |
-| Confirmer | Confirmer |
-| Annuler | Annuler |
+| Surface                | Libellé                                                                                        |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| Titre                  | Modifier la structure du document                                                              |
+| Corps                  | Les contenus saisis (extraits, sources, acteurs) seront transférés dans la nouvelle structure. |
+| Sous-texte si → groupé | Un seul document physique divisé en [deux / trois] perspectives côte à côte.                   |
+| Sous-texte si → séparé | [Deux / Trois] documents indépendants, réutilisables dans la banque.                           |
+| Confirmer              | Confirmer                                                                                      |
+| Annuler                | Annuler                                                                                        |
 
 ---
 
@@ -411,6 +415,7 @@ Bouton "Utiliser un modèle de consigne" dans la barre TipTap.
 L'enseignant modifie librement après insertion.
 
 **Exemples réels**
+
 - "Quelle est la différence entre les structures sociales
   de ces deux familles autochtones ?"
 - "Indiquez une différence entre la vallée du Saint-Laurent
@@ -445,11 +450,13 @@ Bloc 4 Perspectives count=2, Bloc 5 Intrus.
 ```
 
 **Éléments automatiques :**
+
 - "en désaccord" → comportement_id = 3.3
 - "d'accord" → comportement_id = 3.4
 - "acteurs" / "historiens" → selon radio type
 
 **Exemples réels**
+
 - "Le document 9 présente deux points de vue d'acteurs en 1775.
   Sur quel point précis ces acteurs sont-ils en désaccord ?"
 - "Le document 23 présente deux points de vue d'historiens sur
@@ -485,6 +492,7 @@ Formule identique à 100% sur les 5 exemples analysés.
 ```
 
 **Exemples réels**
+
 - "Le document 1 présente trois points de vue d'acteurs sur
   un enjeu politique en 1760. Nommez l'acteur qui présente
   un point de vue différent. Puis, comparez ce point de vue
@@ -563,12 +571,14 @@ des champs "Acteur ou historien" saisis au Bloc 4.
 Grande variété de formulations — template figé trop contraignant.
 
 **Modèle 4.1 :**
+
 ```
 À l'aide du document {{doc_A}}, indiquez une cause
 de [réalité historique].
 ```
 
 **Modèle 4.2 :**
+
 ```
 À l'aide du document {{doc_A}}, indiquez une conséquence
 de [événement / réalité] sur [domaine].
@@ -602,6 +612,7 @@ dans le contenu des documents. L'élève les trouve lui-même.
 5 lignes, Bloc 3 template pur, Bloc4Moments count=2.
 
 **Formule figée :**
+
 ```
 À partir du document {{doc_A}}, indiquez s'il y a
 changement ou continuité quant à [enjeu].
@@ -619,6 +630,7 @@ Choix groupé/séparé au Bloc 3 (même `SET_PERSPECTIVES_MODE_WITH_MIGRATION`).
 Note : OI6·6.1 et 6.2 utilisent le Bloc 4 standard (1 document).
 
 **Mode groupé :**
+
 ```
 ┌─ Document A ──────────────────────────────────────┐
 │  Titre [champ texte, optionnel]                    │
@@ -646,12 +658,14 @@ Bloc 3 template pur (variante `oi7`), Bloc 4 standard.
 **Deux modes — gabarit recommandé ou consigne libre :**
 
 Mode **gabarit** (défaut) — 4 champs :
+
 - Réalité historique (obligatoire)
 - Élément 1 (obligatoire)
 - Élément 2 (obligatoire)
 - Élément 3 (obligatoire)
 
 Formule générée avec pills inline :
+
 ```
 [pill-auto: Consultez les documents A, B et C.]
 Expliquez comment [pill-field: réalité historique].
@@ -680,37 +694,37 @@ Le champ période est masqué (implicite dans la réalité).
 // lib/tae/oi-perspectives/perspectives-types.ts
 
 export type PerspectiveData = {
-  acteur: string    // nom — label UI "Acteur ou historien"
-  contenu: string   // HTML TipTap
-  source: string    // HTML TipTap
-}
+  acteur: string; // nom — label UI "Acteur ou historien"
+  contenu: string; // HTML TipTap
+  source: string; // HTML TipTap
+};
 
 export type MomentData = {
-  contenu: string   // HTML — contient les indices temporels
-  source: string    // HTML
+  contenu: string; // HTML — contient les indices temporels
+  source: string; // HTML
   // Pas de champ repere — trouvé par l'élève
-}
+};
 
 export type PerspectivesPayload = {
-  mode: 'groupe' | 'separe'
-  titre?: string
-  type?: 'textuel' | 'iconographique'
-  typePerspectives: 'acteurs' | 'historiens'
-  perspectives: PerspectiveData[]
-}
+  mode: "groupe" | "separe";
+  titre?: string;
+  type?: "textuel" | "iconographique";
+  typePerspectives: "acteurs" | "historiens";
+  perspectives: PerspectiveData[];
+};
 
 export type MomentsPayload = {
-  mode: 'groupe' | 'separe'
-  titre?: string
-  type?: 'textuel' | 'iconographique'
-  moments: MomentData[]
-}
+  mode: "groupe" | "separe";
+  titre?: string;
+  type?: "textuel" | "iconographique";
+  moments: MomentData[];
+};
 
 export type IntrusPayload = {
-  intrusLetter: 'A' | 'B' | 'C' | ''
-  explicationDifference: string
-  pointCommun: string
-}
+  intrusLetter: "A" | "B" | "C" | "";
+  explicationDifference: string;
+  pointCommun: string;
+};
 ```
 
 ---
@@ -754,28 +768,28 @@ lib/tae/
 
 ### Déjà ajoutées — Sprint 1
 
-18 constantes PERSP_* dans lib/ui/ui-copy.ts.
+18 constantes PERSP\_\* dans lib/ui/ui-copy.ts.
 
 ### Corrections v2 — à mettre à jour
 
-| Constante | Ancienne valeur | Nouvelle valeur |
-|-----------|----------------|-----------------|
-| PERSP_BLOC3_TYPE_ACTEURS | "Acteurs historiques" | "Acteurs de l'époque" |
-| PERSP_BLOC3_TYPE_HISTORIENS | "Historiens" | "Historiens et historiennes" |
+| Constante                   | Ancienne valeur       | Nouvelle valeur              |
+| --------------------------- | --------------------- | ---------------------------- |
+| PERSP_BLOC3_TYPE_ACTEURS    | "Acteurs historiques" | "Acteurs de l'époque"        |
+| PERSP_BLOC3_TYPE_HISTORIENS | "Historiens"          | "Historiens et historiennes" |
 
 ### À ajouter — choix structure (v2)
 
-| Constante | Libellé |
-|-----------|---------|
-| PERSP_BLOC3_STRUCTURE_LABEL | Structure documentaire |
-| PERSP_BLOC3_STRUCTURE_GROUPE | Un seul document (perspectives groupées) |
-| PERSP_BLOC3_STRUCTURE_SEPARE | Documents distincts |
-| PERSP_BLOC3_MIGRATION_TITLE | Modifier la structure du document |
-| PERSP_BLOC3_MIGRATION_BODY | Les contenus saisis (extraits, sources, acteurs) seront transférés dans la nouvelle structure. |
-| PERSP_BLOC3_MIGRATION_SUBTITLE_GROUPE | Un seul document physique divisé en perspectives côte à côte. |
-| PERSP_BLOC3_MIGRATION_SUBTITLE_SEPARE | Documents indépendants, réutilisables dans la banque. |
-| PERSP_BLOC3_MIGRATION_CONFIRM | Confirmer |
-| PERSP_BLOC3_MIGRATION_CANCEL | Annuler |
+| Constante                             | Libellé                                                                                        |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| PERSP_BLOC3_STRUCTURE_LABEL           | Structure documentaire                                                                         |
+| PERSP_BLOC3_STRUCTURE_GROUPE          | Un seul document (perspectives groupées)                                                       |
+| PERSP_BLOC3_STRUCTURE_SEPARE          | Documents distincts                                                                            |
+| PERSP_BLOC3_MIGRATION_TITLE           | Modifier la structure du document                                                              |
+| PERSP_BLOC3_MIGRATION_BODY            | Les contenus saisis (extraits, sources, acteurs) seront transférés dans la nouvelle structure. |
+| PERSP_BLOC3_MIGRATION_SUBTITLE_GROUPE | Un seul document physique divisé en perspectives côte à côte.                                  |
+| PERSP_BLOC3_MIGRATION_SUBTITLE_SEPARE | Documents indépendants, réutilisables dans la banque.                                          |
+| PERSP_BLOC3_MIGRATION_CONFIRM         | Confirmer                                                                                      |
+| PERSP_BLOC3_MIGRATION_CANCEL          | Annuler                                                                                        |
 
 ### À ajouter — Sprint 3 (OI4, OI6, OI7)
 

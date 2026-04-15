@@ -345,6 +345,10 @@ Le **tableau chronologique** des livraisons documentées est dans **[BACKLOG-HIS
 
 ---
 
+| Migration vocabulaire `Tae*` → `Tache*` | Renommer progressivement les identifiants hérités : `lib/tae/` → `lib/tache/`, `TaeCard` → `CarteTache`, `TaeFicheData` → `DonneesTache`, composants `Tae*` → `Tache*`. Tables SQL (`tae`, `tae_collaborateurs`, `tae_documents`), RPCs et politiques RLS inclus. Lot D0 du print-engine pose le premier jalon (`lib/tache/contrats/`). Effort estimé : 2-3 jours (mécaniques mais nombreux importers, ~49 fichiers pour `TaeFicheData` seul). | `lib/tae/`, `components/tae/`, `lib/types/fiche.ts`, schéma SQL | `[DECISIONS.md](./DECISIONS.md#terminologie-code-types-fichiers-dossiers-tables-sql)`, `[docs/specs/print-engine.md](./specs/print-engine.md)` |
+
+---
+
 ## Basse priorité — polish et extras
 
 | Item                                                                               | Description                                                                                                                                                                             | Fichier(s)                                                                | Spec                                                                                                                                  |

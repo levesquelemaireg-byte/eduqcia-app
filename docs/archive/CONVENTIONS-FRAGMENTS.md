@@ -1,6 +1,16 @@
 # Conventions — fragments métier (fiche, impression, PDF)
 
-Document de **référence normative** pour nommer et structurer les fragments de rendu (TAÉ, documents, copie élève, grilles). À lire avec [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md) (outil DEV `/dev/fragments`) et [ARCHITECTURE.md](./ARCHITECTURE.md).
+> **⚠️ Document déprécié — avril 2026**
+>
+> Cette convention de nommage (`*Fragment` / `*App` / `*Print`) n'a jamais été appliquée dans le code de production. Seul le playground dev (`components/playground/`, `app/dev/fragments/`) en utilise des traces.
+>
+> **Référentiel actuel pour les composants de rendu d'impression :** `docs/specs/print-engine.md` (section 5).
+>
+> **Référentiel actuel pour la convention de nommage générale :** section « Convention de nommage et structure des fichiers » dans `CLAUDE.md`.
+>
+> Conservé pour référence historique uniquement.
+
+Document de **référence normative** pour nommer et structurer les fragments de rendu (TAÉ, documents, copie élève, grilles). À lire avec [FRAGMENT-PLAYGROUND.md](../FRAGMENT-PLAYGROUND.md) (outil DEV `/dev/fragments`) et [ARCHITECTURE.md](../ARCHITECTURE.md).
 
 ---
 

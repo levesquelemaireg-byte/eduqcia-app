@@ -28,7 +28,7 @@ La documentation est un **livré central** du projet. **Entrée et navigation :*
 
 Ordre de lecture recommandé : [`docs/DECISIONS.md`](docs/DECISIONS.md) (copy et règles) → [`docs/FEATURES.md`](docs/FEATURES.md) → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) → [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) → [`docs/BACKLOG.md`](docs/BACKLOG.md).
 
-Stratégie de **fragmentation** des rendus fiche / impression / vignette : [`docs/OBJECTIFS-FRAGMENTATION.md`](docs/OBJECTIFS-FRAGMENTATION.md) (avec [`docs/CONVENTIONS-FRAGMENTS.md`](docs/CONVENTIONS-FRAGMENTS.md) et [`docs/FRAGMENT-PLAYGROUND.md`](docs/FRAGMENT-PLAYGROUND.md)).
+Composants de rendu d'impression : [`docs/specs/print-engine.md`](docs/specs/print-engine.md). Fragmentation historique (dépréciée) : [`docs/archive/CONVENTIONS-FRAGMENTS.md`](docs/archive/CONVENTIONS-FRAGMENTS.md).
 
 - CI / déploiement / schéma : **`docs/ARCHITECTURE.md`**
 - Avancement produit et backlog : **`docs/BACKLOG.md`**

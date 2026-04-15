@@ -22,7 +22,7 @@ Les **fichiers JSON actuels** sous **`public/data/`** sur lesquels **l’applica
 
 ## Fragments métier (nommage code)
 
-Suffixes **`Fragment` / `App` / `Print`**, noms **français**, granularité utile, rédactionnel vs non rédactionnel, champs **fiche seule** sans variante print : **[CONVENTIONS-FRAGMENTS.md](./CONVENTIONS-FRAGMENTS.md)**. Le playground DEV : [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md).
+Convention de nommage fragments (`*Fragment` / `*App` / `*Print`) : **dépréciée**, jamais appliquée en production — archivée dans [archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md). Référentiel actuel pour les composants d'impression : **[specs/print-engine.md](./specs/print-engine.md)** (section 5). Le playground DEV : [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md).
 
 ## Terminologie UI — pas d’acronymes interdits
 
@@ -37,6 +37,14 @@ Suffixes **`Fragment` / `App` / `Print`**, noms **français**, granularité util
 | « Nombre de lignes » comme **titre de section** seul au Bloc 2 | **Espace de production** (le nombre de lignes est une **valeur** affichée dans cette section, lue depuis `oi.json`) |
 | Bibliothèque / Répertoire                                      | Banque collaborative                                                                                                |
 | 5 blocs                                                        | 7 étapes                                                                                                            |
+
+## Terminologie code (types, fichiers, dossiers, tables SQL)
+
+Tout **nouveau** code (types, fichiers, dossiers, variables) doit utiliser `tache` / `Tache` (français). Le préfixe `tae` / `Tae` est **interdit dans les nouveaux fichiers** — il reste un héritage technique de la phase alpha.
+
+Le code existant (`lib/tae/`, `TaeCard`, `TaeFicheData`, tables SQL `tae`, `tae_collaborateurs`, RPCs `publish_tae_transaction`, etc.) est **grandfathered** : il n'est pas renommé sauf migration progressive planifiée (voir backlog technique dans [BACKLOG.md](./BACKLOG.md#backlog-technique-détaillé)).
+
+**Exception print-engine** : la spec `docs/specs/print-engine.md` introduit dès le lot D0 les types `DonneesTache` et `etatWizardVersTache` dans `lib/tache/contrats/` — premier jalon de la migration vocabulaire.
 
 ## Épreuve (composition enseignant) — terminologie publique
 

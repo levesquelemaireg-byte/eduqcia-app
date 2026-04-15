@@ -57,33 +57,41 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - [x] **AUTH-3** Modifier son profil (A6) — `ProfileEditSheet` (Side Sheet identité + professionnel), actions `profile-update-identity`/`profile-update-professional`, schemas Zod, cascade CSS/école, pivot tables `profile_niveaux`/`profile_disciplines`, `DeleteAccountSection` Loi 25
 - [x] **AUTH-4** Profil public enseignant (D9) — même route `/profile/[id]` avec `isOwner` flag, refonte `/collaborateurs` (cards, recherche hybride, scroll infini)
 
-## Lot 6 — Finitions parcours création
+## Lot 6 — Export PDF (livrable classe)
+
+> **Prérequis obligatoire :** lire `docs/specs/print-engine.md` en entier avant d'attaquer PDF-1. Chaque item ci-dessous suppose que la spec v2.1 est le référentiel, pas cette checklist. En cas de doute, la spec gagne.
+
+- [ ] **PDF-1** D0 partiel — types `DonneesTache` + mapper `etatWizardVersTache` + tests unitaires
+- [ ] **PDF-2** D0 complet — wipe alpha (`DELETE FROM tae;`) + migration ~18 fichiers consommateurs
+- [ ] **PDF-3** D6 — en-tête d'épreuve 80px + `SectionPage` + constantes pagination
+- [ ] **PDF-4** D3 — transformation `epreuveVersPaginee` + renumérotation + tests unitaires
+- [ ] **PDF-5** D2 — pager isomorphe greedy first-fit + mesure offscreen
+- [ ] **PDF-6** D1 — route SSR `/apercu/[token]` + draft-token HMAC + Vercel KV
+- [ ] **PDF-7** Composants de rendu (`ApercuImpression`, `SectionPage`, sections, blocs)
+- [ ] **PDF-8** D4 — Puppeteer + preflight + `@sparticuz/chromium-min`
+- [ ] **PDF-9** Routes API `/api/impression/pdf` + `/api/impression/apercu-png`
+- [ ] **PDF-10** Tests visuels Playwright (3→8 golden payloads)
+- [ ] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
+- [ ] **PDF-12** Validation terrain sur imprimantes réelles (phase de validation, pas de dev)
+
+## Lot 7 — Finitions parcours création
 
 - [ ] **CRE-1** Sélecteurs niveau/discipline dans le wizard épreuve (C17)
 - [ ] **CRE-2** Filtres épreuves dans la banque — niveau, discipline (D3)
 - [ ] **CRE-3** Filtre par auteur dans la banque (D4)
 - [ ] **CRE-4** Page de lecture épreuve read-only (D5 partiel)
 
-## Lot 7 — Dashboard
+## Lot 8 — Dashboard
 
 - [ ] **DASH-1** Enrichir widgets avec dernières créations (B2)
 - [ ] **DASH-2** Widget « Brouillons en cours » avec liens directs (B4)
 
-## Lot 8 — Favoris / Épinglage
+## Lot 9 — Favoris / Épinglage
 
 - [ ] **FAV-1** Action `toggle-favoris.ts` (insert/delete)
 - [ ] **FAV-2** Query `get-user-favorites.ts`
 - [ ] **FAV-3** Câbler le bouton épingler dans la fiche tâche (D6)
 - [ ] **FAV-4** Widget dashboard « Mes favoris » avec liste (B3)
-
-## Lot 9 — Export PDF (livrable classe)
-
-- [ ] **PDF-1** Installer `puppeteer-core` + `@sparticuz/chromium-min` (E1)
-- [ ] **PDF-2** Route API `/api/evaluations/[id]/pdf` (E1)
-- [ ] **PDF-3** Bouton « Télécharger PDF » dans l'UI épreuve (E4)
-- [ ] **PDF-4** Template print « corrigé enseignant » (E2)
-- [ ] **PDF-5** Template print « formatif un feuillet » (E2, coupe possible)
-- [ ] **PDF-6** Validation impression fidèle sur 2-3 imprimantes (E5)
 
 ## Lot 10 — Tests d'intégration
 
@@ -102,18 +110,18 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 3 — Loading/Error      | 4      | 4      | 100%    |
 | 4 — CRUD manquant      | 2      | 2      | 100%    |
 | 5 — Compte             | 4      | 4      | 100%    |
-| 6 — Finitions création | 4      | 0      | 0%      |
-| 7 — Dashboard          | 2      | 0      | 0%      |
-| 8 — Favoris            | 4      | 0      | 0%      |
-| 9 — Export PDF         | 6      | 0      | 0%      |
+| 6 — Export PDF         | 12     | 0      | 0%      |
+| 7 — Finitions création | 4      | 0      | 0%      |
+| 8 — Dashboard          | 2      | 0      | 0%      |
+| 9 — Favoris            | 4      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **37** | **18** | **49%** |
+| **Total**              | **43** | **18** | **42%** |
 
 ---
 
 ## Notes
 
-- Les lots sont ordonnés par priorité recommandée (sécurité d'abord, PDF en dernier)
+- Les lots sont ordonnés par priorité recommandée (sécurité d'abord, puis PDF car D0 est un refactor bloquant, puis polish UX)
 - Les items marqués « coupe possible » dans `mvp-v1.md` : PDF-5 (formatif), D4 (filtre auteur), D6/FAV (épinglage), D9/AUTH-4 (profil public)
 - Référence détaillée par item : `docs/specs/mvp-v1-audit-completude.md`
 

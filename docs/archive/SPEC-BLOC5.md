@@ -12,6 +12,7 @@ Auteur : session de conception claude.ai
 ## Principe fondamental
 
 Le Bloc 5 est toujours une fonction de :
+
 - La structure définie au **Bloc 3** (étiquettes, catégories, éléments)
 - Les données saisies au **Bloc 4** (documents, années, contenus)
 
@@ -34,42 +35,42 @@ Bloc5NrOptions.tsx      ← tous les parcours NR
 
 ```typescript
 type Bloc5RedactionnelProps = {
-  templateKey: Bloc5TemplateKey
+  templateKey: Bloc5TemplateKey;
   // Données pré-remplissage depuis Bloc 3/4
   prefilledData?: {
-    acteurs?: string[]        // noms depuis Bloc 4 perspectives
-    elements?: string[]       // éléments 1/2/3 depuis Bloc 3 OI7
-    intrusIndex?: number      // index intrus depuis Bloc 4
-  }
-}
+    acteurs?: string[]; // noms depuis Bloc 4 perspectives
+    elements?: string[]; // éléments 1/2/3 depuis Bloc 3 OI7
+    intrusIndex?: number; // index intrus depuis Bloc 4
+  };
+};
 
 type Bloc5TemplateKey =
-  | 'libre'                  // OI0
-  | 'opposition'             // OI3·3.1/3.2
-  | 'accord-desaccord'       // OI3·3.3/3.4
-  | 'intrus'                 // OI3·3.5
-  | 'cause'                  // OI4·4.1
-  | 'consequence'            // OI4·4.2
-  | 'changement'             // OI6·6.1
-  | 'continuite'             // OI6·6.2
-  | 'changement-continuite'  // OI6·6.3 — double corrigé
-  | 'causalite'              // OI7·7.1
+  | "libre" // OI0
+  | "opposition" // OI3·3.1/3.2
+  | "accord-desaccord" // OI3·3.3/3.4
+  | "intrus" // OI3·3.5
+  | "cause" // OI4·4.1
+  | "consequence" // OI4·4.2
+  | "changement" // OI6·6.1
+  | "continuite" // OI6·6.2
+  | "changement-continuite" // OI6·6.3 — double corrigé
+  | "causalite"; // OI7·7.1
 ```
 
 ### Bloc5NrOptions — props
 
 ```typescript
 type Bloc5NrOptionsProps = {
-  optionsType: Bloc5NrOptionsType
-}
+  optionsType: Bloc5NrOptionsType;
+};
 
 type Bloc5NrOptionsType =
-  | 'sequence'     // OI1·1.1 — suites A-B-C-D
-  | 'segment'      // OI1·1.2 — frise segments
-  | 'avant-apres'  // OI1·1.3 — tableau binaire
-  | 'carte'        // OI2 — lettres sur carte
-  | 'cases'        // OI4·4.3/4.4 — numéros documents
-  | 'appariement'  // OI5 — étiquettes + numéros
+  | "sequence" // OI1·1.1 — suites A-B-C-D
+  | "segment" // OI1·1.2 — frise segments
+  | "avant-apres" // OI1·1.3 — tableau binaire
+  | "carte" // OI2 — lettres sur carte
+  | "cases" // OI4·4.3/4.4 — numéros documents
+  | "appariement"; // OI5 — étiquettes + numéros
 ```
 
 ---
@@ -163,6 +164,7 @@ Notes   : "Refuser toute réponse qui reproduit
 ### `opposition` — OI3·3.1 et 3.2
 
 **3.1 — Différence :**
+
 ```
 Modèle :
 "[Objet A] est/fait [Caractéristique 1], alors que
@@ -188,6 +190,7 @@ Notes pré-remplies :
 ```
 
 **3.2 — Similitude :**
+
 ```
 Modèle :
 "[Objet A] et [Objet B] ont/font tous les deux
@@ -217,6 +220,7 @@ Les noms des acteurs sont déduits de
 `state.bloc4.perspectives[i].acteur`.
 
 **3.3 — Désaccord :**
+
 ```
 Modèle pré-rempli :
 "[Nom acteur A] et [Nom acteur B] sont en désaccord
@@ -246,6 +250,7 @@ Notes pré-remplies :
 ```
 
 **3.4 — Accord :**
+
 ```
 Modèle pré-rempli :
 "[Nom acteur A] et [Nom acteur B] sont d'accord
@@ -260,6 +265,7 @@ Notes : même structure que 3.3,
 ### `intrus` — OI3·3.5
 
 **Pré-remplissage automatique :**
+
 - Intrus : déduit de `intrusLetter` coché au Bloc 4
 - Noms : depuis `state.bloc4.perspectives[i].acteur`
 
@@ -416,6 +422,7 @@ Les deux peuvent être valides si la justification
 est correcte. L'enseignant peut fournir deux corrigés.
 
 **Trois composantes obligatoires :**
+
 ```
 1. Identification   → "Il y a changement" ou
                       "Il y a continuité" — mots exacts
@@ -426,6 +433,7 @@ est correcte. L'enseignant peut fournir deux corrigés.
 ```
 
 **Deux zones de corrigé au Bloc 5 :**
+
 ```
 ┌─ Si l'élève conclut à un changement ─────────┐
 │ Modèle :                                      │
@@ -450,6 +458,7 @@ est correcte. L'enseignant peut fournir deux corrigés.
 ```
 
 **Notes pré-remplies :**
+
 ```
 "Les deux conclusions (changement ou continuité)
  peuvent être acceptées si l'élève nomme sa
@@ -481,6 +490,7 @@ Les 3 éléments sont déduits des champs
 Élément 1, Élément 2, Élément 3 saisis au Bloc 3.
 
 **Exigences strictes :**
+
 ```
 ✅ Minimum 3 phrases
 ✅ Minimum 2 marqueurs de causalité explicites
@@ -489,6 +499,7 @@ Les 3 éléments sont déduits des champs
 ```
 
 **Marqueurs de causalité obligatoires :**
+
 ```
 ce qui entraîne, mène à, provoque,
 en raison de, car, donc, ainsi,
@@ -496,6 +507,7 @@ c'est pourquoi, par conséquent
 ```
 
 **Modèle pré-rempli :**
+
 ```
 "[Élément 1 — fait précis et nommé],
  ce qui entraîne [Élément 2 — fait précis et nommé].
@@ -510,6 +522,7 @@ Ex (politique Murray) :
 ```
 
 **Notes pré-remplies :**
+
 ```
 "La réponse doit comporter au moins 3 phrases
  et au moins 2 marqueurs de causalité explicites.
@@ -665,12 +678,14 @@ Ex : "Tradition orale : Document 10.
 ## Notes du correcteur — règles générales
 
 ### Visibilité
+
 - Visible dans la **fiche lecture enseignant**
 - Visible dans la **banque collaborative** (tous)
 - Visible dans le **preview** (sommaire wizard)
 - **Jamais** sur la feuille élève
 
 ### SQL
+
 ```sql
 tae.notes_correcteur TEXT NULL
 -- Nullable — optionnel
@@ -679,6 +694,7 @@ tae.notes_correcteur TEXT NULL
 ```
 
 ### Génération automatique
+
 ```
 R — pré-remplissage depuis templateKey
     L'enseignant peut modifier

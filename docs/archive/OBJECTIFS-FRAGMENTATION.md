@@ -1,6 +1,6 @@
 # Objectifs de la fragmentation — pourquoi et vers quoi on va
 
-Document de **contexte stratégique** à lire avec [CONVENTIONS-FRAGMENTS.md](./CONVENTIONS-FRAGMENTS.md) et [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md).
+Document de **contexte stratégique** à lire avec [archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md) et [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md).
 
 ---
 
@@ -14,7 +14,7 @@ PrintableFicheFromTaeData.tsx  ← rendu print complet
 TaeCard.tsx                    ← thumbnail complet
 ```
 
-La logique de rendu est **éparpillée** à l'intérieur de ces composants via des conditions `if mode === "sommaire"`, des blocs inline, des styles couplés. Ce n'est pas du mauvais code — c'est une dette de *connaissance implicite* qui grossit à chaque nouveau comportement ajouté.
+La logique de rendu est **éparpillée** à l'intérieur de ces composants via des conditions `if mode === "sommaire"`, des blocs inline, des styles couplés. Ce n'est pas du mauvais code — c'est une dette de _connaissance implicite_ qui grossit à chaque nouveau comportement ajouté.
 
 ---
 
@@ -45,6 +45,7 @@ FicheTache devient un assembleur :
 ## Pourquoi — bénéfices concrets
 
 ### 1. Modifier une fois, propager partout
+
 ```
 Sans fragments : changer la consigne = modifier FicheTache + PrintableFicheFromTaeData
                  + FicheSommaireColumn + espérer ne pas oublier un 4e endroit
@@ -54,20 +55,25 @@ Avec fragments : changer ConsigneApp = une modification, propagée dans tous les
 ```
 
 ### 2. Ajouter un comportement sans réécrire
+
 Chaque nouveau comportement (`coming_soon` → `active`) réutilise les fragments existants :
+
 - `ConsignePrint` → identique pour tous les comportements
 - `GrilleCorrectionPrint` → identique, seul `outilEvaluation` change
 - Seul `EspaceReponseNRPrint` a une variante par comportement si la structure diverge
 
 ### 3. Tester en isolation
+
 Le playground monte chaque fragment seul, avec des données mock, dans tous les contextes.
 On voit immédiatement si un fragment casse en mode Print sans avoir à naviguer dans l'app.
 
 ### 4. Onboarder un collaborateur
+
 `ConsignePrint.tsx` dit exactement ce qu'il fait et où il vit.
 `FicheTache.tsx` avec 400 lignes et des conditions imbriquées, non.
 
 ### 5. Pipeline PDF sans surprise
+
 Puppeteer rend `/questions/[id]/print` — si cette route est un assembleur de fragments
 bien délimités, le PDF est pixel perfect par construction. Pas de surprise de mise en page
 cachée dans un monolithe.
@@ -101,33 +107,36 @@ que les fragments sont extraits et décorés avec `data-fragment`.
 ## Ordre de priorité d'extraction
 
 ### Priorité haute — fragments universels (tous comportements)
+
 Ces fragments sont identiques quel que soit le comportement.
 Un seul composant sert partout — gain immédiat maximal.
 
 Colonne **Statut** : ⏳ à extraire, ✅ fait — à mettre à jour après chaque extraction (voir template de prompt).
 
-| Fragment canonique | App | Print | Statut |
-|---|---|---|---|
-| `IdentificationEleveFragment` | — | `IdentificationElevePrint` | ⏳ |
-| `EnteteEpreuveFragment` | — | `EnteteEpreuvePrint` | ⏳ |
-| `ConsigneFragment` | `ConsigneApp` | `ConsignePrint` | ⏳ |
-| `GrilleCorrectionFragment` | `GrilleCorrectionApp` | `GrilleCorrectionPrint` | ⏳ |
-| `PiedPageEpreuveFragment` | — | `PiedPageEpreuvePrint` | ⏳ |
+| Fragment canonique            | App                   | Print                      | Statut |
+| ----------------------------- | --------------------- | -------------------------- | ------ |
+| `IdentificationEleveFragment` | —                     | `IdentificationElevePrint` | ⏳     |
+| `EnteteEpreuveFragment`       | —                     | `EnteteEpreuvePrint`       | ⏳     |
+| `ConsigneFragment`            | `ConsigneApp`         | `ConsignePrint`            | ⏳     |
+| `GrilleCorrectionFragment`    | `GrilleCorrectionApp` | `GrilleCorrectionPrint`    | ⏳     |
+| `PiedPageEpreuveFragment`     | —                     | `PiedPageEpreuvePrint`     | ⏳     |
 
 ### Priorité moyenne — fragments variables par comportement
+
 Ces fragments ont une structure qui dépend du comportement (R vs NR, type de réponse).
 
-| Fragment canonique | App | Print | Statut |
-|---|---|---|---|
-| `EspaceReponseEleveRedactionnelFragment` | `…App` | `…Print` | ⏳ |
-| `EspaceReponseNonRedactionnelFragment` | `…App` | `…Print` | ⏳ |
+| Fragment canonique                       | App    | Print    | Statut |
+| ---------------------------------------- | ------ | -------- | ------ |
+| `EspaceReponseEleveRedactionnelFragment` | `…App` | `…Print` | ⏳     |
+| `EspaceReponseNonRedactionnelFragment`   | `…App` | `…Print` | ⏳     |
 
 ### Priorité basse — fragments documentaires
-| Fragment canonique | App | Print | Statut |
-|---|---|---|---|
-| `BoiteDocumentFragment` | `BoiteDocumentApp` | `BoiteDocumentPrint` | ⏳ |
-| `ContenuDocumentTextuelFragment` | `…App` | `…Print` | ⏳ |
-| `ContenuDocumentIconographiqueFragment` | `…App` | `…Print` | ⏳ |
+
+| Fragment canonique                      | App                | Print                | Statut |
+| --------------------------------------- | ------------------ | -------------------- | ------ |
+| `BoiteDocumentFragment`                 | `BoiteDocumentApp` | `BoiteDocumentPrint` | ⏳     |
+| `ContenuDocumentTextuelFragment`        | `…App`             | `…Print`             | ⏳     |
+| `ContenuDocumentIconographiqueFragment` | `…App`             | `…Print`             | ⏳     |
 
 ---
 
@@ -193,9 +202,9 @@ Extraire ce bloc en deux fragments :
 
 ## Références
 
-| Sujet | Fichier |
-|---|---|
-| Conventions de nommage | [CONVENTIONS-FRAGMENTS.md](./CONVENTIONS-FRAGMENTS.md) |
-| Playground DEV | [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md) |
-| Architecture générale | [ARCHITECTURE.md](./ARCHITECTURE.md) |
-| Parcours NR | [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) |
+| Sujet                  | Fichier                                                                |
+| ---------------------- | ---------------------------------------------------------------------- |
+| Conventions de nommage | [archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md) |
+| Playground DEV         | [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md)                     |
+| Architecture générale  | [ARCHITECTURE.md](./ARCHITECTURE.md)                                   |
+| Parcours NR            | [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md)   |

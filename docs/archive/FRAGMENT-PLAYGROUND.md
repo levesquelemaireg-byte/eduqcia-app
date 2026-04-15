@@ -1,6 +1,6 @@
 # Fragment Playground — Guide d'intégration
 
-> **Conventions de nommage** (fragments français, `Fragment` / `App` / `Print`) : **[CONVENTIONS-FRAGMENTS.md](./CONVENTIONS-FRAGMENTS.md)** — référence à suivre pour tout nouveau code.
+> **Conventions de nommage** (fragments français, `Fragment` / `App` / `Print`) : **[archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md)** — référence à suivre pour tout nouveau code.
 
 > **Outil DEV uniquement.** Route `/dev/fragments` — désactivée automatiquement en production (`NODE_ENV === "production"` → `notFound()` + `dynamic = "force-dynamic"`).  
 > Pas de Supabase. Pas d'auth. Données fictives uniquement.
@@ -15,13 +15,13 @@ Un environnement DEV pour comparer **le même jeu de données fiche** (`TaeFiche
 
 **Contextes (onglets) :**
 
-| Onglet     | Composant(s) monté(s)                                                                 | Remarque                          |
-| ---------- | --------------------------------------------------------------------------------------- | --------------------------------- |
-| Wizard     | Placeholder phase 1 — phase 2 : formulaire ou storyboard                                |                                   |
-| Sommaire   | `FicheTache` `mode="sommaire"`                                                          | Même shell que colonne droite wizard |
-| Lecture    | `FicheTache` `mode="lecture"`                                                           | Équivalent fiche `/questions/[id]` |
-| Thumbnail  | `TaeCard`                                                                               | Carte condensée (liste / banque)  |
-| Print      | `PrintableFicheFromTaeData` — **pas** `PrintableFichePreview` (celui-ci dépend du `FormState` wizard) | Deux feuillets dossier / questionnaire |
+| Onglet    | Composant(s) monté(s)                                                                                 | Remarque                               |
+| --------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| Wizard    | Placeholder phase 1 — phase 2 : formulaire ou storyboard                                              |                                        |
+| Sommaire  | `FicheTache` `mode="sommaire"`                                                                        | Même shell que colonne droite wizard   |
+| Lecture   | `FicheTache` `mode="lecture"`                                                                         | Équivalent fiche `/questions/[id]`     |
+| Thumbnail | `TaeCard`                                                                                             | Carte condensée (liste / banque)       |
+| Print     | `PrintableFicheFromTaeData` — **pas** `PrintableFichePreview` (celui-ci dépend du `FormState` wizard) | Deux feuillets dossier / questionnaire |
 
 **Mocks :** `lib/fragment-playground/mocks.ts` — une entrée `MOCK_TAE_FICHE_BY_COMPORTEMENT_ID` par comportement **sélectionnable** avec mock (15 ids : 0.1, 1.1–1.3, 3.1–3.5, 4.1–4.2, 6.1–6.3, 7.1). `outilEvaluation` aligné sur `oi.json`. Parcours **1.1, 1.2, 1.3** : HTML consigne / corrigé / guidage produit par les **mêmes builders** que la publication (`buildOrdreChronologiqueConsigneHtml`, `buildLigneDuTempsConsigneHtml`, `runAvantApresGeneration` + `buildAvantApresConsigneHtml`, etc.) pour satisfaire les parseurs impression.
 
@@ -158,18 +158,18 @@ await page.pdf({
 
 ## Éléments d'épreuve / fragments hors maquette fiche
 
-Les blocs **StudentId**, **Header**, **Footer** épreuve (spec historique dans les anciennes versions de ce document) ne sont **pas** couverts par la matrice fiche actuelle ; les traiter dans un prolongement dédié ou dans [CONVENTIONS-FRAGMENTS.md](./CONVENTIONS-FRAGMENTS.md) lorsqu'un composant stable existe.
+Les blocs **StudentId**, **Header**, **Footer** épreuve (spec historique dans les anciennes versions de ce document) ne sont **pas** couverts par la matrice fiche actuelle ; les traiter dans un prolongement dédié ou dans [archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md) lorsqu'un composant stable existe.
 
 ---
 
 ## Références croisées projet
 
-| Besoin                          | Fichier                                                              |
-| ------------------------------- | -------------------------------------------------------------------- |
-| Données fiche                   | `lib/types/fiche.ts` (`TaeFicheData`)                                |
-| Grilles d'évaluation            | `components/tae/grilles/grille-registry.tsx`, `eval-grid.module.css` |
-| Source textes grilles           | `public/data/grilles-evaluation.json`                                |
-| Impression depuis `TaeFicheData`| `PrintableFicheFromTaeData` dans `PrintableFichePreview.tsx`         |
-| CSS print + @page Letter        | `lib/tae/print-page-css.ts`, `app/globals.css`                       |
-| Comportements non-rédactionnels | `lib/tae/non-redaction/`, `docs/wizard-oi-non-redactionnelle.md`     |
-| Référentiel OI (fetch client)   | `useOiData` — `components/tae/TaeForm/bloc2/useBloc2Data.ts`         |
+| Besoin                           | Fichier                                                              |
+| -------------------------------- | -------------------------------------------------------------------- |
+| Données fiche                    | `lib/types/fiche.ts` (`TaeFicheData`)                                |
+| Grilles d'évaluation             | `components/tae/grilles/grille-registry.tsx`, `eval-grid.module.css` |
+| Source textes grilles            | `public/data/grilles-evaluation.json`                                |
+| Impression depuis `TaeFicheData` | `PrintableFicheFromTaeData` dans `PrintableFichePreview.tsx`         |
+| CSS print + @page Letter         | `lib/tae/print-page-css.ts`, `app/globals.css`                       |
+| Comportements non-rédactionnels  | `lib/tae/non-redaction/`, `docs/wizard-oi-non-redactionnelle.md`     |
+| Référentiel OI (fetch client)    | `useOiData` — `components/tae/TaeForm/bloc2/useBloc2Data.ts`         |
