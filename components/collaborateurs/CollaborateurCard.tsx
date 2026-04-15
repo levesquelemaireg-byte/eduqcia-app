@@ -13,6 +13,7 @@ type Props = {
   lastName: string;
   email: string;
   role: string;
+  genre: string | null;
   cssName: string | null;
   docCount: number;
   taskCount: number;
@@ -28,6 +29,7 @@ export function CollaborateurCard({
   lastName,
   email,
   role,
+  genre,
   cssName,
   docCount,
   taskCount,
@@ -54,7 +56,7 @@ export function CollaborateurCard({
           {/* Ligne 1 : Nom + badge rôle */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-base font-semibold text-deep">{displayName}</span>
-            <RoleBadge role={role} className="!h-6 !px-2.5 !text-xs" />
+            <RoleBadge role={role} genre={genre} className="!h-6 !px-2.5 !text-xs" />
           </div>
 
           {/* Ligne 2 : École + compteurs */}

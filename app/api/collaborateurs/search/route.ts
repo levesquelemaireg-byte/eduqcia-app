@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
   let q = supabase
     .from("profiles")
     .select(
-      "id, first_name, last_name, email, role, schools(nom_officiel, css:css(nom_officiel))",
+      "id, first_name, last_name, email, role, genre, schools(nom_officiel, css:css(nom_officiel))",
       { count: "exact" },
     )
     .eq("status", "active")
@@ -102,6 +102,7 @@ export async function GET(request: NextRequest) {
     last_name: string;
     email: string;
     role: string;
+    genre: string | null;
     schools: { nom_officiel: string; css: { nom_officiel: string } | null } | null;
   };
 
@@ -111,6 +112,7 @@ export async function GET(request: NextRequest) {
     lastName: p.last_name,
     email: p.email,
     role: p.role,
+    genre: p.genre ?? null,
     schoolName: p.schools?.nom_officiel ?? null,
     cssName: p.schools?.css?.nom_officiel ?? null,
     docCount: docMap.get(p.id) ?? 0,

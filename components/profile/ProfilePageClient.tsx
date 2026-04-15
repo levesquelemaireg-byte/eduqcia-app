@@ -41,6 +41,7 @@ export function ProfilePageClient({
         lastName={profile.lastName}
         email={profile.email}
         role={profile.role}
+        genre={profile.genre}
         schoolName={profile.schoolName}
         cssName={profile.cssName}
         createdAt={profile.createdAt}
@@ -75,6 +76,7 @@ export function ProfilePageClient({
           currentSchoolId={
             schoolOptions.find((s) => s.nomOfficiel === profile.schoolName)?.id ?? null
           }
+          currentGenre={profile.genre}
           currentNiveaux={profile.niveaux}
           currentDisciplines={profile.disciplines}
           currentYearsExperience={profile.yearsExperience}

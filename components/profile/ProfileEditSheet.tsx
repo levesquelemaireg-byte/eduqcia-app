@@ -26,12 +26,18 @@ const DISCIPLINES_OPTIONS = [
   { code: "HQC", label: "Histoire du Québec et du Canada" },
 ];
 
+const GENRE_OPTIONS = [
+  { value: "homme", label: "Homme" },
+  { value: "femme", label: "Femme" },
+];
+
 type Props = {
   open: boolean;
   onClose: () => void;
   currentFirstName: string;
   currentLastName: string;
   currentSchoolId: string | null;
+  currentGenre: string | null;
   currentNiveaux: string[];
   currentDisciplines: string[];
   currentYearsExperience: number | null;
@@ -47,6 +53,7 @@ export function ProfileEditSheet({
   currentFirstName,
   currentLastName,
   currentSchoolId,
+  currentGenre,
   currentNiveaux,
   currentDisciplines,
   currentYearsExperience,
@@ -63,6 +70,7 @@ export function ProfileEditSheet({
     () => schoolOptions.find((s) => s.id === currentSchoolId)?.cssId ?? "",
   );
   const [schoolId, setSchoolId] = useState<string>(currentSchoolId ?? "");
+  const [genre, setGenre] = useState<string>(currentGenre ?? "");
 
   // Professionnel
   const [niveaux, setNiveaux] = useState<string[]>(currentNiveaux);
@@ -90,7 +98,8 @@ export function ProfileEditSheet({
   const identityDirty =
     firstName !== currentFirstName ||
     lastName !== currentLastName ||
-    schoolId !== (currentSchoolId ?? "");
+    schoolId !== (currentSchoolId ?? "") ||
+    genre !== (currentGenre ?? "");
 
   const proDirty =
     JSON.stringify(niveaux.slice().sort()) !== JSON.stringify(currentNiveaux.slice().sort()) ||
@@ -134,7 +143,12 @@ export function ProfileEditSheet({
 
     const [identityResult, proResult] = await Promise.all([
       identityDirty
-        ? updateProfileIdentity({ firstName, lastName, schoolId: schoolId || null })
+        ? updateProfileIdentity({
+            firstName,
+            lastName,
+            schoolId: schoolId || null,
+            genre: genre || null,
+          })
         : Promise.resolve({ success: true as const }),
       proDirty
         ? updateProfileProfessional({
@@ -237,6 +251,17 @@ export function ProfileEditSheet({
                 />
               </FieldLayout>
             )}
+
+            <FieldLayout label="Genre" htmlFor="edit-genre">
+              <ListboxField
+                id="edit-genre"
+                options={GENRE_OPTIONS}
+                value={genre}
+                onChange={setGenre}
+                placeholder="Non renseigné"
+                allowEmpty
+              />
+            </FieldLayout>
           </div>
 
           {/* ── Section Informations professionnelles ── */}

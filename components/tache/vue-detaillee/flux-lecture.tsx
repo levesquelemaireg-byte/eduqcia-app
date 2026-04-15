@@ -53,8 +53,8 @@ export function FluxLecture({ tae, votes, peutVoter, surClicDocument, heroRef }:
       {/* Grille d'évaluation — conditionnel (null si aucun outil) */}
       {grille ? <SectionGrille data={grille} /> : null}
 
-      {/* Évaluation par les pairs — toujours rendu */}
-      <SectionVotes taeId={tae.id} votes={votes} canVote={peutVoter} />
+      {/* PROVISOIRE — Évaluation par les pairs masquée (fonctionnalité en développement) */}
+      {/* <SectionVotes taeId={tae.id} votes={votes} canVote={peutVoter} /> */}
     </div>
   );
 }

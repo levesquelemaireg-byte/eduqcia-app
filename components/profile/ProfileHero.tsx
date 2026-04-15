@@ -13,6 +13,7 @@ type Props = {
   lastName: string;
   email: string;
   role: string;
+  genre: string | null;
   schoolName: string | null;
   cssName: string | null;
   createdAt: string;
@@ -31,6 +32,7 @@ export function ProfileHero({
   lastName,
   email,
   role,
+  genre,
   schoolName,
   cssName,
   createdAt,
@@ -83,7 +85,7 @@ export function ProfileHero({
 
           {/* Rôle + statut contribution */}
           <div className="mt-1 flex flex-wrap items-center justify-center gap-2 md:justify-start">
-            <RoleBadge role={role} />
+            <RoleBadge role={role} genre={genre} />
             <ExperienceBadge level={experienceLabel} totalContributions={totalContributions} />
           </div>
 

@@ -16,7 +16,7 @@ export async function updateProfileIdentity(payload: unknown): Promise<ActionRes
     return { success: false, error: "Données invalides." };
   }
 
-  const { firstName, lastName, schoolId } = parsed.data;
+  const { firstName, lastName, schoolId, genre } = parsed.data;
   const supabase = await createClient();
 
   const { error } = await supabase
@@ -25,6 +25,7 @@ export async function updateProfileIdentity(payload: unknown): Promise<ActionRes
       first_name: firstName,
       last_name: lastName,
       school_id: schoolId,
+      genre,
     })
     .eq("id", user.userId);
 

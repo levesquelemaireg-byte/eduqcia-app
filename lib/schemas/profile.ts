@@ -5,6 +5,7 @@ export const profileIdentitySchema = z.object({
   firstName: z.string().min(1, "Prénom requis").max(100),
   lastName: z.string().min(1, "Nom requis").max(100),
   schoolId: z.string().uuid("Établissement invalide").nullable(),
+  genre: z.enum(["homme", "femme"]).nullable(),
 });
 
 export type ProfileIdentityInput = z.infer<typeof profileIdentitySchema>;

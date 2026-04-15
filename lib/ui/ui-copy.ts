@@ -585,8 +585,8 @@ export const FICHE_SECTION_TITLE_GUIDAGE = "Guidage";
 /** Titre de section — production attendue / corrigé (vue détaillée tâche) */
 export const FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE = "Production attendue";
 
-/** Titre de section — grille d'évaluation ministérielle (vue détaillée tâche) */
-export const FICHE_SECTION_TITLE_GRILLE = "Grille d\u2019évaluation ministérielle";
+/** Titre de section — outil d'évaluation (vue détaillée tâche) */
+export const FICHE_SECTION_TITLE_GRILLE = "Outil d\u2019évaluation";
 
 /* ─── Rail de la vue détaillée tâche ─────────────────────────────── */
 

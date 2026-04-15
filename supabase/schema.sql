@@ -147,6 +147,7 @@ CREATE TABLE profiles (
   last_name        TEXT NOT NULL,
   role             user_role NOT NULL DEFAULT 'enseignant',
   status           activation_status NOT NULL DEFAULT 'pending',
+  genre             TEXT CHECK (genre IN ('homme', 'femme')),
   school_id         UUID REFERENCES schools(id) ON DELETE SET NULL,
   years_experience  SMALLINT NULL,
   activation_token  TEXT UNIQUE,

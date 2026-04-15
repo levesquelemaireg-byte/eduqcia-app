@@ -8,6 +8,7 @@ export type ProfileOverview = {
     lastName: string;
     email: string;
     role: "enseignant" | "conseiller_pedagogique" | "admin";
+    genre: string | null;
     schoolName: string | null;
     cssName: string | null;
     disciplines: string[];
@@ -40,7 +41,7 @@ export async function fetchProfileOverview(
   const { data: profile, error } = await supabase
     .from("profiles")
     .select(
-      "id, first_name, last_name, email, role, status, school_id, years_experience, created_at, schools(nom_officiel, css:css(nom_officiel))",
+      "id, first_name, last_name, email, role, genre, status, school_id, years_experience, created_at, schools(nom_officiel, css:css(nom_officiel))",
     )
     .eq("id", profileId)
     .maybeSingle();
@@ -91,6 +92,7 @@ export async function fetchProfileOverview(
   if (disciplinesList.length === 0) missingProInfoCount++;
   if (niveauxList.length === 0) missingProInfoCount++;
   if (profile.years_experience == null) missingProInfoCount++;
+  if (profile.genre == null) missingProInfoCount++;
 
   return {
     profile: {
@@ -99,6 +101,7 @@ export async function fetchProfileOverview(
       lastName: profile.last_name,
       email: profile.email,
       role: profile.role,
+      genre: profile.genre ?? null,
       schoolName: school?.nom_officiel ?? null,
       cssName: school?.css?.nom_officiel ?? null,
       disciplines: disciplinesList,

@@ -933,7 +933,7 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 - **Document** / **Documents** (singulier/pluriel selon le nombre de documents référencés) — `FICHE_SECTION_TITLE_DOCUMENT`, `FICHE_SECTION_TITLE_DOCUMENTS`, helper `ficheDocumentsSectionTitle(count)`
 - **Guidage** — `FICHE_SECTION_TITLE_GUIDAGE`
 - **Production attendue** — `FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE`
-- **Grille d\u2019évaluation ministérielle** — `FICHE_SECTION_TITLE_GRILLE`
+- **Outil d\u2019évaluation** — `FICHE_SECTION_TITLE_GRILLE`
 
 Toutes les constantes vivent dans `lib/ui/ui-copy.ts`.
 

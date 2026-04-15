@@ -1,35 +1,47 @@
 "use client";
 
 import { MaterialSymbolOiGlyph } from "@/components/ui/MaterialSymbolOiGlyph";
+import { cn } from "@/lib/utils/cn";
 import type { FicheMode } from "@/lib/fiche/types";
 
 type Props = {
   glyph: string;
   mode: FicheMode;
-  /** Mode boxed : boîte carrée bg-panel-alt avec radius 12px. Utilisé dans le hero de la vue détaillée. */
+  /** Mode boxed : boîte carrée avec radius 12px. */
   boxed?: boolean;
   /** Taille de la boîte en px (défaut 52). Appliqué uniquement en mode boxed. */
   size?: number;
+  /** Taille du glyphe en px. Si omis, utilise size/2. Permet un glyphe plus grand que la boîte. */
+  glyphSize?: number;
+  /** Variante accent : fond teal, glyphe blanc. Utilisé dans le rail. */
+  accent?: boolean;
+  /** Animation douce d'apparition au chargement. */
+  animate?: boolean;
 };
 
 /**
  * Icône OI ou catégorie document dans zone dédiée.
  * Taille adaptée au mode (plus petite en thumbnail).
- * En mode `boxed`, rend une boîte carrée avec fond panel-alt et radius 12px.
+ * En mode `boxed`, rend une boîte carrée avec fond panel-alt (ou accent si `accent`) et radius 12px.
  */
-export function IconBadge({ glyph, mode, boxed, size = 52 }: Props) {
+export function IconBadge({ glyph, mode, boxed, size = 52, glyphSize, accent, animate }: Props) {
   if (boxed) {
+    const resolvedGlyphSize = glyphSize ?? Math.round(size / 2);
     return (
       <div
-        className="flex shrink-0 items-center justify-center rounded-[var(--radius-lg)] bg-panel-alt"
+        className={cn(
+          "flex shrink-0 items-center justify-center rounded-(--radius-lg)",
+          accent ? "bg-accent" : "bg-panel-alt",
+          animate && "animate-icon-badge-in",
+        )}
         style={{ width: size, height: size }}
         aria-hidden="true"
       >
         <MaterialSymbolOiGlyph
           glyph={glyph}
-          className="leading-none text-accent"
+          className={cn("leading-none", accent ? "text-white" : "text-accent")}
           style={{
-            fontSize: `${Math.round(size / 2)}px`,
+            fontSize: `${resolvedGlyphSize}px`,
             fontVariationSettings: '"FILL" 0, "wght" 300, "GRAD" 200, "opsz" 48',
           }}
           aria-hidden="true"

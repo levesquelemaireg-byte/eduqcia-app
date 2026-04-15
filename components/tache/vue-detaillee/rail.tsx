@@ -6,8 +6,10 @@ import type { TaeFicheData } from "@/lib/types/fiche";
 import type { FicheMode } from "@/lib/fiche/types";
 import type { CompetenceData, ConnaissancesData } from "@/lib/fiche/types";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
+import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
 import { MetaRowExpandable, MetaRowSimple, StatusBadge } from "@/lib/fiche/primitives/MetaRow";
+import { PeriodeIcon } from "@/components/ui/PeriodeIcon";
 import { SectionCD } from "@/lib/fiche/sections/SectionCD";
 import { SectionConnaissances } from "@/lib/fiche/sections/SectionConnaissances";
 import { selectRailNiveau } from "@/lib/fiche/selectors/tache/rail/niveau";
@@ -68,9 +70,21 @@ export function TacheRail({ tae }: Props) {
   const accordeonContenuId = useId();
   const [accordeonOuvert, setAccordeonOuvert] = useState(false);
 
+  const oiGlyph = tae.oi?.icone ?? "";
+
   /* ── Contenu partagé (chips + metarows + statut) ───────────── */
   const contenuRail = (
     <>
+      {/* 0. IconBadge OI — centré, accent teal, 52px mobile / 64px desktop */}
+      <div className="mb-4 flex justify-center">
+        <div className="md:hidden">
+          <IconBadge glyph={oiGlyph} mode="lecture" boxed accent animate size={52} glyphSize={42} />
+        </div>
+        <div className="hidden md:block">
+          <IconBadge glyph={oiGlyph} mode="lecture" boxed accent animate size={64} glyphSize={52} />
+        </div>
+      </div>
+
       {/* 1. ChipBar — 4 pills max */}
       <ChipBar className="gap-1.5">
         <MetaChip icon="school" label={niveau.label} mode={mode} />
@@ -79,6 +93,12 @@ export function TacheRail({ tae }: Props) {
           <MetaChip icon="deployed_code" label={aspects.labels.join(" · ")} mode={mode} />
         ) : null}
         {chapitre ? <MetaChip icon="lightbulb" label={chapitre.racine} mode={mode} /> : null}
+        {chapitre?.periode ? (
+          <span className="inline-flex min-h-8 items-center gap-1 rounded-lg border-0 bg-panel-alt px-2.5 py-1 text-xs font-bold text-deep">
+            <PeriodeIcon />
+            {chapitre.periode}
+          </span>
+        ) : null}
       </ChipBar>
 
       {/* Gap 18px entre ChipBar et MetaRows */}

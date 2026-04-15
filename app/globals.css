@@ -832,6 +832,21 @@ body {
   }
 }
 
+/* IconBadge — animation d'apparition douce au chargement */
+@keyframes icon-badge-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-icon-badge-in {
+  animation: icon-badge-in 400ms ease-out both;
+}
+
 /* Accessibilité — désactiver les animations pour les utilisateurs qui le demandent */
 @media (prefers-reduced-motion: reduce) {
   *,

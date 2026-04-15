@@ -7,6 +7,7 @@ export type CollaborateurListRow = {
   lastName: string;
   email: string;
   role: string;
+  genre: string | null;
   schoolName: string | null;
   cssName: string | null;
   docCount: number;
@@ -35,7 +36,9 @@ export async function getAllActiveCollaborateurs(
 
   const { data: profiles, error } = await supabase
     .from("profiles")
-    .select("id, first_name, last_name, email, role, schools(nom_officiel, css:css(nom_officiel))")
+    .select(
+      "id, first_name, last_name, email, role, genre, schools(nom_officiel, css:css(nom_officiel))",
+    )
     .eq("status", "active")
     .neq("id", currentUserId)
     .order("last_name", { ascending: true })
@@ -104,6 +107,7 @@ export async function getAllActiveCollaborateurs(
     last_name: string;
     email: string;
     role: string;
+    genre: string | null;
     schools: { nom_officiel: string; css: { nom_officiel: string } | null } | null;
   };
 
@@ -114,6 +118,7 @@ export async function getAllActiveCollaborateurs(
       lastName: p.last_name,
       email: p.email,
       role: p.role,
+      genre: p.genre ?? null,
       schoolName: p.schools?.nom_officiel ?? null,
       cssName: p.schools?.css?.nom_officiel ?? null,
       docCount: docMap.get(p.id) ?? 0,

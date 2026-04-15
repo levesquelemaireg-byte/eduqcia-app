@@ -161,6 +161,7 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
               lastName={c.lastName}
               email={c.email}
               role={c.role}
+              genre={c.genre}
               cssName={c.cssName}
               docCount={c.docCount}
               taskCount={c.taskCount}
