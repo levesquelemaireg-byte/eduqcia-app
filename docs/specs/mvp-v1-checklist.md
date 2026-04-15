@@ -63,7 +63,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 - [x] **PDF-1** D0 partiel — types `DonneesTache` + mapper `etatWizardVersTache` + tests unitaires
 - [x] **PDF-2** D0 complet — wipe alpha (`DELETE FROM tae;`) + migration ~18 fichiers consommateurs
-- [ ] **PDF-3** D6 — en-tête d'épreuve 80px + `SectionPage` + constantes pagination
+- [x] **PDF-3** D6 — en-tête d'épreuve 80px + `SectionPage` + constantes pagination
 - [ ] **PDF-4** D3 — transformation `epreuveVersPaginee` + renumérotation + tests unitaires
 - [ ] **PDF-5** D2 — pager isomorphe greedy first-fit + mesure offscreen
 - [ ] **PDF-6** D1 — route SSR `/apercu/[token]` + draft-token HMAC + Vercel KV
@@ -110,12 +110,12 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 3 — Loading/Error      | 4      | 4      | 100%    |
 | 4 — CRUD manquant      | 2      | 2      | 100%    |
 | 5 — Compte             | 4      | 4      | 100%    |
-| 6 — Export PDF         | 12     | 2      | 17%     |
+| 6 — Export PDF         | 12     | 3      | 25%     |
 | 7 — Finitions création | 4      | 0      | 0%      |
 | 8 — Dashboard          | 2      | 0      | 0%      |
 | 9 — Favoris            | 4      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **43** | **20** | **47%** |
+| **Total**              | **43** | **21** | **49%** |
 
 ---
 
