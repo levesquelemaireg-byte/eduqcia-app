@@ -69,7 +69,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - [x] **PDF-6** D1 — route SSR `/apercu/[token]` + draft-token HMAC + Vercel KV
 - [x] **PDF-7** Composants de rendu (`ApercuImpression`, `SectionPage`, sections, blocs)
 - [x] **PDF-8** D4 — Puppeteer + preflight + `@sparticuz/chromium-min`
-- [ ] **PDF-9** Routes API `/api/impression/pdf` + `/api/impression/apercu-png`
+- [x] **PDF-9** Routes API `/api/impression/pdf` + `/api/impression/apercu-png`
 - [ ] **PDF-10** Tests visuels Playwright (3→8 golden payloads)
 - [ ] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
 - [ ] **PDF-12** Validation terrain sur imprimantes réelles (phase de validation, pas de dev)
