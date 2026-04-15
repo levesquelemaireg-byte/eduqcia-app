@@ -46,6 +46,10 @@ Le code existant (`lib/tae/`, `TaeCard`, `TaeFicheData`, tables SQL `tae`, `tae_
 
 **Exception print-engine** : la spec `docs/specs/print-engine.md` introduit dès le lot D0 les types `DonneesTache` et `etatWizardVersTache` dans `lib/tache/contrats/` — premier jalon de la migration vocabulaire.
 
+## Genre et accord du label rôle
+
+La colonne `profiles.genre` (`homme`/`femme`, nullable) conditionne **uniquement** l'accord du label rôle affiché sous le nom (profil hero, cartes collaborateurs). Le helper `getRoleLabel(role, genre)` (`lib/utils/role-label.ts`) produit : Enseignant/Enseignante, Conseiller/Conseillère pédagogique, Administrateur/Administratrice. **Masculin par défaut** quand le genre n'est pas renseigné. Pas de féminisation globale de l'app — seul ce label est conditionné. Le genre n'est pas demandé à l'inscription ; il se renseigne via le Side Sheet profil (section Identité).
+
 ## Épreuve (composition enseignant) — terminologie publique
 
 En **copy interface** et **textes publics** ([FAQ.md](./FAQ.md)), l’entité qui regroupe plusieurs TAÉ pour une passation en classe s’appelle **épreuve** (« Mes épreuves », « Créer une épreuve », etc.).
