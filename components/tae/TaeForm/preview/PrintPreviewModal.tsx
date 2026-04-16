@@ -121,7 +121,7 @@ export function PrintPreviewModal({
           </Button>
           <Button
             type="button"
-            variant="secondary"
+            variant="primary"
             disabled={etat.statut !== "pret" || pdfEnCours}
             onClick={telechargerPdf}
           >
@@ -138,9 +138,6 @@ export function PrintPreviewModal({
             ) : (
               WIZARD_PRINT_PREVIEW_COPY.downloadPdf
             )}
-          </Button>
-          <Button type="button" variant="primary" onClick={() => window.print()}>
-            {WIZARD_PRINT_PREVIEW_COPY.print}
           </Button>
         </footer>
       </div>

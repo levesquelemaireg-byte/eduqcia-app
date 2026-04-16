@@ -23,14 +23,41 @@ export async function attendreFontsChargees(
 }
 
 /**
- * Attend que toutes les images de la page soient décodées (complete === true).
+ * Attend que toutes les images de la page soient réellement décodées.
+ *
+ * `img.complete` passe à `true` dès que le chargement est résolu (succès OU échec),
+ * ce qui laisse passer des images cassées ou pas encore rastérisées.
+ * On exige en plus `naturalWidth > 0` (décodage réussi) et on force un `img.decode()`
+ * explicite pour garantir que les pixels sont disponibles au moment du screenshot.
  */
 export async function attendreImagesDecodees(
   page: Page,
   timeoutMs = TIMEOUT_PAR_DEFAUT_MS,
 ): Promise<void> {
-  await page.waitForFunction(() => Array.from(document.images).every((img) => img.complete), {
-    timeout: timeoutMs,
+  // 1. Attendre que chaque image soit complète ET décodée (naturalWidth > 0)
+  await page.waitForFunction(
+    () => {
+      const imgs = Array.from(document.images);
+      if (imgs.length === 0) return true;
+      return imgs.every((img) => img.complete && img.naturalWidth > 0);
+    },
+    { timeout: timeoutMs },
+  );
+
+  // 2. Forcer un decode() explicite pour garantir que les pixels sont rastérisés
+  await page.evaluate(async () => {
+    const imgs = Array.from(document.images);
+    await Promise.all(
+      imgs.map((img) => {
+        if (typeof img.decode === "function") {
+          return img.decode().catch(() => {
+            // Image cassée ou cross-origin tainted — on laisse passer,
+            // le preflight suivant (MutationObserver) détectera un re-render éventuel.
+          });
+        }
+        return Promise.resolve();
+      }),
+    );
   });
 }
 

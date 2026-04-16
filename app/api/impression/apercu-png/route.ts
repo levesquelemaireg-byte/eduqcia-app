@@ -6,9 +6,13 @@ import { kv } from "@vercel/kv";
 import { createClient } from "@/lib/supabase/server";
 import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
 import { genererPngPages } from "@/lib/epreuve/impression/puppeteer";
-import { epreuveVersPaginee } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
+import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import type { RenduImprimable } from "@/lib/impression/types";
 
 /**
  * POST /api/impression/apercu-png — print-engine D5.
@@ -32,6 +36,77 @@ const BodySchema = z.object({
 /** Mesureur placeholder — cohérent avec la route SSR. */
 function mesureurPlaceholder(): number {
   return 200;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Extraction KV — aligné sur la route SSR apercu/[token]/page.tsx          */
+/* -------------------------------------------------------------------------- */
+
+/** Format KV — discriminé par `type`. */
+type DraftKvTyped =
+  | { type: "document"; payload: DocumentReference }
+  | { type: "tache"; payload: DonneesTache; mode: ModeImpression; estCorrige: boolean }
+  | { type: "epreuve"; payload: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
+
+/** Format KV legacy (pre-discriminatedUnion). */
+type DraftKvLegacy = {
+  payload: DonneesEpreuve;
+  mode: ModeImpression;
+  estCorrige: boolean;
+};
+
+function extraireDonneesKv(raw: unknown): DraftKvTyped {
+  const parsed: unknown = typeof raw === "string" ? JSON.parse(raw) : raw;
+
+  if (parsed && typeof parsed === "object" && "type" in parsed) {
+    return parsed as DraftKvTyped;
+  }
+
+  // Rétrocompatibilité : ancien format épreuve (sans discriminant `type`)
+  if (
+    parsed &&
+    typeof parsed === "object" &&
+    "payload" in parsed &&
+    "mode" in parsed &&
+    "estCorrige" in parsed
+  ) {
+    const legacy = parsed as DraftKvLegacy;
+    return {
+      type: "epreuve",
+      payload: legacy.payload,
+      mode: legacy.mode,
+      estCorrige: legacy.estCorrige,
+    };
+  }
+
+  // Dernier fallback : payload brut = épreuve
+  return {
+    type: "epreuve",
+    payload: parsed as DonneesEpreuve,
+    mode: "formatif",
+    estCorrige: false,
+  };
+}
+
+function construireRendu(data: DraftKvTyped): RenduImprimable {
+  switch (data.type) {
+    case "document":
+      return documentVersImprimable(data.payload, mesureurPlaceholder);
+
+    case "tache":
+      return tacheVersImprimable(
+        data.payload,
+        { mode: data.mode, estCorrige: data.estCorrige },
+        mesureurPlaceholder,
+      );
+
+    case "epreuve":
+      return epreuveVersImprimable(
+        data.payload,
+        { mode: data.mode, estCorrige: data.estCorrige },
+        mesureurPlaceholder,
+      );
+  }
 }
 
 export async function POST(request: Request) {
@@ -71,43 +146,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Payload expiré ou introuvable." }, { status: 404 });
   }
 
-  // 4. Extraire payload + options de rendu (rétrocompatibilité ancien format)
-  const kvParsed: unknown = typeof raw === "string" ? JSON.parse(raw) : raw;
-  let epreuve: DonneesEpreuve;
-  let mode: ModeImpression = "formatif";
-  let estCorrige = false;
+  // 4. Extraire payload et construire le rendu (dispatch par type)
+  const data = extraireDonneesKv(raw);
+  const rendu = construireRendu(data);
 
-  if (
-    kvParsed &&
-    typeof kvParsed === "object" &&
-    "payload" in kvParsed &&
-    "mode" in kvParsed &&
-    "estCorrige" in kvParsed
-  ) {
-    const enrichi = kvParsed as {
-      payload: DonneesEpreuve;
-      mode: ModeImpression;
-      estCorrige: boolean;
-    };
-    epreuve = enrichi.payload;
-    mode = enrichi.mode;
-    estCorrige = enrichi.estCorrige;
-  } else {
-    epreuve = kvParsed as DonneesEpreuve;
-  }
-
-  // 5. Calculer l'empreinte via epreuveVersPaginee
-  const paginee = epreuveVersPaginee(epreuve, { mode, estCorrige }, mesureurPlaceholder);
-  if (!paginee.ok) {
+  if (!rendu.ok) {
     return NextResponse.json(
-      { error: "Erreur de pagination.", detail: paginee.erreur.suggestion },
+      { error: "Erreur de pagination.", detail: rendu.erreur.suggestion },
       { status: 422 },
     );
   }
 
-  const empreinte = paginee.empreinte;
+  const empreinte = rendu.empreinte;
 
-  // 6. Construire l'URL SSR et générer les PNG
+  // 5. Construire l'URL SSR et générer les PNG
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `http://localhost:3000`;
   const url = `${baseUrl}/apercu/${encodeURIComponent(token)}`;
 

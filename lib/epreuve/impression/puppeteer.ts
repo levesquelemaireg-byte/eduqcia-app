@@ -21,10 +21,12 @@ const NAVIGATION_TIMEOUT_MS = 25_000;
  * Lance un navigateur Chromium headless optimisé pour Vercel serverless.
  */
 async function lancerNavigateur() {
-  const executablePath = await chromium.executablePath();
+  const executablePath = process.env.CHROMIUM_EXECUTABLE_PATH ?? (await chromium.executablePath());
 
   return puppeteer.launch({
-    args: chromium.args,
+    args: process.env.CHROMIUM_EXECUTABLE_PATH
+      ? ["--no-sandbox", "--disable-setuid-sandbox"]
+      : chromium.args,
     defaultViewport: {
       width: PAGE_WIDTH_PX,
       height: PAGE_HEIGHT_PX,
@@ -36,12 +38,32 @@ async function lancerNavigateur() {
 }
 
 /**
+ * CSS de défense en profondeur — masque les dev tools Next.js au cas où
+ * le layout d'aperçu ne les masque pas (version future, route différente).
+ */
+const CSS_MASQUE_DEV_TOOLS = `
+  nextjs-portal,
+  [data-nextjs-toast],
+  [data-nextjs-dialog-overlay],
+  [data-nextjs-dev-tools-button],
+  [data-nextjs-dev-tools-menu],
+  [data-nextjs-scroll-focus-boundary],
+  #__next-build-watcher,
+  #__next-prerender-indicator {
+    display: none !important;
+  }
+`;
+
+/**
  * Exécute le preflight complet sur une page Puppeteer :
  * 1. Fonts chargées
  * 2. Images décodées
  * 3. Aucune mutation DOM post-render
  */
 async function executerPreflight(page: Page) {
+  // Injecter le CSS de masquage des dev tools avant toute capture
+  await page.addStyleTag({ content: CSS_MASQUE_DEV_TOOLS });
+
   await attendreFontsChargees(page);
   await attendreImagesDecodees(page);
   await assertAucuneMutation(page);
@@ -91,34 +113,13 @@ export async function genererPngPages(url: string): Promise<Buffer[]> {
     await page.goto(url, { waitUntil: "networkidle0" });
     await executerPreflight(page);
 
-    // Déterminer le nombre de pages via les éléments .page-impression
-    const nombrePages = await page.evaluate(() => {
-      return document.querySelectorAll("[data-page-impression]").length;
-    });
+    // Capturer chaque page via element.screenshot() — plus fiable que clip calculé
+    const pageElements = await page.$$("[data-page-impression]");
 
     const pages: Buffer[] = [];
 
-    for (let i = 0; i < nombrePages; i++) {
-      // Scroll vers la page cible et capture
-      const screenshot = await page
-        .evaluate((index: number) => {
-          const pageElements = document.querySelectorAll("[data-page-impression]");
-          if (pageElements[index]) {
-            pageElements[index].scrollIntoView({ behavior: "instant" as ScrollBehavior });
-          }
-        }, i)
-        .then(() =>
-          page.screenshot({
-            type: "png",
-            clip: {
-              x: 0,
-              y: i * PAGE_HEIGHT_PX,
-              width: PAGE_WIDTH_PX,
-              height: PAGE_HEIGHT_PX,
-            },
-          }),
-        );
-
+    for (const el of pageElements) {
+      const screenshot = await el.screenshot({ type: "png" });
       pages.push(Buffer.from(screenshot));
     }
 
