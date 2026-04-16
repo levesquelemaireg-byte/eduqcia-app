@@ -59,7 +59,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^20.19.37",

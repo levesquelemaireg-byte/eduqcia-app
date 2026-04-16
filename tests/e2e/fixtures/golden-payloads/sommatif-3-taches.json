@@ -1,0 +1,228 @@
+{
+  "epreuve": {
+    "id": "golden-sommatif-3-taches",
+    "titre": "Épreuve sommatif — 3 tâches",
+    "enTete": {
+      "titre": "Épreuve de fin d'étape 2",
+      "enseignant": "Mme Lavoie",
+      "ecole": "Collège Notre-Dame",
+      "niveau": "2e secondaire",
+      "groupe": "201",
+      "date": "15 mars 2026"
+    },
+    "taches": [
+      {
+        "id": "t-som-1",
+        "auteur_id": "user-golden",
+        "auteurs": [{ "id": "user-golden", "first_name": "Sophie", "last_name": "Lavoie" }],
+        "titre": "Les grandes explorations",
+        "consigne": "<p>À l'aide du <strong>document 1</strong>, identifie <em>deux</em> motivations des explorateurs européens au XVe siècle.</p>",
+        "guidage": null,
+        "documents": [
+          {
+            "id": "doc-som-1A",
+            "kind": "textuel",
+            "titre": "Les motivations des explorateurs",
+            "contenu": "<p>Les explorateurs européens du XVe siècle étaient motivés par plusieurs facteurs : la recherche de nouvelles routes commerciales vers l'Asie, la volonté d'évangéliser les peuples autochtones, le désir de gloire personnelle et la curiosité scientifique. Les monarchies européennes finançaient ces expéditions dans l'espoir d'accroître leur puissance et leur richesse.</p><p><em>Source : adapté de l'encyclopédie historique, 2020.</em></p>"
+          }
+        ],
+        "espaceProduction": { "type": "lignes", "nbLignes": 8 },
+        "outilEvaluation": {
+          "oi": "OI0",
+          "criteres": [
+            {
+              "libelle": "Identification des motivations",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Identifie correctement deux motivations avec justification",
+                  "points": 4
+                },
+                {
+                  "niveau": "B",
+                  "description": "Identifie une motivation avec justification",
+                  "points": 2
+                },
+                {
+                  "niveau": "C",
+                  "description": "N'identifie aucune motivation pertinente",
+                  "points": 0
+                }
+              ]
+            }
+          ]
+        },
+        "corrige": "<p>Deux motivations possibles : 1) La recherche de nouvelles routes commerciales vers l'Asie. 2) La volonté d'évangéliser les peuples autochtones.</p>",
+        "aspects_societe": [],
+        "nb_lignes": 8,
+        "niveau": { "label": "2e secondaire" },
+        "discipline": { "label": "Histoire et éducation à la citoyenneté" },
+        "oi": {
+          "id": "OI0",
+          "titre": "Caractériser une réalité historique",
+          "icone": "psychology"
+        },
+        "comportement": {
+          "id": "0.1",
+          "enonce": "Caractériser une période, un événement ou un personnage"
+        },
+        "cd": null,
+        "connaissances": [],
+        "version": 1,
+        "version_updated_at": null,
+        "is_published": true,
+        "created_at": "2026-02-01",
+        "updated_at": "2026-02-01"
+      },
+      {
+        "id": "t-som-2",
+        "auteur_id": "user-golden",
+        "auteurs": [{ "id": "user-golden", "first_name": "Sophie", "last_name": "Lavoie" }],
+        "titre": "La colonisation de la Nouvelle-France",
+        "consigne": "<p>À l'aide des <strong>documents 2</strong> et <strong>3</strong>, compare le rôle des compagnies de commerce et celui de l'État français dans le peuplement de la Nouvelle-France.</p>",
+        "guidage": null,
+        "documents": [
+          {
+            "id": "doc-som-2A",
+            "kind": "textuel",
+            "titre": "Le rôle des compagnies de commerce",
+            "contenu": "<p>Les compagnies de commerce, comme la Compagnie des Cent-Associés fondée en 1627, avaient le monopole du commerce des fourrures en échange de l'obligation de peupler la colonie. Toutefois, ces compagnies priorisaient le profit sur le peuplement, ce qui ralentit considérablement la croissance démographique de la Nouvelle-France.</p>"
+          },
+          {
+            "id": "doc-som-2B",
+            "kind": "textuel",
+            "titre": "L'intervention de l'État sous Louis XIV",
+            "contenu": "<p>En 1663, Louis XIV fait de la Nouvelle-France une province royale. Il envoie l'intendant Jean Talon, qui met en place des mesures pour augmenter la population : les Filles du Roy, des soldats du régiment de Carignan-Salières, et des engagés. Entre 1663 et 1673, la population de la colonie double, passant d'environ 3 000 à 6 700 habitants.</p><p><em>Source : Statistiques historiques du Canada, 1983.</em></p>"
+          }
+        ],
+        "espaceProduction": { "type": "lignes", "nbLignes": 10 },
+        "outilEvaluation": {
+          "oi": "OI3",
+          "criteres": [
+            {
+              "libelle": "Éléments de comparaison",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Compare de façon pertinente les deux acteurs avec des éléments précis",
+                  "points": 5
+                },
+                {
+                  "niveau": "B",
+                  "description": "Identifie des éléments pour chaque acteur sans les comparer",
+                  "points": 3
+                },
+                {
+                  "niveau": "C",
+                  "description": "Ne parvient pas à distinguer les deux acteurs",
+                  "points": 1
+                }
+              ]
+            },
+            {
+              "libelle": "Utilisation des documents",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Réfère explicitement aux deux documents",
+                  "points": 3
+                },
+                { "niveau": "B", "description": "Réfère à un seul document", "points": 1 },
+                { "niveau": "C", "description": "Ne réfère à aucun document", "points": 0 }
+              ]
+            }
+          ]
+        },
+        "corrige": "<p>Les compagnies de commerce (doc 2) avaient un rôle économique : elles exploitaient le commerce des fourrures mais négligeaient le peuplement. L'État français sous Louis XIV (doc 3) a pris en charge directement le peuplement avec des mesures concrètes (Filles du Roy, soldats, engagés), ce qui a doublé la population.</p>",
+        "aspects_societe": [],
+        "nb_lignes": 10,
+        "niveau": { "label": "2e secondaire" },
+        "discipline": { "label": "Histoire et éducation à la citoyenneté" },
+        "oi": {
+          "id": "OI3",
+          "titre": "Dégager des différences et des similitudes",
+          "icone": "psychology"
+        },
+        "comportement": { "id": "3.1", "enonce": "Comparer des réalités historiques" },
+        "cd": null,
+        "connaissances": [],
+        "version": 1,
+        "version_updated_at": null,
+        "is_published": true,
+        "created_at": "2026-02-01",
+        "updated_at": "2026-02-01"
+      },
+      {
+        "id": "t-som-3",
+        "auteur_id": "user-golden",
+        "auteurs": [{ "id": "user-golden", "first_name": "Sophie", "last_name": "Lavoie" }],
+        "titre": "L'impact des épidémies sur les populations autochtones",
+        "consigne": "<p>À l'aide des <strong>documents 4</strong> et <strong>5</strong>, explique les conséquences des épidémies européennes sur les populations autochtones de la Nouvelle-France.</p>",
+        "guidage": null,
+        "documents": [
+          {
+            "id": "doc-som-3A",
+            "kind": "textuel",
+            "titre": "Les épidémies en Nouvelle-France",
+            "contenu": "<p>Les Européens ont apporté avec eux des maladies inconnues des populations autochtones : la variole, la rougeole, la grippe et le typhus. Ces maladies se sont propagées rapidement parmi les Autochtones, qui n'avaient aucune immunité. On estime que certaines nations ont perdu jusqu'à 90 % de leur population en quelques décennies.</p>"
+          },
+          {
+            "id": "doc-som-3B",
+            "kind": "textuel",
+            "titre": "Témoignage d'un missionnaire jésuite (1637)",
+            "contenu": "<p>« Les maladies qui ravagent nos sauvages se répandent avec une rapidité effroyable. Des villages entiers sont décimés. Les anciens meurent les premiers, emportant avec eux les traditions et les savoirs de leur peuple. Les survivants, affaiblis et démoralisés, peinent à maintenir leurs modes de vie traditionnels. »</p><p><em>Source : Relations des Jésuites, 1637.</em></p>"
+          }
+        ],
+        "espaceProduction": { "type": "lignes", "nbLignes": 10 },
+        "outilEvaluation": {
+          "oi": "OI0",
+          "criteres": [
+            {
+              "libelle": "Identification des conséquences",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Identifie correctement au moins deux conséquences avec appui documentaire",
+                  "points": 4
+                },
+                {
+                  "niveau": "B",
+                  "description": "Identifie une conséquence avec appui documentaire",
+                  "points": 2
+                },
+                {
+                  "niveau": "C",
+                  "description": "N'identifie aucune conséquence pertinente",
+                  "points": 0
+                }
+              ]
+            }
+          ]
+        },
+        "corrige": "<p>Conséquences : 1) Effondrement démographique massif (jusqu'à 90 % de pertes). 2) Perte des savoirs traditionnels avec la mort des anciens (doc 5). 3) Déstabilisation des modes de vie traditionnels des survivants.</p>",
+        "aspects_societe": [],
+        "nb_lignes": 10,
+        "niveau": { "label": "2e secondaire" },
+        "discipline": { "label": "Histoire et éducation à la citoyenneté" },
+        "oi": {
+          "id": "OI0",
+          "titre": "Caractériser une réalité historique",
+          "icone": "psychology"
+        },
+        "comportement": {
+          "id": "0.1",
+          "enonce": "Caractériser une période, un événement ou un personnage"
+        },
+        "cd": null,
+        "connaissances": [],
+        "version": 1,
+        "version_updated_at": null,
+        "is_published": true,
+        "created_at": "2026-02-01",
+        "updated_at": "2026-02-01"
+      }
+    ]
+  },
+  "mode": "sommatif-standard",
+  "estCorrige": false
+}

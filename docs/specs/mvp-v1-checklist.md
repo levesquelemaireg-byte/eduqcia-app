@@ -70,7 +70,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - [x] **PDF-7** Composants de rendu (`ApercuImpression`, `SectionPage`, sections, blocs)
 - [x] **PDF-8** D4 — Puppeteer + preflight + `@sparticuz/chromium-min`
 - [x] **PDF-9** Routes API `/api/impression/pdf` + `/api/impression/apercu-png`
-- [ ] **PDF-10** Tests visuels Playwright (3→8 golden payloads)
+- [x] **PDF-10** Tests visuels Playwright (3→8 golden payloads)
 - [ ] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
 - [ ] **PDF-12** Validation terrain sur imprimantes réelles (phase de validation, pas de dev)
 
@@ -110,12 +110,12 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 3 — Loading/Error      | 4      | 4      | 100%    |
 | 4 — CRUD manquant      | 2      | 2      | 100%    |
 | 5 — Compte             | 4      | 4      | 100%    |
-| 6 — Export PDF         | 12     | 8      | 67%     |
+| 6 — Export PDF         | 12     | 9      | 75%     |
 | 7 — Finitions création | 4      | 0      | 0%      |
 | 8 — Dashboard          | 2      | 0      | 0%      |
 | 9 — Favoris            | 4      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **43** | **26** | **60%** |
+| **Total**              | **43** | **27** | **63%** |
 
 ---
 

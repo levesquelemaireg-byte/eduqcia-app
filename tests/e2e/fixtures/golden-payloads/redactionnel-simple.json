@@ -1,0 +1,97 @@
+{
+  "epreuve": {
+    "id": "golden-redactionnel-simple",
+    "titre": "Tâche rédactionnelle simple",
+    "enTete": {
+      "titre": "Évaluation formative — Histoire",
+      "enseignant": "Mme Tremblay",
+      "ecole": "École secondaire Saint-Laurent",
+      "niveau": "3e secondaire"
+    },
+    "taches": [
+      {
+        "id": "t-red-1",
+        "auteur_id": "user-golden",
+        "auteurs": [{ "id": "user-golden", "first_name": "Marie", "last_name": "Tremblay" }],
+        "titre": "La société canadienne sous le régime britannique",
+        "consigne": "<p>À l'aide du <strong>document 1</strong>, explique les conséquences de la Proclamation royale de 1763 sur la société canadienne-française.</p><p>Ta réponse doit contenir au moins <em>deux</em> conséquences appuyées par des éléments du document.</p>",
+        "guidage": {
+          "content": "<p>Rappelle-toi qu'une conséquence est un <strong>effet</strong> produit par un événement. Identifie d'abord les changements imposés par la Proclamation royale, puis explique comment ils affectent la population canadienne-française.</p>"
+        },
+        "documents": [
+          {
+            "id": "doc-red-A",
+            "kind": "textuel",
+            "titre": "Extrait de la Proclamation royale (1763)",
+            "contenu": "<p>« Que tous les habitants et les sujets de Nos dits territoires puissent se confier en Notre protection royale pour la jouissance du bienfait des lois de Notre royaume d'Angleterre ; à cet effet, Nous avons donné aux gouverneurs de Nos dites colonies le pouvoir d'ériger, de constituer et d'établir des cours de judicature et de justice publique. »</p><p><em>Source : George III, Proclamation royale du 7 octobre 1763.</em></p>"
+          }
+        ],
+        "espaceProduction": { "type": "lignes", "nbLignes": 12 },
+        "outilEvaluation": {
+          "oi": "redactionnel",
+          "criteres": [
+            {
+              "libelle": "Utilisation des connaissances",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Utilise de façon appropriée les connaissances liées au sujet",
+                  "points": 5
+                },
+                {
+                  "niveau": "B",
+                  "description": "Utilise quelques connaissances liées au sujet",
+                  "points": 3
+                },
+                {
+                  "niveau": "C",
+                  "description": "Utilise peu ou pas de connaissances liées au sujet",
+                  "points": 1
+                }
+              ]
+            },
+            {
+              "libelle": "Qualité de l'argumentation",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Argumente de façon rigoureuse et cohérente",
+                  "points": 5
+                },
+                { "niveau": "B", "description": "Argumente de façon partielle", "points": 3 },
+                {
+                  "niveau": "C",
+                  "description": "N'argumente pas ou de façon incohérente",
+                  "points": 1
+                }
+              ]
+            }
+          ]
+        },
+        "corrige": "<p><strong>Réponse attendue :</strong></p><p>La Proclamation royale de 1763 a eu plusieurs conséquences sur la société canadienne-française :</p><ol><li>L'imposition des lois anglaises remplace les lois françaises (Coutume de Paris), ce qui affecte les droits de propriété et le système juridique familier aux Canadiens français.</li><li>La création de tribunaux anglais signifie que les Canadiens français doivent désormais se soumettre à un système judiciaire étranger, dans une langue qu'ils ne maîtrisent pas.</li></ol>",
+        "aspects_societe": [],
+        "nb_lignes": 12,
+        "niveau": { "label": "3e secondaire" },
+        "discipline": { "label": "Histoire du Québec et du Canada" },
+        "oi": {
+          "id": "OI0",
+          "titre": "Caractériser une réalité historique",
+          "icone": "psychology"
+        },
+        "comportement": {
+          "id": "0.1",
+          "enonce": "Caractériser une période, un événement ou un personnage"
+        },
+        "cd": null,
+        "connaissances": [],
+        "version": 1,
+        "version_updated_at": null,
+        "is_published": true,
+        "created_at": "2026-01-15",
+        "updated_at": "2026-01-15"
+      }
+    ]
+  },
+  "mode": "formatif",
+  "estCorrige": true
+}

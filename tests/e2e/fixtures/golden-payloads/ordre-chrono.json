@@ -1,0 +1,92 @@
+{
+  "epreuve": {
+    "id": "golden-ordre-chrono",
+    "titre": "Ordre chronologique",
+    "enTete": {
+      "titre": "Évaluation formative — Chronologie",
+      "enseignant": "M. Gagnon",
+      "ecole": "Polyvalente des Rivières",
+      "niveau": "4e secondaire"
+    },
+    "taches": [
+      {
+        "id": "t-chrono-1",
+        "auteur_id": "user-golden",
+        "auteurs": [{ "id": "user-golden", "first_name": "Pierre", "last_name": "Gagnon" }],
+        "titre": "Situer les événements de la Conquête",
+        "consigne": "<p>À l'aide des <strong>documents 1</strong> et <strong>2</strong>, place les événements suivants en ordre chronologique en inscrivant la lettre correspondante dans les cases prévues.</p>",
+        "guidage": {
+          "content": "<p>Lis attentivement chaque document pour repérer les <strong>dates</strong> ou les <strong>indices temporels</strong> qui te permettent de déterminer l'ordre des événements.</p>"
+        },
+        "documents": [
+          {
+            "id": "doc-chrono-A",
+            "kind": "textuel",
+            "titre": "Ligne du temps — La Conquête britannique",
+            "contenu": "<p><strong>1756</strong> — Début de la guerre de Sept Ans en Europe.<br/><strong>1759</strong> — Bataille des Plaines d'Abraham ; mort de Montcalm et de Wolfe.<br/><strong>1760</strong> — Capitulation de Montréal ; la Nouvelle-France passe sous contrôle militaire britannique.</p>"
+          },
+          {
+            "id": "doc-chrono-B",
+            "kind": "textuel",
+            "titre": "Le Traité de Paris (1763)",
+            "contenu": "<p>Le Traité de Paris, signé le 10 février 1763, met officiellement fin à la guerre de Sept Ans. Par ce traité, la France cède la Nouvelle-France à la Grande-Bretagne. La France conserve toutefois les îles de Saint-Pierre-et-Miquelon pour la pêche à la morue.</p><p><em>Source : adapté du traité de Paris, 1763.</em></p>"
+          }
+        ],
+        "espaceProduction": {
+          "type": "cases",
+          "options": [
+            "A — Bataille des Plaines d'Abraham",
+            "B — Début de la guerre de Sept Ans",
+            "C — Traité de Paris",
+            "D — Capitulation de Montréal"
+          ]
+        },
+        "outilEvaluation": {
+          "oi": "OI2",
+          "criteres": [
+            {
+              "libelle": "Exactitude de l'ordre chronologique",
+              "descripteurs": [
+                {
+                  "niveau": "A",
+                  "description": "Tous les événements sont placés dans le bon ordre",
+                  "points": 4
+                },
+                {
+                  "niveau": "B",
+                  "description": "La majorité des événements sont dans le bon ordre",
+                  "points": 2
+                },
+                {
+                  "niveau": "C",
+                  "description": "Les événements sont dans un ordre incorrect",
+                  "points": 0
+                }
+              ]
+            }
+          ]
+        },
+        "corrige": "<p><strong>Ordre chronologique attendu :</strong></p><ol><li><strong>B</strong> — Début de la guerre de Sept Ans (1756)</li><li><strong>A</strong> — Bataille des Plaines d'Abraham (1759)</li><li><strong>D</strong> — Capitulation de Montréal (1760)</li><li><strong>C</strong> — Traité de Paris (1763)</li></ol>",
+        "aspects_societe": [],
+        "nb_lignes": 0,
+        "niveau": { "label": "4e secondaire" },
+        "discipline": { "label": "Histoire du Québec et du Canada" },
+        "oi": {
+          "id": "OI2",
+          "titre": "Situer dans le temps et dans l'espace",
+          "icone": "psychology"
+        },
+        "comportement": { "id": "2.1", "enonce": "Situer un fait dans le temps" },
+        "cd": null,
+        "connaissances": [],
+        "version": 1,
+        "version_updated_at": null,
+        "is_published": true,
+        "created_at": "2026-01-20",
+        "updated_at": "2026-01-20"
+      }
+    ]
+  },
+  "mode": "formatif",
+  "estCorrige": false
+}
