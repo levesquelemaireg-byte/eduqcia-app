@@ -33,7 +33,8 @@ import {
 } from "@/components/tae/TaeForm/FormState";
 import { TAE_FORM_STEPS } from "@/components/tae/TaeForm/step-meta";
 import { resolveWizardBlocComponent } from "@/components/tae/TaeForm/wizardBlocResolver";
-import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
 import {
   etatWizardVersTache,
   type GrilleEvaluationEntree,
@@ -85,7 +86,7 @@ function TaeFormInner({
   const { oiList } = useOiData();
   const grilles = useGrilles();
 
-  const epreuveBrouillon = useMemo<DonneesEpreuve | null>(() => {
+  const tacheBrouillon = useMemo<DonneesTache | null>(() => {
     if (!oiList || oiList.length === 0 || !grilles) return null;
 
     const grillesEntrees: GrilleEvaluationEntree[] = grilles.map((g) => ({
@@ -95,19 +96,13 @@ function TaeFormInner({
       bareme: g.bareme,
     }));
 
-    const tache = etatWizardVersTache(state, oiList, grillesEntrees, wizardPreviewMeta);
-
-    return {
-      id: "draft",
-      titre: tache.titre || "Brouillon",
-      enTete: {
-        titre: tache.titre || "Brouillon",
-        enseignant: wizardPreviewMeta.authorFullName,
-        niveau: tache.niveau.label,
-      },
-      taches: [tache],
-    };
+    return etatWizardVersTache(state, oiList, grillesEntrees, wizardPreviewMeta);
   }, [state, oiList, grilles, wizardPreviewMeta]);
+
+  const payloadImpression = useMemo<PayloadImpression | null>(() => {
+    if (!tacheBrouillon) return null;
+    return { type: "tache", donnees: tacheBrouillon };
+  }, [tacheBrouillon]);
   const stepBase = TAE_FORM_STEPS[state.currentStep];
   const step =
     isActiveOrdreChronologiqueVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
@@ -232,11 +227,11 @@ function TaeFormInner({
             )}
           </PreviewPanel>
 
-          {epreuveBrouillon && (
+          {payloadImpression && (
             <PrintPreviewModal
               open={showPrintModal}
               onClose={() => setShowPrintModal(false)}
-              epreuve={epreuveBrouillon}
+              payload={payloadImpression}
               mode="formatif"
               estCorrige={false}
             />

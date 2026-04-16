@@ -1387,7 +1387,17 @@ export const BLOC4_MOMENTS_ETAT_B = "État B";
 export const PERSP_BLOC4_TITRE_LABEL = "Titre";
 export const PERSP_BLOC4_TITRE_PLACEHOLDER = "Ex\u00a0: La capitulation de Montréal, 1760";
 
+/** Impression tâche seule — titre modale aperçu (`docs/UI-COPY.md`). */
+export const IMPRESSION_TACHE_SEULE_MODAL_TITLE = "Aperçu de la tâche";
+
+/** Impression document seul — titre modale aperçu (`docs/UI-COPY.md`). */
+export const IMPRESSION_DOCUMENT_SEUL_MODAL_TITLE = "Aperçu du document";
+
+/** Impression document seul — erreur débordement page (`docs/UI-COPY.md`). */
+export const IMPRESSION_DOCUMENT_DEBORDEMENT =
+  "Le contenu dépasse la page — réduisez la taille du document.";
+
 /** Grille d’évaluation — `outil_evaluation` sans entrée dans `grilles-evaluation.json` (`docs/UI-COPY.md`). */
 export function copyGrilleAbsentePourOutil(outilId: string): string {
-  return `Grille non disponible pour l'outil ${outilId}.`;
+  return `Grille non disponible pour l’outil ${outilId}.`;
 }

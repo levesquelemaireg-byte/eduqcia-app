@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { readFile } from "fs/promises";
 import path from "path";
-import { epreuveVersPaginee } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import { ApercuImpression } from "@/components/epreuve/impression";
@@ -71,20 +71,20 @@ export default async function ApercuTestPage({ params }: PageProps) {
   }
 
   // Paginer avec mesureur placeholder
-  const paginee = epreuveVersPaginee(
+  const rendu = epreuveVersImprimable(
     fixture.epreuve,
     { mode: fixture.mode, estCorrige: fixture.estCorrige },
     mesureurPlaceholder,
   );
 
-  if (!paginee.ok) {
+  if (!rendu.ok) {
     return (
       <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif", color: "#c00" }}>
         <h1>Erreur de pagination</h1>
-        <p>{paginee.erreur.suggestion}</p>
+        <p>{rendu.erreur.suggestion}</p>
       </div>
     );
   }
 
-  return <ApercuImpression paginee={paginee} />;
+  return <ApercuImpression rendu={rendu} />;
 }

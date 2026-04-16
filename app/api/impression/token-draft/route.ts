@@ -11,16 +11,38 @@ const KV_TTL_SECONDS = 10 * 60; // 10 minutes
 /**
  * POST /api/impression/token-draft
  *
- * Reçoit un payload DonneesEpreuve + mode + estCorrige en body JSON,
+ * Reçoit un payload discriminé par `type` (document / tâche / épreuve),
  * le stocke dans Vercel KV avec TTL 10 minutes,
  * retourne un token HMAC signé.
  *
  * Auth vérifiée via Supabase session (route handler — pas de redirect).
  */
 
-const BodySchema = z.object({
+const modeSchema = z.enum(["formatif", "sommatif-standard", "epreuve-ministerielle"]);
+
+const BodySchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("document"),
+    payload: z.record(z.string(), z.unknown()),
+  }),
+  z.object({
+    type: z.literal("tache"),
+    payload: z.record(z.string(), z.unknown()),
+    mode: modeSchema,
+    estCorrige: z.boolean(),
+  }),
+  z.object({
+    type: z.literal("epreuve"),
+    payload: z.record(z.string(), z.unknown()),
+    mode: modeSchema,
+    estCorrige: z.boolean(),
+  }),
+]);
+
+/** Schema legacy (sans champ `type`) — rétrocompatibilité. */
+const LegacyBodySchema = z.object({
   payload: z.record(z.string(), z.unknown()),
-  mode: z.enum(["formatif", "sommatif-standard", "epreuve-ministerielle"]),
+  mode: modeSchema,
   estCorrige: z.boolean(),
 });
 
@@ -43,19 +65,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Body JSON invalide." }, { status: 400 });
   }
 
+  // Essayer le nouveau format (discriminatedUnion) d'abord
   const parsed = BodySchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json(
-      { error: "Body invalide : payload, mode et estCorrige requis." },
-      { status: 400 },
-    );
+  let kvValue: string;
+
+  if (parsed.success) {
+    kvValue = JSON.stringify(parsed.data);
+  } else {
+    // Rétrocompatibilité : ancien format (sans `type`)
+    const legacyParsed = LegacyBodySchema.safeParse(body);
+    if (!legacyParsed.success) {
+      return NextResponse.json(
+        { error: "Body invalide : type, payload, mode et estCorrige requis." },
+        { status: 400 },
+      );
+    }
+    // Stocker comme épreuve (ancien format)
+    kvValue = JSON.stringify({
+      type: "epreuve" as const,
+      ...legacyParsed.data,
+    });
   }
 
-  const { payload, mode, estCorrige } = parsed.data;
-
-  // 3. Stocker dans Vercel KV avec TTL (payload + options de rendu)
+  // 3. Stocker dans Vercel KV avec TTL
   const payloadId = crypto.randomUUID();
-  const kvValue = JSON.stringify({ payload, mode, estCorrige });
   await kv.set(`draft:${payloadId}`, kvValue, { ex: KV_TTL_SECONDS });
 
   // 4. Signer et retourner le token

@@ -8,6 +8,9 @@
  *
  * Seul composant qui connait `EnTeteEpreuve`. Les blocs de contenu
  * (document, quadruplet, corrige, etc.) l'ignorent totalement.
+ *
+ * Pour les taches seules et documents seuls, `enTete` est `null`
+ * et toute la hauteur est disponible pour le contenu.
  */
 
 import type { ReactNode } from "react";
@@ -20,7 +23,7 @@ import {
 import { EnTeteImpression } from "./entete";
 
 export type SectionPageProps = {
-  enTete: EnTeteEpreuve;
+  enTete: EnTeteEpreuve | null;
   numeroPage: number;
   totalPages: number;
   children: ReactNode;
@@ -30,6 +33,7 @@ export function SectionPage({ enTete, numeroPage, totalPages, children }: Sectio
   return (
     <section
       className="page"
+      data-page-impression
       style={{
         boxSizing: "border-box",
         width: `${PAGE_WIDTH_PX}px`,
@@ -46,7 +50,9 @@ export function SectionPage({ enTete, numeroPage, totalPages, children }: Sectio
         breakAfter: "page",
       }}
     >
-      <EnTeteImpression enTete={enTete} numeroPage={numeroPage} totalPages={totalPages} />
+      {enTete && (
+        <EnTeteImpression enTete={enTete} numeroPage={numeroPage} totalPages={totalPages} />
+      )}
 
       <div
         className="page-content"

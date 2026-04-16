@@ -7,14 +7,14 @@ import {
 } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
 import { CarrouselApercu } from "@/components/epreuve/apercu/carrousel";
 import { useApercuPng } from "@/hooks/epreuve/use-apercu-png";
+import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
 import { Button } from "@/components/ui/Button";
-import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 
 export type PrintPreviewModalProps = {
   open: boolean;
   onClose: () => void;
-  epreuve: DonneesEpreuve;
+  payload: PayloadImpression;
   mode: ModeImpression;
   estCorrige: boolean;
 };
@@ -26,13 +26,13 @@ export type PrintPreviewModalProps = {
 export function PrintPreviewModal({
   open,
   onClose,
-  epreuve,
+  payload,
   mode,
   estCorrige,
 }: PrintPreviewModalProps) {
   const titleId = useId();
   const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } = useApercuPng(
-    epreuve,
+    payload,
     mode,
     estCorrige,
   );

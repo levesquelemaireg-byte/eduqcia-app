@@ -73,6 +73,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - [x] **PDF-10** Tests visuels Playwright (3→8 golden payloads)
 - [x] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
 - [ ] **PDF-12** Validation terrain sur imprimantes réelles (phase de validation, pas de dev)
+- [x] **PDF-13** Architecture 3 couches — `RenduImprimable` unifié, builders partagés, entry points tâche seule + document seul + épreuve, dispatch SSR/token-draft par `type`
 
 ## Lot 7 — Finitions parcours création
 

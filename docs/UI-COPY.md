@@ -1002,6 +1002,15 @@ Les pages suivantes ne disposent pas encore de copy officielle complète dans ce
 
 Toute copy temporaire doit être marquée comme **PROVISOIRE** dans le code et référencée ici lorsqu’elle est consignée.
 
+### Impression tâche seule (`IMPRESSION_TACHE_SEULE_*`)
+
+- Titre modale aperçu : Aperçu de la tâche (`IMPRESSION_TACHE_SEULE_MODAL_TITLE`)
+
+### Impression document seul (`IMPRESSION_DOCUMENT_SEUL_*`)
+
+- Titre modale aperçu : Aperçu du document (`IMPRESSION_DOCUMENT_SEUL_MODAL_TITLE`)
+- Erreur débordement : Le contenu dépasse la page — réduisez la taille du document. (`IMPRESSION_DOCUMENT_DEBORDEMENT`)
+
 **Modes d’impression** (formatif, sommatif, corrigé, épreuve) : copy définitive à ajouter après validation — [FEATURES.md](./FEATURES.md) §10.5.
 
 ---

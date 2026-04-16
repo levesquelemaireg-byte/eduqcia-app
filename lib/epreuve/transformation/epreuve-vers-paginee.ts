@@ -1,5 +1,8 @@
 /**
- * Transformation pure `epreuveVersPaginee` — print-engine v2.1 §4.4 / D3.
+ * Transformation pure `epreuveVersImprimable` — print-engine v2.1 §4.4 / D3.
+ *
+ * Refactorisé pour retourner `RenduImprimable` (type de sortie unifié).
+ * Utilise `reglesVisibilite` de la couche 1 partagée.
  *
  * Centralise :
  * - Renumérotation globale des documents
@@ -17,12 +20,12 @@ import type {
   Bloc,
   BlocMesure,
   Page,
-  EpreuvePaginee,
 } from "@/lib/epreuve/pagination/types";
 import { mesurerBloc, verifierDebordement, paginer } from "@/lib/epreuve/pagination/pager";
 import type { Mesureur } from "@/lib/epreuve/pagination/pager";
-import { estGuidageVisible, estTitreDocumentVisible } from "./regles-visibilite";
+import { reglesVisibilite } from "@/lib/impression/builders/regles-visibilite";
 import { aplatirDocumentsAvecNumeros, resoudreReferencesDocuments } from "./renumerotation";
+import type { RenduImprimable } from "@/lib/impression/types";
 
 /* -------------------------------------------------------------------------- */
 /*  Types publics                                                             */
@@ -80,40 +83,9 @@ function resoudreRefsDansTache(
   return { consigne, guidage };
 }
 
-/** Applique les règles de visibilité sur un document. */
-function appliquerVisibiliteDocument(
-  doc: DocumentReference,
-  mode: ModeImpression,
-): DocumentReference {
-  if (estTitreDocumentVisible(mode)) return doc;
-  return { ...doc, titre: "" };
-}
-
-/** Applique la visibilité du guidage selon le mode. */
-function appliquerVisibiliteGuidage(guidage: Guidage, mode: ModeImpression): Guidage {
-  if (estGuidageVisible(mode)) return guidage;
-  return null;
-}
-
 /* -------------------------------------------------------------------------- */
-/*  Construction des blocs par feuillet                                       */
+/*  Contenu des blocs (types exportés pour le renderer)                       */
 /* -------------------------------------------------------------------------- */
-
-/** Construit les blocs du dossier documentaire (tous les documents, numérotés). */
-function construireBlocsDossierDocumentaire(
-  taches: TacheImpression[],
-  mode: ModeImpression,
-): Bloc[] {
-  const docsNumerotes = aplatirDocumentsAvecNumeros(taches);
-  return docsNumerotes.map((dn, i) => ({
-    id: genererIdBloc("dossier-documentaire", i),
-    kind: "document" as const,
-    content: {
-      numeroGlobal: dn.numeroGlobal,
-      document: appliquerVisibiliteDocument(dn.document, mode),
-    },
-  }));
-}
 
 /** Contenu d'un bloc quadruplet (consigne + guidage + espace de production + outil d'évaluation). */
 export type ContenuQuadruplet = {
@@ -133,23 +105,44 @@ export type ContenuCorrige = {
   outilEvaluation: DonneesTache["outilEvaluation"];
 };
 
+/* -------------------------------------------------------------------------- */
+/*  Construction des blocs par feuillet                                       */
+/* -------------------------------------------------------------------------- */
+
+/** Construit les blocs du dossier documentaire (tous les documents, numérotés). */
+function construireBlocsDossierDocumentaire(
+  taches: TacheImpression[],
+  mode: ModeImpression,
+): Bloc[] {
+  const regles = reglesVisibilite(mode);
+  const docsNumerotes = aplatirDocumentsAvecNumeros(taches);
+  return docsNumerotes.map((dn, i) => ({
+    id: genererIdBloc("dossier-documentaire", i),
+    kind: "document" as const,
+    content: {
+      numeroGlobal: dn.numeroGlobal,
+      document: regles.titresDocumentsVisibles ? dn.document : { ...dn.document, titre: "" },
+    },
+  }));
+}
+
 /** Construit les blocs du questionnaire (un quadruplet par tâche, + corrigé si flag actif). */
 function construireBlocsQuestionnaire(
   taches: TacheImpression[],
   mode: ModeImpression,
   estCorrige: boolean,
 ): Bloc[] {
+  const regles = reglesVisibilite(mode);
   const blocs: Bloc[] = [];
 
   taches.forEach((tache, i) => {
     const { consigne, guidage } = resoudreRefsDansTache(tache, taches);
-    const guidageVisible = appliquerVisibiliteGuidage(guidage, mode);
 
     const contenu: ContenuQuadruplet = {
       tacheIndex: i,
       titre: tache.titre,
       consigne,
-      guidage: guidageVisible,
+      guidage: regles.guidageVisible ? guidage : null,
       espaceProduction: tache.espaceProduction,
       outilEvaluation: tache.outilEvaluation,
     };
@@ -199,13 +192,6 @@ function construireBlocsCahierReponses(taches: TacheImpression[]): Bloc[] {
 /*  Composition par mode                                                      */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Retourne les feuillets actifs et leurs blocs selon le mode d'impression.
- *
- * - formatif : questionnaire seul (docs inline avec les tâches)
- * - sommatif-standard : dossier-documentaire + questionnaire
- * - épreuve-ministérielle : dossier-documentaire + questionnaire + cahier-reponses
- */
 function composerParMode(
   taches: TacheImpression[],
   options: OptionsRendu,
@@ -240,11 +226,6 @@ function composerParMode(
 /*  Empreinte                                                                 */
 /* -------------------------------------------------------------------------- */
 
-/**
- * Calcule une empreinte déterministe du contenu paginé.
- * Utilise un hash simple basé sur JSON.stringify (suffisant au MVP,
- * sha256 sera ajouté avec l'infrastructure D4).
- */
 function calculerEmpreinte(epreuve: DonneesEpreuve, options: OptionsRendu): string {
   const payload = JSON.stringify({
     id: epreuve.id,
@@ -252,7 +233,6 @@ function calculerEmpreinte(epreuve: DonneesEpreuve, options: OptionsRendu): stri
     mode: options.mode,
     estCorrige: options.estCorrige,
   });
-  // Hash simple FNV-1a 32 bits — suffisant pour la détection de changement
   let hash = 0x811c9dc5;
   for (let i = 0; i < payload.length; i++) {
     hash ^= payload.charCodeAt(i);
@@ -262,21 +242,31 @@ function calculerEmpreinte(epreuve: DonneesEpreuve, options: OptionsRendu): stri
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Ordre de concaténation des feuillets                                      */
+/* -------------------------------------------------------------------------- */
+
+const ORDRE_FEUILLETS: TypeFeuillet[] = [
+  "dossier-documentaire",
+  "questionnaire",
+  "cahier-reponses",
+];
+
+/* -------------------------------------------------------------------------- */
 /*  Fonction principale                                                       */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Transforme une `DonneesEpreuve` en `EpreuvePaginee` prête pour le rendu.
+ * Transforme une `DonneesEpreuve` en `RenduImprimable` prêt pour le rendu.
  *
  * Fonction pure : pas d'effet de bord, pas de DOM, pas d'I/O.
  * Le `mesureur` est injecté pour permettre le test avec des hauteurs mockées
  * et l'utilisation côté client (offscreen DOM) ou serveur (Puppeteer).
  */
-export function epreuveVersPaginee(
+export function epreuveVersImprimable(
   epreuve: DonneesEpreuve,
   options: OptionsRendu,
   mesureur: Mesureur,
-): EpreuvePaginee {
+): RenduImprimable {
   // 1. Composer les blocs par feuillet selon le mode
   const blocsParFeuillet = composerParMode(epreuve.taches, options);
 
@@ -289,7 +279,7 @@ export function epreuveVersPaginee(
     "cahier-reponses": blocsParFeuillet["cahier-reponses"].map((b) => mesurerBloc(b, mesureur)),
   };
 
-  // 3. Vérifier le débordement (aplatir tous les feuillets)
+  // 3. Vérifier le débordement
   const tousLesBlocs = [
     ...blocsMesuresParFeuillet["dossier-documentaire"],
     ...blocsMesuresParFeuillet["questionnaire"],
@@ -300,23 +290,33 @@ export function epreuveVersPaginee(
     return { ok: false, erreur };
   }
 
-  // 4. Paginer chaque feuillet
-  const feuillets: Record<TypeFeuillet, Page[]> = {
-    "dossier-documentaire": paginer(
-      blocsMesuresParFeuillet["dossier-documentaire"],
-      "dossier-documentaire",
-    ),
-    questionnaire: paginer(blocsMesuresParFeuillet["questionnaire"], "questionnaire"),
-    "cahier-reponses": paginer(blocsMesuresParFeuillet["cahier-reponses"], "cahier-reponses"),
-  };
+  // 4. Paginer chaque feuillet puis aplatir en pages[]
+  const pages: Page[] = [];
+  for (const feuillet of ORDRE_FEUILLETS) {
+    const pagesF = paginer(blocsMesuresParFeuillet[feuillet], feuillet);
+    pages.push(...pagesF);
+  }
 
-  // 5. Calculer l'empreinte
-  const empreinte = calculerEmpreinte(epreuve, options);
+  // 5. Renuméroter globalement les pages
+  const totalPages = pages.length;
+  pages.forEach((page, i) => {
+    page.numeroPage = i + 1;
+    page.totalPages = totalPages;
+  });
 
   return {
     ok: true,
-    empreinte,
+    empreinte: calculerEmpreinte(epreuve, options),
+    contexte: { type: "epreuve", mode: options.mode, estCorrige: options.estCorrige },
     enTete: epreuve.enTete,
-    feuillets,
+    pages,
   };
 }
+
+/**
+ * Alias de rétrocompatibilité — les anciens appelants qui utilisent
+ * `epreuveVersPaginee` continuent à fonctionner.
+ *
+ * @deprecated Utiliser `epreuveVersImprimable` directement.
+ */
+export const epreuveVersPaginee = epreuveVersImprimable;

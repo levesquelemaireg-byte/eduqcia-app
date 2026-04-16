@@ -2,8 +2,11 @@
 
 import { useCallback, useRef, useState } from "react";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression, TypeFeuillet } from "@/lib/epreuve/pagination/types";
-import { epreuveVersPaginee } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import type { RenduImprimable } from "@/lib/impression/types";
+import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -29,6 +32,11 @@ export type UseApercuPngRetour = {
   pdfEnCours: boolean;
 };
 
+/** Payload discriminé pour le hook : tâche ou épreuve. */
+export type PayloadImpression =
+  | { type: "tache"; donnees: DonneesTache }
+  | { type: "epreuve"; donnees: DonneesEpreuve };
+
 /* -------------------------------------------------------------------------- */
 /*  Mesureur placeholder (cohérent avec la route SSR et l'API apercu-png)     */
 /* -------------------------------------------------------------------------- */
@@ -38,15 +46,64 @@ function mesureurPlaceholder(): number {
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Helpers                                                                   */
+/* -------------------------------------------------------------------------- */
+
+/** Calcule le nombre de pages par feuillet depuis les pages plates. */
+function extrairePagesParFeuillet(
+  rendu: RenduImprimable & { ok: true },
+): Record<TypeFeuillet, number> {
+  const counts: Record<TypeFeuillet, number> = {
+    "dossier-documentaire": 0,
+    questionnaire: 0,
+    "cahier-reponses": 0,
+  };
+  for (const page of rendu.pages) {
+    counts[page.feuillet]++;
+  }
+  return counts;
+}
+
+/** Calcule le RenduImprimable pour l'empreinte locale. */
+function calculerRendu(
+  payload: PayloadImpression,
+  mode: ModeImpression,
+  estCorrige: boolean,
+): RenduImprimable {
+  switch (payload.type) {
+    case "tache":
+      return tacheVersImprimable(payload.donnees, { mode, estCorrige }, mesureurPlaceholder);
+    case "epreuve":
+      return epreuveVersImprimable(payload.donnees, { mode, estCorrige }, mesureurPlaceholder);
+  }
+}
+
+/** Construit le body pour POST /api/impression/token-draft. */
+function construireBodyTokenDraft(
+  payload: PayloadImpression,
+  mode: ModeImpression,
+  estCorrige: boolean,
+): unknown {
+  switch (payload.type) {
+    case "tache":
+      return { type: "tache", payload: payload.donnees, mode, estCorrige };
+    case "epreuve":
+      return { type: "epreuve", payload: payload.donnees, mode, estCorrige };
+  }
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Hook                                                                      */
 /* -------------------------------------------------------------------------- */
 
 /**
  * Orchestre le flux complet : token-draft -> apercu-png -> affichage carrousel.
  * Calcule aussi l'empreinte wizard locale pour la détection d'invalidation.
+ *
+ * Supporte les payloads tâche et épreuve via `PayloadImpression`.
  */
 export function useApercuPng(
-  epreuve: DonneesEpreuve,
+  payload: PayloadImpression,
   mode: ModeImpression,
   estCorrige: boolean,
 ): UseApercuPngRetour {
@@ -54,32 +111,20 @@ export function useApercuPng(
   const [pdfEnCours, setPdfEnCours] = useState(false);
   const tokenRef = useRef<string | null>(null);
 
-  // Empreinte wizard locale (recalculée à chaque render via epreuveVersPaginee)
-  const paginee = epreuveVersPaginee(epreuve, { mode, estCorrige }, mesureurPlaceholder);
-  const empreinteWizard = paginee.ok ? paginee.empreinte : "";
+  // Empreinte wizard locale
+  const rendu = calculerRendu(payload, mode, estCorrige);
+  const empreinteWizard = rendu.ok ? rendu.empreinte : "";
 
   // Détection d'invalidation
   const estInvalide =
     etat.statut === "pret" && empreinteWizard !== "" && etat.empreintePng !== empreinteWizard;
-
-  /** Calcule le nombre de pages par feuillet depuis la pagination locale. */
-  function calculerPagesParFeuillet(): Record<TypeFeuillet, number> {
-    if (!paginee.ok) {
-      return { "dossier-documentaire": 0, questionnaire: 0, "cahier-reponses": 0 };
-    }
-    return {
-      "dossier-documentaire": paginee.feuillets["dossier-documentaire"].length,
-      questionnaire: paginee.feuillets["questionnaire"].length,
-      "cahier-reponses": paginee.feuillets["cahier-reponses"].length,
-    };
-  }
 
   /** Obtient un token draft depuis l'API. */
   async function obtenirToken(): Promise<string> {
     const res = await fetch("/api/impression/token-draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload: epreuve, mode, estCorrige }),
+      body: JSON.stringify(construireBodyTokenDraft(payload, mode, estCorrige)),
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
@@ -107,7 +152,12 @@ export function useApercuPng(
       }
 
       const data = (await res.json()) as { pages: string[]; empreinte: string };
-      const pagesParFeuillet = calculerPagesParFeuillet();
+
+      // Calculer pagesParFeuillet depuis le rendu local
+      const renduLocal = calculerRendu(payload, mode, estCorrige);
+      const pagesParFeuillet = renduLocal.ok
+        ? extrairePagesParFeuillet(renduLocal)
+        : { "dossier-documentaire": 0, questionnaire: 0, "cahier-reponses": 0 };
 
       setEtat({
         statut: "pret",
@@ -120,12 +170,11 @@ export function useApercuPng(
       setEtat({ statut: "erreur", message });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [epreuve, mode, estCorrige]);
+  }, [payload, mode, estCorrige]);
 
   const telechargerPdf = useCallback(async () => {
     setPdfEnCours(true);
     try {
-      // Réutiliser le token existant ou en obtenir un nouveau
       let token = tokenRef.current;
       if (!token) {
         token = await obtenirToken();
@@ -147,18 +196,18 @@ export function useApercuPng(
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = "epreuve.pdf";
+      a.download = payload.type === "tache" ? "tache.pdf" : "epreuve.pdf";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch {
-      // L'erreur PDF est silencieuse — le toast est géré par le composant appelant si nécessaire
+      // L'erreur PDF est silencieuse
     } finally {
       setPdfEnCours(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [epreuve, mode, estCorrige]);
+  }, [payload, mode, estCorrige]);
 
   return { etat, empreinteWizard, estInvalide, generer, telechargerPdf, pdfEnCours };
 }

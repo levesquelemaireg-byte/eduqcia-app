@@ -2,7 +2,7 @@
  * Types de pagination PDF — print-engine v2.1 §4.3.
  */
 
-import type { EnTeteEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { RenduImprimable } from "@/lib/impression/types";
 
 /* -------------------------------------------------------------------------- */
 /*  Modes et feuillets                                                        */
@@ -59,14 +59,8 @@ export type ErreurDebordement = {
 /*  Résultat paginé                                                           */
 /* -------------------------------------------------------------------------- */
 
-export type EpreuvePaginee =
-  | {
-      ok: true;
-      empreinte: string;
-      enTete: EnTeteEpreuve;
-      feuillets: Record<TypeFeuillet, Page[]>;
-    }
-  | {
-      ok: false;
-      erreur: ErreurDebordement;
-    };
+/**
+ * @deprecated Utiliser `RenduImprimable` de `@/lib/impression/types`.
+ * Alias conservé pour la rétrocompatibilité.
+ */
+export type EpreuvePaginee = RenduImprimable;

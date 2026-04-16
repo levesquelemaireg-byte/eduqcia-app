@@ -1,8 +1,18 @@
 import { describe, expect, it } from "vitest";
 import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { TypeFeuillet, Page } from "@/lib/epreuve/pagination/types";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
-import { epreuveVersPaginee, type Mesureur, type OptionsRendu } from "./epreuve-vers-paginee";
+import { epreuveVersImprimable, type Mesureur, type OptionsRendu } from "./epreuve-vers-paginee";
+
+/* -------------------------------------------------------------------------- */
+/*  Helpers de test                                                           */
+/* -------------------------------------------------------------------------- */
+
+/** Filtre les pages par type de feuillet. */
+function pagesDuFeuillet(pages: Page[], feuillet: TypeFeuillet): Page[] {
+  return pages.filter((p) => p.feuillet === feuillet);
+}
 
 /* -------------------------------------------------------------------------- */
 /*  Fixtures                                                                  */
@@ -63,7 +73,7 @@ function mesureurFixe(hauteur: number): Mesureur {
 /*  Mode formatif                                                             */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — mode formatif", () => {
+describe("epreuveVersImprimable — mode formatif", () => {
   const tache1 = creerTache({ id: "t1" });
   const tache2 = creerTache({
     id: "t2",
@@ -73,47 +83,55 @@ describe("epreuveVersPaginee — mode formatif", () => {
   const options: OptionsRendu = { mode: "formatif", estCorrige: false };
 
   it("ne produit pas de dossier documentaire en formatif", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    expect(resultat.feuillets["dossier-documentaire"]).toHaveLength(0);
+    expect(pagesDuFeuillet(resultat.pages, "dossier-documentaire")).toHaveLength(0);
   });
 
   it("ne produit pas de cahier de réponses en formatif", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    expect(resultat.feuillets["cahier-reponses"]).toHaveLength(0);
+    expect(pagesDuFeuillet(resultat.pages, "cahier-reponses")).toHaveLength(0);
   });
 
   it("produit un questionnaire avec un quadruplet par tâche", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const pages = resultat.feuillets["questionnaire"];
-    const blocs = pages.flatMap((p) => p.blocs);
+    const pagesQ = pagesDuFeuillet(resultat.pages, "questionnaire");
+    const blocs = pagesQ.flatMap((p) => p.blocs);
     expect(blocs.filter((b) => b.kind === "quadruplet")).toHaveLength(2);
   });
 
   it("conserve le guidage dans les quadruplets en formatif", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["questionnaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
     const contenu = blocs[0].content as { guidage: { content: string } | null };
     expect(contenu.guidage).not.toBeNull();
     expect(contenu.guidage?.content).toContain("Guidage");
   });
 
   it("retourne l'en-tête de l'épreuve", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    expect(resultat.enTete.titre).toBe("Épreuve de fin d'étape");
+    expect(resultat.enTete).not.toBeNull();
+    expect(resultat.enTete!.titre).toBe("Épreuve de fin d'étape");
+  });
+
+  it("retourne le contexte épreuve", () => {
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
+    expect(resultat.ok).toBe(true);
+    if (!resultat.ok) return;
+    expect(resultat.contexte).toEqual({ type: "epreuve", mode: "formatif", estCorrige: false });
   });
 
   it("calcule une empreinte non vide", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
     expect(resultat.empreinte).toBeTruthy();
@@ -125,7 +143,7 @@ describe("epreuveVersPaginee — mode formatif", () => {
 /*  Mode sommatif-standard                                                    */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — mode sommatif-standard", () => {
+describe("epreuveVersImprimable — mode sommatif-standard", () => {
   const tache1 = creerTache({
     id: "t1",
     consigne: "<p>Voir {{doc_A}}</p>",
@@ -139,48 +157,48 @@ describe("epreuveVersPaginee — mode sommatif-standard", () => {
   const options: OptionsRendu = { mode: "sommatif-standard", estCorrige: false };
 
   it("produit un dossier documentaire avec tous les documents numérotés", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const pages = resultat.feuillets["dossier-documentaire"];
-    const blocs = pages.flatMap((p) => p.blocs);
+    const pagesDD = pagesDuFeuillet(resultat.pages, "dossier-documentaire");
+    const blocs = pagesDD.flatMap((p) => p.blocs);
     expect(blocs).toHaveLength(3);
     expect(blocs[0].kind).toBe("document");
   });
 
   it("masque les titres de documents en sommatif", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["dossier-documentaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "dossier-documentaire").flatMap((p) => p.blocs);
     const contenu = blocs[0].content as { document: DocumentReference };
     expect(contenu.document.titre).toBe("");
   });
 
   it("masque le guidage dans les quadruplets en sommatif", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["questionnaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
     const contenu = blocs[0].content as { guidage: { content: string } | null };
     expect(contenu.guidage).toBeNull();
   });
 
   it("résout {{doc_A}} dans la consigne avec le numéro global", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["questionnaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
     const contenu = blocs[0].content as { consigne: string };
     // doc-t1-A est le 1er document global
     expect(contenu.consigne).toBe("<p>Voir 1</p>");
   });
 
   it("ne produit pas de cahier de réponses en sommatif-standard", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    expect(resultat.feuillets["cahier-reponses"]).toHaveLength(0);
+    expect(pagesDuFeuillet(resultat.pages, "cahier-reponses")).toHaveLength(0);
   });
 });
 
@@ -188,25 +206,25 @@ describe("epreuveVersPaginee — mode sommatif-standard", () => {
 /*  Mode épreuve-ministérielle                                                */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — mode épreuve-ministérielle", () => {
+describe("epreuveVersImprimable — mode épreuve-ministérielle", () => {
   const tache = creerTache({ id: "t1" });
   const epreuve = creerEpreuve([tache]);
   const options: OptionsRendu = { mode: "epreuve-ministerielle", estCorrige: false };
 
   it("produit les 3 feuillets", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    expect(resultat.feuillets["dossier-documentaire"].length).toBeGreaterThan(0);
-    expect(resultat.feuillets["questionnaire"].length).toBeGreaterThan(0);
-    expect(resultat.feuillets["cahier-reponses"].length).toBeGreaterThan(0);
+    expect(pagesDuFeuillet(resultat.pages, "dossier-documentaire").length).toBeGreaterThan(0);
+    expect(pagesDuFeuillet(resultat.pages, "questionnaire").length).toBeGreaterThan(0);
+    expect(pagesDuFeuillet(resultat.pages, "cahier-reponses").length).toBeGreaterThan(0);
   });
 
   it("le cahier de réponses contient un bloc par tâche", () => {
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["cahier-reponses"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "cahier-reponses").flatMap((p) => p.blocs);
     expect(blocs).toHaveLength(1);
     expect(blocs[0].tacheId).toBe("t1");
   });
@@ -216,16 +234,16 @@ describe("epreuveVersPaginee — mode épreuve-ministérielle", () => {
 /*  Flag estCorrige                                                           */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — flag estCorrige", () => {
+describe("epreuveVersImprimable — flag estCorrige", () => {
   const tache = creerTache({ id: "t1", corrige: "<p>Réponse attendue</p>" });
   const epreuve = creerEpreuve([tache]);
 
   it("ajoute un bloc corrigé après le quadruplet quand estCorrige=true", () => {
     const options: OptionsRendu = { mode: "formatif", estCorrige: true };
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["questionnaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
     // quadruplet + corrigé
     expect(blocs).toHaveLength(2);
     expect(blocs[1].id).toContain("corrige");
@@ -233,10 +251,10 @@ describe("epreuveVersPaginee — flag estCorrige", () => {
 
   it("n'ajoute pas de bloc corrigé quand estCorrige=false", () => {
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["questionnaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
     expect(blocs).toHaveLength(1);
   });
 
@@ -244,10 +262,10 @@ describe("epreuveVersPaginee — flag estCorrige", () => {
     const tacheSansCorrige = creerTache({ id: "t2", corrige: "" });
     const ep = creerEpreuve([tacheSansCorrige]);
     const options: OptionsRendu = { mode: "formatif", estCorrige: true };
-    const resultat = epreuveVersPaginee(ep, options, mesureurFixe(200));
+    const resultat = epreuveVersImprimable(ep, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = resultat.feuillets["questionnaire"].flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
     expect(blocs).toHaveLength(1);
   });
 });
@@ -256,33 +274,32 @@ describe("epreuveVersPaginee — flag estCorrige", () => {
 /*  Pagination                                                                */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — pagination", () => {
+describe("epreuveVersImprimable — pagination", () => {
   it("crée plusieurs pages quand les blocs ne tiennent pas sur une seule", () => {
     const taches = Array.from({ length: 5 }, (_, i) => creerTache({ id: `t${i}` }));
     const epreuve = creerEpreuve(taches);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
     // Chaque bloc = 300px, max = 825px → 2 blocs par page, 5 blocs → 3 pages
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(300));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(300));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const pages = resultat.feuillets["questionnaire"];
-    expect(pages.length).toBe(3);
+    const pagesQ = pagesDuFeuillet(resultat.pages, "questionnaire");
+    expect(pagesQ.length).toBe(3);
   });
 
-  it("numérote les pages correctement", () => {
+  it("numérote les pages correctement (globalement)", () => {
     const taches = Array.from({ length: 4 }, (_, i) => creerTache({ id: `t${i}` }));
     const epreuve = creerEpreuve(taches);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(500));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(500));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const pages = resultat.feuillets["questionnaire"];
     // 500px chaque → max 1 par page (825px) → 4 pages
-    expect(pages).toHaveLength(4);
-    expect(pages[0].numeroPage).toBe(1);
-    expect(pages[0].totalPages).toBe(4);
-    expect(pages[3].numeroPage).toBe(4);
-    expect(pages[3].totalPages).toBe(4);
+    expect(resultat.pages).toHaveLength(4);
+    expect(resultat.pages[0].numeroPage).toBe(1);
+    expect(resultat.pages[0].totalPages).toBe(4);
+    expect(resultat.pages[3].numeroPage).toBe(4);
+    expect(resultat.pages[3].totalPages).toBe(4);
   });
 });
 
@@ -290,14 +307,14 @@ describe("epreuveVersPaginee — pagination", () => {
 /*  Détection de débordement                                                  */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — détection de débordement", () => {
+describe("epreuveVersImprimable — détection de débordement", () => {
   it("retourne une erreur si un bloc dépasse le ratio maximum", () => {
     const tache = creerTache({ id: "t1" });
     const epreuve = creerEpreuve([tache]);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
     // Hauteur = 97.1% de MAX → ratio > 0.97
     const hauteurDebordante = MAX_CONTENT_HEIGHT_PX * 0.971;
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(hauteurDebordante));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(hauteurDebordante));
     expect(resultat.ok).toBe(false);
     if (resultat.ok) return;
     expect(resultat.erreur.kind).toBe("DEBORDEMENT_BLOC");
@@ -309,7 +326,7 @@ describe("epreuveVersPaginee — détection de débordement", () => {
     const epreuve = creerEpreuve([tache]);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
     const hauteurLimite = MAX_CONTENT_HEIGHT_PX * 0.97;
-    const resultat = epreuveVersPaginee(epreuve, options, mesureurFixe(hauteurLimite));
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(hauteurLimite));
     expect(resultat.ok).toBe(true);
   });
 });
@@ -318,14 +335,14 @@ describe("epreuveVersPaginee — détection de débordement", () => {
 /*  Empreinte                                                                 */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersPaginee — empreinte", () => {
+describe("epreuveVersImprimable — empreinte", () => {
   it("produit des empreintes différentes pour des options différentes", () => {
     const tache = creerTache({ id: "t1" });
     const epreuve = creerEpreuve([tache]);
     const mesureur = mesureurFixe(200);
 
-    const r1 = epreuveVersPaginee(epreuve, { mode: "formatif", estCorrige: false }, mesureur);
-    const r2 = epreuveVersPaginee(
+    const r1 = epreuveVersImprimable(epreuve, { mode: "formatif", estCorrige: false }, mesureur);
+    const r2 = epreuveVersImprimable(
       epreuve,
       { mode: "sommatif-standard", estCorrige: false },
       mesureur,
@@ -342,8 +359,8 @@ describe("epreuveVersPaginee — empreinte", () => {
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
     const mesureur = mesureurFixe(200);
 
-    const r1 = epreuveVersPaginee(epreuve, options, mesureur);
-    const r2 = epreuveVersPaginee(epreuve, options, mesureur);
+    const r1 = epreuveVersImprimable(epreuve, options, mesureur);
+    const r2 = epreuveVersImprimable(epreuve, options, mesureur);
 
     expect(r1.ok && r2.ok).toBe(true);
     if (!r1.ok || !r2.ok) return;

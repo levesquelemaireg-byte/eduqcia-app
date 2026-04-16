@@ -1,28 +1,35 @@
 import { notFound } from "next/navigation";
 import { kv } from "@vercel/kv";
 import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
-import { epreuveVersPaginee } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
+import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import type { RenduImprimable } from "@/lib/impression/types";
 import { ApercuImpression } from "@/components/epreuve/impression";
 
 /**
  * Route SSR `/apercu/[token]` — print-engine D1.
  *
  * Vérifie le token HMAC, fetch le payload depuis Vercel KV (draft),
- * appelle `epreuveVersPaginee`, rend `ApercuImpression`.
- *
- * Le KV stocke `{ payload, mode, estCorrige }` (format PDF-9+).
- * Rétrocompatibilité : si la valeur KV est un ancien format (payload brut),
- * fallback sur mode "formatif" et estCorrige false.
+ * dispatch vers le pipeline approprié (document / tâche / épreuve),
+ * rend `ApercuImpression`.
  */
 
 type PageProps = {
   params: Promise<{ token: string }>;
 };
 
-/** Format KV enrichi (PDF-9+). */
-type DraftKvValue = {
+/** Format KV — discriminé par `type`. */
+type DraftKvTyped =
+  | { type: "document"; payload: DocumentReference }
+  | { type: "tache"; payload: DonneesTache; mode: ModeImpression; estCorrige: boolean }
+  | { type: "epreuve"; payload: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
+
+/** Format KV legacy (pre-discriminatedUnion). */
+type DraftKvLegacy = {
   payload: DonneesEpreuve;
   mode: ModeImpression;
   estCorrige: boolean;
@@ -33,18 +40,39 @@ function mesureurPlaceholder(): number {
   return 200;
 }
 
+function construireRendu(data: DraftKvTyped): RenduImprimable {
+  switch (data.type) {
+    case "document":
+      return documentVersImprimable(data.payload, mesureurPlaceholder);
+
+    case "tache":
+      return tacheVersImprimable(
+        data.payload,
+        { mode: data.mode, estCorrige: data.estCorrige },
+        mesureurPlaceholder,
+      );
+
+    case "epreuve":
+      return epreuveVersImprimable(
+        data.payload,
+        { mode: data.mode, estCorrige: data.estCorrige },
+        mesureurPlaceholder,
+      );
+  }
+}
+
 /**
- * Extrait le payload et les options de rendu depuis la valeur KV.
- * Gère la rétrocompatibilité avec l'ancien format (payload brut).
+ * Extrait les données depuis la valeur KV.
+ * Gère la rétrocompatibilité avec l'ancien format (sans champ `type`).
  */
-function extraireDonneesKv(raw: unknown): {
-  epreuve: DonneesEpreuve;
-  mode: ModeImpression;
-  estCorrige: boolean;
-} {
+function extraireDonneesKv(raw: unknown): DraftKvTyped {
   const parsed: unknown = typeof raw === "string" ? JSON.parse(raw) : raw;
 
-  // Format enrichi PDF-9+ : { payload, mode, estCorrige }
+  if (parsed && typeof parsed === "object" && "type" in parsed) {
+    return parsed as DraftKvTyped;
+  }
+
+  // Rétrocompatibilité : ancien format épreuve (sans discriminant `type`)
   if (
     parsed &&
     typeof parsed === "object" &&
@@ -52,42 +80,48 @@ function extraireDonneesKv(raw: unknown): {
     "mode" in parsed &&
     "estCorrige" in parsed
   ) {
-    const kv = parsed as DraftKvValue;
-    return { epreuve: kv.payload, mode: kv.mode, estCorrige: kv.estCorrige };
+    const legacy = parsed as DraftKvLegacy;
+    return {
+      type: "epreuve",
+      payload: legacy.payload,
+      mode: legacy.mode,
+      estCorrige: legacy.estCorrige,
+    };
   }
 
-  // Rétrocompatibilité : ancien format (payload brut)
-  return { epreuve: parsed as DonneesEpreuve, mode: "formatif", estCorrige: false };
+  // Dernier fallback : payload brut = épreuve
+  return {
+    type: "epreuve",
+    payload: parsed as DonneesEpreuve,
+    mode: "formatif",
+    estCorrige: false,
+  };
 }
 
 export default async function ApercuPage({ params }: PageProps) {
   const { token } = await params;
 
-  // 1. Vérifier le token HMAC
   const verification = verifierTokenDraft(token);
   if (!verification.valide || !verification.payloadId) {
     notFound();
   }
 
-  // 2. Fetch le payload depuis Vercel KV
   const raw = await kv.get<string>(`draft:${verification.payloadId}`);
   if (!raw) {
     notFound();
   }
 
-  const { epreuve, mode, estCorrige } = extraireDonneesKv(raw);
+  const data = extraireDonneesKv(raw);
+  const rendu = construireRendu(data);
 
-  // 3. Paginer (mesureur placeholder pour D1)
-  const paginee = epreuveVersPaginee(epreuve, { mode, estCorrige }, mesureurPlaceholder);
-
-  if (!paginee.ok) {
+  if (!rendu.ok) {
     return (
       <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif", color: "#c00" }}>
         <h1>Erreur de pagination</h1>
-        <p>{paginee.erreur.suggestion}</p>
+        <p>{rendu.erreur.suggestion}</p>
       </div>
     );
   }
 
-  return <ApercuImpression paginee={paginee} />;
+  return <ApercuImpression rendu={rendu} />;
 }

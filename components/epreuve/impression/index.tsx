@@ -1,7 +1,7 @@
 /**
  * ApercuImpression — composant unique de rendu des pages paginées.
  *
- * Consomme `EpreuvePaginee` et rend les pages via `SectionPage`.
+ * Consomme `RenduImprimable` et rend les pages via `SectionPage`.
  * Dispatche chaque bloc vers le composant de section approprié
  * selon `bloc.kind` et le contenu.
  *
@@ -9,12 +9,8 @@
  * wizard, route SSR et Puppeteer.
  */
 
-import type {
-  EpreuvePaginee,
-  TypeFeuillet,
-  Page,
-  BlocMesure,
-} from "@/lib/epreuve/pagination/types";
+import type { Page, BlocMesure } from "@/lib/epreuve/pagination/types";
+import type { RenduImprimable } from "@/lib/impression/types";
 import type {
   ContenuQuadruplet,
   ContenuCorrige,
@@ -26,14 +22,8 @@ import { SectionQuadruplet } from "./sections/quadruplet";
 import { SectionCorrige } from "./sections/corrige";
 
 export type ApercuImpressionProps = {
-  paginee: EpreuvePaginee & { ok: true };
+  rendu: RenduImprimable & { ok: true };
 };
-
-const ORDRE_FEUILLETS: TypeFeuillet[] = [
-  "dossier-documentaire",
-  "questionnaire",
-  "cahier-reponses",
-];
 
 /** Type guard : le contenu est un corrigé (possède `corrige` et pas de `consigne`). */
 function estContenuCorrige(content: unknown): content is ContenuCorrige {
@@ -73,30 +63,21 @@ function RenduBloc({ bloc }: { bloc: BlocMesure }) {
   }
 }
 
-export function ApercuImpression({ paginee }: ApercuImpressionProps) {
-  const totalPages = ORDRE_FEUILLETS.reduce((sum, f) => sum + paginee.feuillets[f].length, 0);
-
-  let pageIndex = 0;
-
+export function ApercuImpression({ rendu }: ApercuImpressionProps) {
   return (
     <>
-      {ORDRE_FEUILLETS.map((feuillet) =>
-        paginee.feuillets[feuillet].map((page: Page, i: number) => {
-          pageIndex++;
-          return (
-            <SectionPage
-              key={`${feuillet}-${i}`}
-              enTete={paginee.enTete}
-              numeroPage={pageIndex}
-              totalPages={totalPages}
-            >
-              {page.blocs.map((bloc) => (
-                <RenduBloc key={bloc.id} bloc={bloc} />
-              ))}
-            </SectionPage>
-          );
-        }),
-      )}
+      {rendu.pages.map((page: Page, i: number) => (
+        <SectionPage
+          key={i}
+          enTete={rendu.enTete}
+          numeroPage={page.numeroPage}
+          totalPages={page.totalPages}
+        >
+          {page.blocs.map((bloc) => (
+            <RenduBloc key={bloc.id} bloc={bloc} />
+          ))}
+        </SectionPage>
+      ))}
     </>
   );
 }
