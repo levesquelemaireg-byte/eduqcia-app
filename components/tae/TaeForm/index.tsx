@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentType, ReactNode } from "react";
-import { createElement } from "react";
+import { createElement, useMemo, useState } from "react";
 import { Bloc1AuteursTache } from "@/components/tae/TaeForm/Bloc1AuteursTache";
 import { Bloc2ParametresTache } from "@/components/tae/TaeForm/Bloc2ParametresTache";
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneProduction";
@@ -9,7 +9,10 @@ import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4Documen
 import { Bloc6CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc6CompetenceDisciplinaire";
 import { Bloc7AspectsConnaissances } from "@/components/tae/TaeForm/Bloc7AspectsConnaissances";
 import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
+import { useOiData, useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
 import { PrintableFichePreview } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
+import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
+import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
 import { FicheSommaireColumn } from "@/components/tae/TaeForm/sommaire";
 import { PreviewPanel } from "@/components/preview/PreviewPanel";
 import type { PreviewMode } from "@/components/preview/types";
@@ -30,6 +33,11 @@ import {
 } from "@/components/tae/TaeForm/FormState";
 import { TAE_FORM_STEPS } from "@/components/tae/TaeForm/step-meta";
 import { resolveWizardBlocComponent } from "@/components/tae/TaeForm/wizardBlocResolver";
+import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import {
+  etatWizardVersTache,
+  type GrilleEvaluationEntree,
+} from "@/lib/tache/contrats/etat-wizard-vers-tache";
 import type { WizardFichePreviewMeta } from "@/lib/tae/fiche-helpers";
 import type { TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
 import {
@@ -73,6 +81,33 @@ function TaeFormInner({
   showDraftBanners,
 }: TaeFormInnerProps) {
   const { state } = useTaeForm();
+  const [showPrintModal, setShowPrintModal] = useState(false);
+  const { oiList } = useOiData();
+  const grilles = useGrilles();
+
+  const epreuveBrouillon = useMemo<DonneesEpreuve | null>(() => {
+    if (!oiList || oiList.length === 0 || !grilles) return null;
+
+    const grillesEntrees: GrilleEvaluationEntree[] = grilles.map((g) => ({
+      id: g.id,
+      oi: g.operation,
+      comportement_enonce: g.comportement_enonce,
+      bareme: g.bareme,
+    }));
+
+    const tache = etatWizardVersTache(state, oiList, grillesEntrees, wizardPreviewMeta);
+
+    return {
+      id: "draft",
+      titre: tache.titre || "Brouillon",
+      enTete: {
+        titre: tache.titre || "Brouillon",
+        enseignant: wizardPreviewMeta.authorFullName,
+        niveau: tache.niveau.label,
+      },
+      taches: [tache],
+    };
+  }, [state, oiList, grilles, wizardPreviewMeta]);
   const stepBase = TAE_FORM_STEPS[state.currentStep];
   const step =
     isActiveOrdreChronologiqueVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
@@ -174,6 +209,7 @@ function TaeFormInner({
 
         {/* Colonne aperçu — toggle flottant Sommaire / Impression */}
         <div className="tae-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
+          <WizardPreviewToolbar onOpenPrintPreview={() => setShowPrintModal(true)} />
           <PreviewPanel
             modes={TAE_PREVIEW_MODES}
             defaultModeId="sommaire"
@@ -195,6 +231,16 @@ function TaeFormInner({
               </div>
             )}
           </PreviewPanel>
+
+          {epreuveBrouillon && (
+            <PrintPreviewModal
+              open={showPrintModal}
+              onClose={() => setShowPrintModal(false)}
+              epreuve={epreuveBrouillon}
+              mode="formatif"
+              estCorrige={false}
+            />
+          )}
         </div>
       </div>
     </>
