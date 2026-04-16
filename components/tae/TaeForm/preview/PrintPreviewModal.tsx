@@ -1,53 +1,60 @@
 "use client";
 
 import { useEffect, useId } from "react";
-import { PrintableFichePreview } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
-import { WIZARD_PRINT_PREVIEW_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+import {
+  WIZARD_PRINT_PREVIEW_COPY,
+  CARROUSEL_APERCU_COPY,
+} from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+import { CarrouselApercu } from "@/components/epreuve/apercu/carrousel";
+import { useApercuPng } from "@/hooks/epreuve/use-apercu-png";
 import { Button } from "@/components/ui/Button";
-import type { WizardFichePreviewMeta } from "@/lib/tae/fiche-helpers";
-import { TAE_PRINT_PAGE_CSS, TAE_PRINT_PAGE_STYLE_ATTR } from "@/lib/tae/print-page-css";
-import { useClearDocumentTitleForPrint } from "@/lib/tae/use-clear-document-title-for-print";
-
-const PRINT_PREVIEW_MODAL_HTML_CLASS = "tae-print-preview-modal-open";
+import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 
 export type PrintPreviewModalProps = {
   open: boolean;
   onClose: () => void;
-  previewMeta: WizardFichePreviewMeta;
+  epreuve: DonneesEpreuve;
+  mode: ModeImpression;
+  estCorrige: boolean;
 };
 
 /**
- * Modale plein écran — aperçu impression wizard (Letter, marges 2 cm) + actions.
- * Fiche persistée : route `/questions/[id]/print` (document minimal, pas d’`AppShell`).
+ * Modale plein écran — aperçu impression carrousel PNG (print-engine D5).
+ * Remplace l'ancien aperçu HTML par des PNG rasterisés depuis le PDF réel.
  */
-export function PrintPreviewModal(props: PrintPreviewModalProps) {
-  const { open, onClose, previewMeta } = props;
+export function PrintPreviewModal({
+  open,
+  onClose,
+  epreuve,
+  mode,
+  estCorrige,
+}: PrintPreviewModalProps) {
   const titleId = useId();
+  const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } = useApercuPng(
+    epreuve,
+    mode,
+    estCorrige,
+  );
 
-  useClearDocumentTitleForPrint(open);
+  // Générer automatiquement à l'ouverture
+  useEffect(() => {
+    if (open && etat.statut === "idle") {
+      generer();
+    }
+  }, [open, etat.statut, generer]);
 
+  // Bloquer le scroll du body
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    document.documentElement.classList.add(PRINT_PREVIEW_MODAL_HTML_CLASS);
     return () => {
       document.body.style.overflow = prev;
-      document.documentElement.classList.remove(PRINT_PREVIEW_MODAL_HTML_CLASS);
     };
   }, [open]);
 
-  useEffect(() => {
-    if (!open) return;
-    const style = document.createElement("style");
-    style.setAttribute(TAE_PRINT_PAGE_STYLE_ATTR, "");
-    style.textContent = TAE_PRINT_PAGE_CSS;
-    document.head.appendChild(style);
-    return () => {
-      style.remove();
-    };
-  }, [open]);
-
+  // Fermer avec Escape
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -59,15 +66,11 @@ export function PrintPreviewModal(props: PrintPreviewModalProps) {
 
   if (!open) return null;
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   return (
-    <div className="tae-print-preview-root fixed inset-0 z-50 flex flex-col" role="presentation">
+    <div className="fixed inset-0 z-50 flex flex-col" role="presentation">
       <button
         type="button"
-        className="tae-print-preview-chrome absolute inset-0 bg-black/50 print:hidden"
+        className="absolute inset-0 bg-black/50"
         aria-label="Fermer la fenêtre"
         onClick={onClose}
       />
@@ -77,7 +80,8 @@ export function PrintPreviewModal(props: PrintPreviewModalProps) {
         aria-labelledby={titleId}
         className="relative z-10 flex min-h-0 flex-1 flex-col bg-deep/25"
       >
-        <header className="tae-print-preview-chrome flex shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-4 py-3 shadow-sm print:hidden sm:px-5">
+        {/* Header */}
+        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-4 py-3 shadow-sm sm:px-5">
           <h2 id={titleId} className="text-lg font-semibold text-deep">
             {WIZARD_PRINT_PREVIEW_COPY.modalTitle}
           </h2>
@@ -93,36 +97,87 @@ export function PrintPreviewModal(props: PrintPreviewModalProps) {
           </button>
         </header>
 
-        <div className="tae-print-preview-scroll flex min-h-0 flex-1 justify-center overflow-x-hidden overflow-y-hidden overscroll-none bg-steel/25 px-4 py-8 sm:px-8">
-          <PrintableFichePreview previewMeta={previewMeta} />
+        {/* Contenu principal */}
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-steel/25 px-4 py-6 sm:px-8">
+          {etat.statut === "chargement" && <SqueletteChargement />}
+
+          {etat.statut === "erreur" && <EtatErreur message={etat.message} surReessayer={generer} />}
+
+          {etat.statut === "pret" && (
+            <CarrouselApercu
+              pages={etat.pages}
+              pagesParFeuillet={etat.pagesParFeuillet}
+              empreintePng={etat.empreintePng}
+              empreinteWizard={empreinteWizard}
+              surRegenerer={generer}
+            />
+          )}
         </div>
 
-        <footer className="tae-print-preview-chrome flex shrink-0 flex-col gap-3 border-t border-border bg-panel px-4 py-3 print:hidden sm:px-5">
-          <p className="text-xs leading-snug text-muted">
-            {WIZARD_PRINT_PREVIEW_COPY.printHeadersFootersHint}
-          </p>
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <Button type="button" variant="ghost" onClick={onClose}>
-              {WIZARD_PRINT_PREVIEW_COPY.close}
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              disabled
-              title={WIZARD_PRINT_PREVIEW_COPY.downloadPdfHint}
-              aria-describedby={`${titleId}-pdf-hint`}
-            >
-              {WIZARD_PRINT_PREVIEW_COPY.downloadPdf}
-            </Button>
-            <span id={`${titleId}-pdf-hint`} className="sr-only">
-              {WIZARD_PRINT_PREVIEW_COPY.downloadPdfHint}
-            </span>
-            <Button type="button" variant="primary" onClick={handlePrint}>
-              {WIZARD_PRINT_PREVIEW_COPY.print}
-            </Button>
-          </div>
+        {/* Footer */}
+        <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
+          <Button type="button" variant="ghost" onClick={onClose}>
+            {WIZARD_PRINT_PREVIEW_COPY.close}
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            disabled={etat.statut !== "pret" || pdfEnCours}
+            onClick={telechargerPdf}
+          >
+            {pdfEnCours ? (
+              <span className="inline-flex items-center gap-[0.35em]">
+                <span
+                  className="material-symbols-outlined animate-spin text-[1em] leading-none"
+                  aria-hidden="true"
+                >
+                  progress_activity
+                </span>
+                {WIZARD_PRINT_PREVIEW_COPY.downloadPdf}
+              </span>
+            ) : (
+              WIZARD_PRINT_PREVIEW_COPY.downloadPdf
+            )}
+          </Button>
+          <Button type="button" variant="primary" onClick={() => window.print()}>
+            {WIZARD_PRINT_PREVIEW_COPY.print}
+          </Button>
         </footer>
       </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Sous-composants internes                                                  */
+/* -------------------------------------------------------------------------- */
+
+function SqueletteChargement() {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-3">
+      <span
+        className="material-symbols-outlined animate-spin text-[2rem] text-accent"
+        aria-hidden="true"
+      >
+        progress_activity
+      </span>
+      <p className="text-base font-semibold text-deep">{CARROUSEL_APERCU_COPY.skeletonTitre}</p>
+      <p className="text-sm text-muted">{CARROUSEL_APERCU_COPY.skeletonSousTitre}</p>
+    </div>
+  );
+}
+
+function EtatErreur({ message, surReessayer }: { message: string; surReessayer: () => void }) {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center gap-4">
+      <span className="material-symbols-outlined text-[2rem] text-error" aria-hidden="true">
+        error
+      </span>
+      <p className="text-base font-semibold text-deep">{CARROUSEL_APERCU_COPY.erreurGeneration}</p>
+      <p className="text-sm text-muted">{message}</p>
+      <Button type="button" variant="secondary" onClick={surReessayer}>
+        {CARROUSEL_APERCU_COPY.boutonReessayer}
+      </Button>
     </div>
   );
 }

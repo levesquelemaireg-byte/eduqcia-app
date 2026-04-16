@@ -37,6 +37,19 @@ export const PRINTABLE_FICHE_SECTION_COPY = {
   noGrilleTool: "Aucun outil d’évaluation associé.",
 } as const;
 
+/** Carrousel PNG — aperçu PDF rasterisé (print-engine D5). `docs/UI-COPY.md` (Impression — modale et contenu). */
+export const CARROUSEL_APERCU_COPY = {
+  skeletonTitre: "Préparation de l'aperçu\u2026",
+  skeletonSousTitre: "Mise en page et génération des visuels",
+  banniereInvalidation: "Le contenu a été modifié depuis la dernière génération",
+  boutonRegenerer: "Mettre à jour l'aperçu",
+  erreurGeneration: "La génération a échoué",
+  boutonReessayer: "Réessayer",
+  indicateurPage: (n: number, total: number) => `Page ${n} sur ${total}`,
+  altImage: (n: number, total: number, nomFeuillet: string) =>
+    `Page ${n} sur ${total} — ${nomFeuillet}`,
+} as const;
+
 /** Impression / aperçu épreuve multi-TAÉ — `docs/UI-COPY.md` (épreuve, impression). */
 export const EVAL_PRINT_SECTION_COPY = {
   dossierDocumentaire: "Dossier documentaire",

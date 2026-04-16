@@ -951,6 +951,18 @@ Toutes les constantes vivent dans `lib/ui/ui-copy.ts`.
 - **Feuillets (écran uniquement) :** onglets **Dossier documentaire** et **Questionnaire** — mêmes libellés que l’impression épreuve (`EVAL_PRINT_SECTION_COPY.dossierDocumentaire`, `EVAL_PRINT_SECTION_COPY.questionnaire`) ; `aria-label` du groupe : `WIZARD_PRINT_PREVIEW_COPY.feuilletToolbarAriaLabel`. À l’impression physique, **les deux feuillets** sont inclus (saut de page entre dossier et questionnaire).
 - Page `/questions/[id]/print` : Retour à la fiche
 
+### Carrousel d'aperçu PNG (`CARROUSEL_APERCU_COPY`)
+
+- Skeleton titre : Préparation de l'aperçu…
+- Skeleton sous-titre : Mise en page et génération des visuels
+- Bannière d'invalidation : Le contenu a été modifié depuis la dernière génération
+- Bouton regénérer : Mettre à jour l'aperçu
+- Erreur génération : La génération a échoué
+- Bouton réessayer : Réessayer
+- Indicateur de page : Page {n} sur {total}
+- Alt text image : Page {n} sur {total} — {nom du feuillet}
+- Labels onglets feuillets : réutilise `EVAL_PRINT_SECTION_COPY.dossierDocumentaire` et `EVAL_PRINT_SECTION_COPY.questionnaire`
+
 ### Astuce en-têtes / pieds du navigateur
 
 - « Les bandeaux (date, URL, pagination, titre) sont ajoutés par le navigateur, pas par l’application. Dans la fenêtre d’impression, ouvrez « Plus de paramètres » et décochez « En-têtes et pieds de page » (Chrome / Edge). »

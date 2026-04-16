@@ -71,7 +71,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - [x] **PDF-8** D4 — Puppeteer + preflight + `@sparticuz/chromium-min`
 - [x] **PDF-9** Routes API `/api/impression/pdf` + `/api/impression/apercu-png`
 - [x] **PDF-10** Tests visuels Playwright (3→8 golden payloads)
-- [ ] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
+- [x] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
 - [ ] **PDF-12** Validation terrain sur imprimantes réelles (phase de validation, pas de dev)
 
 ## Lot 7 — Finitions parcours création
