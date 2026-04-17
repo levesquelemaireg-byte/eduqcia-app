@@ -214,7 +214,6 @@ export async function loadTaeFormStateForEdit(
         update_available: false,
         reuse_author: "",
         reuse_source_citation: "",
-        printImpressionScale: 1,
         source_type: sourceType,
         image_legende: imageLegende,
         image_legende_position: imageLegendePosition,

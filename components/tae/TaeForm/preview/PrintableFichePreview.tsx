@@ -276,7 +276,6 @@ export function PrintableFichePreview({ previewMeta, className, feuillet }: Wiza
         image_url: slot.imageUrl,
         imagePixelWidth: slot.imagePixelWidth,
         imagePixelHeight: slot.imagePixelHeight,
-        printImpressionScale: 1,
         imageLegende: hasLegend ? legendTrim : null,
         imageLegendePosition: hasLegend && pos ? pos : null,
       };

@@ -97,7 +97,7 @@ export function DocumentSlotCreateForm({
           value={slot.type}
           onChange={(v) => {
             if (v === "textuel") {
-              patch({ type: "textuel", printImpressionScale: 1, type_iconographique: null });
+              patch({ type: "textuel", type_iconographique: null });
             } else if (v === "iconographique") {
               patch({ type: "iconographique" });
             }

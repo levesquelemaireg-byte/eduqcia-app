@@ -191,7 +191,6 @@ export async function fetchTaeFicheBundle(
         image_url: imageUrl,
         imagePixelWidth: null,
         imagePixelHeight: null,
-        printImpressionScale: 1,
         imageLegende: legendTrim.length > 0 ? legendTrim : null,
         imageLegendePosition: legendTrim.length > 0 && legendPos ? legendPos : null,
         rendererDocument: hydrateRendererDocument(d),

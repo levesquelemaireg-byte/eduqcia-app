@@ -374,9 +374,6 @@ CREATE TABLE documents (
   type               doc_type NOT NULL,  -- raccourci du type du premier élément (filtres banque)
   structure          document_structure NOT NULL DEFAULT 'simple',
   elements           JSONB NOT NULL DEFAULT '[]',
-  -- Facteur non destructif pour la taille des figures iconographiques sur la fiche imprimée (1,0 = défaut CSS).
-  print_impression_scale numeric(3,2) NOT NULL DEFAULT 1.00
-    CHECK (print_impression_scale >= 0.5 AND print_impression_scale <= 1.00),
   repere_temporel    TEXT,
   annee_normalisee   INT,
 
@@ -394,8 +391,6 @@ CREATE TABLE documents (
   updated_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-COMMENT ON COLUMN documents.print_impression_scale IS
-  'Facteur d''échelle non destructif pour les figures iconographiques sur la fiche imprimée ; défaut 1,0 ; pas d''agrandissement au-delà du plafond CSS global.';
 COMMENT ON COLUMN documents.structure IS
   'Structure du document : simple (1 élément), perspectives (2-3 éléments), deux_temps (2 éléments). Défaut simple pour rétrocompatibilité.';
 COMMENT ON COLUMN documents.elements IS

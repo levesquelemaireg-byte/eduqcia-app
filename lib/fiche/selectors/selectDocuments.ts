@@ -29,7 +29,6 @@ function documentSlotToFiche(slotId: DocumentSlotId, slot: DocumentSlotData): Do
     image_url: slot.imageUrl,
     imagePixelWidth: slot.imagePixelWidth,
     imagePixelHeight: slot.imagePixelHeight,
-    printImpressionScale: 1,
     imageLegende: hasLegend ? legendTrim : null,
     imageLegendePosition: hasLegend && pos ? pos : null,
     sourceType:

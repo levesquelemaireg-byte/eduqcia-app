@@ -15,8 +15,6 @@ export type DocumentFiche = {
   /** Largeur / hauteur pixel (ex. après téléversement) ; null si inconnu (fiche publiée, réutilisation). */
   imagePixelWidth: number | null;
   imagePixelHeight: number | null;
-  /** Facteur 0,5–1 pour l’iconographique sur la fiche imprimable ; textuel ignoré au rendu. */
-  printImpressionScale: number;
   /** Texte sur l’image (overlay) ; `null` si pas de légende. */
   imageLegende: string | null;
   /** Coin du bandeau ; `null` si pas de légende ou données incomplètes. */

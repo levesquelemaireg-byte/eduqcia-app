@@ -92,7 +92,6 @@ function sanitizeDocumentsSlice(raw: unknown): Partial<Record<DocumentSlotId, Do
       reuse_author: typeof s.reuse_author === "string" ? s.reuse_author : "",
       reuse_source_citation:
         typeof s.reuse_source_citation === "string" ? s.reuse_source_citation : "",
-      printImpressionScale: 1,
       source_type:
         s.source_type === "primaire" || s.source_type === "secondaire" ? s.source_type : null,
       image_legende: typeof s.image_legende === "string" ? s.image_legende : "",

@@ -72,7 +72,6 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
         update_available: false,
         reuse_author: "",
         reuse_source_citation: "",
-        printImpressionScale: 1,
         source_type: null,
         image_legende: "",
         image_legende_position: null,

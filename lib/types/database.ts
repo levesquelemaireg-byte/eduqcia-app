@@ -238,7 +238,6 @@ export type Database = {
           is_modified: boolean;
           is_published: boolean;
           niveaux_ids: number[];
-          print_impression_scale: number;
           repere_temporel: string | null;
           source_document_id: string | null;
           source_version: number | null;
@@ -260,7 +259,6 @@ export type Database = {
           is_modified?: boolean;
           is_published?: boolean;
           niveaux_ids?: number[];
-          print_impression_scale?: number;
           repere_temporel?: string | null;
           source_document_id?: string | null;
           source_version?: number | null;
@@ -282,7 +280,6 @@ export type Database = {
           is_modified?: boolean;
           is_published?: boolean;
           niveaux_ids?: number[];
-          print_impression_scale?: number;
           repere_temporel?: string | null;
           source_document_id?: string | null;
           source_version?: number | null;

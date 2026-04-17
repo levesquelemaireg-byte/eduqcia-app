@@ -75,8 +75,6 @@ export type PublishTaeRpcPayload = {
     disciplines_ids: number[];
     aspects_societe: string[];
     connaissances_ids: number[];
-    /** Présent si `type` = iconographique — facteur 0,5–1 pour la fiche imprimable. */
-    print_impression_scale?: number;
     repere_temporel?: string | null;
     annee_normalisee?: number | null;
   }>;

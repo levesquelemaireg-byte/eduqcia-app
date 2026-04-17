@@ -33,7 +33,6 @@ export function toThumbnailFicheData(input: ThumbnailInput): TaeFicheData {
     image_url: null,
     imagePixelWidth: null,
     imagePixelHeight: null,
-    printImpressionScale: 1,
     imageLegende: null,
     imageLegendePosition: null,
   }));

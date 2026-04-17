@@ -207,27 +207,7 @@ describe("buildPublishPayload", () => {
     const el = r.documents_new[0].elements[0];
     expect(el.image_url).toBe("https://example.com/x.png");
     expect(el.contenu).toBeNull();
-    expect(r.documents_new[0]).not.toHaveProperty("print_impression_scale");
     expect(el.source_type).toBe("secondaire");
-  });
-
-  it("iconographique : print_impression_scale absent du payload (défaut SQL 1)", () => {
-    const state = structuredClone(initialTaeFormState) as TaeFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
-    state.bloc4.documents = {
-      doc_A: {
-        ...emptyDocumentSlot(),
-        mode: "create",
-        type: "iconographique",
-        titre: "T",
-        source_citation: "S",
-        imageUrl: "https://example.com/x.png",
-        printImpressionScale: 0.8,
-      },
-    };
-    const r = buildPublishPayload("u", state, ctx);
-    assertPayload(r);
-    expect(r.documents_new[0]).not.toHaveProperty("print_impression_scale");
   });
 
   it("create : source primaire et légende dans le payload iconographique", () => {

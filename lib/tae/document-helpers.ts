@@ -40,7 +40,6 @@ export type DocumentSlotData = {
   reuse_author: string;
   reuse_source_citation: string;
   /** 0,5–1 — documents iconographiques ; fiche imprimable uniquement. */
-  printImpressionScale: number;
   /** Mode création — obligatoire avant publication (`docs/DECISIONS.md` § Module). */
   source_type: DocumentSlotSourceType;
   /** Optionnel si pas d’image ou pas de légende. */
@@ -76,7 +75,6 @@ export function emptyDocumentSlot(): DocumentSlotData {
     update_available: false,
     reuse_author: "",
     reuse_source_citation: "",
-    printImpressionScale: 1,
     source_type: null,
     image_legende: "",
     image_legende_position: null,

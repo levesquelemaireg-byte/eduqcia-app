@@ -115,7 +115,6 @@ function slotDataForReuse(doc: {
     update_available: false,
     reuse_author: "",
     reuse_source_citation: "",
-    printImpressionScale: 1,
     source_type: st,
     image_legende: el?.image_legende ?? "",
     image_legende_position: pos,
