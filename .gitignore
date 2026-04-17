@@ -53,6 +53,9 @@ storybook-static
 .cursor/
 .claude/settings.local.json
 
+# supabase CLI temp
+supabase/.temp/
+
 # transient archives
 *.zip
 
