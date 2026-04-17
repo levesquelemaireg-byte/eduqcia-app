@@ -1,3 +1,14 @@
+/**
+ * Atome de rendu documentaire. Rend UN élément (textuel ou iconographique).
+ *
+ * RESPONSABILITÉ UNIQUE : contenu intrinsèque (texte, image, légende,
+ * source, footnotes). Ne gère PAS le layout, le mode, ni le contexte
+ * d'affichage — c'est le rôle du wrapper parent.
+ *
+ * Si ce fichier dépasse 150 lignes ou reçoit une prop "mode",
+ * c'est un signal de violation.
+ */
+
 import Image from "next/image";
 import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImageLegendOverlay";
 import { extractFootnotes } from "@/lib/documents/extract-footnotes";
@@ -15,11 +26,6 @@ type Props = {
   /** Masquer la source (rendue séparément hors cadre en mode print). */
   hideSource?: boolean;
 };
-
-/**
- * Rendu d'un élément de document (textuel ou iconographique).
- * Sous-composant de `DocumentCard` — pas de logique de structure ici.
- */
 export function DocumentElementRenderer({
   element,
   showAuteur,
@@ -44,8 +50,8 @@ export function DocumentElementRenderer({
           <Image
             src={element.imageUrl}
             alt={element.legende || ""}
-            width={660}
-            height={400}
+            width={element.imagePixelWidth ?? 660}
+            height={element.imagePixelHeight ?? 400}
             className={styles.documentFigureImg}
             unoptimized={element.imageUrl.startsWith("blob:")}
           />

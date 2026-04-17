@@ -1,0 +1,68 @@
+<svg width="100%" viewBox="0 0 680 760" xmlns="http://www.w3.org/2000/svg" role="img" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+<title>Schéma 1 v2 : structure des entités</title>
+<desc>Trois entités stockées (épreuve, tâche, document) en composition hiérarchique, et quatre entités dérivées (outil d'évaluation, espace de production, appel documentaire, numérotation) résolues à la volée.</desc>
+<defs>
+<marker id="arrow1v2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+<path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</marker>
+</defs>
+
+<text x="40" y="32" font-size="14" font-weight="500" fill="#2C2C2A">Entités stockées</text>
+<text x="40" y="50" font-size="12" fill="#5F5E5A">Cycle de vie, indexation, stockage en banque</text>
+
+<rect x="40" y="70" width="600" height="80" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="60" y="96" font-size="14" font-weight="500" fill="#3C3489">Épreuve</text>
+<text x="60" y="116" font-size="12" fill="#534AB7">Titre, en-tête, pied de page, indexation propre</text>
+<text x="60" y="134" font-size="12" fill="#534AB7">Sélection ordonnée de tâches</text>
+
+<line x1="340" y1="150" x2="340" y2="175" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow1v2)"/>
+<text x="350" y="168" font-size="12" fill="#5F5E5A">compose</text>
+
+<rect x="40" y="180" width="600" height="95" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="60" y="206" font-size="14" font-weight="500" fill="#3C3489">Tâche</text>
+<text x="60" y="226" font-size="12" fill="#534AB7">Consigne, guidage, production attendue, indexation pédagogique</text>
+<text x="60" y="244" font-size="12" fill="#534AB7">OI, comportement attendu, valeurs d'espace de production</text>
+<text x="60" y="262" font-size="12" fill="#534AB7">Référence des documents (historiques liés ou créés in situ)</text>
+
+<line x1="340" y1="275" x2="340" y2="300" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow1v2)"/>
+<text x="350" y="293" font-size="12" fill="#5F5E5A">référence</text>
+
+<rect x="40" y="305" width="600" height="85" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+<text x="60" y="331" font-size="14" font-weight="500" fill="#3C3489">Document</text>
+<text x="60" y="351" font-size="12" fill="#534AB7">Entité autonome, toujours indépendante</text>
+<text x="60" y="369" font-size="12" fill="#534AB7">Repère temporel, année normalisée, indexation propre</text>
+<text x="60" y="387" font-size="12" fill="#534AB7">Créé par assistant dédié OU intégré (même composant)</text>
+
+<text x="340" y="425" font-size="14" font-weight="500" fill="#2C2C2A" text-anchor="middle">Entités dérivées</text>
+<text x="340" y="443" font-size="12" fill="#5F5E5A" text-anchor="middle">calculées à la volée</text>
+
+<rect x="40" y="460" width="290" height="75" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="56" y="484" font-size="14" font-weight="500" fill="#2C2C2A">Outil d'évaluation</text>
+<text x="56" y="504" font-size="12" fill="#5F5E5A">Résolu par lookup :</text>
+<text x="56" y="522" font-size="12" fill="#5F5E5A">(OI, comportement) → outil</text>
+
+<rect x="350" y="460" width="290" height="75" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="366" y="484" font-size="14" font-weight="500" fill="#2C2C2A">Espace de production</text>
+<text x="366" y="504" font-size="12" fill="#5F5E5A">Type dérivé de l'OI + paramètres</text>
+<text x="366" y="522" font-size="12" fill="#5F5E5A">stockés sur la tâche</text>
+
+<rect x="40" y="545" width="290" height="75" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="56" y="569" font-size="14" font-weight="500" fill="#2C2C2A">Appel documentaire</text>
+<text x="56" y="589" font-size="12" fill="#5F5E5A">Pré-inséré + modifiable</text>
+<text x="56" y="607" font-size="12" fill="#5F5E5A">Pastilles encodées (TipTap)</text>
+
+<rect x="350" y="545" width="290" height="75" rx="12" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="366" y="569" font-size="14" font-weight="500" fill="#2C2C2A">Numérotation</text>
+<text x="366" y="589" font-size="12" fill="#5F5E5A">Dérivée du rang dans l'épreuve</text>
+<text x="366" y="607" font-size="12" fill="#5F5E5A">Tokens encodés — résolution contextuelle</text>
+
+<path d="M 185 460 L 185 405 L 25 405 L 25 235 L 40 235" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow1v2)" stroke-dasharray="4 4"/>
+<path d="M 495 460 L 495 405 L 655 405 L 655 235 L 640 235" fill="none" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arrow1v2)" stroke-dasharray="4 4"/>
+
+<rect x="40" y="645" width="600" height="105" rx="12" fill="#FAEEDA" stroke="#854F0B" stroke-width="0.5"/>
+<text x="56" y="669" font-size="14" font-weight="500" fill="#633806">Invariants de structure</text>
+<text x="56" y="691" font-size="12" fill="#854F0B">1. Un document existe toujours de façon autonome — aucune création ne le laisse captif</text>
+<text x="56" y="709" font-size="12" fill="#854F0B">2. Une seule implémentation de création de document, invoquée en deux contextes</text>
+<text x="56" y="727" font-size="12" fill="#854F0B">3. Les 4 entités dérivées ne sont jamais des entités CRUD — calculées à la volée</text>
+<text x="56" y="745" font-size="12" fill="#854F0B">4. Numérotation dérivée du rang dans l'épreuve — jamais stockée sur les entités</text>
+</svg>

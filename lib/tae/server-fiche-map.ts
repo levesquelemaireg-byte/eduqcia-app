@@ -175,7 +175,6 @@ export async function fetchTaeFicheBundle(
       const imageUrl = firstEl?.image_url ?? null;
       const legendTrim = (firstEl?.image_legende ?? "").trim();
       const legendPos = parseDocumentLegendPosition(firstEl?.image_legende_position ?? null);
-      const isMultiElement = d.structure !== "simple" && rawElements.length > 1;
       const sourceType = firstEl?.source_type ?? undefined;
       const categorieLabel =
         firstEl?.type === "textuel" && firstEl.categorie_textuelle
@@ -195,7 +194,7 @@ export async function fetchTaeFicheBundle(
         printImpressionScale: 1,
         imageLegende: legendTrim.length > 0 ? legendTrim : null,
         imageLegendePosition: legendTrim.length > 0 && legendPos ? legendPos : null,
-        rendererDocument: isMultiElement ? hydrateRendererDocument(d) : undefined,
+        rendererDocument: hydrateRendererDocument(d),
         sourceType,
         repereTemporel: d.repere_temporel ?? null,
         categorieLabel,

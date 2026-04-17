@@ -49,7 +49,7 @@ export function ConsigneTipTapEditor({
       editorProps: {
         attributes: {
           class:
-            "ProseMirror min-h-[100px] w-full min-w-0 text-[13px] leading-relaxed text-deep focus:outline-none [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:font-semibold [&_em]:italic [&_u]:underline",
+            "ProseMirror min-h-[100px] w-full min-w-0 text-[13px] leading-relaxed text-deep focus:outline-none [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_em]:italic [&_u]:underline",
         },
       },
       onUpdate: ({ editor: ed }) => {

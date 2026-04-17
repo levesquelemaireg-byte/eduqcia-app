@@ -85,6 +85,10 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
     case "HYDRATE":
       return {
         ...action.state,
+        highestReachedStep: Math.max(
+          action.state.highestReachedStep ?? 0,
+          action.state.currentStep ?? 0,
+        ),
         bloc4: {
           documents: action.state.bloc4?.documents ?? {},
           perspectives: action.state.bloc4?.perspectives ?? null,
@@ -104,10 +108,22 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
           intrus: action.state.bloc5?.intrus ?? null,
         },
       };
-    case "SET_STEP":
-      return { ...state, currentStep: clampStep(action.step) };
-    case "STEP_NEXT":
-      return { ...state, currentStep: clampStep(state.currentStep + 1) };
+    case "SET_STEP": {
+      const next = clampStep(action.step);
+      return {
+        ...state,
+        currentStep: next,
+        highestReachedStep: Math.max(state.highestReachedStep, next),
+      };
+    }
+    case "STEP_NEXT": {
+      const next = clampStep(state.currentStep + 1);
+      return {
+        ...state,
+        currentStep: next,
+        highestReachedStep: Math.max(state.highestReachedStep, next),
+      };
+    }
     case "STEP_PREV":
       return { ...state, currentStep: clampStep(state.currentStep - 1) };
     case "SET_MODE_CONCEPTION":

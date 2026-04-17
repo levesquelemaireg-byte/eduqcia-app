@@ -1,17 +1,17 @@
 /**
  * Selector des documents pour la vue détaillée tâche.
- * Retourne un array de données prêtes pour les DocCards numérotées.
+ * Retourne un array de RendererDocument numérotés prêts pour DocumentCard.
  */
 
-import { getDocumentTypeIcon } from "@/lib/tae/document-categories-helpers";
+import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import { ficheDocumentsSectionTitle } from "@/lib/ui/ui-copy";
-import type { TaeFicheData, DocumentFiche } from "@/lib/types/fiche";
+import type { TaeFicheData } from "@/lib/types/fiche";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 
 export type DocCardData = {
   numero: number;
   docId: string;
-  categorieGlyph: string;
-  doc: DocumentFiche;
+  document: RendererDocument;
 };
 
 export type DocumentsSectionData = {
@@ -28,8 +28,7 @@ export function selectDocuments(state: TaeFicheData): DocumentsSectionData | nul
     cards: state.documents.map((doc, i) => ({
       numero: i + 1,
       docId: `${state.id}_doc_${doc.letter}`,
-      categorieGlyph: getDocumentTypeIcon(doc.type),
-      doc,
+      document: documentFicheVersRenderer(doc),
     })),
   };
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
 import { documentVersImprimable } from "./document-vers-imprimable";
 
@@ -7,12 +7,21 @@ import { documentVersImprimable } from "./document-vers-imprimable";
 /*  Fixtures                                                                  */
 /* -------------------------------------------------------------------------- */
 
-function creerDoc(overrides?: Partial<DocumentReference>): DocumentReference {
+function creerDoc(overrides?: Partial<RendererDocument>): RendererDocument {
   return {
     id: "doc-1",
-    kind: "textuel",
     titre: "Proclamation royale de 1763",
-    contenu: "<p>Contenu du document</p>",
+    structure: "simple",
+    elements: [
+      {
+        id: "doc-1",
+        type: "textuel",
+        contenu: "<p>Contenu du document</p>",
+        source: "",
+        sourceType: "primaire",
+        categorieTextuelle: "autre",
+      },
+    ],
     ...overrides,
   };
 }
@@ -57,7 +66,7 @@ describe("documentVersImprimable", () => {
     const rendu = documentVersImprimable(doc, mesureurFixe(400));
     expect(rendu.ok).toBe(true);
     if (!rendu.ok) return;
-    const contenu = rendu.pages[0].blocs[0].content as { document: DocumentReference };
+    const contenu = rendu.pages[0].blocs[0].content as { document: RendererDocument };
     expect(contenu.document.titre).toBe("Mon titre");
   });
 
@@ -82,8 +91,32 @@ describe("documentVersImprimable", () => {
   });
 
   it("produit des empreintes différentes pour des contenus différents", () => {
-    const doc1 = creerDoc({ id: "d1", contenu: "<p>A</p>" });
-    const doc2 = creerDoc({ id: "d2", contenu: "<p>B</p>" });
+    const doc1 = creerDoc({
+      id: "d1",
+      elements: [
+        {
+          id: "d1",
+          type: "textuel",
+          contenu: "<p>A</p>",
+          source: "",
+          sourceType: "primaire",
+          categorieTextuelle: "autre",
+        },
+      ],
+    });
+    const doc2 = creerDoc({
+      id: "d2",
+      elements: [
+        {
+          id: "d2",
+          type: "textuel",
+          contenu: "<p>B</p>",
+          source: "",
+          sourceType: "primaire",
+          categorieTextuelle: "autre",
+        },
+      ],
+    });
     const r1 = documentVersImprimable(doc1, mesureurFixe(400));
     const r2 = documentVersImprimable(doc2, mesureurFixe(400));
     expect(r1.ok && r2.ok).toBe(true);

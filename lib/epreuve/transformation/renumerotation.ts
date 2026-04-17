@@ -1,11 +1,11 @@
 /**
  * Renumérotation globale des documents dans une épreuve — print-engine v2.1 §D3.
  *
- * Adapte la logique de `flattenDocumentsWithGlobalNumbers` (evaluation-print-doc-map.ts)
- * pour consommer `DonneesTache[]` au lieu de `TaeFicheData[]`.
+ * Renumérotation globale pour consommer `DonneesTache[]`.
  */
 
-import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -15,7 +15,7 @@ export type DocumentNumerote = {
   /** Numéro global 1-based dans l'épreuve. */
   numeroGlobal: number;
   /** Référence au document source. */
-  document: DocumentReference;
+  document: RendererDocument;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -77,7 +77,7 @@ export function numeroGlobalParId(
  */
 export function resoudreReferencesDocuments(
   html: string,
-  tacheDocuments: DocumentReference[],
+  tacheDocuments: RendererDocument[],
   taches: Pick<DonneesTache, "documents">[],
 ): string {
   if (!html) return "";

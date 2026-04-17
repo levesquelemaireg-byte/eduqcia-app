@@ -10,12 +10,10 @@ import {
   TaePrintFeuilletToggle,
   type TaePrintFeuilletId,
 } from "@/components/tae/TaeForm/preview/TaePrintFeuilletToggle";
-import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
-import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
+import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import {
-  htmlHasMeaningfulText,
   resolveConsigneHtmlForDisplay,
-  resolveDocRefsForPreview,
   shouldShowGuidageOnStudentSheet,
 } from "@/lib/tae/consigne-helpers";
 import { sanitize } from "@/lib/fiche/helpers";
@@ -27,10 +25,8 @@ import {
 import { getSlotData, slotLetter } from "@/lib/tae/document-helpers";
 import { isActiveNonRedactionVariant } from "@/lib/tae/non-redaction/wizard-variant";
 import type { DocumentFiche, TaeFicheData } from "@/lib/types/fiche";
-import { shouldPrintDocumentFullWidth } from "@/lib/tae/print-document-full-width";
 import { cn } from "@/lib/utils/cn";
 import { GrilleEvalTable } from "@/components/tae/grilles/GrilleEvalTable";
-import { DocumentImageLegendOverlay } from "@/components/documents/DocumentImageLegendOverlay";
 import { AvantApresPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/AvantApresPrintableQuestionnaireCore";
 import { LigneDuTempsPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore";
 import { OrdreChronologiquePrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore";
@@ -67,150 +63,6 @@ export function PrintableHtml({
       dangerouslySetInnerHTML={{ __html: sanitize(resolved) }}
     />
   );
-}
-
-export function PrintableDocumentCell({
-  doc,
-  documentHeaderLabel,
-}: {
-  doc: DocumentFiche;
-  /** Ex. numéro global (impression épreuve) ; défaut : lettre A/B/C */
-  documentHeaderLabel?: string;
-}) {
-  const titre = doc.titre.trim();
-  const fullWidth = shouldPrintDocumentFullWidth(doc);
-  const headerLabel = documentHeaderLabel ?? doc.letter;
-  const rd = doc.rendererDocument;
-
-  // Multi-éléments (perspectives, deux_temps) — rendu via DocumentElementRenderer
-  if (rd && rd.elements.length > 1) {
-    const showAuteur = rd.structure === "perspectives";
-    const showRepereTemporel = rd.structure === "deux_temps";
-    return (
-      <article
-        className={cn(styles.documentWrapper, styles.documentCellFull)}
-        data-doc-type={doc.type}
-      >
-        <div className={styles.documentHeader}>
-          <div className={styles.documentNumero} aria-label={`Document ${headerLabel}`}>
-            {headerLabel}
-          </div>
-          <p className={styles.documentHeaderLine}>
-            {titre || PRINTABLE_FICHE_SECTION_COPY.emptySlot}
-          </p>
-        </div>
-        <div className={styles.documentCell}>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${rd.elements.length}, 1fr)`,
-              margin: "-0.4rem -0.5rem",
-            }}
-          >
-            {rd.elements.map((el) => (
-              <div
-                key={el.id}
-                className="border-l border-l-[#333] px-2 py-[0.4rem] first:border-l-0"
-              >
-                <DocumentElementRenderer
-                  element={el}
-                  showAuteur={showAuteur}
-                  showRepereTemporel={showRepereTemporel}
-                  hideSource
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        {rd.elements.length === 1 ? (
-          <PrintableSourceLine source={rd.elements[0].source} />
-        ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${rd.elements.length}, 1fr)`,
-            }}
-          >
-            {rd.elements.map((el) => (
-              <PrintableSourceLine key={el.id} source={el.source} />
-            ))}
-          </div>
-        )}
-      </article>
-    );
-  }
-
-  // Simple (un seul élément) — rendu flat historique
-  const source = doc.source_citation;
-  const bodyHtml = resolveDocRefsForPreview(doc.contenu);
-  const hasTextBody = doc.type === "textuel" && hasFicheContent(bodyHtml);
-
-  return (
-    <article
-      className={cn(styles.documentWrapper, fullWidth && styles.documentCellFull)}
-      data-doc-type={doc.type}
-    >
-      <div className={styles.documentHeader}>
-        <div className={styles.documentNumero} aria-label={`Document ${headerLabel}`}>
-          {headerLabel}
-        </div>
-        <p className={styles.documentHeaderLine}>
-          {titre || PRINTABLE_FICHE_SECTION_COPY.emptySlot}
-        </p>
-      </div>
-      <div className={styles.documentCell}>
-        <div className={styles.documentBody}>
-          {doc.type === "iconographique" && doc.image_url ? (
-            <figure className={styles.documentFigure}>
-              {/* eslint-disable-next-line @next/next/no-img-element -- blob / URLs externes ; rendu print fiable */}
-              <img
-                src={doc.image_url}
-                alt={titre || `Document ${headerLabel}`}
-                width={doc.imagePixelWidth ?? undefined}
-                height={doc.imagePixelHeight ?? undefined}
-                className={styles.documentFigureImg}
-              />
-              {doc.imageLegende && doc.imageLegendePosition ? (
-                <DocumentImageLegendOverlay
-                  text={doc.imageLegende}
-                  position={doc.imageLegendePosition}
-                />
-              ) : null}
-            </figure>
-          ) : null}
-          {doc.type === "textuel" ? (
-            hasTextBody ? (
-              <div
-                className={styles.htmlFlow}
-                dangerouslySetInnerHTML={{ __html: sanitize(bodyHtml) }}
-              />
-            ) : (
-              <p className="m-0 text-[10pt] text-muted">{PRINTABLE_FICHE_SECTION_COPY.emptySlot}</p>
-            )
-          ) : null}
-          {doc.type === "iconographique" && hasFicheContent(bodyHtml) ? (
-            <div
-              className={cn(styles.htmlFlow, styles.htmlFlowAfterFigure)}
-              dangerouslySetInnerHTML={{ __html: sanitize(bodyHtml) }}
-            />
-          ) : null}
-        </div>
-      </div>
-      <PrintableSourceLine source={source} />
-    </article>
-  );
-}
-
-function PrintableSourceLine({ source }: { source: string }) {
-  if (htmlHasMeaningfulText(source)) {
-    return (
-      <div
-        className={cn(styles.documentSource, styles.htmlFlow, styles.documentSourceValue)}
-        dangerouslySetInnerHTML={{ __html: sourceCitationDisplayHtml(source) }}
-      />
-    );
-  }
-  return <p className={styles.documentSource}>{PRINTABLE_FICHE_SECTION_COPY.emptySlot}</p>;
 }
 
 export function PrintableGrilleSection({
@@ -254,7 +106,7 @@ function PrintableFicheDocumentsSection({ tae }: { tae: TaeFicheData }) {
     <div className={styles.sectionBlock}>
       <div className={cn(styles.docsGrid, hasIcono && styles.docsGridHasIcono)}>
         {tae.documents.map((doc) => (
-          <PrintableDocumentCell key={doc.letter} doc={doc} />
+          <DocumentCardPrint key={doc.letter} document={documentFicheVersRenderer(doc)} />
         ))}
       </div>
     </div>

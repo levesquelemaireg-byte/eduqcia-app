@@ -12,7 +12,7 @@
  * - Règles de visibilité (guidage et titres de documents)
  */
 
-import type { DonneesTache, DocumentReference, Guidage } from "@/lib/tache/contrats/donnees";
+import type { DonneesTache, Guidage } from "@/lib/tache/contrats/donnees";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type {
   ModeImpression,

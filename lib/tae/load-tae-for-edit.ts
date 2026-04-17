@@ -6,7 +6,8 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { TAE_FORM_STEP_COUNT, type TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
 import {
   documentSlotsFromCount,
   type DisciplineCode,
@@ -319,7 +320,8 @@ export async function loadTaeFormStateForEdit(
   const modeConception = row.conception_mode === "equipe" ? "equipe" : "seul";
 
   return {
-    currentStep: 0,
+    currentStep: TAE_FORM_STEP_COUNT - 1,
+    highestReachedStep: TAE_FORM_STEP_COUNT - 1,
     bloc1: {
       modeConception,
       collaborateurs,
@@ -346,7 +348,11 @@ export async function loadTaeFormStateForEdit(
       oi7Element1: "",
       oi7Element2: "",
       oi7Element3: "",
-      consigneMode: "gabarit",
+      consigneMode:
+        getWizardBlocConfig(typeof row.comportement_id === "string" ? row.comportement_id : "")
+          ?.bloc3.type === "pur"
+          ? "personnalisee"
+          : "gabarit",
     },
     bloc4: {
       documents,

@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { shouldShowGuidageOnStudentSheet } from "@/lib/tae/consigne-helpers";
+import {
+  buildAmorceDocumentaireHtml,
+  docRefSpan,
+  shouldShowGuidageOnStudentSheet,
+} from "@/lib/tae/consigne-helpers";
 
 describe("consigne-helpers — shouldShowGuidageOnStudentSheet", () => {
   it("masque le guidage lorsque showGuidageOnStudentSheet est false", () => {
@@ -14,5 +18,30 @@ describe("consigne-helpers — shouldShowGuidageOnStudentSheet", () => {
   it("n’affiche pas si le HTML est vide", () => {
     expect(shouldShowGuidageOnStudentSheet("", true)).toBe(false);
     expect(shouldShowGuidageOnStudentSheet("   ", undefined)).toBe(false);
+  });
+});
+/* ---------- docRefSpan ---------------------------------------------------- */
+
+describe("docRefSpan", () => {
+  it("produit un span data-doc-ref avec placeholder", () => {
+    expect(docRefSpan("A")).toBe('<span data-doc-ref="A">{{doc_A}}</span>');
+  });
+});
+
+/* ---------- buildAmorceDocumentaireHtml ----------------------------------- */
+
+describe("buildAmorceDocumentaireHtml", () => {
+  it("génère l'amorce pour 1 document", () => {
+    expect(buildAmorceDocumentaireHtml(1)).toContain('data-doc-ref="A"');
+    expect(buildAmorceDocumentaireHtml(1)).toMatch(/^Consultez le document /);
+  });
+
+  it("génère l'amorce pour 3 documents avec virgules et « et »", () => {
+    const html = buildAmorceDocumentaireHtml(3);
+    expect(html).toContain('data-doc-ref="A"');
+    expect(html).toContain('data-doc-ref="B"');
+    expect(html).toContain('data-doc-ref="C"');
+    expect(html).not.toContain('data-doc-ref="D"');
+    expect(html).toContain(" et ");
   });
 });

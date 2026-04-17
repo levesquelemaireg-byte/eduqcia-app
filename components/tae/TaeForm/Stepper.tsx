@@ -26,6 +26,7 @@ export function Stepper({ className }: StepperProps) {
       className={className}
       steps={TAE_STEPS_FOR_STEPPER}
       currentStep={state.currentStep}
+      highestReachedStep={state.highestReachedStep}
       onCompletedStepClick={(index) => dispatch({ type: "SET_STEP", step: index })}
       navAriaLabel="Étapes du formulaire de création de tâche"
     />

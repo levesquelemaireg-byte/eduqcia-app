@@ -22,9 +22,9 @@ export type DocumentFiche = {
   /** Coin du bandeau ; `null` si pas de légende ou données incomplètes. */
   imageLegendePosition: DocumentLegendPosition | null;
   /**
-   * Document multi-éléments hydraté (perspectives, deux_temps).
-   * Présent quand le document a une structure multi-éléments (perspectives, deux_temps).
-   * `PrintableDocumentCell` utilise ce champ pour rendre les colonnes.
+   * Document hydraté sous forme canonique.
+   * Toujours présent pour les données serveur (via `hydrateRendererDocument`).
+   * Pour les données wizard, utiliser `documentFicheVersRenderer` si absent.
    */
   rendererDocument?: RendererDocument;
   /** Type de source — primaire ou secondaire. */

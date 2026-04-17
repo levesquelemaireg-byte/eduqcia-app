@@ -16,7 +16,11 @@ import {
 } from "@/components/tae/TaeForm/bloc3/modalCopy";
 import { SectionConsigne } from "@/components/tae/TaeForm/bloc3/SectionConsigne";
 import { SectionGuidage } from "@/components/tae/TaeForm/bloc3/SectionGuidage";
-import { buildAmorceDocumentaire } from "@/lib/tae/consigne-helpers";
+import {
+  buildAmorceDocumentaire,
+  buildAmorceDocumentaireHtml,
+  docRefSpan,
+} from "@/lib/tae/consigne-helpers";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { useTaeForm } from "@/components/tae/TaeForm/FormState";
 import { BLOC3_SECTION_ICON } from "@/components/tae/TaeForm/bloc3-stepper-icons";
@@ -117,15 +121,23 @@ function VarianteTriple({
     const autres = perspectiveTypeAutres(typePerspectives);
     const ctx = contexte.trim() ? ` ${contexte.trim()}` : "";
     return (
-      `Le document {{doc_A}} présente trois points de vue ${partitif}${ctx}. ` +
+      `Le document A présente trois points de vue ${partitif}${ctx}. ` +
       `Nommez l'${singulier} qui présente un point de vue différent. ` +
       `Puis, comparez ce point de vue à celui des ${autres}.`
     );
   }, [typePerspectives, contexte]);
 
   useEffect(() => {
-    dispatch({ type: "SET_CONSIGNE", value: `<p>${preview}</p>` });
-  }, [dispatch, preview]);
+    const partitif = perspectiveTypePartitif(typePerspectives);
+    const singulier = perspectiveTypeSingulier(typePerspectives);
+    const autres = perspectiveTypeAutres(typePerspectives);
+    const ctx = contexte.trim() ? ` ${contexte.trim()}` : "";
+    const html =
+      `<p>Le document ${docRefSpan("A")} présente trois points de vue ${partitif}${ctx}. ` +
+      `Nommez l'${singulier} qui présente un point de vue différent. ` +
+      `Puis, comparez ce point de vue à celui des ${autres}.</p>`;
+    dispatch({ type: "SET_CONSIGNE", value: html });
+  }, [dispatch, typePerspectives, contexte]);
 
   return (
     <div className="space-y-5">
@@ -241,19 +253,26 @@ function VarianteOi6({
     const e = enjeu.trim() ? enjeu.trim() : "[enjeu]";
     if (modeStructure === "separe") {
       return (
-        `À partir des documents {{doc_A}} et {{doc_B}}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
+        `À partir des documents A et B, indiquez s'il y a changement ou continuité quant à ${e}. ` +
         `Justifiez votre réponse. Indiquez un repère de temps.`
       );
     }
     return (
-      `À partir du document {{doc_A}}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
+      `À partir du document A, indiquez s'il y a changement ou continuité quant à ${e}. ` +
       `Justifiez votre réponse. Indiquez un repère de temps.`
     );
   }, [enjeu, modeStructure]);
 
   useEffect(() => {
-    dispatch({ type: "SET_CONSIGNE", value: `<p>${preview}</p>` });
-  }, [dispatch, preview]);
+    const e = enjeu.trim() ? enjeu.trim() : "[enjeu]";
+    const html =
+      modeStructure === "separe"
+        ? `<p>À partir des documents ${docRefSpan("A")} et ${docRefSpan("B")}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
+          `Justifiez votre réponse. Indiquez un repère de temps.</p>`
+        : `<p>À partir du document ${docRefSpan("A")}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
+          `Justifiez votre réponse. Indiquez un repère de temps.</p>`;
+    dispatch({ type: "SET_CONSIGNE", value: html });
+  }, [dispatch, enjeu, modeStructure]);
 
   return (
     <div className="space-y-5">
@@ -365,38 +384,33 @@ function VarianteOi7({
     const e2 = el2.trim() || "[Élément 2]";
     const e3 = el3.trim() || "[Élément 3]";
     const html =
-      `<p>Consultez les documents A, B et C. Expliquez comment ${eg}.</p>` +
+      `<p>${buildAmorceDocumentaireHtml(3)}. Expliquez comment ${eg}.</p>` +
       `<p>Pour répondre à la question, précisez les éléments ci-dessous et liez-les entre eux.</p>` +
       `<ul><li>${e1}</li><li>${e2}</li><li>${e3}</li></ul>`;
     dispatch({ type: "SET_CONSIGNE", value: html });
   }, [dispatch, isGabarit, enjeuGlobal, el1, el2, el3]);
 
   const amorce = buildAmorceDocumentaire(3);
-
-  // Texte brut pour pré-remplir le TipTap au basculement
-  const gabaritPlainText = useMemo(() => {
-    const eg = enjeuGlobal.trim() || "[réalité historique]";
-    const e1v = el1.trim() || "[Élément 1]";
-    const e2v = el2.trim() || "[Élément 2]";
-    const e3v = el3.trim() || "[Élément 3]";
-    return (
-      `${amorce} Expliquez comment ${eg}.\n` +
-      `Pour répondre à la question, précisez les éléments ci-dessous et liez-les entre eux.\n` +
-      `• ${e1v}\n• ${e2v}\n• ${e3v}`
-    );
-  }, [amorce, enjeuGlobal, el1, el2, el3]);
+  const amorceHtml = buildAmorceDocumentaireHtml(3);
 
   const handleToggleMode = useCallback(() => {
     if (isGabarit) {
-      // Pré-remplir le TipTap avec le texte brut du gabarit
-      const html = `<p>${gabaritPlainText.replace(/\n/g, "</p><p>")}</p>`;
+      // Pré-remplir le TipTap avec le HTML structuré du gabarit (docRef spans)
+      const eg = enjeuGlobal.trim() || "[réalité historique]";
+      const e1v = el1.trim() || "[Élément 1]";
+      const e2v = el2.trim() || "[Élément 2]";
+      const e3v = el3.trim() || "[Élément 3]";
+      const html =
+        `<p>${amorceHtml}. Expliquez comment ${eg}.</p>` +
+        `<p>Pour répondre à la question, précisez les éléments ci-dessous et liez-les entre eux.</p>` +
+        `<ul><li>${e1v}</li><li>${e2v}</li><li>${e3v}</li></ul>`;
       dispatch({ type: "SET_CONSIGNE", value: html });
     }
     dispatch({
       type: "SET_CONSIGNE_MODE",
       value: isGabarit ? "personnalisee" : "gabarit",
     });
-  }, [dispatch, isGabarit, gabaritPlainText]);
+  }, [dispatch, isGabarit, amorceHtml, enjeuGlobal, el1, el2, el3]);
 
   const disabledClass = !isGabarit ? "opacity-50 pointer-events-none" : "";
 

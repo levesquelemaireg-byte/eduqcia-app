@@ -13,6 +13,8 @@ export type WizardStepDefinition = {
 type WizardStepperProps = {
   steps: readonly WizardStepDefinition[];
   currentStep: number;
+  /** Étape la plus haute atteinte — les étapes entre currentStep et ce seuil restent cliquables. */
+  highestReachedStep?: number;
   /** Clic sur une étape déjà complétée — index cible. */
   onCompletedStepClick: (index: number) => void;
   className?: string;
@@ -26,11 +28,13 @@ type WizardStepperProps = {
 export function WizardStepper({
   steps,
   currentStep,
+  highestReachedStep,
   onCompletedStepClick,
   className,
   navAriaLabel,
 }: WizardStepperProps) {
   const lastIndex = steps.length - 1;
+  const ceiling = highestReachedStep ?? currentStep;
 
   return (
     <div className={className?.trim() || undefined}>
@@ -38,9 +42,9 @@ export function WizardStepper({
         <div className="-mx-1 overflow-x-auto pb-1 pt-3 [scrollbar-width:thin]">
           <ol className="m-0 flex w-full min-w-[min(100%,44rem)] list-none flex-nowrap gap-0 p-0 sm:min-w-full">
             {steps.map((step, index) => {
-              const completed = index < currentStep;
+              const completed = index !== currentStep && index <= ceiling;
               const active = index === currentStep;
-              const upcoming = index > currentStep;
+              const upcoming = index > ceiling;
 
               const label = `Étape ${step.number} — ${step.stepperLine}`;
               const ariaLabel = completed
@@ -61,8 +65,8 @@ export function WizardStepper({
                   ? "material-symbols-outlined text-accent"
                   : "material-symbols-outlined text-muted";
 
-              const leftLineDone = index > 0 && index - 1 < currentStep;
-              const rightLineDone = index < lastIndex && index < currentStep;
+              const leftLineDone = index > 0 && index - 1 <= ceiling && index <= ceiling;
+              const rightLineDone = index < lastIndex && index <= ceiling && index + 1 <= ceiling;
 
               return (
                 <li key={step.id} className="flex min-w-0 flex-1 flex-col items-stretch">

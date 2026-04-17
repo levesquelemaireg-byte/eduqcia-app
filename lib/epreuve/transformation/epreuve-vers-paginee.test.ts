@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { TypeFeuillet, Page } from "@/lib/epreuve/pagination/types";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
@@ -18,8 +19,22 @@ function pagesDuFeuillet(pages: Page[], feuillet: TypeFeuillet): Page[] {
 /*  Fixtures                                                                  */
 /* -------------------------------------------------------------------------- */
 
-function creerDoc(id: string, titre: string): DocumentReference {
-  return { id, kind: "textuel", titre, contenu: `<p>${titre}</p>` };
+function creerDoc(id: string, titre: string): RendererDocument {
+  return {
+    id,
+    titre,
+    structure: "simple",
+    elements: [
+      {
+        id,
+        type: "textuel",
+        contenu: `<p>${titre}</p>`,
+        source: "",
+        sourceType: "primaire",
+        categorieTextuelle: "autre",
+      },
+    ],
+  };
 }
 
 function creerTache(overrides: Partial<DonneesTache> & { id: string }): DonneesTache {
@@ -171,7 +186,7 @@ describe("epreuveVersImprimable — mode sommatif-standard", () => {
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
     const blocs = pagesDuFeuillet(resultat.pages, "dossier-documentaire").flatMap((p) => p.blocs);
-    const contenu = blocs[0].content as { document: DocumentReference };
+    const contenu = blocs[0].content as { document: RendererDocument };
     expect(contenu.document.titre).toBe("");
   });
 

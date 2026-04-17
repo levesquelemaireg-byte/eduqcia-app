@@ -1,13 +1,28 @@
 import { describe, expect, it } from "vitest";
-import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import { construireBlocsTache } from "./blocs-tache";
 
 /* -------------------------------------------------------------------------- */
 /*  Fixtures                                                                  */
 /* -------------------------------------------------------------------------- */
 
-function creerDoc(id: string): DocumentReference {
-  return { id, kind: "textuel", titre: `Document ${id}`, contenu: `<p>${id}</p>` };
+function creerDoc(id: string): RendererDocument {
+  return {
+    id,
+    titre: `Document ${id}`,
+    structure: "simple",
+    elements: [
+      {
+        id,
+        type: "textuel",
+        contenu: `<p>${id}</p>`,
+        source: "",
+        sourceType: "primaire",
+        categorieTextuelle: "autre",
+      },
+    ],
+  };
 }
 
 function creerTache(overrides?: Partial<DonneesTache>): DonneesTache {
@@ -57,14 +72,14 @@ describe("construireBlocsTache", () => {
   it("masque les titres de documents en mode sommatif-standard", () => {
     const tache = creerTache();
     const blocs = construireBlocsTache(tache, { mode: "sommatif-standard", estCorrige: false });
-    const contenu = blocs[0].content as { document: DocumentReference };
+    const contenu = blocs[0].content as { document: RendererDocument };
     expect(contenu.document.titre).toBe("");
   });
 
   it("conserve les titres de documents en mode formatif", () => {
     const tache = creerTache();
     const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: false });
-    const contenu = blocs[0].content as { document: DocumentReference };
+    const contenu = blocs[0].content as { document: RendererDocument };
     expect(contenu.document.titre).toBe("Document d1");
   });
 

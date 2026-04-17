@@ -5,6 +5,7 @@ import { useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
 import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
 import { PRINTABLE_FICHE_SECTION_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
 import {
+  // @ts-expect-error — PrintableDocumentCell supprimé (commit 2 renderers)
   PrintableDocumentCell,
   PrintableFicheFromTaeData,
   PrintableGrilleSection,

@@ -320,11 +320,13 @@ describe("etatWizardVersTache", () => {
   });
 
   describe("documents", () => {
-    it("mappe les slots document vers DocumentReference", () => {
+    it("mappe les slots document vers RendererDocument", () => {
       const result = etatWizardVersTache(etatRedactionnel(), OI_FIXTURE, GRILLES_FIXTURE);
       expect(result.documents).toHaveLength(1);
       expect(result.documents[0].id).toBe("doc_A");
-      expect(result.documents[0].kind).toBeDefined();
+      expect(result.documents[0].structure).toBe("simple");
+      expect(result.documents[0].elements).toHaveLength(1);
+      expect(result.documents[0].elements[0].type).toBeDefined();
     });
   });
 });

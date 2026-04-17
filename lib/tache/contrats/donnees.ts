@@ -7,6 +7,7 @@
  */
 
 import type { CdSelection, ConnaissanceSelection } from "@/lib/types/fiche";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 
 /* -------------------------------------------------------------------------- */
 /*  Sous-types structurés                                                     */
@@ -14,15 +15,6 @@ import type { CdSelection, ConnaissanceSelection } from "@/lib/types/fiche";
 
 /** Guidage structuré — remplace la string monolithique avec ancres HTML. */
 export type Guidage = { content: string } | null;
-
-/** Référence à un document historique dans une tâche. */
-export type DocumentReference = {
-  id: string;
-  kind: "textuel" | "iconographique";
-  titre: string;
-  contenu: string;
-  echelle?: number;
-};
 
 /** Descripteur d'un niveau de performance dans un critère d'évaluation. */
 export type Descripteur = {
@@ -70,7 +62,7 @@ export type DonneesTache = {
   titre: string;
   consigne: string;
   guidage: Guidage;
-  documents: DocumentReference[];
+  documents: RendererDocument[];
   espaceProduction: EspaceProduction;
   outilEvaluation: OutilEvaluation;
   corrige: string;

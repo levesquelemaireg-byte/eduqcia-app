@@ -10,7 +10,8 @@ import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
 import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
-import type { DonneesTache, DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { RenduImprimable } from "@/lib/impression/types";
 
@@ -44,7 +45,7 @@ function mesureurPlaceholder(): number {
 
 /** Format KV — discriminé par `type`. */
 type DraftKvTyped =
-  | { type: "document"; payload: DocumentReference }
+  | { type: "document"; payload: RendererDocument }
   | { type: "tache"; payload: DonneesTache; mode: ModeImpression; estCorrige: boolean }
   | { type: "epreuve"; payload: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
 

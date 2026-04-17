@@ -8,7 +8,7 @@ import { simpleRichExtensions } from "@/components/tae/TaeForm/tiptap/baseExtens
 import { RichTextEditorShell } from "@/components/ui/RichTextEditorShell";
 
 const PROSE_MARKS =
-  "ProseMirror w-full min-w-0 text-[13px] leading-relaxed text-deep focus:outline-none [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:font-semibold [&_em]:italic [&_u]:underline";
+  "ProseMirror w-full min-w-0 text-[13px] leading-relaxed text-deep focus:outline-none [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_em]:italic [&_u]:underline";
 
 export type RichTextEditorProps = {
   value: string;

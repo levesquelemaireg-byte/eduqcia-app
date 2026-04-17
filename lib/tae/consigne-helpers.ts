@@ -10,6 +10,27 @@ export function buildAmorceDocumentaire(nbDocs: number): string {
   return "Consultez les documents A, B, C et D.";
 }
 
+/**
+ * Span HTML `data-doc-ref` pour une lettre de slot — parsé par TipTap comme nœud `docRef`.
+ * Source unique : tout HTML qui référence un document doit passer par ce helper.
+ */
+export function docRefSpan(letter: string): string {
+  return `<span data-doc-ref="${letter}">{{doc_${letter}}}</span>`;
+}
+
+/**
+ * Amorce documentaire en HTML structuré avec `docRefSpan` — pour le HTML consigne
+ * (gabarits templates, bascule gabarit → libre). Sans ponctuation finale.
+ */
+export function buildAmorceDocumentaireHtml(nbDocs: number): string {
+  const n = Math.min(Math.max(nbDocs, 1), 4);
+  if (n === 1) return `Consultez le document ${docRefSpan("A")}`;
+  if (n === 2) return `Consultez les documents ${docRefSpan("A")} et ${docRefSpan("B")}`;
+  if (n === 3)
+    return `Consultez les documents ${docRefSpan("A")}, ${docRefSpan("B")} et ${docRefSpan("C")}`;
+  return `Consultez les documents ${docRefSpan("A")}, ${docRefSpan("B")}, ${docRefSpan("C")} et ${docRefSpan("D")}`;
+}
+
 function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

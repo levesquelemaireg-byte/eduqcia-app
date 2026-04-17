@@ -279,6 +279,11 @@ export function sanitizeHydratedState(raw: unknown): TaeFormState | null {
 
   return {
     currentStep: clampStep(o.currentStep),
+    highestReachedStep: clampStep(
+      typeof o.highestReachedStep === "number" && Number.isFinite(o.highestReachedStep)
+        ? Math.max(o.highestReachedStep, o.currentStep)
+        : o.currentStep,
+    ),
     bloc1,
     bloc2,
     bloc3,

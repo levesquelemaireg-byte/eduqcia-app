@@ -9,6 +9,7 @@ import {
   type SaveEvaluationErrorCode,
   type SaveEvaluationResult,
 } from "@/lib/actions/evaluation-save";
+import { genererTokenApercuEpreuve } from "@/lib/actions/evaluation-apercu";
 import {
   cumulativeDocRanges,
   formatDocRangeLabel,
@@ -164,7 +165,16 @@ export function EvaluationCompositionEditor({
       if (mode === "new" || evalId !== result.evaluationId) {
         router.replace(`/evaluations/${result.evaluationId}/edit`);
       }
-      window.open(`/evaluations/${result.evaluationId}/print`, "_blank", "noopener,noreferrer");
+      const tokenResult = await genererTokenApercuEpreuve(result.evaluationId);
+      if (!tokenResult.ok) {
+        toast.error(tokenResult.error);
+        return;
+      }
+      window.open(
+        `/apercu/${encodeURIComponent(tokenResult.token)}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
       router.refresh();
     });
   }, [cart, evalId, mode, router, titre]);

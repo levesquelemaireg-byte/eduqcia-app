@@ -887,7 +887,7 @@ export function evalCompCartCount(n: number): string {
 export const EVAL_COMP_CART_EMPTY =
   "Aucune tâche ajoutée. Parcourez la banque et cliquez sur « Ajouter » pour composer votre épreuve.";
 export const EVAL_COMP_SAVE_DRAFT = "Enregistrer le brouillon";
-/** Ouvre `/evaluations/[id]/print` (nouvel onglet) après sauvegarde du brouillon — `docs/UI-COPY.md` */
+/** Ouvre `/apercu/[token]` (nouvel onglet) après sauvegarde du brouillon — `docs/UI-COPY.md` */
 export const EVAL_COMP_PREVIEW = "Aperçu";
 export const EVAL_COMP_PUBLISH = "Publier";
 export const EVAL_COMP_ADD = "Ajouter";

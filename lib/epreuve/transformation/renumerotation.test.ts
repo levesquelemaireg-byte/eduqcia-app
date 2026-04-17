@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import {
   aplatirDocumentsAvecNumeros,
   numeroGlobalParId,
@@ -10,8 +10,22 @@ import {
 /*  Fixtures                                                                  */
 /* -------------------------------------------------------------------------- */
 
-function creerDoc(id: string, titre: string): DocumentReference {
-  return { id, kind: "textuel", titre, contenu: `<p>Contenu de ${titre}</p>` };
+function creerDoc(id: string, titre: string): RendererDocument {
+  return {
+    id,
+    titre,
+    structure: "simple",
+    elements: [
+      {
+        id,
+        type: "textuel",
+        contenu: `<p>Contenu de ${titre}</p>`,
+        source: "",
+        sourceType: "primaire",
+        categorieTextuelle: "autre",
+      },
+    ],
+  };
 }
 
 const DOC_A1 = creerDoc("a1", "Proclamation royale 1763");

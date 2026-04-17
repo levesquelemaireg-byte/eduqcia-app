@@ -12,6 +12,7 @@ export function consigneExtensions() {
       horizontalRule: false,
       strike: false,
       code: false,
+      orderedList: false,
     }),
     DocRef,
   ];
@@ -27,6 +28,7 @@ export function simpleRichExtensions() {
       horizontalRule: false,
       strike: false,
       code: false,
+      orderedList: false,
     }),
   ];
 }

@@ -7,7 +7,7 @@
  * Spec : docs/specs/spec-impression-tache-seule.md §2 + §3, couche 2.
  */
 
-import type { DocumentReference } from "@/lib/tache/contrats/donnees";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { Mesureur } from "@/lib/epreuve/pagination/pager";
 import { mesurerBloc } from "@/lib/epreuve/pagination/pager";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
@@ -17,8 +17,8 @@ import type { RenduImprimable } from "@/lib/impression/types";
 /**
  * Calcule une empreinte déterministe pour la détection d'invalidation.
  */
-function calculerEmpreinte(document: DocumentReference): string {
-  const payload = JSON.stringify({ id: document.id, contenu: document.contenu });
+function calculerEmpreinte(document: RendererDocument): string {
+  const payload = JSON.stringify({ id: document.id, elements: document.elements.map((e) => e.id) });
   let hash = 0x811c9dc5;
   for (let i = 0; i < payload.length; i++) {
     hash ^= payload.charCodeAt(i);
@@ -34,7 +34,7 @@ function calculerEmpreinte(document: DocumentReference): string {
  * Erreur bloquante si le contenu dépasse la page.
  */
 export function documentVersImprimable(
-  document: DocumentReference,
+  document: RendererDocument,
   mesureur: Mesureur,
 ): RenduImprimable {
   const bloc = construireBlocDocument(document, { titreVisible: true });

@@ -18,7 +18,7 @@ type Props = {
   tae: TaeFicheData;
   votes: PeerVoteTally | null;
   peutVoter: boolean;
-  /** Handler de clic sur une DocCard — ouvre la modale fiche document. Phase 6. */
+  /** Handler de clic sur un document — ouvre la modale fiche document. Phase 6. */
   surClicDocument?: (docId: string) => void;
   /** Ref sur le h1 du hero — focus initial programmatique. Phase 8. */
   heroRef?: React.Ref<HTMLHeadingElement>;

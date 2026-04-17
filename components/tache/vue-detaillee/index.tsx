@@ -19,7 +19,7 @@ type Props = {
 /**
  * Orchestrateur de la vue détaillée tâche.
  * Compose barre d'actions + layout 2 colonnes (flux + rail) + modale fiche document.
- * Connecte `surClicDocument` (DocCards) → `ouvrirFicheModale`.
+ * Connecte `surClicDocument` (DocumentCard) → `ouvrirFicheModale`.
  */
 export function TacheVueDetaillee({ tae, votes, peutVoter, estAuteur }: Props) {
   const { modaleOuverte, cibleModale, ouvrirFicheModale, fermerFicheModale } = useFicheModale();

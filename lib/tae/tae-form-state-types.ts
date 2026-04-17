@@ -106,6 +106,8 @@ export type Bloc7Slice = {
 
 export type TaeFormState = {
   currentStep: number;
+  /** Étape la plus haute atteinte — permet la navigation libre en édition. */
+  highestReachedStep: number;
   bloc1: ConceptionSlice;
   bloc2: BlueprintSlice;
   bloc3: Bloc3Slice;
@@ -219,6 +221,7 @@ export const initialBloc7: Bloc7Slice = {
 
 export const initialTaeFormState: TaeFormState = {
   currentStep: 0,
+  highestReachedStep: 0,
   bloc1: initialConception,
   bloc2: initialBlueprint,
   bloc3: initialBloc3,

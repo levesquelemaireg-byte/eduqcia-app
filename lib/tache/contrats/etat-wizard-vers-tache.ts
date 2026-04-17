@@ -47,14 +47,9 @@ import {
   normalizeOrdreChronologiquePayload,
 } from "@/lib/tae/non-redaction/ordre-chronologique-payload";
 
-import type {
-  DonneesTache,
-  DocumentReference,
-  EspaceProduction,
-  Guidage,
-  OutilEvaluation,
-  Critere,
-} from "./donnees";
+import type { RendererDocument, DocumentElement } from "@/lib/types/document-renderer";
+
+import type { DonneesTache, EspaceProduction, Guidage, OutilEvaluation, Critere } from "./donnees";
 
 /* -------------------------------------------------------------------------- */
 /*  Types d'entrée                                                            */
@@ -86,7 +81,7 @@ function supprimerAncres(html: string): string {
 }
 
 /** Résout l'outil d'évaluation depuis les grilles JSON. */
-function resoudreOutilEvaluation(
+export function resoudreOutilEvaluation(
   outilId: string | null,
   grilles: GrilleEvaluationEntree[],
 ): OutilEvaluation {
@@ -182,16 +177,45 @@ function construireCorrige(state: TaeFormState): string {
   return getRedactionSliceForPreview(state).corrige;
 }
 
-/** Mappe les slots document vers `DocumentReference[]`. */
-function construireDocuments(state: TaeFormState): DocumentReference[] {
+/** Mappe les slots document vers `RendererDocument[]`. */
+function construireDocuments(state: TaeFormState): RendererDocument[] {
   return state.bloc2.documentSlots.map(({ slotId }) => {
     const slot = getSlotData(state.bloc4.documents, slotId);
+
+    const baseElement = {
+      id: slotId,
+      source: slot.source_citation || "",
+      sourceType: (slot.source_type ?? "primaire") as "primaire" | "secondaire",
+    };
+
+    let element: DocumentElement;
+    if (slot.type === "iconographique") {
+      element = {
+        ...baseElement,
+        type: "iconographique" as const,
+        imageUrl: slot.imageUrl ?? "",
+        legende: slot.image_legende || undefined,
+        legendePosition: slot.image_legende_position ?? undefined,
+        categorieIconographique: slot.type_iconographique ?? "autre",
+        ...(slot.imagePixelWidth != null && slot.imagePixelHeight != null
+          ? { imagePixelWidth: slot.imagePixelWidth, imagePixelHeight: slot.imagePixelHeight }
+          : {}),
+      };
+    } else {
+      element = {
+        ...baseElement,
+        type: "textuel" as const,
+        contenu: slot.contenu,
+        categorieTextuelle: slot.categorie_textuelle ?? "autre",
+      };
+    }
+
     return {
       id: slotId,
-      kind: slot.type,
       titre: slot.titre,
-      contenu: slot.contenu,
-      ...(slot.type === "iconographique" ? { echelle: slot.printImpressionScale } : {}),
+      structure: "simple" as const,
+      elements: [element],
+      ...(slot.repere_temporel ? { repereTemporelDocument: slot.repere_temporel } : {}),
     };
   });
 }

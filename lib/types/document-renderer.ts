@@ -1,5 +1,7 @@
 /**
- * Types du document-renderer — structures multi-éléments.
+ * Contrat de rendu canonique pour tout affichage de document.
+ * NE PAS y ajouter de métadonnées métier (droits, statut, auteur).
+ * Ces données restent dans l'enveloppe parente (DonneesTache, etc.).
  *
  * Un document peut être simple (1 élément), à perspectives (2 ou 3 éléments),
  * ou à deux temps (2 éléments). Chaque élément est textuel ou iconographique
@@ -55,6 +57,9 @@ export interface IconographiqueElement extends BaseElement {
   /** Position de la légende — obligatoire si `legende` est présente. */
   legendePosition?: DocumentLegendPosition;
   categorieIconographique: DocumentCategorieIconographiqueId;
+  /** Dimensions pixel réelles de l'image (après téléversement) ; absent si inconnu. */
+  imagePixelWidth?: number;
+  imagePixelHeight?: number;
 }
 
 export type DocumentElement = TextuelElement | IconographiqueElement;

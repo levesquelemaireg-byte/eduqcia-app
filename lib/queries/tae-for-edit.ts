@@ -34,8 +34,9 @@ import {
   type RedactionSlice,
 } from "@/lib/tae/redaction-helpers";
 import { nonRedactionFromDbColumn } from "@/lib/tae/non-redaction/non-redaction-edit-hydrate";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { TAE_FORM_STEP_COUNT, type TaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
+import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
 
 type TaeEditRow = {
   id: string;
@@ -343,7 +344,8 @@ export async function fetchTaeFormStateForEdit(
   }
 
   const state: TaeFormState = {
-    currentStep: 0,
+    currentStep: TAE_FORM_STEP_COUNT - 1,
+    highestReachedStep: TAE_FORM_STEP_COUNT - 1,
     bloc1: {
       modeConception,
       collaborateurs,
@@ -370,7 +372,10 @@ export async function fetchTaeFormStateForEdit(
       oi7Element1: "",
       oi7Element2: "",
       oi7Element3: "",
-      consigneMode: "gabarit",
+      consigneMode:
+        getWizardBlocConfig(t.comportement_id ?? "")?.bloc3.type === "pur"
+          ? "personnalisee"
+          : "gabarit",
     },
     bloc4: {
       documents,
