@@ -41,7 +41,7 @@ export const PRINTABLE_FICHE_SECTION_COPY = {
 export const CARROUSEL_APERCU_COPY = {
   skeletonTitre: "Préparation de l'aperçu\u2026",
   skeletonSousTitre: "Mise en page et génération des visuels",
-  banniereInvalidation: "Le contenu a été modifié depuis la dernière génération",
+  banniereInvalidation: "L'aperçu ne reflète plus le contenu actuel du formulaire.",
   boutonRegenerer: "Mettre à jour l'aperçu",
   erreurGeneration: "La génération a échoué",
   boutonReessayer: "Réessayer",

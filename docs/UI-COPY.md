@@ -955,7 +955,7 @@ Toutes les constantes vivent dans `lib/ui/ui-copy.ts`.
 
 - Skeleton titre : Préparation de l'aperçu…
 - Skeleton sous-titre : Mise en page et génération des visuels
-- Bannière d'invalidation : Le contenu a été modifié depuis la dernière génération
+- Bannière d'invalidation : L'aperçu ne reflète plus le contenu actuel du formulaire.
 - Bouton regénérer : Mettre à jour l'aperçu
 - Erreur génération : La génération a échoué
 - Bouton réessayer : Réessayer

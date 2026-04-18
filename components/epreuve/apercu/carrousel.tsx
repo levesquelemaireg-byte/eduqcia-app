@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
 import {
@@ -83,23 +83,37 @@ function construireFeuillets(
 function CarrouselFeuillet({
   feuillet,
   totalPagesGlobal,
+  empreintePng,
+  indexInitial = 0,
+  surChangementPage,
 }: {
   feuillet: FeuilletInfo;
   totalPagesGlobal: number;
+  empreintePng: string;
+  indexInitial?: number;
+  surChangementPage?: (type: TypeFeuillet, index: number) => void;
 }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: "center", containScroll: "trimSnaps" });
-  const [indexActif, setIndexActif] = useState(0);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "center",
+    containScroll: "trimSnaps",
+    startIndex: indexInitial,
+  });
+  const [indexActif, setIndexActif] = useState(indexInitial);
 
   useEffect(() => {
     if (!emblaApi) return;
-    const handler = () => setIndexActif(emblaApi.selectedScrollSnap());
+    const handler = () => {
+      const idx = emblaApi.selectedScrollSnap();
+      setIndexActif(idx);
+      surChangementPage?.(feuillet.type, idx);
+    };
     emblaApi.on("select", handler);
     emblaApi.on("init", handler);
     return () => {
       emblaApi.off("select", handler);
       emblaApi.off("init", handler);
     };
-  }, [emblaApi]);
+  }, [emblaApi, feuillet.type, surChangementPage]);
 
   const allerPrecedent = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const allerSuivant = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -116,7 +130,7 @@ function CarrouselFeuillet({
             const pageNum = feuillet.debutIndex + i + 1;
             return (
               <div
-                key={i}
+                key={`${feuillet.type}-${i}-${empreintePng}`}
                 className={cn(
                   "min-w-0 flex-[0_0_100%] px-2 transition-[filter,opacity] duration-200",
                   !estActif && "opacity-40 blur-[2px]",
@@ -190,6 +204,13 @@ export function CarrouselApercu({
   const [feuilletActifIndex, setFeuilletActifIndex] = useState(0);
   const feuilletActif = feuillets[feuilletActifIndex] ?? feuillets[0];
 
+  // BUG-4 — Persistance de la position par feuillet au changement d'onglet
+  const positionsRef = useRef<Partial<Record<TypeFeuillet, number>>>({});
+  const [indexInitialActuel, setIndexInitialActuel] = useState(0);
+  const surChangementPage = useCallback((type: TypeFeuillet, index: number) => {
+    positionsRef.current[type] = index;
+  }, []);
+
   const estInvalide = empreinteWizard !== "" && empreintePng !== empreinteWizard;
 
   if (feuillets.length === 0) return null;
@@ -230,7 +251,12 @@ export function CarrouselApercu({
               type="button"
               role="tab"
               aria-selected={i === feuilletActifIndex}
-              onClick={() => setFeuilletActifIndex(i)}
+              onClick={() => {
+                setFeuilletActifIndex(i);
+                setIndexInitialActuel(
+                  positionsRef.current[feuillets[i]?.type ?? "dossier-documentaire"] ?? 0,
+                );
+              }}
               className={cn(
                 "px-4 py-2 text-sm font-medium transition-colors",
                 i === feuilletActifIndex
@@ -251,6 +277,9 @@ export function CarrouselApercu({
             key={feuilletActif.type}
             feuillet={feuilletActif}
             totalPagesGlobal={pages.length}
+            empreintePng={empreintePng}
+            indexInitial={indexInitialActuel}
+            surChangementPage={surChangementPage}
           />
         </div>
       )}
