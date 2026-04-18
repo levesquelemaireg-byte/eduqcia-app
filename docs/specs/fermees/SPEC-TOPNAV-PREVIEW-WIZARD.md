@@ -1,5 +1,8 @@
 # SPEC-TOPNAV-PREVIEW-WIZARD.md
 
+**Statut :** **FERMÉE** — lot livré le 18 avril 2026.
+**Archivage :** déplacée de `docs/specs/` vers `docs/specs/fermees/` le 18 avril 2026.
+
 > **Spécification de design — Barre de navigation unifiée du panneau d'aperçu (wizard tâche et wizard document)**
 >
 > Refonte cosmétique UI/UX uniquement. La base architecturale (pipeline de rendu, modes d'impression, state management, types) est déjà implémentée et ne doit pas être modifiée. Cette spec décrit uniquement la présentation visuelle et l'agencement de la barre.
