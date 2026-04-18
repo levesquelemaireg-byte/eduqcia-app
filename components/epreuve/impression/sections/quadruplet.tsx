@@ -10,6 +10,7 @@
  * Invariants : Arial, noir, pas de decoration.
  */
 
+import DOMPurify from "isomorphic-dompurify";
 import type { ContenuQuadruplet } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import { SectionEspaceProduction } from "./espace-production";
 import { SectionOutilEvaluation } from "./outil-evaluation";
@@ -44,7 +45,7 @@ export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
       {/* Consigne (HTML) */}
       <div
         style={{ fontSize: "11pt", lineHeight: 1.5 }}
-        dangerouslySetInnerHTML={{ __html: consigne }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(consigne) }}
       />
 
       {/* Guidage (optionnel — visible en formatif, masque sinon) */}
@@ -57,7 +58,7 @@ export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
             paddingLeft: "12px",
             borderLeft: "2pt solid #000",
           }}
-          dangerouslySetInnerHTML={{ __html: guidage.content }}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(guidage.content) }}
         />
       )}
 

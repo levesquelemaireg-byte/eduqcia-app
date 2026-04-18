@@ -9,6 +9,8 @@ export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const query = searchParams.get("q") ?? "";
   const currentUserId = searchParams.get("userId") ?? "";
+  const offset = Math.max(0, Number(searchParams.get("offset")) || 0);
+  const limit = Math.min(50, Math.max(1, Number(searchParams.get("limit")) || 50));
 
   if (!currentUserId) {
     return NextResponse.json({ items: [], total: 0 }, { status: 400 });
@@ -36,7 +38,7 @@ export async function GET(request: NextRequest) {
     data: profiles,
     count,
     error,
-  } = await q.order("last_name", { ascending: true }).limit(50);
+  } = await q.order("last_name", { ascending: true }).range(offset, offset + limit - 1);
 
   if (error || !profiles) {
     return NextResponse.json({ items: [], total: 0 });

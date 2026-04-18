@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { genererPdf } from "@/lib/epreuve/impression/puppeteer";
+import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
 
 /**
  * POST /api/impression/pdf — print-engine D4.
@@ -47,11 +48,17 @@ export async function POST(request: Request) {
 
   const { token } = parsed.data;
 
-  // 3. Construire l'URL SSR
+  // 3. Vérifier la signature HMAC avant de lancer Puppeteer
+  const verification = verifierTokenDraft(token);
+  if (!verification.valide) {
+    return NextResponse.json({ error: "Token invalide ou expiré." }, { status: 401 });
+  }
+
+  // 4. Construire l'URL SSR
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? `http://localhost:3000`;
   const url = `${baseUrl}/apercu/${encodeURIComponent(token)}`;
 
-  // 4. Générer le PDF avec timeout de sécurité
+  // 5. Générer le PDF avec timeout de sécurité
   try {
     const pdfBuffer = await Promise.race([
       genererPdf(url),

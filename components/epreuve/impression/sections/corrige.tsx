@@ -4,6 +4,7 @@
  * Invariants : Arial, noir, pas de decoration.
  */
 
+import DOMPurify from "isomorphic-dompurify";
 import type { ContenuCorrige } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import { SectionOutilEvaluation } from "./outil-evaluation";
 
@@ -37,7 +38,7 @@ export function SectionCorrige({ contenu }: SectionCorrigeProps) {
       {/* Corrige HTML */}
       <div
         style={{ fontSize: "11pt", lineHeight: 1.5 }}
-        dangerouslySetInnerHTML={{ __html: corrige }}
+        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(corrige) }}
       />
 
       {/* Outil d'evaluation avec reponses attendues */}

@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { toast } from "sonner";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression, TypeFeuillet } from "@/lib/epreuve/pagination/types";
@@ -110,21 +111,41 @@ export function useApercuPng(
   const [etat, setEtat] = useState<EtatApercu>({ statut: "idle" });
   const [pdfEnCours, setPdfEnCours] = useState(false);
   const tokenRef = useRef<string | null>(null);
+  const abortRef = useRef<AbortController | null>(null);
+  const estEnCoursRef = useRef(false);
 
-  // Empreinte wizard locale
-  const rendu = calculerRendu(payload, mode, estCorrige);
+  // Correctif 5 — useMemo sur calculerRendu
+  const rendu = useMemo(
+    () => calculerRendu(payload, mode, estCorrige),
+    [payload, mode, estCorrige],
+  );
   const empreinteWizard = rendu.ok ? rendu.empreinte : "";
 
   // Détection d'invalidation
   const estInvalide =
     etat.statut === "pret" && empreinteWizard !== "" && etat.empreintePng !== empreinteWizard;
 
-  /** Obtient un token draft depuis l'API. */
-  async function obtenirToken(): Promise<string> {
+  // Correctif 4 — Reset tokenRef au changement de deps
+  useEffect(() => {
+    tokenRef.current = null;
+  }, [payload, mode, estCorrige]);
+
+  // Correctif 1 — Cleanup AbortController au démontage
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+      tokenRef.current = null;
+    };
+  }, []);
+
+  /** Obtient un token draft depuis l'API. Stabilisé via ref pour éviter les deps cycliques. */
+  const obtenirTokenRef = useRef<(signal?: AbortSignal) => Promise<string>>(() => Promise.reject());
+  obtenirTokenRef.current = async (signal?: AbortSignal) => {
     const res = await fetch("/api/impression/token-draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(construireBodyTokenDraft(payload, mode, estCorrige)),
+      signal,
     });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
@@ -132,52 +153,80 @@ export function useApercuPng(
     }
     const data = (await res.json()) as { token: string };
     return data.token;
-  }
+  };
 
-  const generer = useCallback(async () => {
-    setEtat({ statut: "chargement" });
-    try {
-      const token = await obtenirToken();
-      tokenRef.current = token;
+  const generer = useCallback(
+    async (tentative = 1) => {
+      // Correctif 6 — Guard anti double-clic
+      if (estEnCoursRef.current) return;
+      estEnCoursRef.current = true;
 
-      const res = await fetch("/api/impression/apercu-png", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token }),
-      });
+      // Correctif 1 — AbortController
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
 
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error((data as { error?: string }).error ?? `Erreur ${res.status}`);
+      setEtat({ statut: "chargement" });
+      try {
+        const token = await obtenirTokenRef.current(controller.signal);
+        tokenRef.current = token;
+
+        const res = await fetch("/api/impression/apercu-png", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+          signal: controller.signal,
+        });
+
+        // Correctif 3 — Retry sur token expiré (410)
+        if (res.status === 410 && tentative < 2) {
+          tokenRef.current = null;
+          estEnCoursRef.current = false;
+          return generer(tentative + 1);
+        }
+
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error((data as { error?: string }).error ?? `Erreur ${res.status}`);
+        }
+
+        const data = (await res.json()) as { pages: string[]; empreinte: string };
+
+        // Correctif 5 — utiliser le rendu mémoïsé
+        const pagesParFeuillet = rendu.ok
+          ? extrairePagesParFeuillet(rendu)
+          : { "dossier-documentaire": 0, questionnaire: 0, "cahier-reponses": 0 };
+
+        setEtat({
+          statut: "pret",
+          pages: data.pages,
+          empreintePng: data.empreinte,
+          pagesParFeuillet,
+        });
+      } catch (err) {
+        // Correctif 1 — Silence sur abort volontaire
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        const message = err instanceof Error ? err.message : "Erreur inconnue.";
+        setEtat({ statut: "erreur", message });
+      } finally {
+        if (abortRef.current === controller) abortRef.current = null;
+        estEnCoursRef.current = false;
       }
-
-      const data = (await res.json()) as { pages: string[]; empreinte: string };
-
-      // Calculer pagesParFeuillet depuis le rendu local
-      const renduLocal = calculerRendu(payload, mode, estCorrige);
-      const pagesParFeuillet = renduLocal.ok
-        ? extrairePagesParFeuillet(renduLocal)
-        : { "dossier-documentaire": 0, questionnaire: 0, "cahier-reponses": 0 };
-
-      setEtat({
-        statut: "pret",
-        pages: data.pages,
-        empreintePng: data.empreinte,
-        pagesParFeuillet,
-      });
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "Erreur inconnue.";
-      setEtat({ statut: "erreur", message });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payload, mode, estCorrige]);
+    },
+    [payload, mode, estCorrige, rendu],
+  );
 
   const telechargerPdf = useCallback(async () => {
     setPdfEnCours(true);
+
+    // Correctif 2 — Timeout PDF 30s
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30_000);
+
     try {
       let token = tokenRef.current;
       if (!token) {
-        token = await obtenirToken();
+        token = await obtenirTokenRef.current(controller.signal);
         tokenRef.current = token;
       }
 
@@ -185,6 +234,7 @@ export function useApercuPng(
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token }),
+        signal: controller.signal,
       });
 
       if (!res.ok) {
@@ -201,12 +251,19 @@ export function useApercuPng(
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch {
-      // L'erreur PDF est silencieuse
+    } catch (err) {
+      // Correctif 7 — Toast erreur PDF
+      if (err instanceof DOMException && err.name === "AbortError") {
+        toast.error("Le téléchargement a pris trop de temps. Réessayez.");
+        return;
+      }
+      const message = err instanceof Error ? err.message : "Erreur inconnue";
+      toast.error(`Échec du téléchargement : ${message}`);
+      console.error("Erreur téléchargement PDF", err);
     } finally {
+      clearTimeout(timeout);
       setPdfEnCours(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payload, mode, estCorrige]);
 
   return { etat, empreinteWizard, estInvalide, generer, telechargerPdf, pdfEnCours };

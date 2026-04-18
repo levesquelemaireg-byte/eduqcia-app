@@ -181,26 +181,30 @@ export async function getBankPublishedDocumentsPage(
   const hasIconoFilter =
     filters.docType !== "textuel" && filters.iconoCategories && filters.iconoCategories.length > 0;
 
-  // Filtrage icono en JS → sur-fetch pour compenser
-  const pageSize = hasIconoFilter ? BANK_PAGE_SIZE * 3 : BANK_PAGE_SIZE;
-  const from = hasIconoFilter ? 0 : p * BANK_PAGE_SIZE;
-  const to = from + pageSize - 1;
-
-  const { data, error, count } = await bankDocumentsFilteredQuery(supabase, filters, "exact").range(
-    from,
-    to,
-  );
-  if (error || !data) return { rows: [], total: 0 };
-
-  const mapped = mapBankDocumentRows(data, hasIconoFilter ? filters.iconoCategories : undefined);
-
   if (hasIconoFilter) {
+    // Filtrage icono en JS (PostgREST ne supporte pas le filtre sur clé JSONB tableau).
+    // On charge tous les résultats DB pour filtrer et paginer localement.
+    const { data, error } = await bankDocumentsFilteredQuery(supabase, filters, "none");
+    if (error || !data) return { rows: [], total: 0 };
+
+    const mapped = mapBankDocumentRows(data, filters.iconoCategories);
     const start = p * BANK_PAGE_SIZE;
     return {
       rows: mapped.slice(start, start + BANK_PAGE_SIZE),
       total: mapped.length,
     };
   }
+
+  // Chemin standard : pagination DB
+  const from = p * BANK_PAGE_SIZE;
+  const to = from + BANK_PAGE_SIZE - 1;
+  const { data, error, count } = await bankDocumentsFilteredQuery(supabase, filters, "exact").range(
+    from,
+    to,
+  );
+  if (error || !data) return { rows: [], total: 0 };
+
+  const mapped = mapBankDocumentRows(data, undefined);
   return { rows: mapped, total: count ?? 0 };
 }
 
