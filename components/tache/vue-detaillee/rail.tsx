@@ -1,21 +1,19 @@
 "use client";
 
-import { useId, useMemo, useState } from "react";
+import { useMemo } from "react";
 import Link from "next/link";
 import type { TaeFicheData } from "@/lib/types/fiche";
-import type { FicheMode } from "@/lib/fiche/types";
-import type { CompetenceData, ConnaissancesData } from "@/lib/fiche/types";
+import type { FicheMode, CompetenceData, ConnaissancesData } from "@/lib/fiche/types";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
-import { MetaRowExpandable, MetaRowSimple, StatusBadge } from "@/lib/fiche/primitives/MetaRow";
-import { PeriodeIcon } from "@/components/ui/PeriodeIcon";
+import { MetaRowSimple, StatusBadge } from "@/lib/fiche/primitives/MetaRow";
 import { SectionCD } from "@/lib/fiche/sections/SectionCD";
 import { SectionConnaissances } from "@/lib/fiche/sections/SectionConnaissances";
+import { RailLayout, SectionRail } from "@/components/partagees/vue-detaillee/rail-layout";
 import { selectRailNiveau } from "@/lib/fiche/selectors/tache/rail/niveau";
 import { selectRailDiscipline } from "@/lib/fiche/selectors/tache/rail/discipline";
 import { selectRailAspects } from "@/lib/fiche/selectors/tache/rail/aspects";
-import { selectRailChapitreConnaissances } from "@/lib/fiche/selectors/tache/rail/chapitre-connaissances";
 import { selectRailCompetence } from "@/lib/fiche/selectors/tache/rail/competence";
 import { selectRailConnaissances } from "@/lib/fiche/selectors/tache/rail/connaissances";
 import { selectRailDocumentsCompte } from "@/lib/fiche/selectors/tache/rail/documents-compte";
@@ -28,7 +26,6 @@ import {
   FICHE_RAIL_DATE_MAJ,
   FICHE_RAIL_STATUT_PUBLIEE,
   FICHE_RAIL_STATUT_BROUILLON,
-  FICHE_RAIL_ACCORDEON_LABEL,
 } from "@/lib/ui/ui-copy";
 
 type Props = {
@@ -36,17 +33,15 @@ type Props = {
 };
 
 /**
- * Rail contextuel de la vue détaillée tâche — responsive.
- *
- * - Desktop ≥1024px : panneau sticky 280px à droite.
- * - Tablet 768-1023px : pleine largeur, non sticky, compact.
- * - Mobile <768px : accordéon replié par défaut.
+ * Rail latéral pour la vue détaillée tâche.
+ * Utilise RailLayout + SectionRail partagés — le conteneur responsive
+ * est géré par VueDetailleeLayout (border-l sticky en sidebar, empilé en stacked).
  */
 export function TacheRail({ tae }: Props) {
+  const mode: FicheMode = "lecture";
   const niveau = useMemo(() => selectRailNiveau(tae), [tae]);
   const discipline = useMemo(() => selectRailDiscipline(tae), [tae]);
   const aspects = useMemo(() => selectRailAspects(tae), [tae]);
-  const chapitre = useMemo(() => selectRailChapitreConnaissances(tae), [tae]);
   const competence = useMemo(() => selectRailCompetence(tae), [tae]);
   const connaissances = useMemo(() => selectRailConnaissances(tae), [tae]);
   const docsCompte = useMemo(() => selectRailDocumentsCompte(tae), [tae]);
@@ -54,171 +49,105 @@ export function TacheRail({ tae }: Props) {
   const dates = useMemo(() => selectRailDates(tae), [tae]);
   const statut = useMemo(() => selectRailStatut(tae), [tae]);
 
-  const mode: FicheMode = "lecture";
-
-  /* Données pour les arbres CD et connaissances (boîtes noires) */
   const cdData: CompetenceData | null = competence ? { cd: competence.cd } : null;
   const connData: ConnaissancesData | null = connaissances
     ? { connaissances: connaissances.connaissances }
     : null;
 
-  const statutLabel =
-    statut.statut === "publiee" ? FICHE_RAIL_STATUT_PUBLIEE : FICHE_RAIL_STATUT_BROUILLON;
-  const statutVariant = statut.statut === "publiee" ? "published" : "draft";
-
-  /* ── Accordéon mobile ──────────────────────────────────────── */
-  const accordeonContenuId = useId();
-  const [accordeonOuvert, setAccordeonOuvert] = useState(false);
-
   const oiGlyph = tae.oi?.icone ?? "";
 
-  /* ── Contenu partagé (chips + metarows + statut) ───────────── */
-  const contenuRail = (
-    <>
-      {/* 0. IconBadge OI — centré, accent teal, 52px mobile / 64px desktop */}
-      <div className="mb-4 flex justify-center">
-        <div className="md:hidden">
-          <IconBadge glyph={oiGlyph} mode="lecture" boxed accent animate size={52} glyphSize={42} />
-        </div>
-        <div className="hidden md:block">
-          <IconBadge glyph={oiGlyph} mode="lecture" boxed accent animate size={64} glyphSize={52} />
-        </div>
-      </div>
-
-      {/* 1. ChipBar — 4 pills max */}
-      <ChipBar className="gap-1.5">
-        <MetaChip icon="school" label={niveau.label} mode={mode} />
-        <MetaChip icon="menu_book" label={discipline.label} mode={mode} />
-        {aspects ? (
-          <MetaChip icon="deployed_code" label={aspects.labels.join(" · ")} mode={mode} />
-        ) : null}
-        {chapitre ? <MetaChip icon="lightbulb" label={chapitre.racine} mode={mode} /> : null}
-        {chapitre?.periode ? (
-          <span className="inline-flex min-h-8 items-center gap-1 rounded-lg border-0 bg-panel-alt px-2.5 py-1 text-xs font-bold text-deep">
-            <PeriodeIcon />
-            {chapitre.periode}
-          </span>
-        ) : null}
-      </ChipBar>
-
-      {/* Gap 18px entre ChipBar et MetaRows */}
-      <div className="mt-[18px]">
-        {/* 2. MetaRow déroulante — Compétence disciplinaire */}
-        {competence && cdData ? (
-          <MetaRowExpandable icon="license" label={competence.racine} noBorderTop>
-            <SectionCD data={cdData} mode={mode} />
-          </MetaRowExpandable>
-        ) : null}
-
-        {/* 3. MetaRow déroulante — Connaissances mobilisées */}
-        {connaissances && connData ? (
-          <MetaRowExpandable
-            icon="lightbulb"
-            label={connaissances.terminal}
-            noBorderTop={!competence}
-          >
-            <SectionConnaissances data={connData} mode={mode} />
-          </MetaRowExpandable>
-        ) : null}
-
-        {/* 4. MetaRow — Documents count */}
-        {docsCompte ? (
-          <MetaRowSimple
-            icon="article"
-            label={docsCompte.texte}
-            noBorderTop={!competence && !connaissances}
-          />
-        ) : null}
-
-        {/* 5. MetaRow — Auteur (lien vers profil si id disponible) */}
-        <div className="flex items-center gap-1.5 border-t-[0.5px] border-border py-2.75 text-xs text-deep">
-          <span className="material-symbols-outlined text-[14px] text-accent" aria-hidden="true">
-            person
-          </span>
-          {auteur.id ? (
-            <Link
-              href={`/profile/${auteur.id}`}
-              className="font-medium text-accent hover:underline"
-            >
-              {auteur.nom}
-            </Link>
-          ) : (
-            <span className="font-medium">{auteur.nom}</span>
-          )}
-        </div>
-
-        {/* 6. MetaRow — Date de création */}
-        <MetaRowSimple
-          icon="calendar_today"
-          label={`${FICHE_RAIL_DATE_CREATION} ${formatDateFrCaMedium(dates.creation)}`}
-        />
-
-        {/* 7. MetaRow — Date de mise à jour */}
-        <MetaRowSimple
-          icon="history"
-          label={`${FICHE_RAIL_DATE_MAJ} ${formatDateFrCaMedium(dates.miseAJour)}`}
-        />
-      </div>
-
-      {/* 8. Footer — badge statut, séparé par divider */}
-      <div className="mt-3 border-t-[0.5px] border-border pt-3">
-        <StatusBadge label={statutLabel} variant={statutVariant} />
-      </div>
-    </>
-  );
-
   return (
-    <>
-      {/* ── Mobile <768px : accordéon replié par défaut ────────── */}
-      <aside
-        role="complementary"
-        className="rounded-xl border-[0.5px] border-border bg-panel print:hidden md:hidden"
-      >
-        <div
-          role="button"
-          tabIndex={0}
-          aria-expanded={accordeonOuvert}
-          aria-controls={accordeonContenuId}
-          onClick={() => setAccordeonOuvert((v) => !v)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              setAccordeonOuvert((v) => !v);
-            }
-          }}
-          className="flex w-full cursor-pointer items-center justify-between px-4 py-3 text-xs font-semibold text-deep"
-        >
-          {FICHE_RAIL_ACCORDEON_LABEL}
-          <span
-            className="material-symbols-outlined text-[18px] text-muted transition-transform duration-200"
-            style={accordeonOuvert ? { transform: "rotate(180deg)" } : undefined}
-            aria-hidden="true"
-          >
-            expand_more
-          </span>
+    <RailLayout>
+      {/* IconBadge OI — ancre visuelle non négociable */}
+      <SectionRail titre="Opération intellectuelle" estPremiere>
+        <div className="flex justify-center">
+          <IconBadge glyph={oiGlyph} mode={mode} boxed accent animate size={64} glyphSize={52} />
         </div>
-        {accordeonOuvert ? (
-          <div id={accordeonContenuId} className="px-4 pb-4">
-            {contenuRail}
-          </div>
-        ) : null}
-      </aside>
+      </SectionRail>
 
-      {/* ── Tablet 768-1023px : pleine largeur, non sticky ────── */}
-      <aside
-        role="complementary"
-        className="hidden rounded-xl border-[0.5px] border-border bg-panel p-4 print:hidden md:block lg:hidden"
-      >
-        {contenuRail}
-      </aside>
+      {/* Paramètres — niveau, discipline, aspects */}
+      <SectionRail titre="Paramètres">
+        <ChipBar>
+          <MetaChip icon="school" label={niveau.label} mode={mode} />
+          <MetaChip icon="menu_book" label={discipline.label} mode={mode} />
+          {aspects &&
+            aspects.labels.map((label) => (
+              <MetaChip key={label} icon="public" label={label} mode={mode} />
+            ))}
+        </ChipBar>
+      </SectionRail>
 
-      {/* ── Desktop ≥1024px : sticky 280px ────────────────────── */}
-      <aside
-        role="complementary"
-        className="sticky top-17 hidden h-fit w-70 rounded-xl border-[0.5px] border-border bg-panel p-4 print:hidden lg:block"
-      >
-        {contenuRail}
-      </aside>
-    </>
+      {/* Outil d'évaluation */}
+      {tae.outilEvaluation && (
+        <SectionRail titre="Outil d'évaluation">
+          <MetaRowSimple icon="table" label={tae.outilEvaluation} noBorderTop />
+        </SectionRail>
+      )}
+
+      {/* Compétence disciplinaire — arbre toujours visible */}
+      {competence && cdData && (
+        <SectionRail titre="Compétence disciplinaire">
+          <SectionCD data={cdData} mode={mode} />
+        </SectionRail>
+      )}
+
+      {/* Connaissances — arbre toujours visible */}
+      {connaissances && connData && (
+        <SectionRail titre="Connaissances">
+          <SectionConnaissances data={connData} mode={mode} />
+        </SectionRail>
+      )}
+
+      {/* Nombre de documents */}
+      {docsCompte && (
+        <SectionRail titre="Documents">
+          <MetaRowSimple icon="article" label={docsCompte.texte} noBorderTop />
+        </SectionRail>
+      )}
+
+      {/* Auteur */}
+      <SectionRail titre="Auteur">
+        <div className="space-y-1">
+          {auteur.id ? (
+            <div className="flex items-center gap-1.5 text-xs text-deep">
+              <span
+                className="material-symbols-outlined text-[14px] text-accent"
+                aria-hidden="true"
+              >
+                person
+              </span>
+              <Link
+                href={`/profile/${auteur.id}`}
+                className="font-medium text-accent hover:underline"
+              >
+                {auteur.nom}
+              </Link>
+            </div>
+          ) : (
+            <MetaRowSimple icon="person" label={auteur.nom} noBorderTop />
+          )}
+          <MetaRowSimple
+            icon="calendar_today"
+            label={`${FICHE_RAIL_DATE_CREATION} ${formatDateFrCaMedium(dates.creation)}`}
+            noBorderTop
+          />
+          <MetaRowSimple
+            icon="history"
+            label={`${FICHE_RAIL_DATE_MAJ} ${formatDateFrCaMedium(dates.miseAJour)}`}
+            noBorderTop
+          />
+        </div>
+      </SectionRail>
+
+      {/* Statut */}
+      <SectionRail titre="Statut">
+        <StatusBadge
+          label={
+            statut.statut === "publiee" ? FICHE_RAIL_STATUT_PUBLIEE : FICHE_RAIL_STATUT_BROUILLON
+          }
+          variant={statut.statut === "publiee" ? "published" : "draft"}
+        />
+      </SectionRail>
+    </RailLayout>
   );
 }

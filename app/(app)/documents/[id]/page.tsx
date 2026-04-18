@@ -1,12 +1,10 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DocumentBankCompletionCard } from "@/components/documents/DocumentBankCompletionCard";
-import { DocumentFicheLecture } from "@/components/documents/DocumentFicheLecture";
-import { DocumentFicheRetourLink } from "@/components/documents/DocumentFicheRetourLink";
+import { DocumentVueDetaillee } from "@/components/document/vue-detaillee";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
 import { createClient } from "@/lib/supabase/server";
 import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
-import { DOCUMENT_FICHE_EDIT, copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
+import { copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -31,8 +29,8 @@ export default async function DocumentReadPage({ params }: PageProps) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  const isAuthor = user?.id === doc.auteur_id;
-  const showBankCompletion = isAuthor && doc.is_published === false;
+  const estAuteur = user?.id === doc.auteur_id;
+  const showBankCompletion = estAuteur && doc.is_published === false;
 
   const niveauIds = doc.niveaux_ids ?? [];
   const discIds = doc.disciplines_ids ?? [];
@@ -74,30 +72,21 @@ export default async function DocumentReadPage({ params }: PageProps) {
   const sourceCitation = firstEl?.source ?? "";
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 md:px-6">
-      <div className="mb-4 flex flex-wrap items-center gap-4">
-        <DocumentFicheRetourLink />
-        {isAuthor ? (
-          <Link
-            href={`/documents/${id}/edit`}
-            className="text-sm font-semibold text-accent underline-offset-2 hover:underline"
-          >
-            {DOCUMENT_FICHE_EDIT}
-          </Link>
-        ) : null}
-      </div>
-      {showBankCompletion ? (
-        <DocumentBankCompletionCard
-          documentId={doc.id}
-          initialRepere={typeof doc.repere_temporel === "string" ? doc.repere_temporel : ""}
-          initialAnnee={
-            typeof doc.annee_normalisee === "number" && Number.isFinite(doc.annee_normalisee)
-              ? Math.trunc(doc.annee_normalisee)
-              : null
-          }
-        />
-      ) : null}
-      <DocumentFicheLecture
+    <>
+      {showBankCompletion && (
+        <div className="mx-auto max-w-6xl px-6 pt-4">
+          <DocumentBankCompletionCard
+            documentId={doc.id}
+            initialRepere={typeof doc.repere_temporel === "string" ? doc.repere_temporel : ""}
+            initialAnnee={
+              typeof doc.annee_normalisee === "number" && Number.isFinite(doc.annee_normalisee)
+                ? Math.trunc(doc.annee_normalisee)
+                : null
+            }
+          />
+        </div>
+      )}
+      <DocumentVueDetaillee
         data={{
           document: rendererDoc,
           sourceType,
@@ -111,7 +100,8 @@ export default async function DocumentReadPage({ params }: PageProps) {
           usageCaption: copyDocumentPublishedTaeUsageCount(usageCount),
           isPublished: doc.is_published ?? false,
         }}
+        estAuteur={estAuteur}
       />
-    </div>
+    </>
   );
 }
