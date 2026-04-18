@@ -1,6 +1,7 @@
-# Audit complet — Carrousel aperçu PNG
+# Audit complet — Carrousel aperçu PNG (archivé 2026-04-17)
 
 > Date : 17 avril 2026
+> Clôturé : 17 avril 2026 — tous les bugs corrigés (lots 5 + 6)
 > Périmètre : `CarrouselApercu`, hook `useApercuPng`, pipeline PNG (token-draft → Puppeteer → base64), API routes impression, `PrintPreviewModal`
 
 ---
