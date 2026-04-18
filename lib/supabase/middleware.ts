@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 /**
  * Rafraîchit la session Supabase (cookies) et retourne l’utilisateur courant.
- * Utilisé par `middleware.ts` à la racine.
+ * Utilisé par `proxy.ts` à la racine.
  */
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({

@@ -30,8 +30,12 @@ export async function GET(request: NextRequest) {
 
   if (query.trim()) {
     // Recherche combinée — ilike sur les champs texte du profil
-    const term = `%${query.trim()}%`;
-    q = q.or(`first_name.ilike.${term},last_name.ilike.${term},email.ilike.${term}`);
+    // Échapper les caractères spéciaux PostgREST pour éviter l'injection de filtre
+    const sanitized = query.trim().replace(/[,%().*\\]/g, "");
+    if (sanitized.length > 0) {
+      const term = `%${sanitized}%`;
+      q = q.or(`first_name.ilike.${term},last_name.ilike.${term},email.ilike.${term}`);
+    }
   }
 
   const {

@@ -13,6 +13,7 @@
 Un seul système de layout pour les trois entités. Le Document est l'unité atomique. La Tâche compose des Documents. L'Épreuve compose des Tâches. Le design est fractal : chaque niveau **délègue** vers le bas sans re-rendre (INV-R2).
 
 Les trois vues partagent :
+
 - La **nav bar** (barre d'actions)
 - Le **header** (titre + statut)
 - Les **onglets** (Sommaire / Aperçu de l'imprimé)
@@ -87,11 +88,11 @@ hooks/partagees/use-retour-contextuel.ts                 → useRetourContextuel
 
 ```tsx
 interface VueDetailleeLayoutProps {
-  layout: 'sidebar' | 'stacked';
+  layout: "sidebar" | "stacked";
   barreActions: ReactNode;
   header: ReactNode;
-  ongletActif: 'sommaire' | 'apercu-imprime';
-  surChangerOnglet: (onglet: 'sommaire' | 'apercu-imprime') => void;
+  ongletActif: "sommaire" | "apercu-imprime";
+  surChangerOnglet: (onglet: "sommaire" | "apercu-imprime") => void;
   contenuPrincipal: ReactNode;
   rail: ReactNode;
 }
@@ -116,12 +117,12 @@ interface VueDetailleeLayoutProps {
 
 ### Comportement selon `layout`
 
-| Prop | `'sidebar'` (page complète) | `'stacked'` (panneau / wizard) |
-|------|----------------------------|-------------------------------|
-| Grid | `grid-template-columns: minmax(0, 1fr) 300px` | `grid-template-columns: 1fr` |
-| Rail | Colonne droite, `position: sticky; top: var(--topbar-height)` | Empilé sous le contenu principal |
-| Gap | `gap: var(--space-5)` (32px) | `gap: var(--space-4)` (24px) |
-| Breakpoint | En dessous de `lg` → passe à `stacked` automatiquement | Toujours `stacked` |
+| Prop       | `'sidebar'` (page complète)                                   | `'stacked'` (panneau / wizard)   |
+| ---------- | ------------------------------------------------------------- | -------------------------------- |
+| Grid       | `grid-template-columns: minmax(0, 1fr) 300px`                 | `grid-template-columns: 1fr`     |
+| Rail       | Colonne droite, `position: sticky; top: var(--topbar-height)` | Empilé sous le contenu principal |
+| Gap        | `gap: var(--space-5)` (32px)                                  | `gap: var(--space-4)` (24px)     |
+| Breakpoint | En dessous de `lg` → passe à `stacked` automatiquement        | Toujours `stacked`               |
 
 ### Tokens CSS utilisés
 
@@ -142,7 +143,7 @@ interface VueDetailleeLayoutProps {
 interface BarreActionsProps {
   estAuteur: boolean;
   estEpinglee: boolean;
-  entite: 'document' | 'tache' | 'epreuve';
+  entite: "document" | "tache" | "epreuve";
   retour: { chemin: string; libelle: string };
   surModifier: () => void;
   surEpingler: () => void;
@@ -163,33 +164,33 @@ interface BarreActionsProps {
 
 **Propriétaire** (identique pour les 3 entités) :
 
-| Position | Action | Icône Material | Notes |
-|----------|--------|----------------|-------|
-| Utilitaire 1 | Copier le lien | `link` | Popover « Lien copié » pendant 1.8s |
-| Utilitaire 2 | Ouvrir visionneuse | `print` | Ouvre la `Visionneuse` plein écran |
-| Séparateur | — | — | `border-l border-border` hauteur 20px |
-| **Primaire** | **Modifier** | `edit_document` | Bouton plein `bg-accent text-white` |
-| Menu ⋯ | Supprimer | `delete` | `text-muted hover:text-error hover:bg-error/5` |
+| Position     | Action             | Icône Material  | Notes                                          |
+| ------------ | ------------------ | --------------- | ---------------------------------------------- |
+| Utilitaire 1 | Copier le lien     | `link`          | Popover « Lien copié » pendant 1.8s            |
+| Utilitaire 2 | Ouvrir visionneuse | `print`         | Ouvre la `Visionneuse` plein écran             |
+| Séparateur   | —                  | —               | `border-l border-border` hauteur 20px          |
+| **Primaire** | **Modifier**       | `edit_document` | Bouton plein `bg-accent text-white`            |
+| Menu ⋯       | Supprimer          | `delete`        | `text-muted hover:text-error hover:bg-error/5` |
 
 **Visiteur — Document et Épreuve** :
 
-| Position | Action | Icône Material | Notes |
-|----------|--------|----------------|-------|
-| Utilitaire 1 | Copier le lien | `link` | Popover « Lien copié » |
-| Utilitaire 2 | Ouvrir visionneuse | `print` | Ouvre la `Visionneuse` |
-| Séparateur | — | — | |
-| **Primaire** | **Épingler** | `push_pin` | Bouton plein `bg-accent` quand non épinglé |
-| **Primaire (épinglé)** | **Épinglé** | `push_pin` (rempli) | Bouton outline `border-accent text-accent bg-panel` |
+| Position               | Action             | Icône Material      | Notes                                               |
+| ---------------------- | ------------------ | ------------------- | --------------------------------------------------- |
+| Utilitaire 1           | Copier le lien     | `link`              | Popover « Lien copié »                              |
+| Utilitaire 2           | Ouvrir visionneuse | `print`             | Ouvre la `Visionneuse`                              |
+| Séparateur             | —                  | —                   |                                                     |
+| **Primaire**           | **Épingler**       | `push_pin`          | Bouton plein `bg-accent` quand non épinglé          |
+| **Primaire (épinglé)** | **Épinglé**        | `push_pin` (rempli) | Bouton outline `border-accent text-accent bg-panel` |
 
 **Visiteur — Tâche** :
 
-| Position | Action | Icône Material | Notes |
-|----------|--------|----------------|-------|
-| Utilitaire 1 | Copier le lien | `link` | |
-| Utilitaire 2 | Ouvrir visionneuse | `print` | |
-| Utilitaire 3 | Épingler | `push_pin` | Icône toggle (outline/rempli) |
-| Séparateur | — | — | |
-| **Primaire** | **Ajouter à une épreuve** | `playlist_add` | Bouton plein `bg-accent` |
+| Position     | Action                    | Icône Material | Notes                         |
+| ------------ | ------------------------- | -------------- | ----------------------------- |
+| Utilitaire 1 | Copier le lien            | `link`         |                               |
+| Utilitaire 2 | Ouvrir visionneuse        | `print`        |                               |
+| Utilitaire 3 | Épingler                  | `push_pin`     | Icône toggle (outline/rempli) |
+| Séparateur   | —                         | —              |                               |
+| **Primaire** | **Ajouter à une épreuve** | `playlist_add` | Bouton plein `bg-accent`      |
 
 ### Dimensions
 
@@ -245,16 +246,17 @@ interface BarreActionsProps {
 
 ### StatusBadge
 
-| Statut | Fond | Texte | Icône |
-|--------|------|-------|-------|
-| Publiée | `bg-success/15` | `text-success` | `check_circle` (rempli) |
-| Brouillon | `bg-warning/15` | `text-warning` | `construction` |
+| Statut    | Fond            | Texte          | Icône                   |
+| --------- | --------------- | -------------- | ----------------------- |
+| Publiée   | `bg-success/15` | `text-success` | `check_circle` (rempli) |
+| Brouillon | `bg-warning/15` | `text-warning` | `construction`          |
 
 Dimensions : `px-2.5 py-0.5 rounded-full text-xs font-medium`, pastille de couleur 6px devant le texte.
 
 ### LignéeSource (document uniquement)
 
 Visible quand `source_document_id IS NOT NULL`. Affiche :
+
 - Icône `link` en `text-muted`
 - « Cloné de **{auteur source}** » — nom cliquable en `text-accent` avec underline dotted
 - Badge « modifié » si `is_modified === true` : `bg-warning/15 text-warning rounded-full text-xs px-2`
@@ -287,6 +289,7 @@ Visible quand `source_document_id IS NOT NULL`. Affiche :
 Le rail est une **colonne structurelle**, pas une carte. Pas de fond distinct, pas de bordure autour du tout. Séparation avec le contenu principal via `border-l border-border`.
 
 Chaque section du rail :
+
 - Titre de section : `text-[10px] uppercase tracking-wider font-medium text-muted mb-1.5`
 - Séparateur entre sections : `border-b border-border/50 py-3`
 - Première section : `pt-0`
@@ -361,12 +364,14 @@ Même principe, avec label `repere_temporel` et `sous_titre` visibles par élém
 #### Indicateur de mode
 
 Sous le conteneur Sand :
+
 - Icône `info` en `text-muted` (14px)
 - Texte `text-[11px] text-muted` : « Aperçu de lecture. Voir l'onglet **Aperçu de l'imprimé** pour le rendu exact. »
 
 ### Contenu principal (onglet Aperçu de l'imprimé)
 
 Affiche le document avec son **anatomie canonique imprimée** :
+
 - Bloc numéro noir massif (30×30px, `bg-deep text-white font-bold text-lg`) collé au titre
 - Titre en Arial bold (`font-family: Arial, Helvetica, sans-serif`)
 - Cadre `border border-deep` sans radius
@@ -380,14 +385,14 @@ Note sous le document : « Le numéro **1** est provisoire. Il sera recalculé s
 
 ### DocumentRail
 
-| Section | Données | Composant |
-|---------|---------|-----------|
-| **Identité** | type, structure, catégorie (textuelle/iconographique), source_type | `MetaRowSimple` |
-| **Repère temporel** | `repere_temporel`, `annee_normalisee` | `MetaRowSimple` × 2 + note « N'apparaît jamais sur la copie de l'élève » |
-| **Indexation** | niveaux, discipline, aspects de société | `MetaChip` dans `ChipBar` — même style pour tous (primitives existantes, pas de couleur par aspect) |
-| **Connaissances** | Liste verticale des connaissances | Arbre toujours visible, même pattern que CD — pas de chevron |
-| **Utilisation** | « N tâches » avec lien « Voir » | Encadré `bg-panel-alt rounded-md` |
-| **Auteur** | Avatar initiales + nom + école + dates | `MetaRowSimple` |
+| Section             | Données                                                            | Composant                                                                                           |
+| ------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| **Identité**        | type, structure, catégorie (textuelle/iconographique), source_type | `MetaRowSimple`                                                                                     |
+| **Repère temporel** | `repere_temporel`, `annee_normalisee`                              | `MetaRowSimple` × 2 + note « N'apparaît jamais sur la copie de l'élève »                            |
+| **Indexation**      | niveaux, discipline, aspects de société                            | `MetaChip` dans `ChipBar` — même style pour tous (primitives existantes, pas de couleur par aspect) |
+| **Connaissances**   | Liste verticale des connaissances                                  | Arbre toujours visible, même pattern que CD — pas de chevron                                        |
+| **Utilisation**     | « N tâches » avec lien « Voir »                                    | Encadré `bg-panel-alt rounded-md`                                                                   |
+| **Auteur**          | Avatar initiales + nom + école + dates                             | `MetaRowSimple`                                                                                     |
 
 > **Aucune nouvelle primitive visuelle pour le rail.** Tous les badges utilisent les composants existants : `MetaChip`, `ChipBar`, `MetaRowSimple`, `IconBadge`, `StatusBadge`, `SectionCD`, `SectionConnaissances`. Même apparence partout — bordure `border-border`, fond `bg-panel`, icône Material en `text-accent`, texte en `text-deep`.
 
@@ -443,16 +448,16 @@ Documents référencés affichés comme **cartes cliquables** (pas le rendu impr
 
 ### TacheRail
 
-| Section | Données | Notes |
-|---------|---------|-------|
-| **IconBadge OI** | Glyphe OI grand format | **Non négociable.** 52px mobile, 64px desktop. Animation `icon-badge-in`. Ancre l'association visuelle OI ↔ icône. |
-| **Paramètres** | Niveau, discipline, aspects de société, réalité sociale, période | `MetaChip` dans `ChipBar` — primitives existantes, même style pour tous |
-| **Outil d'évaluation** | Nom de la grille + « N points » | `MetaRowSimple` |
-| **Compétence disciplinaire** | Arbre hiérarchique : compétence → composante → critère | Arbre toujours visible (pas de chevron dépliable). Indent progressif par niveau (`pl-3` par profondeur). Titre de section = label « Compétence disciplinaire », pas de dédoublement du premier nœud. Composant existant `SectionCD`. |
-| **Connaissances** | Arbre hiérarchique : chapitre → section → connaissance | Même pattern : arbre toujours visible, indent progressif, pas de chevron. Titre de section = label « Connaissances ». Composant existant `SectionConnaissances`. |
-| **Nombre de documents** | « N documents » | `MetaRowSimple` avec icône `article` |
-| **Auteur** | Avatar + nom + dates | `MetaRowSimple` |
-| **Statut** | Publiée / Brouillon | `StatusBadge` |
+| Section                      | Données                                                          | Notes                                                                                                                                                                                                                                |
+| ---------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **IconBadge OI**             | Glyphe OI grand format                                           | **Non négociable.** 52px mobile, 64px desktop. Animation `icon-badge-in`. Ancre l'association visuelle OI ↔ icône.                                                                                                                   |
+| **Paramètres**               | Niveau, discipline, aspects de société, réalité sociale, période | `MetaChip` dans `ChipBar` — primitives existantes, même style pour tous                                                                                                                                                              |
+| **Outil d'évaluation**       | Nom de la grille + « N points »                                  | `MetaRowSimple`                                                                                                                                                                                                                      |
+| **Compétence disciplinaire** | Arbre hiérarchique : compétence → composante → critère           | Arbre toujours visible (pas de chevron dépliable). Indent progressif par niveau (`pl-3` par profondeur). Titre de section = label « Compétence disciplinaire », pas de dédoublement du premier nœud. Composant existant `SectionCD`. |
+| **Connaissances**            | Arbre hiérarchique : chapitre → section → connaissance           | Même pattern : arbre toujours visible, indent progressif, pas de chevron. Titre de section = label « Connaissances ». Composant existant `SectionConnaissances`.                                                                     |
+| **Nombre de documents**      | « N documents »                                                  | `MetaRowSimple` avec icône `article`                                                                                                                                                                                                 |
+| **Auteur**                   | Avatar + nom + dates                                             | `MetaRowSimple`                                                                                                                                                                                                                      |
+| **Statut**                   | Publiée / Brouillon                                              | `StatusBadge`                                                                                                                                                                                                                        |
 
 ### Données non affichées en vue détaillée
 
@@ -466,13 +471,13 @@ Documents référencés affichés comme **cartes cliquables** (pas le rendu impr
 
 La table actuelle (8 colonnes) est insuffisante pour la vue détaillée. Colonnes à ajouter :
 
-| Champ | Type | Nullable | Notes |
-|-------|------|----------|-------|
-| `niveau_id` | INT | oui | FK → niveaux(id) |
-| `discipline_id` | INT | oui | FK → disciplines(id) |
-| `en_tete` | JSONB | oui | Contenu de l'en-tête (école, groupe, date, etc.) |
-| `pied_page` | TEXT | oui | Texte du pied de page |
-| `mode_impression` | TEXT | non (défaut `'sommatif-standard'`) | `'formatif'` / `'sommatif-standard'` / `'epreuve-ministerielle'` |
+| Champ             | Type  | Nullable                           | Notes                                                            |
+| ----------------- | ----- | ---------------------------------- | ---------------------------------------------------------------- |
+| `niveau_id`       | INT   | oui                                | FK → niveaux(id)                                                 |
+| `discipline_id`   | INT   | oui                                | FK → disciplines(id)                                             |
+| `en_tete`         | JSONB | oui                                | Contenu de l'en-tête (école, groupe, date, etc.)                 |
+| `pied_page`       | TEXT  | oui                                | Texte du pied de page                                            |
+| `mode_impression` | TEXT  | non (défaut `'sommatif-standard'`) | `'formatif'` / `'sommatif-standard'` / `'epreuve-ministerielle'` |
 
 ### Contenu principal (onglet Sommaire)
 
@@ -515,15 +520,15 @@ interface TacheMiniatureEpreuveProps {
 
 #### Structure
 
-| Zone | Contenu | Style |
-|------|---------|-------|
-| **Numéro (slot fixe)** | Chiffre du rang | `text-xl font-medium text-muted` — largeur fixe 36px |
-| **Consigne** | Tronquée à 2 lignes (80 chars) | `text-xs text-deep leading-relaxed`, `-webkit-line-clamp: 2` |
-| **OI** | Titre de l'OI | `MetaChip` — style standard (même que partout ailleurs) |
-| **Comportement** | Énoncé du comportement | `MetaChip` — style standard |
-| **Connaissance** | Dernier niveau du breadcrumb seulement | `MetaChip` — style standard |
-| **Footer** | Nb documents · nom auteur | `text-[10px] text-muted`, aligné à gauche |
-| **Points** | Max points de la grille | `text-[10px] font-medium text-deep`, aligné à droite |
+| Zone                   | Contenu                                | Style                                                        |
+| ---------------------- | -------------------------------------- | ------------------------------------------------------------ |
+| **Numéro (slot fixe)** | Chiffre du rang                        | `text-xl font-medium text-muted` — largeur fixe 36px         |
+| **Consigne**           | Tronquée à 2 lignes (80 chars)         | `text-xs text-deep leading-relaxed`, `-webkit-line-clamp: 2` |
+| **OI**                 | Titre de l'OI                          | `MetaChip` — style standard (même que partout ailleurs)      |
+| **Comportement**       | Énoncé du comportement                 | `MetaChip` — style standard                                  |
+| **Connaissance**       | Dernier niveau du breadcrumb seulement | `MetaChip` — style standard                                  |
+| **Footer**             | Nb documents · nom auteur              | `text-[10px] text-muted`, aligné à gauche                    |
+| **Points**             | Max points de la grille                | `text-[10px] font-medium text-deep`, aligné à droite         |
 
 #### Interactions
 
@@ -533,14 +538,14 @@ interface TacheMiniatureEpreuveProps {
 
 ### EpreuveRail
 
-| Section | Données | Notes |
-|---------|---------|-------|
-| **Compteurs** | Nombre de tâches + total de points | Deux blocs en grid 2 colonnes, fond `bg-panel-alt rounded-md p-2.5`. Points en `text-xl font-medium`. Sous les blocs : « N documents au total » en `text-[11px] text-steel`. |
-| **Impression** | `mode_impression` label + description feuillets | `MetaRowSimple` |
-| **En-tête** | Contenu de `en_tete` (école, groupe, etc.) | `text-[11px] text-deep leading-relaxed` |
-| **Indexation** | Niveau (chip), discipline, aspects de société | `MetaChip` dans `ChipBar` |
-| **Auteur** | Avatar + nom + dates | `MetaRowSimple` |
-| **Statut** | Publiée / Brouillon | `StatusBadge` |
+| Section        | Données                                         | Notes                                                                                                                                                                        |
+| -------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Compteurs**  | Nombre de tâches + total de points              | Deux blocs en grid 2 colonnes, fond `bg-panel-alt rounded-md p-2.5`. Points en `text-xl font-medium`. Sous les blocs : « N documents au total » en `text-[11px] text-steel`. |
+| **Impression** | `mode_impression` label + description feuillets | `MetaRowSimple`                                                                                                                                                              |
+| **En-tête**    | Contenu de `en_tete` (école, groupe, etc.)      | `text-[11px] text-deep leading-relaxed`                                                                                                                                      |
+| **Indexation** | Niveau (chip), discipline, aspects de société   | `MetaChip` dans `ChipBar`                                                                                                                                                    |
+| **Auteur**     | Avatar + nom + dates                            | `MetaRowSimple`                                                                                                                                                              |
+| **Statut**     | Publiée / Brouillon                             | `StatusBadge`                                                                                                                                                                |
 
 ### Calcul du total de points
 
@@ -612,11 +617,11 @@ En `layout="stacked"`, la vue détaillée empile tout verticalement : header →
 
 ### Contenu par entité
 
-| Entité | Nombre de feuillets | Contenu |
-|--------|---------------------|---------|
-| Document | 1 | Rendu imprimé canonique (bloc noir + cadre) |
-| Tâche | 1-2 selon variante | Feuillet(s) via `ApercuImpression` |
-| Épreuve | 1-3 selon `mode_impression` | Feuillets via `ApercuImpression` (dossier doc / questionnaire / cahier réponses) |
+| Entité   | Nombre de feuillets         | Contenu                                                                          |
+| -------- | --------------------------- | -------------------------------------------------------------------------------- |
+| Document | 1                           | Rendu imprimé canonique (bloc noir + cadre)                                      |
+| Tâche    | 1-2 selon variante          | Feuillet(s) via `ApercuImpression`                                               |
+| Épreuve  | 1-3 selon `mode_impression` | Feuillets via `ApercuImpression` (dossier doc / questionnaire / cahier réponses) |
 
 ### Dépendance
 
@@ -640,14 +645,14 @@ Le rendu utilise le même pipeline `ApercuImpression` que la visionneuse — seu
 
 ## 14. Invariants respectés
 
-| Invariant | Comment il est respecté |
-|-----------|------------------------|
-| **INV-R1** | Tout rendu de document passe par `DocumentCard` / `DocumentElementRenderer` — y compris dans `SectionDocuments` de la tâche |
+| Invariant  | Comment il est respecté                                                                                                                                     |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **INV-R1** | Tout rendu de document passe par `DocumentCard` / `DocumentElementRenderer` — y compris dans `SectionDocuments` de la tâche                                 |
 | **INV-R2** | Les renderers d'épreuve et de tâche délèguent. `SectionPileTaches` utilise `TacheMiniatureEpreuve` qui consomme `DonneesTache` sans re-rendre les documents |
-| **INV-R4** | Le sommaire du wizard et la vue détaillée utilisent le même composant (`DocumentVueDetaillee` / `TacheVueDetaillee`) avec `layout` différent |
-| **INV-R5** | L'aperçu imprimé utilise le même pipeline `ApercuImpression` partout (zone centrale, visionneuse, wizard preview, export PDF) |
-| **INV-S2** | Un seul composant par entité pour la vue détaillée, paramétré par `layout` |
-| **INV-S4** | Les numéros dans la pile de tâches et dans le rendu imprimé sont dérivés du rang, jamais stockés |
+| **INV-R4** | Le sommaire du wizard et la vue détaillée utilisent le même composant (`DocumentVueDetaillee` / `TacheVueDetaillee`) avec `layout` différent                |
+| **INV-R5** | L'aperçu imprimé utilise le même pipeline `ApercuImpression` partout (zone centrale, visionneuse, wizard preview, export PDF)                               |
+| **INV-S2** | Un seul composant par entité pour la vue détaillée, paramétré par `layout`                                                                                  |
+| **INV-S4** | Les numéros dans la pile de tâches et dans le rendu imprimé sont dérivés du rang, jamais stockés                                                            |
 
 ---
 
