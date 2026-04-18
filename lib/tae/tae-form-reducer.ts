@@ -5,15 +5,7 @@ import {
   type NiveauCode,
 } from "@/lib/tae/blueprint-helpers";
 import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
-import {
-  emptyMoments,
-  emptyPerspectives,
-  migrateMomentsToSlots,
-  migratePerspectivesToSlots,
-  migrateSlotsToMoments,
-  migrateSlotsToPerpsectives,
-} from "@/lib/tae/oi-perspectives/perspectives-helpers";
-import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
+import { handlePerspectivesModeWithMigration } from "@/lib/tae/reducer-perspectives";
 import { initialCdFormSlice, sanitizeCdFormSlice } from "@/lib/tae/cd-helpers";
 import { sanitizeConnaissances } from "@/lib/tae/connaissances-helpers";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
@@ -466,89 +458,8 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
         bloc5: { ...state.bloc5, intrus: { ...prev, pointCommun: action.value } },
       };
     }
-    case "SET_PERSPECTIVES_MODE_WITH_MIGRATION": {
-      const prev = state.bloc3.perspectivesMode;
-      const next = action.value;
-      if (prev === next) return state;
-
-      const cfg = getWizardBlocConfig(state.bloc2.comportementId);
-      const isMoments = cfg?.bloc4.type === "moments";
-      const emptyBloc4 = {
-        documents: {},
-        perspectives: null,
-        perspectivesTitre: "",
-        moments: null,
-        momentsTitre: "",
-      };
-
-      if (isMoments) {
-        // OI6 — moments
-        if (prev === "groupe" && next === "separe") {
-          const migratedDocs = state.bloc4.moments
-            ? migrateMomentsToSlots(state.bloc4.moments)
-            : {};
-          return {
-            ...state,
-            bloc3: { ...state.bloc3, perspectivesMode: next },
-            bloc4: { ...emptyBloc4, documents: migratedDocs },
-          };
-        }
-        if (prev === "separe" && next === "groupe") {
-          const migratedMom = migrateSlotsToMoments(state.bloc4.documents, 2);
-          return {
-            ...state,
-            bloc3: { ...state.bloc3, perspectivesMode: next },
-            bloc4: { ...emptyBloc4, moments: migratedMom, momentsTitre: state.bloc4.momentsTitre },
-          };
-        }
-        // Premier choix
-        return {
-          ...state,
-          bloc3: { ...state.bloc3, perspectivesMode: next },
-          bloc4:
-            next === "groupe"
-              ? { ...emptyBloc4, moments: emptyMoments(2), momentsTitre: state.bloc4.momentsTitre }
-              : emptyBloc4,
-        };
-      }
-
-      // OI3 — perspectives
-      if (prev === "groupe" && next === "separe") {
-        const migratedDocs = state.bloc4.perspectives
-          ? migratePerspectivesToSlots(state.bloc4.perspectives)
-          : {};
-        return {
-          ...state,
-          bloc3: { ...state.bloc3, perspectivesMode: next },
-          bloc4: { ...emptyBloc4, documents: migratedDocs },
-        };
-      }
-      if (prev === "separe" && next === "groupe") {
-        const migratedPersp = migrateSlotsToPerpsectives(state.bloc4.documents, action.count);
-        return {
-          ...state,
-          bloc3: { ...state.bloc3, perspectivesMode: next },
-          bloc4: {
-            ...emptyBloc4,
-            perspectives: migratedPersp,
-            perspectivesTitre: state.bloc4.perspectivesTitre,
-          },
-        };
-      }
-      // Premier choix
-      return {
-        ...state,
-        bloc3: { ...state.bloc3, perspectivesMode: next },
-        bloc4:
-          next === "groupe"
-            ? {
-                ...emptyBloc4,
-                perspectives: emptyPerspectives(action.count),
-                perspectivesTitre: state.bloc4.perspectivesTitre,
-              }
-            : emptyBloc4,
-      };
-    }
+    case "SET_PERSPECTIVES_MODE_WITH_MIGRATION":
+      return handlePerspectivesModeWithMigration(state, action);
     default:
       return state;
   }
