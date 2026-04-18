@@ -166,6 +166,13 @@ export function useApercuPng(
       const controller = new AbortController();
       abortRef.current = controller;
 
+      // Correctif 8 — Timeout PNG 45s (Puppeteer côté API = 30s + marge réseau)
+      let estTimeout = false;
+      const timeout = setTimeout(() => {
+        estTimeout = true;
+        controller.abort();
+      }, 45_000);
+
       setEtat({ statut: "chargement" });
       try {
         const token = await obtenirTokenRef.current(controller.signal);
@@ -204,11 +211,21 @@ export function useApercuPng(
           pagesParFeuillet,
         });
       } catch (err) {
-        // Correctif 1 — Silence sur abort volontaire
-        if (err instanceof DOMException && err.name === "AbortError") return;
+        if (err instanceof DOMException && err.name === "AbortError") {
+          if (estTimeout) {
+            // Correctif 8 — Timeout atteint, afficher l'erreur
+            setEtat({
+              statut: "erreur",
+              message: "La génération a pris trop de temps. Réessayez.",
+            });
+          }
+          // Abort volontaire (démontage, nouveau generer()) — silence
+          return;
+        }
         const message = err instanceof Error ? err.message : "Erreur inconnue.";
         setEtat({ statut: "erreur", message });
       } finally {
+        clearTimeout(timeout);
         if (abortRef.current === controller) abortRef.current = null;
         estEnCoursRef.current = false;
       }
