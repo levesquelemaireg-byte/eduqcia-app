@@ -1,10 +1,27 @@
 # Audit de l’application ÉduQc.IA (archivé 2026-04-18)
 
 > Date : 17 avril 2026
-> Clôturé : 18 avril 2026 — remédiation complétée en 9 lots
+> Clôturé : 18 avril 2026 — remédiation complétée en 10 lots
 > Source : audit externe (ChatGPT o3, 17 avril 2026)
 > Périmètre : sécurité, robustesse, performance, scalabilité, architecture, impression
 > Limitations résiduelles documentées : `lib/epreuve/PRINT-ENGINE-LIMITATIONS.md`
+
+---
+
+## Statut final de clôture (lot 10)
+
+- Critiques sécurité : **fermées** (XSS sinks impression, open redirect callback, dépendances vulnérables).
+- Critiques impression : **fermées** (placeholder 200 retiré, mesure heuristique partagée, clipping destructif retiré).
+- Critiques UX banque : **fermées** (pagination iconographique corrigée, total cohérent).
+- Qualité locale : **verte** (`format:check`, `lint`, `test`, `build`, `npm run ci` passés).
+
+### Points non bloquants reclassés en suivi continu
+
+- Durcissement CSP avancé (nonce/strict-dynamic) : suivi sécurité applicative.
+- Optimisation SQL des compteurs collaborateurs : suivi performance/scalabilité.
+- Observabilité impression (latence structurée, saturation) : suivi exploitation.
+
+Ces points ne bloquent plus la clôture de l'audit critique et sont gérés comme dette pilotée.
 
 ---
 

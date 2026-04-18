@@ -1,6 +1,6 @@
 # Domaine métier et produit
 
-Règles métier des **tâches d’apprentissage et d’évaluation**, banque, votes, **épreuves** (composition, table `evaluations`), export. Normatif pour validation serveur, fiche, banque et PDF. Compléments : [WORKFLOWS.md](./WORKFLOWS.md) (wizard, stepper, blocs), [ARCHITECTURE.md](./ARCHITECTURE.md) (schéma, RPC), [DECISIONS.md](./DECISIONS.md) (copy), [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) (UI).
+Règles métier des **tâches**, banque, votes, **épreuves** (composition, table `evaluations`), export. Normatif pour validation serveur, fiche, banque et PDF. Compléments : [WORKFLOWS.md](./WORKFLOWS.md) (wizard, stepper, blocs), [ARCHITECTURE.md](./ARCHITECTURE.md) (schéma, RPC), [DECISIONS.md](./DECISIONS.md) (copy), [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md) (UI).
 
 **Données statiques (Next.js) :** `public/data/` — `oi.json`, `hec-cd.json`, `hqc-cd.json`, `hec-sec1-2.json`, `hqc-sec3-4.json`, `css-ecoles.json`, grilles HTML JSON référencées par les comportements.
 
@@ -10,9 +10,9 @@ Règles métier des **tâches d’apprentissage et d’évaluation**, banque, vo
 
 ## 1. Concept fondamental — La TAÉ
 
-Une **Tâche d'apprentissage et d'évaluation (TAÉ)** est une consigne rédactionnelle structurée destinée aux élèves du secondaire en univers social (sec. 1–4). Elle est alignée sur les programmes ministériels québécois (PFEQ).
+Une **tâche** est une consigne rédactionnelle structurée destinée aux élèves du secondaire en univers social (sec. 1–4). Elle est alignée sur les programmes ministériels québécois (PFEQ).
 
-Une TAÉ est composée de :
+Une tâche est composée de :
 
 - Une **opération intellectuelle (OI)** — l'action cognitive demandée à l'élève
 - Un **comportement attendu** — la forme précise de la réponse

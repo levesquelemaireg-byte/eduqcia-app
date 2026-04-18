@@ -85,9 +85,26 @@ export async function genererPdf(url: string): Promise<Buffer> {
     await page.goto(url, { waitUntil: "networkidle0" });
     await executerPreflight(page);
 
+    // PDF: neutraliser les marges CSS @page pour eviter un double comptage
+    // (marges @page + padding interne 2cm de .page).
+    await page.addStyleTag({
+      content: `
+        @page {
+          size: letter portrait;
+          margin: 0 !important;
+        }
+        html,
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      `,
+    });
+
     const pdf = await page.pdf({
       format: "Letter",
       margin: { top: "0", right: "0", bottom: "0", left: "0" },
+      preferCSSPageSize: false,
       printBackground: true,
     });
 

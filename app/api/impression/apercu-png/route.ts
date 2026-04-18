@@ -15,6 +15,7 @@ import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { RenduImprimable } from "@/lib/impression/types";
+import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 
 /**
  * POST /api/impression/apercu-png — print-engine D5.
@@ -34,11 +35,6 @@ const PUPPETEER_TIMEOUT_MS = 30_000;
 const BodySchema = z.object({
   token: z.string().min(1),
 });
-
-/** Mesureur placeholder — cohérent avec la route SSR. */
-function mesureurPlaceholder(): number {
-  return 200;
-}
 
 /* -------------------------------------------------------------------------- */
 /*  Extraction KV — aligné sur la route SSR apercu/[token]/page.tsx          */
@@ -93,20 +89,20 @@ function extraireDonneesKv(raw: unknown): DraftKvTyped {
 function construireRendu(data: DraftKvTyped): RenduImprimable {
   switch (data.type) {
     case "document":
-      return documentVersImprimable(data.payload, mesureurPlaceholder);
+      return documentVersImprimable(data.payload, mesurerBlocImpression);
 
     case "tache":
       return tacheVersImprimable(
         data.payload,
         { mode: data.mode, estCorrige: data.estCorrige },
-        mesureurPlaceholder,
+        mesurerBlocImpression,
       );
 
     case "epreuve":
       return epreuveVersImprimable(
         data.payload,
         { mode: data.mode, estCorrige: data.estCorrige },
-        mesureurPlaceholder,
+        mesurerBlocImpression,
       );
   }
 }

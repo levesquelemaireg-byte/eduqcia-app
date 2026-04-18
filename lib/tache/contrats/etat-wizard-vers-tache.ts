@@ -182,6 +182,16 @@ function construireDocuments(state: TaeFormState): RendererDocument[] {
   return state.bloc2.documentSlots.map(({ slotId }) => {
     const slot = getSlotData(state.bloc4.documents, slotId);
 
+    // Chemin canonique : le slot transporte deja un RendererDocument complet.
+    if (slot.rendererDocument) {
+      return slot.rendererDocument;
+    }
+
+    // Fallback defensif : reconstruction legacy depuis les champs du slot.
+    if (slot.mode !== "idle") {
+      console.warn(`[construireDocuments] Slot ${slotId} sans rendererDocument - fallback`);
+    }
+
     const baseElement = {
       id: slotId,
       source: slot.source_citation || "",

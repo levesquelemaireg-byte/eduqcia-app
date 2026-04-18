@@ -11,7 +11,7 @@ import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
 type Props = { data: DocumentsData; mode: FicheMode };
 
 /** Documents historiques — rendus via le composant canonique DocumentCard. */
-export function SectionDocuments({ data, mode }: Props) {
+export function SectionDocuments({ data, mode: _mode }: Props) {
   const title = ficheDocumentsSectionTitle(data.documents.length);
 
   return (

@@ -1,73 +1,57 @@
 # Print Engine — Limitations connues et plan de convergence
 
-> Document technique interne. Derniere mise a jour : 2026-04-18 (audit securite lot 9).
+> Document technique interne. Derniere mise a jour : 2026-04-18 (audit securite lot 10).
 
-## 1. Pagination sur hauteur fictive (Critique)
+## 1. Pagination heuristique (Surveillance active)
 
-### Probleme
+### Etat actuel
 
-`mesureurPlaceholder()` (hooks/epreuve/use-apercu-png.ts, app/(apercu)/apercu/[token]/page.tsx)
-retourne **200px** pour tout bloc, quelle que soit sa taille reelle. Le pager
-(`lib/epreuve/pagination/pager.ts`) utilise cette valeur pour decider combien de
-blocs entrent sur une page de 825px utiles (Letter portrait @ 96 DPI).
+Le placeholder fixe **200px** a ete retire. La pagination utilise maintenant
+`mesurerBlocImpression` (`lib/impression/mesure-estimation.ts`) sur les 3 flux :
 
-Si un bloc depasse 200px (ex. document iconographique avec legende, consigne longue),
-il est place sur une page ou il ne tient pas physiquement. `section-page.tsx` applique
-`overflow: hidden` + `max-height: 825px`, ce qui **tronque silencieusement le contenu**.
+- route SSR `/apercu/[token]`
+- API `/api/impression/apercu-png`
+- hook client `useApercuPng`
+
+Le clipping destructif a aussi ete retire dans `SectionPage`
+(`overflow: visible` au wrapper page et au conteneur de contenu).
+
+### Limitation residuelle
+
+La mesure reste **heuristique** (pas une mesure DOM reelle du rendu final).
+Donc il peut subsister des ecarts marginaux sur des cas extremes :
+
+- contenu HTML tres dense
+- images atypiques avec metadonnees partielles
+- grilles tres verboses sur plusieurs criteres
 
 ### Impact
 
-- Contenu manquant en PDF/PNG (non visible par l'enseignant avant impression)
-- Risque plus eleve sur les epreuves multi-taches avec documents iconographiques
+- Le risque de troncature silencieuse est fortement reduit.
+- Le systeme peut sur-estimer certains blocs (plus de pages), ce qui est un
+  compromis volontaire pour privilegier l'integrite du contenu.
 
-### Pourquoi c'est difficile a corriger
+### Plan de convergence
 
-La pagination se fait **avant** le rendu Puppeteer (cote client ou cote serveur SSR).
-Pour mesurer la hauteur reelle de chaque bloc, il faudrait :
-
-1. **Double passage Puppeteer** : un premier rendu pour mesurer, un second pour paginer
-   correctement. Cout en temps double (~50s au lieu de ~25s), consommation memoire doublee.
-2. **Pre-rendu CSS-only** : creer un conteneur invisible dans le DOM SSR pour mesurer
-   chaque bloc avant pagination. Complexe et fragile (polices, images non chargees).
-3. **Heuristiques ameliorees** : remplacer le 200px fixe par une estimation basee sur le
-   contenu (nombre de caracteres, presence d'image, hauteur image connue). Moins precis
-   mais applicable sans double passage.
-
-### Plan propose (par priorite)
-
-**Phase 1 — Attenuation immediate** (effort faible)
-
-- Remplacer `overflow: hidden` par `overflow: visible` dans `section-page.tsx`
-  pour eviter la troncature silencieuse. Le contenu deborde visuellement mais
-  n'est pas perdu. Le PDF Puppeteer capte le contenu debordant.
-- Ajouter un avertissement visuel (bordure rouge, icone) quand un bloc est
-  plus haut que l'espace disponible estime.
-
-**Phase 2 — Heuristiques ameliorees** (effort moyen)
-
-- Calculer la hauteur estimee en fonction du type de bloc :
-  - Document textuel : `ceil(charCount / charsPerLine) * lineHeight + margins`
-  - Document iconographique : hauteur image connue + legende + source
-  - Quadruplet : consigne + guidage + espace prod (nb lignes \* lineHeight)
-  - Corrige : taille texte corrige
-- Le ratio `RATIO_MAX_BLOC = 0.97` dans `constantes.ts` protege deja contre les
-  blocs qui depassent la page entiere.
-
-**Phase 3 — Double passage** (effort eleve, a evaluer)
-
-- Pre-rendu headless pour mesurer, puis re-pagination, puis rendu final.
-- A considerer uniquement si les heuristiques restent insuffisantes apres
-  observation en production.
+1. **Court terme (en place)**
+   - mesure heuristique partagee
+   - clipping CSS retire
+2. **Moyen terme**
+   - mesure DOM offscreen pour les blocs les plus sensibles
+   - instrumentation latence + telemetrie de pagination
+3. **Long terme (si necessaire)**
+   - double passage headless (mesure puis rendu final)
 
 ### Fichiers concernes
 
-| Fichier                                          | Role                                   |
-| ------------------------------------------------ | -------------------------------------- |
-| `hooks/epreuve/use-apercu-png.ts:45`             | `mesureurPlaceholder()` client         |
-| `app/(apercu)/apercu/[token]/page.tsx:41`        | `mesureurPlaceholder()` serveur        |
-| `components/epreuve/impression/section-page.tsx` | `overflow: hidden`, `maxHeight: 825px` |
-| `lib/epreuve/pagination/pager.ts`                | Algorithme greedy first-fit            |
-| `lib/epreuve/pagination/constantes.ts`           | `MAX_CONTENT_HEIGHT_PX = 825`          |
+| Fichier                                          | Role                                            |
+| ------------------------------------------------ | ----------------------------------------------- |
+| `lib/impression/mesure-estimation.ts`            | Mesureur heuristique partage                    |
+| `hooks/epreuve/use-apercu-png.ts`                | Pagination client apercu PNG                    |
+| `app/(apercu)/apercu/[token]/page.tsx`           | Pagination SSR tokenisee                        |
+| `app/api/impression/apercu-png/route.ts`         | Pagination serveur avant generation PNG         |
+| `components/epreuve/impression/section-page.tsx` | Suppression clipping destructif (`overflow`)    |
+| `lib/epreuve/pagination/pager.ts`                | Algorithme greedy first-fit + verif debordement |
 
 ---
 

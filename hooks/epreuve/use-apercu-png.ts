@@ -8,6 +8,7 @@ import type { ModeImpression, TypeFeuillet } from "@/lib/epreuve/pagination/type
 import type { RenduImprimable } from "@/lib/impression/types";
 import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
+import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 
 /* -------------------------------------------------------------------------- */
 /*  Types                                                                     */
@@ -39,14 +40,6 @@ export type PayloadImpression =
   | { type: "epreuve"; donnees: DonneesEpreuve };
 
 /* -------------------------------------------------------------------------- */
-/*  Mesureur placeholder (cohérent avec la route SSR et l'API apercu-png)     */
-/* -------------------------------------------------------------------------- */
-
-function mesureurPlaceholder(): number {
-  return 200;
-}
-
-/* -------------------------------------------------------------------------- */
 /*  Helpers                                                                   */
 /* -------------------------------------------------------------------------- */
 
@@ -73,9 +66,9 @@ function calculerRendu(
 ): RenduImprimable {
   switch (payload.type) {
     case "tache":
-      return tacheVersImprimable(payload.donnees, { mode, estCorrige }, mesureurPlaceholder);
+      return tacheVersImprimable(payload.donnees, { mode, estCorrige }, mesurerBlocImpression);
     case "epreuve":
-      return epreuveVersImprimable(payload.donnees, { mode, estCorrige }, mesureurPlaceholder);
+      return epreuveVersImprimable(payload.donnees, { mode, estCorrige }, mesurerBlocImpression);
   }
 }
 
@@ -134,6 +127,8 @@ export function useApercuPng(
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
+      abortRef.current = null;
+      estEnCoursRef.current = false;
       tokenRef.current = null;
     };
   }, []);
@@ -218,8 +213,13 @@ export function useApercuPng(
               statut: "erreur",
               message: "La génération a pris trop de temps. Réessayez.",
             });
+          } else {
+            // Abort volontaire (strict mode, unmount/remount, annulation locale) :
+            // remettre l'état à idle pour permettre une relance propre.
+            if (abortRef.current === null || abortRef.current === controller) {
+              setEtat((prev) => (prev.statut === "chargement" ? { statut: "idle" } : prev));
+            }
           }
-          // Abort volontaire (démontage, nouveau generer()) — silence
           return;
         }
         const message = err instanceof Error ? err.message : "Erreur inconnue.";
@@ -230,7 +230,7 @@ export function useApercuPng(
         estEnCoursRef.current = false;
       }
     },
-    [payload, mode, estCorrige, rendu],
+    [rendu],
   );
 
   const telechargerPdf = useCallback(async () => {
@@ -281,7 +281,7 @@ export function useApercuPng(
       clearTimeout(timeout);
       setPdfEnCours(false);
     }
-  }, [payload, mode, estCorrige]);
+  }, [payload.type]);
 
   return { etat, empreinteWizard, estInvalide, generer, telechargerPdf, pdfEnCours };
 }

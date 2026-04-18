@@ -2,6 +2,7 @@ import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuell
 import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 
 type DocumentTypeIconoSlug = DocumentCategorieIconographiqueId;
 
@@ -50,6 +51,8 @@ export type DocumentSlotData = {
   imagePixelHeight: number | null;
   /** Métadonnées affichées après dernier upload réussi (serveur) ; null si inconnu. */
   imageUploadMeta: DocumentImageUploadMeta | null;
+  /** Document canonique unifié (si déjà hydraté par le wizard document). */
+  rendererDocument?: RendererDocument | null;
   /** Repère temporel (texte libre) — banque / parcours non rédactionnels OI1. */
   repere_temporel: string;
   /** Année pour comparaisons automatiques ; prioritaire sur l’extraction depuis `repere_temporel`. */
@@ -81,6 +84,7 @@ export function emptyDocumentSlot(): DocumentSlotData {
     imagePixelWidth: null,
     imagePixelHeight: null,
     imageUploadMeta: null,
+    rendererDocument: null,
     repere_temporel: "",
     annee_normalisee: null,
     type_iconographique: null,

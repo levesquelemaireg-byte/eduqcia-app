@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
@@ -67,6 +67,10 @@ export function TacheVueDetaillee({
   );
 
   const contexte = [tae.niveau.label, tae.discipline.label].filter(Boolean).join(" · ");
+  const payloadImpression = useMemo(
+    () => (donneesTache ? ({ type: "tache", donnees: donneesTache } as const) : null),
+    [donneesTache],
+  );
 
   return (
     <>
@@ -114,8 +118,8 @@ export function TacheVueDetaillee({
               surClicDocument={surClicDocument}
               heroRef={heroRef}
             />
-          ) : donneesTache ? (
-            <ApercuImprimeInline payload={{ type: "tache", donnees: donneesTache }} />
+          ) : payloadImpression ? (
+            <ApercuImprimeInline payload={payloadImpression} />
           ) : (
             <div className="py-12 text-center text-sm text-muted">
               <span

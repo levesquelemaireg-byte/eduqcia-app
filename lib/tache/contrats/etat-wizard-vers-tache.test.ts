@@ -1,7 +1,9 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
 import { initialTaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
 import type { OiEntryJson } from "@/lib/types/oi";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import {
   etatWizardVersTache,
   type GrilleEvaluationEntree,
@@ -327,6 +329,77 @@ describe("etatWizardVersTache", () => {
       expect(result.documents[0].structure).toBe("simple");
       expect(result.documents[0].elements).toHaveLength(1);
       expect(result.documents[0].elements[0].type).toBeDefined();
+    });
+
+    it("utilise le rendererDocument canonique du slot quand il est present", () => {
+      const etat = etatRedactionnel();
+
+      const rendererDoc: RendererDocument = {
+        id: "doc-canonique",
+        titre: "Document canonique",
+        structure: "simple",
+        elements: [
+          {
+            id: "el-1",
+            type: "textuel",
+            contenu: "<p>Texte canonique</p>",
+            source: "<p>Source canonique</p>",
+            sourceType: "primaire",
+            categorieTextuelle: "autre",
+          },
+        ],
+      };
+
+      const slot = emptyDocumentSlot();
+      slot.mode = "create";
+      slot.rendererDocument = rendererDoc;
+
+      etat.bloc4.documents = { doc_A: slot };
+
+      const result = etatWizardVersTache(etat, OI_FIXTURE, GRILLES_FIXTURE);
+      expect(result.documents[0]).toEqual(rendererDoc);
+    });
+
+    it("reconstruit un document valide en fallback et journalise un avertissement", () => {
+      const etat = etatRedactionnel();
+
+      const slot = emptyDocumentSlot();
+      slot.mode = "create";
+      slot.type = "textuel";
+      slot.titre = "Titre fallback";
+      slot.contenu = "<p>Contenu fallback</p>";
+      slot.source_citation = "<p>Source fallback</p>";
+      slot.source_type = "primaire";
+      slot.repere_temporel = "1900";
+      slot.categorie_textuelle = "autre";
+
+      etat.bloc4.documents = { doc_A: slot };
+
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      try {
+        const result = etatWizardVersTache(etat, OI_FIXTURE, GRILLES_FIXTURE);
+
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        expect(warnSpy).toHaveBeenCalledWith(
+          "[construireDocuments] Slot doc_A sans rendererDocument - fallback",
+        );
+        expect(result.documents[0]).toEqual(
+          expect.objectContaining({
+            id: "doc_A",
+            titre: "Titre fallback",
+            structure: "simple",
+            repereTemporelDocument: "1900",
+          }),
+        );
+        expect(result.documents[0].elements[0]).toEqual(
+          expect.objectContaining({
+            type: "textuel",
+            contenu: "<p>Contenu fallback</p>",
+          }),
+        );
+      } finally {
+        warnSpy.mockRestore();
+      }
     });
   });
 });

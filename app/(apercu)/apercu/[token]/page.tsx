@@ -9,6 +9,7 @@ import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { RenduImprimable } from "@/lib/impression/types";
+import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 import { ApercuImpression } from "@/components/epreuve/impression";
 
 /**
@@ -36,28 +37,23 @@ type DraftKvLegacy = {
   estCorrige: boolean;
 };
 
-/** Mesureur placeholder — hauteurs estimées en attendant la mesure DOM (D2). */
-function mesureurPlaceholder(): number {
-  return 200;
-}
-
 function construireRendu(data: DraftKvTyped): RenduImprimable {
   switch (data.type) {
     case "document":
-      return documentVersImprimable(data.payload, mesureurPlaceholder);
+      return documentVersImprimable(data.payload, mesurerBlocImpression);
 
     case "tache":
       return tacheVersImprimable(
         data.payload,
         { mode: data.mode, estCorrige: data.estCorrige },
-        mesureurPlaceholder,
+        mesurerBlocImpression,
       );
 
     case "epreuve":
       return epreuveVersImprimable(
         data.payload,
         { mode: data.mode, estCorrige: data.estCorrige },
-        mesureurPlaceholder,
+        mesurerBlocImpression,
       );
   }
 }

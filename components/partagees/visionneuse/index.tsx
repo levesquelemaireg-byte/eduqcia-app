@@ -49,7 +49,7 @@ export function Visionneuse({ feuillets, surFermer, surTelecharger, telechargerE
   }, []);
 
   /* Index courant pour pagination */
-  const [indexCourant, setIndexCourant] = useIndexCourant(emblaApi);
+  const indexCourant = useIndexCourant(emblaApi);
 
   return (
     <div
@@ -174,7 +174,7 @@ export function Visionneuse({ feuillets, surFermer, surTelecharger, telechargerE
 import { useState } from "react";
 import type { EmblaCarouselType } from "embla-carousel";
 
-function useIndexCourant(emblaApi: EmblaCarouselType | undefined): [number, (n: number) => void] {
+function useIndexCourant(emblaApi: EmblaCarouselType | undefined): number {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -187,5 +187,5 @@ function useIndexCourant(emblaApi: EmblaCarouselType | undefined): [number, (n: 
     };
   }, [emblaApi]);
 
-  return [index, setIndex];
+  return index;
 }

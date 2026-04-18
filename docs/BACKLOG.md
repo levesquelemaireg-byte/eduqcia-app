@@ -42,7 +42,7 @@ Limiter la dette **à l’entrée** ; extraire par petits pas quand on ouvre un 
 
 > **Document vivant** : écart entre l’état actuel et un **produit abouti** (CI verte ne suffit pas).
 >
-> **Dernière passe doc (31 mars 2026) :** primitives UI (`Textarea`, `SegmentedControl`, `LimitCounterPill`), wizard document étape 1, radios position légende, doc NR **1.3** ; lots mars : `RichTextEditor` unifié, `non_redaction_data`, catégorie iconographique, OI1 en base, ligne du temps, ordre chrono, banque `/bank`, composition épreuve. **Chronologie détaillée :** [BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md). **Macro :** tableau **§2** (PDF épreuve §10.3 manquant, RLS partiel, storage F4, etc.).
+> **Dernière passe doc (18 avril 2026) :** clôture audit sécurité/robustesse (lot 10), pagination impression durcie (mesure heuristique partagée, clipping retiré), qualité locale verte (`npm run ci`), traçabilité audit archivé mise à jour. Historique détaillé : [BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md). **Macro :** tableau **§2** (PDF épreuve §10.3 manquant, RLS partiel, etc.).
 >
 > **Références :** [FEATURES.md](./FEATURES.md) §1.1, [DECISIONS.md](./DECISIONS.md#priorité-features-rappel-métier), [WORKFLOWS.md](./WORKFLOWS.md#fiche-lecture) ; backlog technique ci-dessous ; [ARCHITECTURE.md](./ARCHITECTURE.md#déploiement-et-maturité). **Discipline :** livraison visible → **§2**, **§4**, backlog technique, **[BACKLOG-HISTORY.md](./BACKLOG-HISTORY.md)** (ligne en tête du tableau si chronologie), et specs selon [DECISIONS.md](./DECISIONS.md#protocole-de-maintenance-documentaire) — _merge sans doc = dette de pilotage._
 

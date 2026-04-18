@@ -1,4 +1,8 @@
-# Plan d'exécution — Unification des renderers documentaires (v2)
+# FERMÉ — 2026-04-18
+
+Plan clôturé et archivé le 2026-04-18 après exécution du mini lot de fermeture (étape 3, test 9c, mise à jour workflows).
+
+## Plan d'exécution — Unification des renderers documentaires (v2)
 
 > **Objectif** : un seul type (`RendererDocument`), un seul atome de rendu (`DocumentElementRenderer`), un seul pipeline d'impression (`/apercu/[token]`), zéro perte de données, zéro renderer parallèle. Le bug PDF est résolu par construction.
 >

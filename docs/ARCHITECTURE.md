@@ -1,5 +1,7 @@
 # Architecture technique
 
+Dernière mise à jour : 2026-04-17
+
 Stack, structure du dépôt Next.js (App Router), données Supabase, routes, déploiement et CI. Les règles métier détaillées sont dans [FEATURES.md](./FEATURES.md). Les **textes visibles** sont dans [UI-COPY.md](./UI-COPY.md) ; les **règles normatives** (protocoles, icônes, mapping) dans [DECISIONS.md](./DECISIONS.md).
 
 ## Stack
@@ -18,85 +20,102 @@ Pour les API Next.js en vigueur dans ce dépôt : `node_modules/next/dist/docs/`
 
 ## Repère temporel, année normalisée et OI1 (non rédactionnel)
 
-Les colonnes **`repere_temporel`** et **`annee_normalisee`** sur **`documents`** (et l’état **`DocumentSlotData`** dans le wizard) servent aux **comparaisons temporelles** et aux **générations automatiques** des parcours **OI1** (_Situer dans le temps_). **Saisie UI :** `RepereTemporelField` ; **priorité / fallback :** `getAnneePourComparaison` — **`lib/tae/document-annee.ts`** (`extractYearFromString`). **Configuration comportement :** `lib/tae/behaviours/types.ts` (`ComportementConfig.bloc4.requiresRepereTemporel`, `completionCriteria.bloc4`) ; enregistrements par slug dans **`lib/tae/behaviours/ordre-chronologique.ts`**, **`ligne-du-temps.ts`**, **`avant-apres.ts`**, etc. **Helpers de génération :** `lib/tae/non-redaction/` (ex. ordre chronologique, à étendre pour les autres parcours). **Spec produit détaillée :** [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) § **Données temporelles — repère et année normalisée**.
+Les colonnes **`repere_temporel`** et **`annee_normalisee`** sur **`documents`** (et l’état **`DocumentSlotData`** dans le wizard) servent aux **comparaisons temporelles** et aux **générations automatiques** des parcours **OI1** (_Situer dans le temps_). **Saisie UI :** `RepereTemporelField` ; **priorité / fallback :** `getAnneePourComparaison` — **`lib/tae/document-annee.ts`** (`extractYearFromString`). **Configuration comportement :** `lib/tae/behaviours/types.ts` (`ComportementConfig.bloc4.requiresRepereTemporel`, `completionCriteria.bloc4`) ; enregistrements par slug dans **`lib/tae/behaviours/ordre-chronologique.ts`**, **`ligne-du-temps.ts`**, **`avant-apres.ts`**, etc. **Helpers de génération :** `lib/tae/non-redaction/` (ex. ordre chronologique, à étendre pour les autres parcours). **Spec produit détaillée (archive) :** [archive/wizard-oi-non-redactionnelle.md](./archive/wizard-oi-non-redactionnelle.md) § **Données temporelles — repère et année normalisée**.
 
 ## Structure des dossiers (état du dépôt)
 
 ```
 app/
   (auth)/          # login, register, activate
-  (app)/           # shell connecté : dashboard, questions, bank, evaluations, profile, collaborateurs
+  (app)/           # shell connecté : dashboard, questions, documents, bank, evaluations, profile, collaborateurs
+  (print)/         # routes d'impression sans AppShell (questions, documents)
+  (apercu)/        # route SSR /apercu/[token] + route de test /apercu/test/[slug]
+  api/             # route handlers HTTP
+    collaborateurs/search/
+    impression/{token-draft,pdf,apercu-png}/
   auth/callback/   # route handler OAuth / magic link
+  dev/wizard-lab/  # labo dev-only (404 en production)
+  eval-grid-snapshot/[id]/ # snapshots Playwright
+  prototype/       # pages maquette / démonstration hors navigation produit
   layout.tsx, page.tsx, globals.css
 components/
-  fragments/       # composants `…App` / `…Print` extraits (fiche, carte, feuille) — [archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md) (déprécié) ; créé au premier besoin
-  playground/      # **DEV** — `FragmentPlayground`, panneaux, `adapters/` (pont vers `PrintableHtml`, `GrilleEvalTable`, fiche…)
   ui/              # primitives (Button, Field, ListboxField, SimpleModal, WarningModal, …)
-  wizard/          # WizardStepper (partagé wizard TAÉ + wizard document autonome)
   layout/          # AppShell, Sidebar, …
+  wizard/          # WizardStepper (partagé wizard TAÉ + wizard document autonome)
+  preview/         # panneau d'aperçu partagé
+  partagees/       # briques transverses des vues détaillées
+  tache/, document/, epreuve/ # vues détaillées canoniques
+  dev/             # composants de laboratoires internes
   auth/
   dashboard/
-  questions/       # Mes tâches (filtres, ligne)
-  bank/            # Banque collaborative (onglets, ligne liste)
-  documents/       # `AutonomousDocumentWizard`, aperçu, étapes (source / contenu riche : `RichTextEditor` dans `components/ui/`)
-  tae/             # TaeForm (`wizardBlocResolver.tsx` — étapes 3 et 4 du wizard si variante enregistrée), FicheTache, fiche, `grilles/`, `print/`, `non-redaction/ordre-chronologique/` (`SequenceOptionsGenerator`, PIN suites), …
+  questions/, documents/, evaluations/, bank/, profile/, collaborateurs/
+  tae/             # TaeForm, impression tâche, grilles, variantes non rédactionnelles
+  prototype/
 lib/
-  fragment-playground/ # **DEV** — `types.ts` (onglets / storage), `mocks.ts` (`TaeFicheData` par `comportement_id`) pour `/dev/fragments`
+  actions/         # Server Actions (auth, tae, documents, evaluations, impression)
+  queries/         # lectures Supabase
   auth/            # `require-active-app-user.ts` — garde-fou session + profil actif (layouts `(app)` et `(print)`)
-  supabase/        # client, server, middleware, admin
-  actions/         # Server Actions (auth, tae, documents, `search-collaborateurs-profiles.ts`, …)
-  queries/         # lectures Supabase (`user-content.ts`, `bank-tasks.ts`, `collaborateur-profile-search.ts`, …)
-  utils/           # `profile-display.ts` — `getDisplayName`, `getInitials`, `getSortKey` pour `profiles.first_name`/`last_name`
-  tae/             # helpers métier, publish, hydrate, `print-page-css.ts` (`@page` Letter injecté), `use-clear-document-title-for-print.ts` (bandeau titre navigateur), …
+  supabase/        # client navigateur/serveur, admin, helper middleware
+  server/          # utilitaires server-only (`rate-limit`)
+  utils/           # helpers transverses (`cn`, profile-display, dates, etc.)
+  tae/             # helpers métier, publish, hydrate, variantes non rédactionnelles, impression tâche
     # `import/` : normalisation alias LLM (`normalize-llm-aliases.ts`), validation brouillon vs `oi.json` (`validate-tae-import-vs-oi.ts`) — à brancher sur le futur parcours import JSON ; tests `lib/tae/import/*.test.ts`.
-    # `non-redaction/` : slugs variantes + registre `comportement_id` → slug (`oi.json` champ `variant_slug`) — voir `docs/wizard-oi-non-redactionnelle.md`.
+    # `non-redaction/` : slugs variantes + registre `comportement_id` → slug (`oi.json` champ `variant_slug`) — voir `docs/archive/wizard-oi-non-redactionnelle.md`.
     # Publication : `publish-tae.ts` (orchestration `publishTaeFromFormState` / `updateTaeFromFormState`) ;
     # `publish-tae-types.ts`, `publish-tae-payload.ts`, `publish-tae-lookups.ts`, `publish-tae-rpc-errors.ts`.
     # Connaissances (WORKFLOWS §7) : barrel `connaissances-helpers.ts` → `connaissances-types|parse|filter|miller-rules|selection`.
+  tache/, document/, documents/, epreuve/, evaluations/, bank/
   types/, schemas/
   images/          # Redimensionnement images téléversées (boîte max **660×400** px, proportions, sans upscale — **sharp**) pour `lib/actions/documents.ts` (`uploadTaeDocumentImageAction`)
-  documents/       # `document-wizard-draft.ts`, `filter-disciplines-by-niveau.ts`, `is-document-pdf-url.ts`, `ref-id.ts`, `source-citation-html.ts` (citation Source HTML / texte hérité)
   impression/      # Architecture impression 3 couches — `types.ts` (RenduImprimable, ContexteImpression, Page, Bloc), `builders/` (couche 1 : blocs-document, blocs-quadruplet, blocs-corrige, blocs-tache, regles-visibilite) ; `lib/tache/impression/tache-vers-imprimable.ts` (couche 2 tâche), `lib/document/impression/document-vers-imprimable.ts` (couche 2 document), `lib/epreuve/transformation/epreuve-vers-paginee.ts` (couche 2 épreuve → alias `epreuveVersImprimable`)
-middleware.ts
+proxy.ts           # garde des routes + redirections auth (App Router)
 public/data/       # JSON référentiels (OI, CD, connaissances, CSS/écoles, grilles, …) — **immuables** sauf nécessité absolue — [DECISIONS.md](./DECISIONS.md) § Référentiels `public/data/*.json` ; **`import-tae-notebooklm-bundle.json`** — hors fondation app (NotebookLM, etc.) : OI embarqué + `regles_non_negociables_fr`, gabarits `reference_payload_*`, spec post-import — **non importé** par l’app tant qu’aucune route ne le charge ; régénération : `node scripts/build-import-tae-notebooklm-bundle.mjs`
 supabase/schema.sql
 supabase/migrations/ # SQL incrémental (ex. RPC manquante sur projet existant)
 ```
 
-> **Note :** l’ancienne doc décrivait un arbre `app/api/*` étendu (REST). Dans le dépôt actuel, les route handlers sous `app/api/` peuvent être absents ou limités ; la source de vérité est l’arborescence réelle dans `app/`. Les endpoints WordPress / `eduqc/v1` décrits historiquement dans `ROUTES.md` ne s’appliquent pas à l’app Next.js — voir [DECISIONS.md](./DECISIONS.md#référence-historique-routes-wordpress).
+> **Note :** la garde des routes est assurée par `proxy.ts` (et `lib/supabase/middleware.ts` pour le rafraîchissement de session). Le fichier racine `middleware.ts` n’est pas utilisé dans ce dépôt.
 
 ## Server Components, Client Components, données
 
-- **`'use client'`** uniquement si interaction locale (state, events) l’exige.
-- **Données Supabase** : préférer Server Components, Server Actions ou route handlers — **pas** d’appel Supabase direct depuis un Client Component (clé anon exposée + contournement des patterns du dépôt).
-- **Middleware** (`middleware.ts`, `lib/supabase/middleware.ts`) : session ; routes sous `/dashboard`, `/questions`, `/documents`, `/bank`, `/evaluations`, `/profile`, `/collaborateurs` protégées ; `/login` et `/register` redirigent si déjà connecté.
+- **`'use client'`** uniquement si interaction locale (state, events, API navigateur) l’exige.
+- **Données Supabase** : préférer Server Components, Server Actions ou route handlers. Éviter les appels Supabase directs dans les Client Components.
+- **Garde d’accès** : `proxy.ts` protège `/dashboard`, `/questions`, `/documents`, `/bank`, `/evaluations`, `/profile`, `/collaborateurs` et gère les redirections `/login`/`/register` quand l’utilisateur est déjà connecté.
+- **Session Supabase** : `lib/supabase/middleware.ts` rafraîchit les cookies et retourne l’utilisateur courant pour `proxy.ts`.
+- **Profil actif requis** : `requireActiveAppUser()` est appliqué dans les layouts `(app)` et `(print)`.
 
 ## Routes App Router
 
-| Chemin                                                       | Rôle                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                                                          | Landing / redirection selon session                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| `/dev/fragments`                                             | **DEV uniquement** — Fragment Playground (composants isolés, mocks, pas de Supabase) ; `dynamic = "force-dynamic"` ; `notFound()` si `NODE_ENV === "production"` — `components/playground/`, `lib/fragment-playground/` ; nomenclature fragments [archive/CONVENTIONS-FRAGMENTS.md](./archive/CONVENTIONS-FRAGMENTS.md) (déprécié)                                                                                                                                                                               |
-| `/dev/summary-mockup`                                        | **DEV uniquement** — maquettes banque : miniature liste (`DevBankThumbnailMockupCard`) + fiche sommaire (`DevBankSummaryMockupCard`, même `TaeFicheData` / `oi.json`) ; `notFound()` si production — `components/playground/`                                                                                                                                                                                                                                                                                    |
-| `/dev/oi35-bloc3-mockup`                                     | **DEV uniquement** — maquette OI **3.5** (consigne assemblée, options acteurs/historiens, 1 groupé / 3 séparés, aperçu `resolveConsigneHtmlForDisplay`) ; `notFound()` si production — `components/playground/Oi35Bloc3Mockup.tsx`, `lib/playground/oi35-bloc3-mockup.ts`                                                                                                                                                                                                                                        |
-| `/login`, `/register`, `/activate`                           | Auth                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
-| `/dashboard`                                                 | Tableau de bord                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `/questions`                                                 | Mes tâches                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `/questions/new`                                             | Wizard création (7 étapes)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| `/questions/[id]`                                            | Fiche lecture                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `/questions/[id]/print`                                      | Impression TAÉ — hors `AppShell`, même bundle que fiche (`fetchTaeFicheBundle`) ; `(print)` + `requireActiveAppUser`                                                                                                                                                                                                                                                                                                                                                                                             |
-| `/questions/[id]/edit`                                       | Wizard édition — `fetchTaeFormStateForEdit`, `update_tae_transaction`                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `/documents/new`                                             | Wizard document (3 étapes, split + aperçu comme TAÉ) — `layout.tsx` (pleine largeur utile `main`, comme `/questions/new`) ; `AutonomousDocumentWizard` / alias `AutonomousDocumentForm`, `createAutonomousDocumentAction`, brouillon `sessionStorage` (`lib/documents/document-wizard-draft.ts`)                                                                                                                                                                                                                 |
-| `/documents/[id]/edit`                                       | Édition document — même wizard que création, `loadAutonomousDocumentForEditForm`, `updateAutonomousDocumentAction`                                                                                                                                                                                                                                                                                                                                                                                               |
-| `/documents/[id]`                                            | Fiche lecture document (`DocumentFicheRead`, gabarit type fiche tâche) — `lib/queries/document-read.ts` (compteur usages)                                                                                                                                                                                                                                                                                                                                                                                        |
-| `/bank`                                                      | Banque collaborative — onglets **Tâches** / **Documents historiques** / **Épreuves** (libellés UI — [DECISIONS.md](./DECISIONS.md#épreuve-composition-enseignant--terminologie-publique), [UI-COPY.md](./UI-COPY.md#page--banque-collaborative)) ; tâches `lib/queries/bank-tasks.ts`, `BankTasksPanel` ; documents `lib/queries/bank-documents.ts`, `BankDocumentsPanel` ; épreuves `lib/queries/bank-evaluations.ts`, `BankEvaluationsPanel`                                                                   |
-| `/evaluations`, `/evaluations/new`, `/evaluations/[id]/edit` | **Mes épreuves** (libellé UI) — liste ; création composition ; édition composition (panier TAÉ, brouillon / publier via RPC `save_evaluation_composition`, table `evaluations`)                                                                                                                                                                                                                                                                                                                                  |
-| `/evaluations/[id]/print`                                    | Aperçu / impression **épreuve** — hors `AppShell`, `(print)` + `requireActiveAppUser` ; auteur seul ; `fetchEvaluationPrintBundle` + `EvaluationFichePrintView` (dossier documentaire global + questionnaire)                                                                                                                                                                                                                                                                                                    |
-| `/profile/[id]`                                              | Profil enseignant (mode propriétaire/visiteur) — `ProfileHero` (avatar, badges rôle genré/expérience, courriel copie), `ProfileProfessionalInfo` (MetaPills niveaux/disciplines/expérience), `ProfileContributions` (3 onglets Documents/Tâches/Épreuves, load more), Side Sheets édition identité (+ genre) + professionnel, `DeleteAccountSection` (Loi 25) ; queries `fetchProfileOverview`, `fetchProfileDocuments/Tasks/Evaluations` ; helper `getRoleLabel(role, genre)` ; spec `profil-ux-spec.md` FERMÉE |
-| `/collaborateurs`                                            | Répertoire collaborateurs — `CollaborateurCard` (4 lignes cliquable → profil), recherche hybride local+serveur (`api/collaborateurs/search`), scroll infini `IntersectionObserver` ; query enrichie `collaborateurs-list.ts` (compteurs doc/task/eval, disciplines, niveaux)                                                                                                                                                                                                                                     |
-| `/api/collaborateurs/search`                                 | Route handler GET — recherche serveur collaborateurs (first_name, last_name, email ilike) avec AbortController support                                                                                                                                                                                                                                                                                                                                                                                           |
-| `/apercu/[token]`                                            | Route SSR impression — vérifie token HMAC, fetch payload depuis Vercel KV (draft) ou DB (publié), dispatch par `type` (tâche → `tacheVersImprimable`, document → `documentVersImprimable`, épreuve → `epreuveVersImprimable`), rend `ApercuImpression` ; layout `(apercu)` minimal sans AppShell ; print-engine D1                                                                                                                                                                                               |
-| `/api/impression/token-draft`                                | Route handler POST — reçoit payload typé (`z.discriminatedUnion` sur `type` : document, tache, epreuve) en JSON, stocke dans Vercel KV (TTL 10 min), retourne token HMAC signé ; auth Supabase requise ; rétrocompatible format legacy sans `type`                                                                                                                                                                                                                                                               |
+| Chemin                                                                  | Rôle                                                                                                                                                            |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                                                                     | Redirection selon session : utilisateur connecté vers `/dashboard`, sinon `/login`.                                                                             |
+| `/login`, `/register`, `/activate`                                      | Authentification et activation de profil.                                                                                                                       |
+| `/dashboard`                                                            | Tableau de bord connecté (dans `(app)`).                                                                                                                        |
+| `/questions`                                                            | Liste « Mes tâches » (filtres, cartes miniatures).                                                                                                              |
+| `/questions/new`                                                        | Wizard création TAÉ (7 étapes).                                                                                                                                 |
+| `/questions/[id]`                                                       | Vue détaillée tâche via `TacheVueDetaillee` (onglets Sommaire / Aperçu de l’imprimé).                                                                           |
+| `/questions/[id]/edit`                                                  | Wizard édition TAÉ (`fetchTaeFormStateForEdit`, RPC `update_tae_transaction`).                                                                                  |
+| `/questions/[id]/print`                                                 | Impression tâche (segment `(print)`, hors AppShell, garde `requireActiveAppUser`).                                                                              |
+| `/documents`                                                            | Liste « Mes documents ».                                                                                                                                        |
+| `/documents/new`                                                        | Wizard document autonome (3 étapes, split formulaire/sommaire).                                                                                                 |
+| `/documents/[id]`                                                       | Vue détaillée document via `DocumentVueDetaillee` (onglets Sommaire / Aperçu de l’imprimé).                                                                     |
+| `/documents/[id]/edit`                                                  | Édition document via le même wizard que la création.                                                                                                            |
+| `/documents/[id]/print`                                                 | Impression document (segment `(print)`, garde `requireActiveAppUser`).                                                                                          |
+| `/bank`                                                                 | Banque collaborative (onglets tâches, documents, épreuves).                                                                                                     |
+| `/evaluations`, `/evaluations/new`, `/evaluations/[id]/edit`            | Liste et composition d’épreuves (RPC `save_evaluation_composition`).                                                                                            |
+| `/evaluations/[id]`                                                     | Vue détaillée épreuve via `EpreuveVueDetaillee` (onglets Sommaire / Aperçu de l’imprimé).                                                                       |
+| `/profile/[id]`                                                         | Profil enseignant (hero, contributions, édition propriétaire, suppression Loi 25). Spec : [specs/fermees/profil-ux-spec.md](./specs/fermees/profil-ux-spec.md). |
+| `/collaborateurs`                                                       | Répertoire collaborateurs, recherche locale+serveur, scroll infini.                                                                                             |
+| `/apercu/[token]`                                                       | Route SSR du print engine : vérifie le token HMAC, lit le payload draft dans Vercel KV, dispatch `document`/`tache`/`epreuve`, rend `ApercuImpression`.         |
+| `/apercu/test/[slug]`                                                   | Route de test dev-only basée sur fixtures golden (`tests/e2e/fixtures/golden-payloads`). 404 en production.                                                     |
+| `/api/collaborateurs/search`                                            | Route handler GET : recherche serveur des collaborateurs (avec rate-limit).                                                                                     |
+| `/api/impression/token-draft`                                           | Route handler POST : stocke un payload draft (TTL 10 min) dans KV et renvoie un token HMAC signé.                                                               |
+| `/api/impression/pdf`                                                   | Route handler POST : génère un PDF via Puppeteer à partir de `/apercu/[token]`.                                                                                 |
+| `/api/impression/apercu-png`                                            | Route handler POST : génère les PNG page par page (carrousel d’aperçu) via Puppeteer.                                                                           |
+| `/auth/callback`                                                        | Callback Supabase (OAuth/magic link).                                                                                                                           |
+| `/dev/wizard-lab`                                                       | Labo d’édition wizard, `dynamic = "force-dynamic"`, bloqué en production.                                                                                       |
+| `/eval-grid-snapshot/[id]`                                              | Route de snapshots Playwright pour non-régression visuelle des grilles.                                                                                         |
+| `/prototype/fiche-lecture-maquette`, `/prototype/fiche-maquette-finale` | Routes de maquettes visuelles hors navigation produit.                                                                                                          |
 
 ## Authentification (Next.js + Supabase)
 
@@ -104,17 +123,19 @@ Implémentation actuelle : pages `(auth)`, Server Actions dans `lib/actions/auth
 
 ## Variables d’environnement
 
-| Variable                        | Rôle                                                               |
-| ------------------------------- | ------------------------------------------------------------------ |
-| `NEXT_PUBLIC_SUPABASE_URL`      | URL projet Supabase                                                |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon (navigateur + serveur)                                    |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Rôle service — **jamais** au client                                |
-| `NEXT_PUBLIC_SITE_URL`          | URL canonique (callbacks, emails)                                  |
-| `DRAFT_TOKEN_SECRET`            | Clé HMAC draft-token impression (≥ 32 car.) — **jamais** au client |
-| `KV_REST_API_URL`               | Vercel KV — URL REST (draft-token storage)                         |
-| `KV_REST_API_TOKEN`             | Vercel KV — token REST                                             |
+| Variable                        | Rôle                                                                   |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | URL du projet Supabase.                                                |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon Supabase (client + serveur).                                  |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Clé service role (serveur uniquement).                                 |
+| `NEXT_PUBLIC_SITE_URL`          | URL canonique utilisée pour callbacks et URLs d’aperçu/PDF.            |
+| `DRAFT_TOKEN_SECRET`            | Secret HMAC des tokens draft impression (minimum 32 caractères).       |
+| `KV_REST_API_URL`               | Endpoint REST Vercel KV pour stocker les payloads draft.               |
+| `KV_REST_API_TOKEN`             | Token REST Vercel KV.                                                  |
+| `CHROMIUM_EXECUTABLE_PATH`      | Optionnel : chemin Chromium explicite hors runtime Vercel.             |
+| `NODE_ENV`                      | Active les gardes dev-only (`/dev/wizard-lab`, `/apercu/test/[slug]`). |
 
-Dupliquer **Production** et **Preview** sur l’hôte (ex. Vercel) ; pour Preview, `NEXT_PUBLIC_SITE_URL` doit être l’URL de preview. Local : `.env.local` depuis `.env.example` (non versionné). La CI injecte des placeholders — pas de secrets dans le workflow.
+Dupliquer **Production** et **Preview** sur l’hôte (ex. Vercel) ; pour Preview, `NEXT_PUBLIC_SITE_URL` doit être l’URL de preview. Local : `.env.local` depuis `.env.example` (non versionné). La CI injecte des placeholders — pas de secrets dans le workflow. Pour tester l’impression localement, ajouter aussi `DRAFT_TOKEN_SECRET`, `KV_REST_API_URL`, `KV_REST_API_TOKEN` (et éventuellement `CHROMIUM_EXECUTABLE_PATH`).
 
 Régénération des types : `npm run gen:types` (`scripts/gen-database-types.cjs`, variables optionnelles dans `.env.example`). Après ajout ou modification de RPC (ex. `save_evaluation_composition`), appliquer la migration sur Supabase puis régénérer pour éviter l’écart avec les entrées manuelles dans `lib/types/database.ts`.
 

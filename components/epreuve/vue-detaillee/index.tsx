@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { VueDetailleeLayout } from "@/components/partagees/vue-detaillee/layout";
 import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions";
@@ -44,6 +44,10 @@ export function EpreuveVueDetaillee({
   const premiereTache = donnees.taches[0] ?? null;
   const niveauLabel = premiereTache?.niveau.label;
   const disciplineLabel = premiereTache?.discipline.label;
+  const payloadImpression = useMemo(
+    () => ({ type: "epreuve", donnees: donnees }) as const,
+    [donnees],
+  );
 
   return (
     <VueDetailleeLayout
@@ -82,7 +86,7 @@ export function EpreuveVueDetaillee({
         ongletActif === "sommaire" ? (
           <SectionPileTaches taches={donnees.taches} />
         ) : (
-          <ApercuImprimeInline payload={{ type: "epreuve", donnees: donnees }} />
+          <ApercuImprimeInline payload={payloadImpression} />
         )
       }
       rail={

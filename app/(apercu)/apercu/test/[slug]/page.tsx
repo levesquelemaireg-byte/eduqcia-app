@@ -4,6 +4,7 @@ import path from "path";
 import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 import { ApercuImpression } from "@/components/epreuve/impression";
 
 /**
@@ -24,11 +25,6 @@ type GoldenFixture = {
   mode: ModeImpression;
   estCorrige: boolean;
 };
-
-/** Mesureur placeholder — hauteurs estimées (même que la route SSR principale). */
-function mesureurPlaceholder(): number {
-  return 200;
-}
 
 /** Slugs autorisés — correspondance 1:1 avec les fichiers fixtures. */
 const SLUGS_AUTORISES = ["redactionnel-simple", "ordre-chrono", "sommatif-3-taches"] as const;
@@ -70,11 +66,11 @@ export default async function ApercuTestPage({ params }: PageProps) {
     notFound();
   }
 
-  // Paginer avec mesureur placeholder
+  // Paginer avec mesureur heuristique partagé
   const rendu = epreuveVersImprimable(
     fixture.epreuve,
     { mode: fixture.mode, estCorrige: fixture.estCorrige },
-    mesureurPlaceholder,
+    mesurerBlocImpression,
   );
 
   if (!rendu.ok) {

@@ -59,7 +59,7 @@ export function ProfileEditSheet({
   currentYearsExperience,
   cssOptions,
   schoolOptions,
-  profileId,
+  profileId: _profileId,
 }: Props) {
   const router = useRouter();
 

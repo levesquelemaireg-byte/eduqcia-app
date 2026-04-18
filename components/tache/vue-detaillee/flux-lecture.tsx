@@ -12,7 +12,6 @@ import { SectionDocuments } from "@/components/tache/vue-detaillee/sections/docu
 import { SectionGuidage } from "@/components/tache/vue-detaillee/sections/guidage";
 import { SectionCorrige } from "@/components/tache/vue-detaillee/sections/corrige";
 import { SectionGrille } from "@/components/tache/vue-detaillee/sections/grille";
-import { SectionVotes } from "@/components/tae/fiche/SectionVotes";
 
 type Props = {
   tae: TaeFicheData;
@@ -29,7 +28,13 @@ type Props = {
  * Itère les sections dans l'ordre de la spec avec ~48px de whitespace entre elles.
  * Pas de carte englobante, pas de hairlines — whitespace comme séparateur.
  */
-export function FluxLecture({ tae, votes, peutVoter, surClicDocument, heroRef }: Props) {
+export function FluxLecture({
+  tae,
+  votes: _votes,
+  peutVoter: _peutVoter,
+  surClicDocument,
+  heroRef,
+}: Props) {
   const hero = useMemo(() => selectHero(tae), [tae]);
   const documents = useMemo(() => selectDocuments(tae), [tae]);
   const guidage = useMemo(() => selectGuidage(tae), [tae]);

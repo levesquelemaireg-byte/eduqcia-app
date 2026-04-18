@@ -24,8 +24,8 @@ export function SectionDocuments({ documents }: Props) {
           className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}
           aria-label="Emplacements documents textuel et iconographique"
         >
-          <DocumentPlaceholder type="textuel" letter="A" />
-          <DocumentPlaceholder type="iconographique" letter="B" />
+          <DocumentPlaceholder type="textuel" />
+          <DocumentPlaceholder type="iconographique" />
         </div>
       ) : (
         <div className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}>
@@ -41,13 +41,7 @@ export function SectionDocuments({ documents }: Props) {
 }
 
 /** Placeholder skeleton pour un emplacement document vide. */
-function DocumentPlaceholder({
-  type,
-  letter,
-}: {
-  type: "textuel" | "iconographique";
-  letter: string;
-}) {
+function DocumentPlaceholder({ type }: { type: "textuel" | "iconographique" }) {
   if (type === "iconographique") {
     return (
       <div className="animate-pulse rounded-lg border border-border bg-panel p-4">
