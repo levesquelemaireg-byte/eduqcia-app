@@ -69,18 +69,18 @@ export function SectionContenu({ document: doc }: Props) {
           {/* Source — séparateur dashed + citation italique */}
           {doc.elements[0]?.source && (
             <div className="mt-4 border-t border-dashed border-border pt-3">
-              <p className="text-[11px] italic text-steel">
+              <div className="text-[11px] italic text-steel">
                 <span className="not-italic font-medium uppercase tracking-wider text-muted">
                   Source
                 </span>
                 {" · "}
-                <span
-                  suppressHydrationWarning
+                <div
+                  className="inline [&>p]:inline [&>p]:m-0"
                   dangerouslySetInnerHTML={{
                     __html: sourceCitationDisplayHtml(doc.elements[0].source),
                   }}
                 />
-              </p>
+              </div>
             </div>
           )}
         </div>

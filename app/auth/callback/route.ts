@@ -1,14 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/admin";
-
-/** Vérifie que la cible de redirection est un chemin interne relatif. */
-function safeRedirectPath(raw: string | null): string {
-  if (!raw) return "/dashboard";
-  // Doit commencer par / et ne pas commencer par // (protocol-relative)
-  if (!/^\/[a-zA-Z0-9\-_./]*$/.test(raw)) return "/dashboard";
-  return raw;
-}
+import { safeRedirectPath } from "@/lib/auth/safe-redirect-path";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
