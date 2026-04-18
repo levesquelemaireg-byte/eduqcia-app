@@ -335,24 +335,26 @@ export function AutonomousDocumentWizard({
           </div>
         </div>
 
-        <div className="tae-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
+        <div className="relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col border-l border-border bg-panel xl:min-h-0 xl:overflow-hidden">
           <PreviewPanel
             modes={PREVIEW_MODES}
             defaultModeId="sommaire"
             topBarClassName="sticky top-0 z-10"
             className="relative min-h-0 flex-1"
           >
-            {(modeId, _subModeId, _subSubModeId) => (
-              <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
-                <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
-                  {modeId === "impression" ? (
+            {(modeId, _subModeId, _subSubModeId) =>
+              modeId === "impression" ? (
+                <div className="tae-wizard-preview-canvas flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
+                  <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
                     <DocumentWizardPrintPreview />
-                  ) : (
-                    <DocumentWizardPreview />
-                  )}
-                </aside>
-              </div>
-            )}
+                  </aside>
+                </div>
+              ) : (
+                <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain bg-panel p-4 sm:p-6 xl:px-12 xl:pt-8">
+                  <DocumentWizardPreview step={step} niveaux={niveaux} disciplines={disciplines} />
+                </div>
+              )
+            }
           </PreviewPanel>
         </div>
       </div>

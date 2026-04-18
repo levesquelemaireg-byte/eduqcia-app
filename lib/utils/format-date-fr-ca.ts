@@ -17,3 +17,24 @@ export function formatDateFrCaMedium(iso: string | null | undefined): string {
     return "—";
   }
 }
+
+/**
+ * Date longue en français (ex. « 15 avril 2026 »). Fuseau fixe (voir plus haut).
+ * Utilisée pour les métadonnées « Créé le … » / « Mis à jour le … » affichées
+ * en pleines lettres dans les fiches et sommaires.
+ */
+export function formatDateLongueFr(iso: string | null | undefined): string {
+  if (iso == null || iso.trim() === "") {
+    return "—";
+  }
+  try {
+    return new Intl.DateTimeFormat("fr-CA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: DISPLAY_TIME_ZONE,
+    }).format(new Date(iso));
+  } catch {
+    return "—";
+  }
+}

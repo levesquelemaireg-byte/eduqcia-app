@@ -63,6 +63,7 @@ En **copy interface** et **textes publics** ([FAQ.md](./FAQ.md)), l’entité qu
 - **Grilles ministérielles (barème HTML) :** critères A/B/C et navigateur de référence — [ARCHITECTURE.md](./ARCHITECTURE.md#grilles-dévaluation-ministérielles-barème-en-html) ; pas de paraphrase des textes dans les cellules.
 - Pas de couleur en dur — tokens Tailwind / CSS du projet.
 - Icônes : Material Symbols Outlined ; pas d’icône devant le **titre d’étape** du wizard — glyphes pour **libellés de champs** (voir [UI-COPY.md](./UI-COPY.md) conventions liées et [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)).
+- **Cohérence d’icône doc / tâche (règle absolue)** : toute métadonnée partagée entre un document et une tâche utilise **la même icône partout** (rail, header, sommaire, miniature, etc.). Niveau = `school`, Discipline = `menu_book`, Aspects de société = `deployed_code`, Auteur = `person`, Date création = `calendar_today`, Date mise à jour = `history`, Utilisation = `link`, Connaissances = `lightbulb`, Ancrage temporel = `anchor`. Tableau complet : `docs/specs/SPEC-SOMMAIRE-DOCUMENT.md §5`.
 - TypeScript strict — pas de `any`.
 - Pas d’appel Supabase depuis un Client Component.
 

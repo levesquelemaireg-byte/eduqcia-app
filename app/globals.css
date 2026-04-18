@@ -135,6 +135,14 @@
   --color-border-success: var(--color-success);
 
   --color-accent-pulse: hsla(195, 70%, 45%, 0.12);
+  /* Halo pulse — mise en évidence section courante (SPEC-SOMMAIRE-DOCUMENT §2.3). */
+  --color-accent-ring: hsla(195, 75%, 42%, 0.22);
+  /* Fond survol auteur cliquable (badge-author) et chips accent — spec sommaire document. */
+  --color-accent-soft: hsl(195, 70%, 96%);
+  /* Séparateur doux entre items de liste (miniature document). */
+  --color-line-soft: hsl(220, 15%, 95%);
+  /* Fond neutre pour chips/codes en tooltip — léger au-dessus de panel-alt. */
+  --color-hover: hsl(220, 20%, 96%);
 
   /* Corrigé — rouge stylo professeur, distinct de --color-error (réservé aux erreurs UI) */
   --color-corrige: #a32d2d;
@@ -856,6 +864,104 @@ body {
 }
 .animate-icon-badge-in {
   animation: icon-badge-in 400ms ease-out both;
+}
+
+/*
+ * Primitive Tooltip (components/ui/Tooltip.tsx) — variante « light card ».
+ * Spec : SPEC-SOMMAIRE-DOCUMENT §4. Rendue via portal, positionnée en fixed.
+ */
+.tooltip-card {
+  background: var(--color-panel);
+  color: var(--color-deep);
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  box-shadow:
+    0 0 0 1px var(--color-border),
+    0 10px 32px rgb(15 23 42 / 0.08),
+    0 2px 6px rgb(15 23 42 / 0.04);
+}
+.tooltip-pointer {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: var(--color-panel);
+  transform: rotate(45deg);
+}
+.tooltip-pointer[data-placement="bottom"] {
+  box-shadow: -1px -1px 0 0 var(--color-border);
+}
+.tooltip-pointer[data-placement="top"] {
+  box-shadow: 1px 1px 0 0 var(--color-border);
+}
+.tooltip-pointer[data-placement="right"] {
+  box-shadow: -1px 1px 0 0 var(--color-border);
+}
+.tooltip-pointer[data-placement="left"] {
+  box-shadow: 1px -1px 0 0 var(--color-border);
+}
+.tooltip-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-deep);
+  letter-spacing: -0.01em;
+}
+.tooltip-title-icon {
+  font-size: 14px;
+  color: var(--color-accent);
+}
+.tooltip-body {
+  color: var(--color-steel);
+  font-weight: 400;
+}
+.tooltip-examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
+  font-size: 11px;
+}
+.tooltip-examples-label {
+  color: var(--color-muted);
+}
+.tooltip-examples code {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-hover);
+  color: var(--color-deep);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+}
+
+/*
+ * Sommaire détaillé document — pulse de la section active pendant le wizard.
+ * Spec : SPEC-SOMMAIRE-DOCUMENT §2.3.
+ */
+@keyframes zonePulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--color-accent-ring);
+  }
+  50% {
+    box-shadow: 0 0 0 5px var(--color-accent-ring);
+  }
+}
+.doc-sommaire-zone-highlighted {
+  border: 1px solid var(--color-accent);
+  border-radius: 12px;
+  padding: 16px 18px;
+  animation: zonePulse 2.4s ease-in-out infinite;
 }
 
 /* Accessibilité — désactiver les animations pour les utilisateurs qui le demandent */

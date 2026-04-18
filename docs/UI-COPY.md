@@ -891,6 +891,7 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 - **Checkbox obligatoire :** Je confirme respecter les règles d'utilisation des œuvres en milieu scolaire au Québec (ex. Copibec)
 - **Soumission :** Enregistrer le document
 - **Repère temporel** (optionnel) : libellé, texte d’aide modale, placeholders, ligne **↳ Année extraite :** (couleur succès), hint saisie manuelle — constantes `REPERE_TEMPOREL_*`, `REPERE_TEMPOREL_EXTRACTED_PREFIX`, `REPERE_TEMPOREL_MANUAL_HINT` dans `lib/ui/ui-copy.ts` ; validation année : **`ERROR_ANNEE_NORMALISEE_RANGE`**
+- **Ancrage temporel** (libellé officiel, remplace « Repère temporel » en UI — SPEC-SOMMAIRE-DOCUMENT §2.8) : constantes `ANCRAGE_TEMPOREL_LABEL`, `ANCRAGE_TEMPOREL_TOOLTIP_TITLE`, `ANCRAGE_TEMPOREL_TOOLTIP_BODY`, `ANCRAGE_TEMPOREL_TOOLTIP_EXAMPLES` dans `lib/ui/copy/document.ts` ; tooltip attaché au label du champ dans le wizard (primitive `Tooltip` light card, icône `anchor` accent teal) ; exemples : `1760`, `1760–1867`, `Vers 1800`. Colonne SQL et logique métier conservent `repere_temporel` — seul le libellé UI change.
 
 ### Wizard — titres d’étape et textes
 

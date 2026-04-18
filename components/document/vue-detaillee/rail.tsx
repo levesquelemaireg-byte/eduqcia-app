@@ -3,6 +3,7 @@ import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { MetaRowSimple } from "@/lib/fiche/primitives/MetaRow";
 import { SectionRail, RailLayout } from "@/components/partagees/vue-detaillee/rail-layout";
 import type { DocFicheData } from "@/lib/fiche/types";
+import { ANCRAGE_TEMPOREL_LABEL } from "@/lib/ui/ui-copy";
 
 type Props = {
   data: DocFicheData;
@@ -31,9 +32,9 @@ export function DocumentRail({ data }: Props) {
         </div>
       </SectionRail>
 
-      {/* Repère temporel */}
+      {/* Ancrage temporel */}
       {hasRepere && (
-        <SectionRail titre="Repère temporel">
+        <SectionRail titre={ANCRAGE_TEMPOREL_LABEL}>
           <div className="space-y-1">
             <p className="text-xs leading-relaxed text-deep">
               {data.document.repereTemporelDocument}

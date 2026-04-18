@@ -4,20 +4,21 @@ import { useId, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { FieldLayout } from "@/components/ui/FieldLayout";
-import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
-import { SimpleModal } from "@/components/ui/SimpleModal";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
 import { DocumentElementFields } from "@/components/documents/wizard/steps/DocumentElementFields";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
 import { cn } from "@/lib/utils/cn";
 import {
+  ANCRAGE_TEMPOREL_LABEL,
+  ANCRAGE_TEMPOREL_TOOLTIP_BODY,
+  ANCRAGE_TEMPOREL_TOOLTIP_EXAMPLES,
+  ANCRAGE_TEMPOREL_TOOLTIP_TITLE,
+  ARIA_OPEN_FIELD_HELP,
   DOCUMENT_MODULE_TITRE_LABEL,
-  DOCUMENT_WIZARD_STEP1_HELP_REPERE_BODY,
   DOCUMENT_WIZARD_STEP1_PLACEHOLDER_REPERE,
   DOCUMENT_WIZARD_STEP1_PLACEHOLDER_TITRE,
-  REPERE_TEMPOREL_LABEL,
-  REPERE_TEMPOREL_MODAL_TITLE,
 } from "@/lib/ui/ui-copy";
 
 // ---------------------------------------------------------------------------
@@ -70,7 +71,6 @@ export function StepDocument() {
   } = useFormContext<AutonomousDocumentFormValues>();
   const structure = watch("structure");
   const titreId = useId();
-  const [repereHelpOpen, setRepereHelpOpen] = useState(false);
 
   const isMulti = structure === "perspectives" || structure === "deux_temps";
 
@@ -94,11 +94,29 @@ export function StepDocument() {
         />
       </FieldLayout>
 
-      {/* Repère temporel global */}
+      {/* Ancrage temporel global */}
       <FieldLayout
-        label={REPERE_TEMPOREL_LABEL}
+        label={ANCRAGE_TEMPOREL_LABEL}
         htmlFor="doc-repere-global"
-        labelExtra={<FieldHelpModalButton onClick={() => setRepereHelpOpen(true)} />}
+        labelExtra={
+          <Tooltip
+            title={ANCRAGE_TEMPOREL_TOOLTIP_TITLE}
+            titleIcon="anchor"
+            content={ANCRAGE_TEMPOREL_TOOLTIP_BODY}
+            examples={ANCRAGE_TEMPOREL_TOOLTIP_EXAMPLES}
+            placement="right"
+          >
+            <button
+              type="button"
+              className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-accent hover:bg-panel-alt"
+              aria-label={ARIA_OPEN_FIELD_HELP}
+            >
+              <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+                info
+              </span>
+            </button>
+          </Tooltip>
+        }
       >
         <RepereTemporelField
           suppressLabelAndHelp
@@ -111,18 +129,6 @@ export function StepDocument() {
           textInputPlaceholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_REPERE}
         />
       </FieldLayout>
-
-      <SimpleModal
-        open={repereHelpOpen}
-        title={REPERE_TEMPOREL_MODAL_TITLE}
-        onClose={() => setRepereHelpOpen(false)}
-        titleStyle="info-help"
-        panelClassName="max-w-lg"
-      >
-        <p className="text-sm leading-relaxed text-deep">
-          {DOCUMENT_WIZARD_STEP1_HELP_REPERE_BODY}
-        </p>
-      </SimpleModal>
 
       <hr className="border-0 border-t border-border/70" />
 

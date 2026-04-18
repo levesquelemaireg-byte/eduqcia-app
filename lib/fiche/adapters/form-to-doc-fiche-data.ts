@@ -13,6 +13,14 @@ import type {
 } from "@/lib/types/document-renderer";
 import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+import type { NiveauOption, DisciplineOption } from "@/lib/queries/document-ref-data";
+import { refIdsEqual } from "@/lib/documents/ref-id";
+
+export type DocFicheDataRefs = {
+  niveaux?: NiveauOption[];
+  disciplines?: DisciplineOption[];
+  authorName?: string;
+};
 
 type FormElement = AutonomousDocumentFormValues["elements"][number];
 
@@ -48,7 +56,10 @@ function toRendererElement(el: FormElement): DocumentElement {
 }
 
 /** Convertit les valeurs du formulaire document en DocFicheData pour FicheRenderer. */
-export function formValuesToDocFicheData(values: AutonomousDocumentFormValues): DocFicheData {
+export function formValuesToDocFicheData(
+  values: AutonomousDocumentFormValues,
+  refs: DocFicheDataRefs = {},
+): DocFicheData {
   const firstEl = values.elements[0];
 
   const rendererDoc: RendererDocument = {
@@ -67,15 +78,19 @@ export function formValuesToDocFicheData(values: AutonomousDocumentFormValues): 
   if (aspects.culturel) aspectLabels.push("Culturel");
   if (aspects.territorial) aspectLabels.push("Territorial");
 
+  const niveauLabel = refs.niveaux?.find((n) => refIdsEqual(n.id, values.niveau_id))?.label ?? "";
+  const disciplineLabel =
+    refs.disciplines?.find((d) => refIdsEqual(d.id, values.discipline_id))?.label ?? "";
+
   return {
     document: rendererDoc,
     sourceType: firstEl?.source_type ?? "secondaire",
     sourceCitation: firstEl?.source_citation ?? "",
-    niveauLabels: "",
-    disciplineLabels: "",
+    niveauLabels: niveauLabel,
+    disciplineLabels: disciplineLabel,
     aspectsStr: aspectLabels.join(", "),
     connLabels: values.connaissances_miller.map((c) => c.enonce).join(" · "),
-    authorName: "",
+    authorName: refs.authorName ?? "",
     created: "",
     usageCaption: "",
     isPublished: false,

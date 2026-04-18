@@ -223,6 +223,38 @@ Bouton de pagination en bas de liste. `components/ui/LoadMoreButton.tsx`.
 
 Texte/icône discrets (`text-muted`), **`hover:text-error`**, **`hover:bg-error/5`**, jamais gros bouton rouge plein pour une action secondaire. Références : `ConnaissanceRemoveButton`, `TaeCardMenu`, réinitialiser connaissances.
 
+### Tooltip (light card)
+
+Primitive unique du design system pour l'aide contextuelle. `components/ui/Tooltip.tsx`. Fond blanc, ombre généreuse, pointe 10×10 rotée 45°.
+
+| Propriété      | Valeur                                                                                                                      |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Largeur défaut | 300 px (ajustable via prop `width`)                                                                                         |
+| Placement      | `bottom` par défaut, `top`/`left`/`right` disponibles (bascule si hors viewport)                                            |
+| Délai          | 300 ms hover, fermeture immédiate                                                                                           |
+| Transition     | opacité 180 ms + `translateY(-2px) → 0`                                                                                     |
+| Structure      | titre optionnel (icône + label) · corps requis · exemples optionnels (chips monospace séparés par `border-top: 1px dashed`) |
+| A11y           | `aria-describedby` sur le trigger, focus clavier visible, Escape pour fermer                                                |
+
+Utilisation type (champ Ancrage temporel du wizard document) :
+
+```tsx
+<Tooltip
+  title={ANCRAGE_TEMPOREL_TOOLTIP_TITLE}
+  titleIcon="anchor"
+  content={ANCRAGE_TEMPOREL_TOOLTIP_BODY}
+  examples={ANCRAGE_TEMPOREL_TOOLTIP_EXAMPLES}
+>
+  <button type="button" className="info-btn" aria-label="En savoir plus">
+    <span className="material-symbols-outlined">info</span>
+  </button>
+</Tooltip>
+```
+
+### Zone mise en évidence — pulse (sommaire document)
+
+Pattern CSS pour signaler la section du sommaire qui reflète l'étape active du wizard. `@keyframes zonePulse` + classe `.doc-sommaire-zone-highlighted` dans `app/globals.css`. Border accent 1 px, radius 12 px, padding 16–18 px, `box-shadow` animé 2.4 s ease-in-out infinite. Pas de badge texte « en cours » — la pulse seule signale l'état. Respecte `prefers-reduced-motion`. Référence : `SPEC-SOMMAIRE-DOCUMENT §2.3`.
+
 ### États de progression — accordéons séquentiels
 
 Pattern pour les formulaires avec slots ou perspectives complétables dans l'ordre.

@@ -53,6 +53,12 @@ Ne jamais modifier un fichier `docs/` de sa propre initiative. Exception : une d
 
 `oi.json`, `grilles-evaluation.json`, `hec-cd.json`, `hec-sec1-2.json`, `hqc-cd.json`, `hqc-sec3-4.json`, `css.json`, `css-ecoles.json` sont des **référentiels immuables**. Pas de reformulation, traduction ou correction des énoncés pédagogiques officiels.
 
+### Cohérence d'icône doc / tâche (règle absolue)
+
+Toute métadonnée partagée entre un document et une tâche utilise **la même icône Material Symbols Outlined partout** (rail de lecture, header, sommaire wizard, miniature, impression). Zéro divergence. Une donnée qui s'appelle « Niveau » a l'icône `school` dans tous les contextes. Changer l'icône d'une métadonnée à un seul endroit = dette visuelle immédiate.
+
+Mapping de référence : Niveau `school`, Discipline `menu_book`, Aspects de société `deployed_code`, Auteur `person`, Date création `calendar_today`, Date mise à jour `history`, Utilisation `link`, Connaissances `lightbulb`, Ancrage temporel `anchor`, Période historique `PeriodeIcon` composite. Tableau complet : `docs/specs/SPEC-SOMMAIRE-DOCUMENT.md §5`.
+
 ### Ce qu'on ne fait jamais sans demander au développeur
 
 - Créer une nouvelle route

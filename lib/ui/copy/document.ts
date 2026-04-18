@@ -5,9 +5,19 @@ export const DOCUMENT_MODULE_PAGE_TITLE = "Créer un document";
 export const DOCUMENT_MODULE_PAGE_TITLE_EDIT = "Modifier le document";
 export const DOCUMENT_MODULE_TITRE_LABEL = "Titre du document";
 
-/** Repère temporel — libellé, aide, champs (module documents, Bloc 4 TAÉ). */
-export const REPERE_TEMPOREL_LABEL = "Repère temporel";
-export const REPERE_TEMPOREL_MODAL_TITLE = "Repère temporel";
+/**
+ * Ancrage temporel — libellé visible officiel (anciennement « Repère temporel ».
+ * La colonne DB reste `repere_temporel` ; seul le libellé UI change.)
+ */
+export const ANCRAGE_TEMPOREL_LABEL = "Ancrage temporel";
+export const ANCRAGE_TEMPOREL_TOOLTIP_TITLE = "Ancrage temporel";
+export const ANCRAGE_TEMPOREL_TOOLTIP_BODY =
+  "Situe le document dans le temps. Utilisé par l'application pour automatiser certaines tâches pédagogiques (ordre chronologique, comparaisons). N'apparaît pas sur la copie de l'élève.";
+export const ANCRAGE_TEMPOREL_TOOLTIP_EXAMPLES = ["1760", "1760–1867", "Vers 1800"] as const;
+
+/** Repère temporel — libellé interne (champs, aide, modale). */
+export const REPERE_TEMPOREL_LABEL = ANCRAGE_TEMPOREL_LABEL;
+export const REPERE_TEMPOREL_MODAL_TITLE = ANCRAGE_TEMPOREL_LABEL;
 export const REPERE_TEMPOREL_HELP =
   "Indiquez une année, une période ou une date associée au document. Le système utilisera automatiquement l'année (4 chiffres) pour les exercices de classement. Pour les dates antérieures à l'an 1000, saisissez manuellement une année normalisée (négative autorisée). Cette donnée n'apparaît pas sur la copie de l'élève.";
 export const REPERE_TEMPOREL_PLACEHOLDER = "ex. 1837, vers 1760, juin 1834, années 1830";

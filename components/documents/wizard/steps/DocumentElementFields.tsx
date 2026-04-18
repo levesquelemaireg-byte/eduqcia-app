@@ -32,6 +32,7 @@ import { isPublicHttpUrl } from "@/lib/tae/document-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import { messageForUploadValidationReason } from "@/lib/ui/upload-image-validation-toast";
 import {
+  ANCRAGE_TEMPOREL_LABEL,
   DOCUMENT_TYPE_ICONO_CATEGORY_LABEL,
   DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL,
   DOCUMENT_MODULE_SOURCE_LABEL,
@@ -274,7 +275,7 @@ export function DocumentElementFields({
 
       {showRepereTemporel ? (
         <FieldLayout
-          label="Repère temporel"
+          label={ANCRAGE_TEMPOREL_LABEL}
           htmlFor={repereId}
           required
           error={elErrors?.repere_temporel?.message}
