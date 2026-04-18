@@ -67,7 +67,7 @@ export async function getBankPublishedEvaluationsPage(
       auteur_id,
       profiles!evaluations_auteur_id_fkey ( first_name, last_name )
     `,
-      { count: "exact" },
+      { count: "estimated" },
     )
     .eq("is_published", true)
     .eq("is_archived", false)

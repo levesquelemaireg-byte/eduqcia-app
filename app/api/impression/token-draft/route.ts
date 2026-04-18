@@ -5,6 +5,7 @@ import { z } from "zod";
 import { kv } from "@vercel/kv";
 import { createClient } from "@/lib/supabase/server";
 import { signerTokenDraft } from "@/lib/epreuve/impression/token-draft";
+import { checkRateLimit } from "@/lib/server/rate-limit";
 
 const KV_TTL_SECONDS = 10 * 60; // 10 minutes
 
@@ -55,6 +56,13 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
+  }
+
+  if (!checkRateLimit(`token:${user.id}`, 10)) {
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez dans une minute." },
+      { status: 429 },
+    );
   }
 
   // 2. Lire et valider le body

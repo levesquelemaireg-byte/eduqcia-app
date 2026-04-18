@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { checkRateLimit } from "@/lib/server/rate-limit";
 
 /**
  * Route handler exception pour la recherche collaborateurs (§19.1).
@@ -14,6 +15,13 @@ export async function GET(request: NextRequest) {
 
   if (!currentUserId) {
     return NextResponse.json({ items: [], total: 0 }, { status: 400 });
+  }
+
+  if (!checkRateLimit(`collab:${currentUserId}`, 30)) {
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez dans une minute." },
+      { status: 429 },
+    );
   }
 
   const supabase = await createClient();

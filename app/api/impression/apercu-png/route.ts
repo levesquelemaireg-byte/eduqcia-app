@@ -5,6 +5,7 @@ import { z } from "zod";
 import { kv } from "@vercel/kv";
 import { createClient } from "@/lib/supabase/server";
 import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
+import { checkRateLimit } from "@/lib/server/rate-limit";
 import { genererPngPages } from "@/lib/epreuve/impression/puppeteer";
 import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
@@ -119,6 +120,13 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
+  }
+
+  if (!checkRateLimit(`png:${user.id}`, 10)) {
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez dans une minute." },
+      { status: 429 },
+    );
   }
 
   // 2. Valider le body

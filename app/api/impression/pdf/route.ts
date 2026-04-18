@@ -5,6 +5,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { genererPdf } from "@/lib/epreuve/impression/puppeteer";
 import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
+import { checkRateLimit } from "@/lib/server/rate-limit";
 
 /**
  * POST /api/impression/pdf — print-engine D4.
@@ -31,6 +32,13 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
+  }
+
+  if (!checkRateLimit(`pdf:${user.id}`, 5)) {
+    return NextResponse.json(
+      { error: "Trop de requêtes. Réessayez dans une minute." },
+      { status: 429 },
+    );
   }
 
   // 2. Valider le body

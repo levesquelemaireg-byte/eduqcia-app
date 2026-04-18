@@ -195,7 +195,7 @@ export async function getBankPublishedTaePage(
       bank_popularity_score,
       consigne_search_plain
     `,
-    { count: "exact" },
+    { count: "estimated" },
   );
 
   if (filters.q) {
