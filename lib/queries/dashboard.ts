@@ -1,4 +1,4 @@
-import { createServiceClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 
 function voteLevelToNumber(v: string): number {
   const n = Number.parseInt(v, 10);
@@ -19,8 +19,8 @@ export type DashboardStats = {
 };
 
 export async function getUnreadNotificationCount(userId: string): Promise<number> {
-  const admin = createServiceClient();
-  const { count } = await admin
+  const supabase = await createClient();
+  const { count } = await supabase
     .from("notifications")
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)
@@ -29,33 +29,33 @@ export async function getUnreadNotificationCount(userId: string): Promise<number
 }
 
 export async function getDashboardStats(userId: string): Promise<DashboardStats> {
-  const admin = createServiceClient();
+  const supabase = await createClient();
 
   const [taePub, evals, notifs, favs, taeIdsRes, unpublishedDocsRes] = await Promise.all([
-    admin
+    supabase
       .from("tae")
       .select("id", { count: "exact", head: true })
       .eq("auteur_id", userId)
       .eq("is_published", true)
       .eq("is_archived", false),
-    admin
+    supabase
       .from("evaluations")
       .select("id", { count: "exact", head: true })
       .eq("auteur_id", userId)
       .eq("is_archived", false),
-    admin
+    supabase
       .from("notifications")
       .select("id", { count: "exact", head: true })
       .eq("user_id", userId)
       .eq("is_read", false),
-    admin.from("favoris").select("id", { count: "exact", head: true }).eq("user_id", userId),
-    admin
+    supabase.from("favoris").select("id", { count: "exact", head: true }).eq("user_id", userId),
+    supabase
       .from("tae")
       .select("id")
       .eq("auteur_id", userId)
       .eq("is_published", true)
       .eq("is_archived", false),
-    admin
+    supabase
       .from("documents")
       .select("id", { count: "exact", head: true })
       .eq("auteur_id", userId)
@@ -67,7 +67,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
   let votesCount = 0;
 
   if (taeIds.length > 0) {
-    const { data: voteRows } = await admin
+    const { data: voteRows } = await supabase
       .from("votes")
       .select("rigueur_historique, clarte_consigne, alignement_ministeriel")
       .in("tae_id", taeIds);

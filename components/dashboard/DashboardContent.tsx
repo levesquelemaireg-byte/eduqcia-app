@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { createServiceClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { DashboardWidget } from "@/components/dashboard/DashboardWidget";
 import { getDashboardStats } from "@/lib/queries/dashboard";
 import { getDisplayName } from "@/lib/utils/profile-display";
@@ -19,8 +19,8 @@ function formatConfidence(avg: number | null, voteRows: number): string {
 }
 
 export async function DashboardContent({ userId }: { userId: string }) {
-  const admin = createServiceClient();
-  const { data: profile } = await admin
+  const supabase = await createClient();
+  const { data: profile } = await supabase
     .from("profiles")
     .select("first_name, last_name, school_id, schools(nom_officiel, css:css(nom_officiel))")
     .eq("id", userId)
@@ -29,12 +29,13 @@ export async function DashboardContent({ userId }: { userId: string }) {
   const stats = await getDashboardStats(userId);
 
   const fullName = profile ? getDisplayName(profile.first_name ?? "", profile.last_name ?? "") : "";
-  const schoolData = profile?.schools as {
-    nom_officiel: string;
-    css: { nom_officiel: string } | null;
-  } | null;
+  // schools est un objet unique (FK many-to-one), mais les types générés l'infèrent en array.
+  const raw = profile?.schools;
+  const schoolData = Array.isArray(raw) ? raw[0] : raw;
+  const cssRaw = schoolData?.css;
+  const cssObj = Array.isArray(cssRaw) ? cssRaw[0] : cssRaw;
   const ecoleLabel = schoolData?.nom_officiel?.trim() || "École non renseignée";
-  const cssLabel = schoolData?.css?.nom_officiel?.trim() || "Centre de services non renseigné";
+  const cssLabel = cssObj?.nom_officiel?.trim() || "Centre de services non renseigné";
 
   return (
     <>

@@ -63,17 +63,16 @@ export async function genererTokenApercuEpreuve(evaluationId: string): Promise<G
 
   const taeIds = (links ?? []).map((l) => l.tae_id as string);
 
-  // 3. Convertir chaque tâche
+  // 3. Convertir chaque tâche (en parallèle)
   const grilles = chargerGrilles();
-  const taches: DonneesTache[] = [];
 
-  for (const taeId of taeIds) {
-    const bundle = await fetchTaeFicheBundle(supabase, taeId);
-    if (!bundle) {
-      return { ok: false, error: `Tâche introuvable (${taeId}).` };
-    }
-    taches.push(ficheTaVersDonneesTache(bundle.fiche, grilles));
+  const bundles = await Promise.all(taeIds.map((id) => fetchTaeFicheBundle(supabase, id)));
+  const missing = taeIds.find((_, i) => !bundles[i]);
+  if (missing) {
+    return { ok: false, error: `Tâche introuvable (${missing}).` };
   }
+
+  const taches: DonneesTache[] = bundles.map((b) => ficheTaVersDonneesTache(b!.fiche, grilles));
 
   // 4. Construire DonneesEpreuve
   const epreuve: DonneesEpreuve = {
