@@ -24,6 +24,7 @@ import {
 } from "@/lib/tache/contrats/etat-wizard-vers-tache";
 import { getSlotData, slotLetter } from "@/lib/tae/document-helpers";
 import { isActiveNonRedactionVariant } from "@/lib/tae/non-redaction/wizard-variant";
+import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { DocumentFiche, TaeFicheData } from "@/lib/types/fiche";
 import { cn } from "@/lib/utils/cn";
 import { GrilleEvalTable } from "@/components/tae/grilles/GrilleEvalTable";
@@ -31,10 +32,15 @@ import { AvantApresPrintableQuestionnaireCore } from "@/components/tae/TaeForm/p
 import { LigneDuTempsPrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore";
 import { OrdreChronologiquePrintableQuestionnaireCore } from "@/components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore";
 import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import { FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE } from "@/lib/ui/ui-copy";
 
 type WizardProps = {
   previewMeta: WizardFichePreviewMeta;
   className?: string;
+  /** Variante de composition (formatif / sommatif standard / ministérielle). */
+  mode?: ModeImpression;
+  /** Affiche la vue corrigée (consigne + corrigé uniquement). */
+  estCorrige?: boolean;
   /** Feuillet contrôlé (PreviewPanel). Si fourni, le toggle interne est masqué. */
   feuillet?: TaePrintFeuilletId;
 };
@@ -92,6 +98,8 @@ export function PrintableGrilleSection({
 type FromTaeProps = {
   tae: TaeFicheData;
   className?: string;
+  mode?: ModeImpression;
+  estCorrige?: boolean;
   /** Feuillet contrôlé de l'extérieur (PreviewPanel). Si fourni, pas de toggle interne. */
   feuillet?: TaePrintFeuilletId;
 };
@@ -194,6 +202,23 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
   );
 }
 
+function PrintableFicheCorrigeSection({ tae }: { tae: TaeFicheData }) {
+  return (
+    <div className={styles.postDocumentsPrintGroup}>
+      <section
+        className={cn(styles.sectionBlock, styles.sectionTightToNext)}
+        aria-label={PRINTABLE_FICHE_SECTION_COPY.consigne}
+      >
+        <PrintableHtml html={tae.consigne} documentSlotCount={tae.documents.length} />
+      </section>
+
+      <section className={styles.sectionBlock} aria-label={FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE}>
+        <PrintableHtml html={tae.corrige} documentSlotCount={tae.documents.length} />
+      </section>
+    </div>
+  );
+}
+
 /**
  * Contenu imprimable à partir d’une fiche persistée (lecture) — même mise en page que le wizard.
  * Deux feuillets (dossier documentaire / questionnaire) : aperçu écran avec bascule ; impression des deux.
@@ -201,11 +226,43 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
 export function PrintableFicheFromTaeData({
   tae,
   className,
+  mode = "sommatif-standard",
+  estCorrige = false,
   feuillet: controlledFeuillet,
 }: FromTaeProps) {
   const [internalFeuillet, setInternalFeuillet] = useState<TaePrintFeuilletId>("dossier");
   const isControlled = controlledFeuillet != null;
   const activeFeuillet = isControlled ? controlledFeuillet : internalFeuillet;
+
+  if (estCorrige) {
+    return (
+      <div
+        id="tae-wizard-printable-fiche"
+        className={cn("printable-sheet", styles.printFeuilletRoot, className)}
+      >
+        <section className={cn(styles.paper)} aria-label={FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE}>
+          <PrintableFicheCorrigeSection tae={tae} />
+        </section>
+      </div>
+    );
+  }
+
+  if (mode === "formatif") {
+    return (
+      <div
+        id="tae-wizard-printable-fiche"
+        className={cn("printable-sheet", styles.printFeuilletRoot, className)}
+      >
+        <section
+          className={cn(styles.paper)}
+          aria-label={PRINTABLE_FICHE_SECTION_COPY.questionnaireFeuillet}
+        >
+          <PrintableFicheDocumentsSection tae={tae} />
+          <PrintableFicheQuestionnaireSection tae={tae} />
+        </section>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -241,7 +298,13 @@ export function PrintableFicheFromTaeData({
 /**
  * Aperçu impression wizard — `etatWizardVersTache` + adaptateur local vers `TaeFicheData`.
  */
-export function PrintableFichePreview({ previewMeta, className, feuillet }: WizardProps) {
+export function PrintableFichePreview({
+  previewMeta,
+  className,
+  mode = "sommatif-standard",
+  estCorrige = false,
+  feuillet,
+}: WizardProps) {
   const { state } = useTaeForm();
   const { oiList } = useOiData();
   const grilles = useGrilles();
@@ -292,7 +355,7 @@ export function PrintableFichePreview({ previewMeta, className, feuillet }: Wiza
       aspects_societe: donnees.aspects_societe,
       nb_lignes: donnees.nb_lignes,
       showStudentAnswerLines: !isActiveNonRedactionVariant(state),
-      showGuidageOnStudentSheet: undefined,
+      showGuidageOnStudentSheet: mode === "formatif" && !estCorrige ? undefined : false,
       niveau: donnees.niveau,
       discipline: donnees.discipline,
       oi: donnees.oi,
@@ -309,7 +372,7 @@ export function PrintableFichePreview({ previewMeta, className, feuillet }: Wiza
     };
 
     return taeFiche;
-  }, [state, oiList, grilles, previewMeta]);
+  }, [state, oiList, grilles, previewMeta, mode, estCorrige]);
 
   if (!tae) {
     return (
@@ -326,5 +389,13 @@ export function PrintableFichePreview({ previewMeta, className, feuillet }: Wiza
     );
   }
 
-  return <PrintableFicheFromTaeData tae={tae} className={className} feuillet={feuillet} />;
+  return (
+    <PrintableFicheFromTaeData
+      tae={tae}
+      className={className}
+      mode={mode}
+      estCorrige={estCorrige}
+      feuillet={feuillet}
+    />
+  );
 }

@@ -16,6 +16,8 @@ export type SegmentedControlProps = {
   "aria-label"?: string;
   "aria-labelledby"?: string;
   className?: string;
+  /** Classes additionnelles appliquées sur chaque bouton segment. */
+  buttonClassName?: string;
 };
 
 /**
@@ -29,6 +31,7 @@ export function SegmentedControl({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledby,
   className,
+  buttonClassName,
 }: SegmentedControlProps) {
   return (
     <div
@@ -49,11 +52,12 @@ export function SegmentedControl({
             aria-pressed={active}
             onClick={() => onChange(opt.value)}
             className={cn(
-              "inline-flex min-h-0 items-center justify-center gap-2 rounded-md border-0 px-[14px] py-2 text-[13px] font-medium transition-all duration-150",
-              "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
+              "inline-flex min-h-0 items-center justify-center gap-2 rounded-md border-0 px-3.5 py-2 text-[13px] font-medium transition-all duration-150",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
               active
-                ? "bg-[color:var(--color-background-info)] text-[color:var(--color-text-info)]"
-                : "bg-transparent text-[color:var(--color-text-secondary)] hover:text-deep",
+                ? "bg-(--color-background-info) text-(--color-text-info)"
+                : "bg-transparent text-(--color-text-secondary) hover:text-deep",
+              buttonClassName,
             )}
           >
             {opt.icon ? (

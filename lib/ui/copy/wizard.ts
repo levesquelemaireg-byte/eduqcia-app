@@ -27,6 +27,23 @@ export const TAE_BLUEPRINT_STEP_DESCRIPTION =
 /** Wizard — Étape 2 — `aria-label` du bouton info à côté du titre */
 export const TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA = "Afficher l'aide sur cette étape";
 
+/** Panneau d'aperçu wizard — navigation sommaire / aperçu imprimé. */
+export const PREVIEW_PANEL_SUMMARY_LABEL = "Sommaire détaillé";
+export const PREVIEW_PANEL_PRINT_LABEL = "Aperçu de l'imprimé";
+export const PREVIEW_PANEL_SUMMARY_SHORT_LABEL = "Sommaire";
+export const PREVIEW_PANEL_PRINT_SHORT_LABEL = "Imprimé";
+export const PREVIEW_PANEL_PRINT_FORMATIF_LABEL = "Formatif";
+export const PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL = "Sommatif standard";
+export const PREVIEW_PANEL_PRINT_CORRIGE_LABEL = "Corrigé";
+export const PREVIEW_PANEL_FEUILLET_DOSSIER_LABEL = "Dossier documentaire";
+export const PREVIEW_PANEL_FEUILLET_QUESTIONNAIRE_LABEL = "Questionnaire";
+export const PREVIEW_PANEL_MODE_ARIA = "Mode d'aperçu";
+export const PREVIEW_PANEL_VARIANT_ARIA = "Variante d'aperçu imprimé";
+export const PREVIEW_PANEL_FEUILLET_ARIA = "Feuillet d'aperçu imprimé";
+export const PREVIEW_PANEL_OPTIONS_BUTTON_ARIA = "Afficher les options d'aperçu";
+export const PREVIEW_PANEL_OPTIONS_CLOSE_ARIA = "Fermer les options d'aperçu";
+export const PREVIEW_PANEL_OPTIONS_TITLE = "Options";
+
 /** Wizard TAÉ — étape 3 — Bloc 3 (consigne + guidage) — `step-meta.ts` */
 export const BLOC3_TITRE = "Consigne et guidage complémentaire";
 export const BLOC3_DESCRIPTION =

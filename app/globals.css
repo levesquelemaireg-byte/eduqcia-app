@@ -101,6 +101,17 @@
   --color-bg: hsl(210, 25%, 98%);
   --color-panel: hsl(0, 0%, 100%);
   --color-panel-alt: hsl(210, 20%, 96%);
+
+  /* PreviewPanel — top navigation tokens */
+  --preview-topnav-bg: var(--color-panel);
+  --preview-topnav-line: rgb(0 0 0 / 0.08);
+  --preview-topnav-ink: rgb(26 32 39);
+  --preview-topnav-ink-2: rgb(71 79 91);
+  --preview-topnav-ink-3: rgb(99 109 123);
+  --preview-topnav-hover: rgb(245 247 249);
+  --preview-topnav-active: rgb(238 241 244);
+  --preview-topnav-accent: var(--color-accent);
+
   /* Alias formulaires / badges (compteur légende, etc.) */
   --color-background-secondary: var(--color-panel-alt);
   --color-tertiary: var(--color-muted);

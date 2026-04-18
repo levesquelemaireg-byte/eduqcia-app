@@ -1,7 +1,7 @@
 "use client";
 
 import type { ComponentType, ReactNode } from "react";
-import { createElement, useMemo, useState } from "react";
+import { createElement } from "react";
 import { Bloc1AuteursTache } from "@/components/tae/TaeForm/Bloc1AuteursTache";
 import { Bloc2ParametresTache } from "@/components/tae/TaeForm/Bloc2ParametresTache";
 import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/Bloc3ConsigneProduction";
@@ -9,10 +9,7 @@ import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4Documen
 import { Bloc6CompetenceDisciplinaire } from "@/components/tae/TaeForm/Bloc6CompetenceDisciplinaire";
 import { Bloc7AspectsConnaissances } from "@/components/tae/TaeForm/Bloc7AspectsConnaissances";
 import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
-import { useOiData, useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
 import { PrintableFichePreview } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
-import { PrintPreviewModal } from "@/components/tae/TaeForm/preview/PrintPreviewModal";
-import { WizardPreviewToolbar } from "@/components/tae/TaeForm/preview/WizardPreviewToolbar";
 import { FicheSommaireColumn } from "@/components/tae/TaeForm/sommaire";
 import { PreviewPanel } from "@/components/preview/PreviewPanel";
 import type { PreviewMode } from "@/components/preview/types";
@@ -33,12 +30,7 @@ import {
 } from "@/components/tae/TaeForm/FormState";
 import { TAE_FORM_STEPS } from "@/components/tae/TaeForm/step-meta";
 import { resolveWizardBlocComponent } from "@/components/tae/TaeForm/wizardBlocResolver";
-import type { DonneesTache } from "@/lib/tache/contrats/donnees";
-import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
-import {
-  etatWizardVersTache,
-  type GrilleEvaluationEntree,
-} from "@/lib/tache/contrats/etat-wizard-vers-tache";
+import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { WizardFichePreviewMeta } from "@/lib/tae/fiche-helpers";
 import type { TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
 import {
@@ -53,6 +45,13 @@ import {
   NR_LIGNE_TEMPS_STEP4_TITLE,
   NR_ORDRE_STEP4_DESCRIPTION,
   NR_ORDRE_STEP4_TITLE,
+  PREVIEW_PANEL_FEUILLET_DOSSIER_LABEL,
+  PREVIEW_PANEL_FEUILLET_QUESTIONNAIRE_LABEL,
+  PREVIEW_PANEL_PRINT_CORRIGE_LABEL,
+  PREVIEW_PANEL_PRINT_FORMATIF_LABEL,
+  PREVIEW_PANEL_PRINT_LABEL,
+  PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL,
+  PREVIEW_PANEL_SUMMARY_LABEL,
   TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA,
 } from "@/lib/ui/ui-copy";
 
@@ -82,27 +81,6 @@ function TaeFormInner({
   showDraftBanners,
 }: TaeFormInnerProps) {
   const { state } = useTaeForm();
-  const [showPrintModal, setShowPrintModal] = useState(false);
-  const { oiList } = useOiData();
-  const grilles = useGrilles();
-
-  const tacheBrouillon = useMemo<DonneesTache | null>(() => {
-    if (!oiList || oiList.length === 0 || !grilles) return null;
-
-    const grillesEntrees: GrilleEvaluationEntree[] = grilles.map((g) => ({
-      id: g.id,
-      oi: g.operation,
-      comportement_enonce: g.comportement_enonce,
-      bareme: g.bareme,
-    }));
-
-    return etatWizardVersTache(state, oiList, grillesEntrees, wizardPreviewMeta);
-  }, [state, oiList, grilles, wizardPreviewMeta]);
-
-  const payloadImpression = useMemo<PayloadImpression | null>(() => {
-    if (!tacheBrouillon) return null;
-    return { type: "tache", donnees: tacheBrouillon };
-  }, [tacheBrouillon]);
   const stepBase = TAE_FORM_STEPS[state.currentStep];
   const step =
     isActiveOrdreChronologiqueVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
@@ -129,14 +107,31 @@ function TaeFormInner({
       ? (resolveWizardBlocComponent(state.currentStep, state) ?? BLOC_COMPONENTS[state.currentStep])
       : BLOC_COMPONENTS[state.currentStep];
   const TAE_PREVIEW_MODES: PreviewMode[] = [
-    { id: "sommaire", label: "Sommaire", icon: "topic" },
+    { id: "sommaire", label: PREVIEW_PANEL_SUMMARY_LABEL, icon: "topic" },
     {
       id: "impression",
-      label: "Aperçu impression",
-      icon: "picture_as_pdf",
+      label: PREVIEW_PANEL_PRINT_LABEL,
+      icon: "print",
       subModes: [
-        { id: "dossier", label: "Dossier documentaire", icon: "description" },
-        { id: "questionnaire", label: "Questionnaire", icon: "quiz" },
+        { id: "formatif", label: PREVIEW_PANEL_PRINT_FORMATIF_LABEL, icon: "exercise" },
+        {
+          id: "sommatif-standard",
+          label: PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL,
+          icon: "two_pager",
+          subModes: [
+            {
+              id: "questionnaire",
+              label: PREVIEW_PANEL_FEUILLET_QUESTIONNAIRE_LABEL,
+              icon: "edit_square",
+            },
+            {
+              id: "dossier",
+              label: PREVIEW_PANEL_FEUILLET_DOSSIER_LABEL,
+              icon: "article",
+            },
+          ],
+        },
+        { id: "corrige", label: PREVIEW_PANEL_PRINT_CORRIGE_LABEL, icon: "task_alt" },
       ],
     },
   ];
@@ -146,7 +141,7 @@ function TaeFormInner({
       <WizardDraftObsoleteToast show={serverDraftObsolete} />
       <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
         {/* Colonne édition — fond blanc (token panel), pas de carte ; scroll interne sur xl */}
-        <div className="tae-wizard-editor-column min-w-0 bg-[var(--color-panel)] px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
+        <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
           {pageHeader ? (
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">{pageHeader}</div>
@@ -202,40 +197,43 @@ function TaeFormInner({
           </div>
         </div>
 
-        {/* Colonne aperçu — toggle flottant Sommaire / Impression */}
+        {/* Colonne aperçu */}
         <div className="tae-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
-          <WizardPreviewToolbar onOpenPrintPreview={() => setShowPrintModal(true)} />
           <PreviewPanel
             modes={TAE_PREVIEW_MODES}
             defaultModeId="sommaire"
-            switcherClassName="pointer-events-auto absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-lg bg-panel/80 px-1 py-1 shadow-md backdrop-blur-sm"
+            topBarClassName="sticky top-0 z-10"
             className="relative min-h-0 flex-1"
           >
-            {(modeId, subModeId) => (
-              <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-[80px] pt-16">
-                <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
-                  {modeId === "impression" ? (
-                    <PrintableFichePreview
-                      previewMeta={wizardPreviewMeta}
-                      feuillet={(subModeId as "dossier" | "questionnaire") ?? "dossier"}
-                    />
-                  ) : (
-                    <FicheSommaireColumn previewMeta={wizardPreviewMeta} />
-                  )}
-                </aside>
-              </div>
-            )}
-          </PreviewPanel>
+            {(modeId, subModeId, subSubModeId) => {
+              const isImpressionMode = modeId === "impression";
+              const varianteActive = subModeId ?? "formatif";
+              const estCorrige = varianteActive === "corrige";
+              const modeImpression: ModeImpression =
+                varianteActive === "formatif" ? "formatif" : "sommatif-standard";
+              const feuilletSommatif =
+                varianteActive === "sommatif-standard"
+                  ? ((subSubModeId as "dossier" | "questionnaire") ?? "questionnaire")
+                  : undefined;
 
-          {payloadImpression && (
-            <PrintPreviewModal
-              open={showPrintModal}
-              onClose={() => setShowPrintModal(false)}
-              payload={payloadImpression}
-              mode="formatif"
-              estCorrige={false}
-            />
-          )}
+              return (
+                <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
+                  <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
+                    {isImpressionMode ? (
+                      <PrintableFichePreview
+                        previewMeta={wizardPreviewMeta}
+                        mode={modeImpression}
+                        estCorrige={estCorrige}
+                        feuillet={feuilletSommatif}
+                      />
+                    ) : (
+                      <FicheSommaireColumn previewMeta={wizardPreviewMeta} />
+                    )}
+                  </aside>
+                </div>
+              );
+            }}
+          </PreviewPanel>
         </div>
       </div>
     </>

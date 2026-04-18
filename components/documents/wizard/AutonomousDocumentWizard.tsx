@@ -14,7 +14,6 @@ import {
   type DocumentWizardStepIndex,
 } from "@/components/documents/document-wizard-step-meta";
 import { DocumentWizardNavFooter } from "@/components/documents/wizard/DocumentWizardNavFooter";
-import { DocumentWizardPrintModal } from "@/components/documents/wizard/DocumentWizardPrintModal";
 import { DocumentWizardPreview } from "@/components/documents/wizard/DocumentWizardPreview";
 import { DocumentWizardPrintPreview } from "@/components/documents/wizard/DocumentWizardPrintPreview";
 import { PreviewPanel } from "@/components/preview/PreviewPanel";
@@ -40,8 +39,9 @@ import { initialAspects } from "@/lib/tae/redaction-helpers";
 import {
   DOCUMENT_MODULE_PAGE_TITLE,
   DOCUMENT_MODULE_PAGE_TITLE_EDIT,
+  PREVIEW_PANEL_PRINT_LABEL,
+  PREVIEW_PANEL_SUMMARY_LABEL,
   DOCUMENT_WIZARD_INTRO,
-  DOCUMENT_WIZARD_PREVIEW_HEADING,
   TOAST_DOCUMENT_CREATE_AUTH,
   TOAST_DOCUMENT_CREATE_FAILED,
   TOAST_DOCUMENT_CREATE_SUCCESS,
@@ -86,7 +86,6 @@ export function AutonomousDocumentWizard({
 }: Props) {
   const router = useRouter();
   const [step, setStep] = useState<DocumentWizardStepIndex>(0);
-  const [printOpen, setPrintOpen] = useState(false);
   const [draftSaving, setDraftSaving] = useState(false);
   const draftHydrated = useRef(false);
 
@@ -263,8 +262,8 @@ export function AutonomousDocumentWizard({
   };
 
   const PREVIEW_MODES: PreviewMode[] = [
-    { id: "sommaire", label: "Sommaire", icon: "topic" },
-    { id: "impression", label: "Aperçu impression", icon: "picture_as_pdf" },
+    { id: "sommaire", label: PREVIEW_PANEL_SUMMARY_LABEL, icon: "topic" },
+    { id: "impression", label: PREVIEW_PANEL_PRINT_LABEL, icon: "print" },
   ];
 
   const stepMeta = DOCUMENT_WIZARD_STEP_METAS[step];
@@ -280,7 +279,7 @@ export function AutonomousDocumentWizard({
   return (
     <FormProvider {...form}>
       <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
-        <div className="tae-wizard-editor-column min-w-0 bg-[var(--color-panel)] px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
+        <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
           <div>
             <header>
               <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
@@ -332,34 +331,19 @@ export function AutonomousDocumentWizard({
                   isSubmitting={isSubmitting}
                 />
               </div>
-
-              <section
-                className="mt-10 border-t border-border pt-6 xl:hidden"
-                aria-labelledby="document-wizard-mobile-preview-title"
-              >
-                <h3
-                  id="document-wizard-mobile-preview-title"
-                  className="text-base font-semibold text-deep"
-                >
-                  {DOCUMENT_WIZARD_PREVIEW_HEADING}
-                </h3>
-                <div className="mt-4 max-h-[min(55vh,28rem)] overflow-y-auto rounded-xl border border-border/60 bg-steel/10 p-4">
-                  <DocumentWizardPreview compact />
-                </div>
-              </section>
             </div>
           </div>
         </div>
 
-        <div className="tae-wizard-preview-canvas relative hidden min-h-0 min-w-0 flex-1 flex-col xl:flex xl:min-h-0 xl:overflow-hidden">
+        <div className="tae-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
           <PreviewPanel
             modes={PREVIEW_MODES}
             defaultModeId="sommaire"
-            switcherClassName="pointer-events-auto absolute left-1/2 top-4 z-10 -translate-x-1/2 rounded-lg bg-panel/80 px-1 py-1 shadow-md backdrop-blur-sm"
+            topBarClassName="sticky top-0 z-10"
             className="relative min-h-0 flex-1"
           >
-            {(modeId, _subModeId) => (
-              <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-[80px] pt-16">
+            {(modeId, _subModeId, _subSubModeId) => (
+              <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
                 <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
                   {modeId === "impression" ? (
                     <DocumentWizardPrintPreview />
@@ -372,10 +356,6 @@ export function AutonomousDocumentWizard({
           </PreviewPanel>
         </div>
       </div>
-
-      <DocumentWizardPrintModal open={printOpen} onClose={() => setPrintOpen(false)}>
-        <DocumentWizardPreview />
-      </DocumentWizardPrintModal>
     </FormProvider>
   );
 }

@@ -660,8 +660,13 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 #### Barre d'aperçu (wizard)
 
-- Contrôle flottant : **icône seule** visible ; libellé porté par **`aria-label`** (accessibilité).
-- Aperçu impression — icône Material `print` (ouvre la modale).
+- Navigation principale (desktop et mobile) : **Sommaire détaillé** ; **Aperçu de l'imprimé**.
+- Raccourcis mobiles (très petits écrans) : **Sommaire** ; **Imprimé**.
+- Wizard tâche — variantes d'impression visibles lorsque **Aperçu de l'imprimé** est actif : **Formatif** ; **Sommatif standard** ; **Corrigé**.
+- Wizard tâche — feuillets visibles lorsque **Sommatif standard** est actif : **Questionnaire** ; **Dossier documentaire**.
+- Wizard document — pas de variante secondaire (Sommaire détaillé / Aperçu de l'imprimé uniquement).
+- Mobile (sous `md`) : bouton options (icône `tune`) ouvrant une feuille basse **Options** pour choisir variante et feuillet.
+- Accessibilité : `Mode d'aperçu` ; `Variante d'aperçu imprimé` ; `Feuillet d'aperçu imprimé` ; `Afficher les options d'aperçu` ; `Fermer les options d'aperçu`.
 
 ---
 
