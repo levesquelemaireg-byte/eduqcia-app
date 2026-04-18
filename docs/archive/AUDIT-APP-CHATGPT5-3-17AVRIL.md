@@ -1,4 +1,12 @@
-Audit de l’application ÉduQc.IA
+# Audit de l’application ÉduQc.IA (archivé 2026-04-18)
+
+> Date : 17 avril 2026
+> Clôturé : 18 avril 2026 — remédiation complétée en 9 lots
+> Source : audit externe (ChatGPT o3, 17 avril 2026)
+> Périmètre : sécurité, robustesse, performance, scalabilité, architecture, impression
+> Limitations résiduelles documentées : `lib/epreuve/PRINT-ENGINE-LIMITATIONS.md`
+
+---
 
 1. Résumé exécutif
    Critique 1 : pipeline impression avec rendu HTML non sanitizé dans les blocs questionnaire et corrigé, exposant à du XSS sur des contenus utilisateurs dans la sortie imprimable (quadruplet.tsx:47, quadruplet.tsx:60, corrige.tsx:40, epreuve-vers-paginee.ts:71).
