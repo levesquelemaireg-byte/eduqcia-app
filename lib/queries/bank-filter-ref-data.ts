@@ -1,5 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { unstable_cache } from "next/cache";
 
+import { createServiceClient } from "@/lib/supabase/admin";
 import type { Database } from "@/lib/types/database";
 
 type Client = SupabaseClient<Database>;
@@ -16,22 +18,50 @@ export type BankTaeFilterRefs = {
   comportements: BankComportementOption[];
 };
 
+/** Niveaux + disciplines + OI actives — cache 1 h (données quasi-immuables). */
+const getStaticFilterRefs = unstable_cache(
+  async () => {
+    const supabase = createServiceClient();
+    const [nivRes, discRes, oiRes] = await Promise.all([
+      supabase.from("niveaux").select("id, label").order("ordre", { ascending: true }),
+      supabase.from("disciplines").select("id, label").order("id", { ascending: true }),
+      supabase
+        .from("oi")
+        .select("id, titre")
+        .eq("status", "active")
+        .order("ordre", { ascending: true }),
+    ]);
+
+    const niveaux: BankNiveauOption[] = (nivRes.data ?? []).map((r) => ({
+      id: r.id,
+      label: r.label,
+    }));
+    const disciplines: BankDisciplineOption[] = (discRes.data ?? []).map((r) => ({
+      id: r.id,
+      label: r.label,
+    }));
+    const ois: BankOiOption[] = (oiRes.data ?? []).map((r) => ({
+      id: r.id,
+      titre: r.titre,
+    }));
+
+    return { niveaux, disciplines, ois };
+  },
+  ["bank-static-filter-refs"],
+  { revalidate: 3600 },
+);
+
 /**
  * Données de référence pour les filtres banque — onglet Tâches.
- * `comportements` : liste filtrée par `oiId` si fourni.
+ * Niveaux, disciplines et OI sont cachés 1 h (quasi-immuables).
+ * `comportements` : filtrés par `oiId`, requête légère par appel.
  */
 export async function getBankTaeFilterRefs(
   supabase: Client,
   oiId: string | null,
 ): Promise<BankTaeFilterRefs> {
-  const [nivRes, discRes, oiRes, compRes] = await Promise.all([
-    supabase.from("niveaux").select("id, label").order("ordre", { ascending: true }),
-    supabase.from("disciplines").select("id, label").order("id", { ascending: true }),
-    supabase
-      .from("oi")
-      .select("id, titre")
-      .eq("status", "active")
-      .order("ordre", { ascending: true }),
+  const [staticRefs, compRes] = await Promise.all([
+    getStaticFilterRefs(),
     oiId
       ? supabase
           .from("comportements")
@@ -41,22 +71,10 @@ export async function getBankTaeFilterRefs(
       : Promise.resolve({ data: [] as { id: string; enonce: string }[], error: null }),
   ]);
 
-  const niveaux: BankNiveauOption[] = (nivRes.data ?? []).map((r) => ({
-    id: r.id,
-    label: r.label,
-  }));
-  const disciplines: BankDisciplineOption[] = (discRes.data ?? []).map((r) => ({
-    id: r.id,
-    label: r.label,
-  }));
-  const ois: BankOiOption[] = (oiRes.data ?? []).map((r) => ({
-    id: r.id,
-    titre: r.titre,
-  }));
   const comportements: BankComportementOption[] = (compRes.data ?? []).map((r) => ({
     id: r.id,
     enonce: r.enonce,
   }));
 
-  return { niveaux, disciplines, ois, comportements };
+  return { ...staticRefs, comportements };
 }
