@@ -1,8 +1,11 @@
 # Correctifs useApercuPng — Synthèse finale
 
+> **APPLIQUÉ le 2026-04-17** — commit `707b155`, fichier `hooks/epreuve/use-apercu-png.ts`.
+> Les 7 correctifs ont été implémentés. Ce document est archivé.
+
 > Synthèse de 5 analyses indépendantes (Grok, DeepSeek, ChatGPT, Gemini, Copilot)
 >
-> - analyse interne. Prêt pour implémentation via Claude Code.
+> - analyse interne.
 
 ---
 
