@@ -13,6 +13,7 @@ import {
   DOCUMENT_WIZARD_STEP_COUNT,
   type DocumentWizardStepIndex,
 } from "@/components/documents/document-wizard-step-meta";
+import { ActiveFieldProvider } from "@/components/documents/wizard/active-field-context";
 import { DocumentWizardNavFooter } from "@/components/documents/wizard/DocumentWizardNavFooter";
 import { DocumentWizardPreview } from "@/components/documents/wizard/DocumentWizardPreview";
 import { DocumentWizardPrintPreview } from "@/components/documents/wizard/DocumentWizardPrintPreview";
@@ -63,7 +64,8 @@ type Props = {
 
 function defaultFormValues(): AutonomousDocumentFormValues {
   return {
-    structure: "simple",
+    // §2.10.1 — aucune structure pré-sélectionnée au démarrage.
+    structure: null,
     nb_perspectives: undefined,
     titre: "",
     elements: [createEmptyElement()],
@@ -174,9 +176,9 @@ export function AutonomousDocumentWizard({
   const validateStep = useCallback(
     async (s: DocumentWizardStepIndex): Promise<boolean> => {
       if (s === 0) {
-        const ok = await trigger(["structure"]);
-        if (!ok) return false;
+        // §2.10.1 — la structure doit être choisie explicitement (Zod accepte null côté form).
         const st = getValues("structure");
+        if (st == null) return false;
         if (st === "perspectives") {
           const nb = getValues("nb_perspectives");
           if (nb !== 2 && nb !== 3) return false;
@@ -190,6 +192,9 @@ export function AutonomousDocumentWizard({
         const st = getValues("structure");
         const els = getValues("elements");
         for (const el of els) {
+          // §2.10.1 — type et source_type doivent être choisis.
+          if (el.type == null) return false;
+          if (el.source_type == null) return false;
           if (el.type === "textuel" && !htmlHasMeaningfulText(el.contenu ?? "")) return false;
           if (el.type === "textuel" && el.categorie_textuelle == null) return false;
           if (el.type === "iconographique" && !(el.image_url ?? "").trim()) return false;
@@ -278,86 +283,92 @@ export function AutonomousDocumentWizard({
 
   return (
     <FormProvider {...form}>
-      <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
-        <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
-          <div>
-            <header>
-              <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
-                {mode === "edit" ? DOCUMENT_MODULE_PAGE_TITLE_EDIT : DOCUMENT_MODULE_PAGE_TITLE}
-              </h1>
-              <p className="mt-2 text-sm text-muted md:text-base">{DOCUMENT_WIZARD_INTRO}</p>
-            </header>
+      <ActiveFieldProvider>
+        <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
+          <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
+            <div>
+              <header>
+                <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
+                  {mode === "edit" ? DOCUMENT_MODULE_PAGE_TITLE_EDIT : DOCUMENT_MODULE_PAGE_TITLE}
+                </h1>
+                <p className="mt-2 text-sm text-muted md:text-base">{DOCUMENT_WIZARD_INTRO}</p>
+              </header>
 
-            <div className="mt-6 border-b border-border pb-5 md:mt-8 md:pb-6">
-              <WizardStepper
-                className="px-0 pb-0 pt-0"
-                steps={DOCUMENT_WIZARD_STEPS_FOR_STEPPER}
-                currentStep={step}
-                onCompletedStepClick={handleCompletedStepClick}
-                navAriaLabel="Étapes du formulaire de création de document"
-              />
-            </div>
-
-            <div className="pt-6 md:pt-8">
-              <h2
-                id="document-wizard-step-heading"
-                className="text-xl font-semibold tracking-tight text-deep"
-              >
-                {stepMeta.label}
-              </h2>
-              {stepDescription ? (
-                <p className="mt-2 text-sm leading-relaxed text-muted">{stepDescription}</p>
-              ) : null}
-
-              <div className="mt-6">
-                {step === 0 ? <StepStructure /> : null}
-                {step === 1 ? <StepDocument /> : null}
-                {step === 2 ? (
-                  <StepClassification niveaux={niveaux} disciplineOptions={filteredDisciplines} />
-                ) : null}
-                {step === 3 ? <StepConfirmation /> : null}
-
-                <DocumentWizardNavFooter
-                  canPrev={canPrev}
-                  onPrev={handlePrev}
-                  showNext={showNext}
-                  onNext={() => void handleNext()}
-                  nextDisabled={false}
-                  onSaveDraft={saveDraft}
-                  draftSaving={draftSaving}
-                  showDraft={mode !== "edit"}
-                  onSubmit={() => void handleSubmit(onValid)()}
-                  submitDisabled={!legalAccepted}
-                  isSubmitting={isSubmitting}
+              <div className="mt-6 border-b border-border pb-5 md:mt-8 md:pb-6">
+                <WizardStepper
+                  className="px-0 pb-0 pt-0"
+                  steps={DOCUMENT_WIZARD_STEPS_FOR_STEPPER}
+                  currentStep={step}
+                  onCompletedStepClick={handleCompletedStepClick}
+                  navAriaLabel="Étapes du formulaire de création de document"
                 />
+              </div>
+
+              <div className="pt-6 md:pt-8">
+                <h2
+                  id="document-wizard-step-heading"
+                  className="text-xl font-semibold tracking-tight text-deep"
+                >
+                  {stepMeta.label}
+                </h2>
+                {stepDescription ? (
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{stepDescription}</p>
+                ) : null}
+
+                <div className="mt-6">
+                  {step === 0 ? <StepStructure /> : null}
+                  {step === 1 ? <StepDocument /> : null}
+                  {step === 2 ? (
+                    <StepClassification niveaux={niveaux} disciplineOptions={filteredDisciplines} />
+                  ) : null}
+                  {step === 3 ? <StepConfirmation /> : null}
+
+                  <DocumentWizardNavFooter
+                    canPrev={canPrev}
+                    onPrev={handlePrev}
+                    showNext={showNext}
+                    onNext={() => void handleNext()}
+                    nextDisabled={false}
+                    onSaveDraft={saveDraft}
+                    draftSaving={draftSaving}
+                    showDraft={mode !== "edit"}
+                    onSubmit={() => void handleSubmit(onValid)()}
+                    submitDisabled={!legalAccepted}
+                    isSubmitting={isSubmitting}
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div className="relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col border-l border-border bg-panel xl:min-h-0 xl:overflow-hidden">
-          <PreviewPanel
-            modes={PREVIEW_MODES}
-            defaultModeId="sommaire"
-            topBarClassName="sticky top-0 z-10"
-            className="relative min-h-0 flex-1"
-          >
-            {(modeId, _subModeId, _subSubModeId) =>
-              modeId === "impression" ? (
-                <div className="tae-wizard-preview-canvas flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
-                  <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
-                    <DocumentWizardPrintPreview />
-                  </aside>
-                </div>
-              ) : (
-                <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain bg-panel p-4 sm:p-6 xl:px-12 xl:pt-8">
-                  <DocumentWizardPreview step={step} niveaux={niveaux} disciplines={disciplines} />
-                </div>
-              )
-            }
-          </PreviewPanel>
+          <div className="relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col border-l border-border bg-panel xl:min-h-0 xl:overflow-hidden">
+            <PreviewPanel
+              modes={PREVIEW_MODES}
+              defaultModeId="sommaire"
+              topBarClassName="sticky top-0 z-10"
+              className="relative min-h-0 flex-1"
+            >
+              {(modeId, _subModeId, _subSubModeId) =>
+                modeId === "impression" ? (
+                  <div className="tae-wizard-preview-canvas flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
+                    <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
+                      <DocumentWizardPrintPreview />
+                    </aside>
+                  </div>
+                ) : (
+                  <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain bg-panel p-4 sm:p-6 xl:px-12 xl:pt-8">
+                    <DocumentWizardPreview
+                      step={step}
+                      niveaux={niveaux}
+                      disciplines={disciplines}
+                    />
+                  </div>
+                )
+              }
+            </PreviewPanel>
+          </div>
         </div>
-      </div>
+      </ActiveFieldProvider>
     </FormProvider>
   );
 }

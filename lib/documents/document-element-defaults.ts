@@ -1,16 +1,20 @@
 import type { DocumentElementFormValues } from "@/lib/schemas/autonomous-document";
 
-/** Crée un élément de document vide avec un ID client unique. */
+/**
+ * Crée un élément de document vide avec un ID client unique.
+ * §2.10 — aucune pré-sélection : `type` et `source_type` sont `null`
+ * tant que l'utilisateur n'a rien choisi.
+ */
 export function createEmptyElement(): DocumentElementFormValues {
   return {
     id: crypto.randomUUID(),
-    type: "textuel",
+    type: null,
     contenu: "",
     image_url: "",
     image_intrinsic_width: undefined,
     image_intrinsic_height: undefined,
     source_citation: "",
-    source_type: "secondaire",
+    source_type: null,
     image_legende: "",
     image_legende_position: null,
     type_iconographique: null,

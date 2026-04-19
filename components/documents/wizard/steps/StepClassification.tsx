@@ -3,6 +3,7 @@
 import { useId, useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { DocumentWizardMillerConnaissances } from "@/components/documents/wizard/DocumentWizardMillerConnaissances";
+import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { ListboxField } from "@/components/ui/ListboxField";
 import { RequiredMark } from "@/components/ui/RequiredMark";
@@ -43,6 +44,11 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
   const [connHelpOpen, setConnHelpOpen] = useState(false);
   const connFieldsetLabelId = useId();
 
+  const niveauxFocus = useFieldFocusHandlers("niveaux");
+  const disciplinesFocus = useFieldFocusHandlers("disciplines");
+  const connaissancesFocus = useFieldFocusHandlers("connaissances");
+  const aspectsFocus = useFieldFocusHandlers("aspects_societe");
+
   const niveauOptions = useMemo(
     () => niveaux.map((n) => ({ value: String(n.id), label: n.label })),
     [niveaux],
@@ -71,7 +77,7 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
   return (
     <div className="space-y-8">
       <div className="grid gap-4 sm:grid-cols-2">
-        <div className="flex flex-col gap-[var(--space-2)]">
+        <div className="flex flex-col gap-[var(--space-2)]" {...niveauxFocus}>
           <label htmlFor="doc-wizard-niveau" className="text-sm font-medium text-deep">
             {DOCUMENT_MODULE_INDEX_NIVEAU} <RequiredMark />
           </label>
@@ -108,7 +114,7 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
             </p>
           ) : null}
         </div>
-        <div className="flex flex-col gap-[var(--space-2)]">
+        <div className="flex flex-col gap-[var(--space-2)]" {...disciplinesFocus}>
           <label htmlFor="doc-wizard-discipline" className="text-sm font-medium text-deep">
             {DOCUMENT_MODULE_INDEX_DISCIPLINE} <RequiredMark />
           </label>
@@ -160,7 +166,7 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
         <p className="text-sm leading-relaxed text-deep">{DOCUMENT_WIZARD_CONN_HELP}</p>
       </SimpleModal>
 
-      <fieldset className="space-y-2" aria-labelledby={connFieldsetLabelId}>
+      <fieldset className="space-y-2" aria-labelledby={connFieldsetLabelId} {...connaissancesFocus}>
         <div className="flex flex-wrap items-center gap-1.5">
           <span id={connFieldsetLabelId} className="text-sm font-semibold text-deep">
             {DOCUMENT_MODULE_INDEX_CONNAISSANCES}
@@ -179,7 +185,7 @@ export function StepClassification({ niveaux, disciplineOptions }: Props) {
         />
       </fieldset>
 
-      <fieldset className="space-y-2">
+      <fieldset className="space-y-2" {...aspectsFocus}>
         <legend className="text-sm font-semibold text-deep">
           {DOCUMENT_MODULE_ASPECTS_LABEL} <RequiredMark />
         </legend>

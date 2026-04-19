@@ -1,13 +1,24 @@
 # SPEC-SOMMAIRE-DOCUMENT.md
 
-**Statut :** **LIVRÉE** (18 avril 2026) — spec archivée dans `docs/specs/fermees/`.
+**Statut :** **LIVRÉE** (v1 : 18 avril 2026, addendum §2.10 : 19 avril 2026).
 
-**Livré :**
+**Livré (v1) :**
 
 - Tranche 1 — Terminologie « Repère temporel » → « Ancrage temporel », primitive `Tooltip` light card, tooltip sur le champ Ancrage du wizard document.
 - Tranche 2 — Sommaire détaillé du wizard document (layout 2 colonnes, pulse de la zone active via `@keyframes zonePulse` + `.doc-sommaire-zone-highlighted`, header `StatusBadge` + sub-chips, colonne droite = 3 groupes de badges).
 - Tranche 3 — Miniature du document **unifiée** pour les 3 surfaces (Mes documents, Profil collègue, Banque collaborative). RPC `get_documents_enriched` (source de vérité), `documentsRepository`, composant `DocumentMiniature` unique, suppression de `DocumentFicheThumbnail`.
 - Tranche 4 — Deep-link « Réutiliser dans une tâche » depuis la banque (`/questions/new?doc=<id>&slot=A`). Kebab `BankDocumentsPanel` → wizard tâche → `InjectDocumentModal` (Remplacer slot A · Injecter dans slot libre · Repartir de zéro) ou injection silencieuse si brouillon vierge. Alerte douce Bloc 2 si `nb_documents < slots remplis`.
+
+**Livré (addendum 2026-04-19 — section 2.10) :**
+
+Correction du bug d'affichage des valeurs par défaut techniques (« Textuel », « Document simple », « Source Secondaire ») qui apparaissaient comme saisies par l'utilisateur :
+
+- **Aucune pré-sélection** au démarrage du wizard : schémas Zod passés en `.nullable()` sur `type`, `source_type`, `structure` avec `superRefine` à la soumission ; `createEmptyElement()` retourne `type: null`, `source_type: null` ; `createElementsForStructure` ne s'exécute qu'après choix explicite de la structure.
+- **Badges en état placeholder** (`.is-empty`) : label du champ en italique muted + icône éteinte, affichage du nom de la métadonnée comme placeholder (pattern « label-as-placeholder »).
+- **Skeleton pulsant** pour les zones de contenu non renseignées : primitives `SkeletonLine` et `SkeletonRect`, keyframes `skeletonPulse` 2s ease-in-out, 5 lignes à 95/88/92/80/45 % pour le contenu textuel, rectangle 220×120 pour l'iconographique.
+- **Focus granulaire par champ** : contexte React `ActiveFieldProvider` avec `useFieldFocusHandlers(fieldId)` (onFocusCapture/onBlurCapture, 80ms debounce sur blur→null pour éviter flicker Tab). Remplace le pulse de zone basé sur l'étape par un ring accent précis sur le badge ou bloc correspondant au champ en focus.
+- **Transitions** empty → focused → filled 160-180 ms entre les trois états (graisse, couleur, opacité de l'icône, ring accent).
+- **Réécriture complète** de `DocumentWizardPreview` pour lire les valeurs brutes via `watch()` et détecter l'état empty par champ, sans passer par `formValuesToDocFicheData` qui applique des fallbacks.
 
 > **Spécification de design — Sommaire détaillé du document + miniature unifiée + tooltip du design system**
 >
@@ -278,7 +289,234 @@ Dans le **sommaire** (panneau droit), le badge Ancrage n'a pas de tooltip — il
 --color-success-text: hsl(142, 55%, 28%);
 --color-warning-bg: hsl(35, 80%, 95%);
 --color-warning-text: hsl(35, 80%, 35%);
+--color-skeleton: hsl(220, 15%, 93%);
 ```
+
+---
+
+## 2.10 États vides et focus granulaire (addendum)
+
+> **Ajout post-implémentation — 2026-04-19.** Cette section corrige des comportements non spécifiés dans la version initiale. L'implémentation actuelle affiche des valeurs par défaut techniques (« Textuel », « Document simple », « Source Secondaire ») comme si elles avaient été saisies par l'utilisateur, ce qui est trompeur. Cette section définit le traitement correct de l'état vide.
+
+### 2.10.1 Principe directeur — aucune pré-sélection
+
+Quand l'utilisateur arrive sur le wizard document, **aucune valeur n'est pré-sélectionnée**. Le state initial de `DocumentSlotData` a :
+
+- `titre: ''`
+- `type: null` (pas `'textuel'`)
+- `structure: null` (pas `'simple'`)
+- `source_type: null`
+- `categorie_textuelle: null`
+- `categorie_iconographique: null`
+- `contenu: ''`
+- `source_citation: ''`
+- `repere_temporel: ''`
+- `annee_normalisee: null`
+- `niveaux_ids: []`
+- `disciplines_ids: []`
+- `aspects_societe: []`
+- `connaissances_ids: []`
+
+**Conséquence sur le wizard** : le bouton « Suivant » de chaque étape est désactivé tant que les champs obligatoires de l'étape sont à `null` ou vides. C'est de la validation standard, pas une régression fonctionnelle.
+
+**Conséquence sur le sommaire** : aucun badge n'affiche de valeur fantôme. Tous les emplacements sont en état **placeholder** jusqu'à ce que l'utilisateur saisisse quelque chose.
+
+### 2.10.2 État `.is-empty` des badges — placeholder avec label du champ
+
+Un badge en état vide affiche le **nom du champ** qu'il va recevoir, pas une valeur fictive. Ça guide l'utilisateur : il sait quelle info va s'afficher à cet emplacement.
+
+**Specs visuelles** :
+
+```css
+.badge.is-empty {
+  color: var(--color-ink-2); /* muted au lieu de deep */
+  font-weight: 500; /* léger au lieu de 700 */
+  font-style: italic; /* signal placeholder */
+}
+.badge.is-empty .ico {
+  color: var(--color-ink-4); /* icône éteinte au lieu d'accent */
+}
+```
+
+Fond reste `--color-panel-alt` (pas de différence sur le fond — la distinction se lit dans le texte et l'icône).
+
+### 2.10.3 Inventaire exhaustif des placeholders
+
+**Header** :
+
+| Élément                     | Valeur placeholder                                   | Style                                                      |
+| --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------- |
+| Titre h1                    | `Titre du document`                                  | `color: --ink-4`, `font-style: italic`, `font-weight: 500` |
+| Sub-chip Type               | `Type de document` + icône `article`                 | Badge `.is-empty`                                          |
+| Sub-chip Structure          | `Structure du document` + icône `crop_square`        | Badge `.is-empty`                                          |
+| Sub-chip Période historique | `Période historique` + icône `PeriodeIcon` composite | Badge `.is-empty`                                          |
+
+**Bloc Contenu du document** (colonne gauche) :
+
+| Élément           | Placeholder                                             |
+| ----------------- | ------------------------------------------------------- |
+| Corps du document | **5 lignes de skeleton** pulsantes (cf. 2.10.5)         |
+| Source            | Label `Source` en gras + **1 ligne de skeleton courte** |
+
+**Bloc Connaissances** (colonne gauche) :
+
+| Élément                 | Placeholder                                       |
+| ----------------------- | ------------------------------------------------- |
+| Arbre des connaissances | 2 lignes de skeleton (simulant racine + niveau 2) |
+
+**Groupe Classification** (colonne droite) :
+
+| Badge              | Valeur placeholder   | Icône           |
+| ------------------ | -------------------- | --------------- |
+| Niveau             | `Niveau scolaire`    | `school`        |
+| Discipline         | `Discipline`         | `menu_book`     |
+| Aspects de société | `Aspects de société` | `deployed_code` |
+
+**Groupe Référencement** (colonne droite) :
+
+| Badge            | Valeur placeholder | Icône                               |
+| ---------------- | ------------------ | ----------------------------------- |
+| Type de source   | `Type de source`   | — (pas d'icône, cf. spec originale) |
+| Catégorie        | `Catégorie`        | `label` (générique — voir 2.10.4)   |
+| Ancrage temporel | `Ancrage temporel` | `anchor`                            |
+
+**Groupe Informations** (colonne droite) :
+
+| Badge               | Comportement                                                                                                          |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Auteur              | **Toujours rempli** — c'est l'utilisateur courant, connu au démarrage. Pas d'état placeholder.                        |
+| Date de création    | **Toujours rempli** — timestamp du moment d'ouverture du wizard ou de la sauvegarde initiale. Pas d'état placeholder. |
+| Date de mise à jour | Masqué tant qu'aucune modification n'a eu lieu. Apparaît après la première sauvegarde.                                |
+| Utilisation         | Masqué tant que le document n'est pas publié ou si aucune tâche ne l'utilise.                                         |
+
+### 2.10.4 Icône placeholder pour Catégorie
+
+L'icône définitive dépend de la valeur choisie (`gavel`, `photo_camera`, `palette`, etc.). En état placeholder, on utilise une icône générique **`label`** (étiquette classique avec un petit cercle pour le trou d'accrochage) :
+
+- Couleur : `--color-ink-4` (éteinte)
+- Dès que le type + la catégorie sont choisis → bascule vers l'icône spécifique de la valeur, couleur `--color-accent`
+
+Label adaptatif selon le contexte :
+
+- Type pas choisi → `Catégorie`
+- Type = textuel → `Catégorie textuelle`
+- Type = iconographique → `Catégorie iconographique`
+- Valeur choisie → libellé de la valeur (ex. « Textes savants »)
+
+### 2.10.5 Skeleton avec pulsation douce
+
+Les zones de contenu non renseignées (contenu, source, connaissances) utilisent des **skeleton pulsants** — pas un état statique mort, pas un shimmer trop distrayant. Une respiration uniforme entre les deux.
+
+**Specs CSS** :
+
+```css
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.skeleton-line {
+  height: 11px;
+  background: var(--color-skeleton); /* hsl(220, 15%, 93%) */
+  border-radius: 4px;
+  animation: skeletonPulse 2s ease-in-out infinite;
+}
+```
+
+**Largeurs des lignes** (pour simuler un texte naturel, pas mécanique) :
+
+- Ligne 1 : 95%
+- Ligne 2 : 88%
+- Ligne 3 : 92%
+- Ligne 4 : 80%
+- Ligne 5 : 45%
+
+Gap vertical entre lignes : **8px**. Padding vertical du conteneur : **4px**.
+
+**Pour le cas iconographique** : si `type === 'iconographique'`, remplacer les 5 lignes par **un rectangle skeleton** `aspect-ratio: 5 / 3.2`, largeur 100%, même animation.
+
+### 2.10.6 Focus granulaire — pulse par champ actif
+
+Au lieu de pulser toute la zone d'une étape, le sommaire pulse **l'élément précis** correspondant au champ en focus dans le wizard.
+
+**Mapping complet champ wizard → élément du sommaire qui pulse** :
+
+| Champ du wizard (panneau gauche)                           | Élément du sommaire qui pulse (panneau droit)                        |
+| ---------------------------------------------------------- | -------------------------------------------------------------------- |
+| Radio Structure (`simple` / `perspectives` / `deux_temps`) | Sub-chip **Structure**                                               |
+| Radio Type (`textuel` / `iconographique`)                  | Sub-chip **Type**                                                    |
+| Input Titre                                                | Titre **h1** du sommaire                                             |
+| Éditeur HTML Contenu (textuel)                             | Bloc **Contenu du document** (les lignes skeleton ou le texte rendu) |
+| Upload Image (iconographique)                              | Bloc **Contenu du document** (le rectangle image ou skeleton)        |
+| Input Légende image                                        | Overlay légende dans le bloc Contenu                                 |
+| Input Citation de la source                                | Ligne **Source** dans le bloc Contenu                                |
+| Radio Type de source                                       | Badge **Type de source** (groupe Référencement)                      |
+| Dropdown Catégorie                                         | Badge **Catégorie** (groupe Référencement)                           |
+| Input Ancrage temporel                                     | Badge **Ancrage temporel** (groupe Référencement)                    |
+| Multiselect Niveaux                                        | Badge **Niveau** (groupe Classification)                             |
+| Multiselect Disciplines                                    | Badge **Discipline** (groupe Classification)                         |
+| Multiselect Aspects de société                             | Badge **Aspects de société** (groupe Classification)                 |
+| Tree picker Connaissances                                  | Bloc **Connaissances** (colonne gauche)                              |
+| Checkbox confirmation légale (étape finale)                | Aucun pulse (pas de reflet dans le sommaire)                         |
+
+**Implémentation suggérée** : un state partagé `activeField: string | null` dans le store du wizard, mis à jour par chaque champ sur `onFocus` (set la clé) et `onBlur` (reset à `null`). Chaque badge/bloc du sommaire reçoit ce state et applique la classe `.is-focused` si son identifiant correspond.
+
+**Style de la classe `.is-focused`** :
+
+```css
+@keyframes badgeFocusPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 var(--color-accent-ring);
+  }
+  50% {
+    box-shadow: 0 0 0 4px var(--color-accent-ring);
+  }
+}
+
+.badge.is-focused,
+.doc-element.is-focused,
+.doc-title.is-focused {
+  outline: 1px solid var(--color-accent);
+  animation: badgeFocusPulse 2s ease-in-out infinite;
+  border-radius: 8px; /* pour que l'outline suive le radius du badge */
+}
+```
+
+**Comportement** :
+
+- **Aucun pulse par défaut** si rien n'est focus. Le sommaire est calme quand l'utilisateur ne tape pas.
+- Un seul élément pulse à la fois (le dernier qui a reçu le focus).
+- Transition douce à l'apparition/disparition : `transition: box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1)` pour éviter le clignotement au changement rapide de focus.
+
+### 2.10.7 Transitions entre états
+
+Chaque badge peut exister dans trois états successifs :
+
+1. **Empty** (placeholder) — label du champ, italique muted, icône éteinte
+2. **Focused** (en cours de saisie) — style empty ou filled + outline accent + pulse
+3. **Filled** (saisi) — valeur réelle, deep weight 700, icône accent
+
+**Transitions** :
+
+```css
+.badge {
+  transition:
+    color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    font-weight 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    font-style 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.badge .ico {
+  transition: color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+```
+
+Quand un badge passe de Empty à Filled, l'utilisateur voit le texte changer de couleur + graisse + style, l'icône devenir accent. C'est subtil mais satisfaisant — le sommaire se remplit visiblement à chaque saisie.
 
 ---
 

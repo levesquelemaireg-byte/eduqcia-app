@@ -143,6 +143,8 @@
   --color-line-soft: hsl(220, 15%, 95%);
   /* Fond neutre pour chips/codes en tooltip — léger au-dessus de panel-alt. */
   --color-hover: hsl(220, 20%, 96%);
+  /* Skeleton — lignes/rectangles pulsants (sommaire document, §2.10.5). */
+  --color-skeleton: hsl(220, 15%, 93%);
 
   /* Corrigé — rouge stylo professeur, distinct de --color-error (réservé aux erreurs UI) */
   --color-corrige: #a32d2d;
@@ -945,23 +947,79 @@ body {
 }
 
 /*
- * Sommaire détaillé document — pulse de la section active pendant le wizard.
- * Spec : SPEC-SOMMAIRE-DOCUMENT §2.3.
+ * Sommaire détaillé document — états vides et focus granulaire.
+ * Spec : SPEC-SOMMAIRE-DOCUMENT §2.10.
  */
-@keyframes zonePulse {
+
+/* Badge en état placeholder (donnée non saisie) — label du champ muted italique + icône éteinte. */
+.doc-sommaire-badge {
+  transition:
+    color 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    font-weight 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    font-style 160ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.doc-sommaire-badge .doc-sommaire-badge-icon {
+  transition: color 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.doc-sommaire-badge.is-empty {
+  color: var(--color-muted);
+  font-weight: 500;
+  font-style: italic;
+}
+.doc-sommaire-badge.is-empty .doc-sommaire-badge-icon {
+  color: color-mix(in srgb, var(--color-muted) 55%, var(--color-panel-alt));
+}
+
+.doc-sommaire-title.is-empty {
+  color: color-mix(in srgb, var(--color-muted) 70%, var(--color-panel-alt));
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Focus granulaire — pulse du badge/bloc correspondant au champ en focus. */
+@keyframes badgeFocusPulse {
   0%,
   100% {
     box-shadow: 0 0 0 0 var(--color-accent-ring);
   }
   50% {
-    box-shadow: 0 0 0 5px var(--color-accent-ring);
+    box-shadow: 0 0 0 4px var(--color-accent-ring);
   }
 }
-.doc-sommaire-zone-highlighted {
-  border: 1px solid var(--color-accent);
-  border-radius: 12px;
-  padding: 16px 18px;
-  animation: zonePulse 2.4s ease-in-out infinite;
+.doc-sommaire-badge.is-focused,
+.doc-sommaire-element.is-focused,
+.doc-sommaire-title.is-focused {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 0;
+  animation: badgeFocusPulse 2s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* Skeleton pulsant — zones de contenu non renseignées (§2.10.5). */
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+.doc-sommaire-skeleton-line {
+  display: block;
+  height: 11px;
+  background: var(--color-skeleton);
+  border-radius: 4px;
+  animation: skeletonPulse 2s ease-in-out infinite;
+}
+.doc-sommaire-skeleton-rect {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 3.2;
+  background: var(--color-skeleton);
+  border-radius: 8px;
+  animation: skeletonPulse 2s ease-in-out infinite;
 }
 
 /* Accessibilité — désactiver les animations pour les utilisateurs qui le demandent */

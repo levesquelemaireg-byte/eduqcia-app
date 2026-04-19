@@ -55,13 +55,15 @@ function preprocessIntId(v: unknown): number {
 export const documentElementFormSchema = z.object({
   /** Identifiant local stable (UUID client). */
   id: z.string().min(1),
-  type: z.enum(["textuel", "iconographique"]),
+  /** `null` = non choisi (§2.10) — validé lors du passage à l'étape suivante / submit. */
+  type: z.enum(["textuel", "iconographique"]).nullable(),
   contenu: z.string().optional(),
   image_url: z.string().optional(),
   image_intrinsic_width: z.number().int().positive().optional(),
   image_intrinsic_height: z.number().int().positive().optional(),
   source_citation: z.string(),
-  source_type: documentSourceTypeSchema,
+  /** `null` = non choisi (§2.10) — validé lors du passage à l'étape suivante / submit. */
+  source_type: documentSourceTypeSchema.nullable(),
   image_legende: z.string().optional(),
   image_legende_position: documentLegendPositionSchema.nullable().optional(),
   type_iconographique: z
@@ -88,7 +90,8 @@ export type DocumentElementFormValues = z.infer<typeof documentElementFormSchema
 
 export const autonomousDocumentFormSchema = z
   .object({
-    structure: documentStructureSchema,
+    /** `null` = structure non choisie (§2.10) — l'étape 1 refuse « Suivant ». */
+    structure: documentStructureSchema.nullable(),
     nb_perspectives: z.union([z.literal(2), z.literal(3)]).optional(),
     titre: z.string().trim().min(1, "Requis"),
     elements: z.array(documentElementFormSchema).min(1),
@@ -110,6 +113,15 @@ export const autonomousDocumentFormSchema = z
     }),
   })
   .superRefine((data, ctx) => {
+    // Structure obligatoire à la soumission finale (§2.10.1).
+    if (data.structure == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["structure"],
+        message: "Sélectionnez une structure de document.",
+      });
+    }
+
     // Aspects requis
     const anyAspect = Object.values(data.aspects).some(Boolean);
     if (!anyAspect) {
@@ -149,6 +161,24 @@ export const autonomousDocumentFormSchema = z
     for (let i = 0; i < data.elements.length; i++) {
       const el = data.elements[i];
 
+      // Type obligatoire à la soumission finale (§2.10.1).
+      if (el.type == null) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["elements", i, "type"],
+          message: "Choisissez un type de document (textuel ou iconographique).",
+        });
+      }
+
+      // Type de source obligatoire à la soumission finale (§2.10.1).
+      if (el.source_type == null) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["elements", i, "source_type"],
+          message: "Choisissez un type de source (primaire ou secondaire).",
+        });
+      }
+
       // Contenu requis selon type
       if (el.type === "textuel") {
         if (!el.contenu?.trim()) {
@@ -165,7 +195,7 @@ export const autonomousDocumentFormSchema = z
             message: "Sélectionnez une catégorie textuelle.",
           });
         }
-      } else {
+      } else if (el.type === "iconographique") {
         const url = el.image_url?.trim() ?? "";
         if (!url.startsWith("http://") && !url.startsWith("https://")) {
           ctx.addIssue({

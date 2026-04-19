@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
+import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { DocumentElementFields } from "@/components/documents/wizard/steps/DocumentElementFields";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
@@ -71,6 +72,8 @@ export function StepDocument() {
   } = useFormContext<AutonomousDocumentFormValues>();
   const structure = watch("structure");
   const titreId = useId();
+  const titreFocusHandlers = useFieldFocusHandlers("titre");
+  const repereFocusHandlers = useFieldFocusHandlers("repere_temporel");
 
   const isMulti = structure === "perspectives" || structure === "deux_temps";
 
@@ -87,6 +90,7 @@ export function StepDocument() {
           id={titreId}
           type="text"
           {...register("titre")}
+          {...titreFocusHandlers}
           autoComplete="off"
           placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_TITRE}
           aria-invalid={errors.titre ? true : undefined}
@@ -118,16 +122,18 @@ export function StepDocument() {
           </Tooltip>
         }
       >
-        <RepereTemporelField
-          suppressLabelAndHelp
-          repereTemporelValue={watch("repere_temporel")}
-          onRepereTemporelChange={(val) => setValue("repere_temporel", val)}
-          anneeNormaliseeValue={watch("annee_normalisee")}
-          onAnneeNormaliseeChange={(val) => setValue("annee_normalisee", val)}
-          errorRepere={errors.repere_temporel?.message}
-          errorAnnee={errors.annee_normalisee?.message}
-          textInputPlaceholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_REPERE}
-        />
+        <div {...repereFocusHandlers}>
+          <RepereTemporelField
+            suppressLabelAndHelp
+            repereTemporelValue={watch("repere_temporel")}
+            onRepereTemporelChange={(val) => setValue("repere_temporel", val)}
+            anneeNormaliseeValue={watch("annee_normalisee")}
+            onAnneeNormaliseeChange={(val) => setValue("annee_normalisee", val)}
+            errorRepere={errors.repere_temporel?.message}
+            errorAnnee={errors.annee_normalisee?.message}
+            textInputPlaceholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_REPERE}
+          />
+        </div>
       </FieldLayout>
 
       <hr className="border-0 border-t border-border/70" />

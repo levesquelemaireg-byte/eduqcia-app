@@ -10,6 +10,7 @@ import { DocumentTypeIconographiqueSelect } from "@/components/documents/Documen
 import { DocumentContentToolbarButtons } from "@/components/documents/tiptap/DocumentContentToolbarButtons";
 import { FootnotesPanel } from "@/components/documents/tiptap/FootnotesPanel";
 import editorStyles from "@/components/documents/tiptap/document-content-editor.module.css";
+import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { documentContentExtensions } from "@/components/tae/TaeForm/tiptap/baseExtensions";
@@ -154,6 +155,17 @@ export function DocumentElementFields({
   const elIndex = Number(prefix.split(".")[1]);
   const elErrors = errors.elements?.[elIndex];
 
+  const typeFocus = useFieldFocusHandlers("type");
+  const contenuFocus = useFieldFocusHandlers("contenu");
+  const categorieFocus = useFieldFocusHandlers("categorie");
+  const imageFocus = useFieldFocusHandlers("image");
+  const imageLegendeFocus = useFieldFocusHandlers("image_legende");
+  const sourceCitationFocus = useFieldFocusHandlers("source_citation");
+  const sourceTypeFocus = useFieldFocusHandlers("source_type");
+  const auteurFocus = useFieldFocusHandlers("auteur");
+  const repereElementFocus = useFieldFocusHandlers("repere_temporel");
+  const sousTitreFocus = useFieldFocusHandlers("sous_titre");
+
   const onFile = useCallback(
     async (file: File | null) => {
       if (!file) {
@@ -243,14 +255,16 @@ export function DocumentElementFields({
 
       {/* Type de document */}
       <FieldLayout label={DOCUMENT_WIZARD_TYPE_DOC_LABEL} htmlFor={typeDocId} required>
-        <SegmentedControl
-          aria-labelledby={typeDocId}
-          value={docType}
-          onChange={(v) => {
-            setValue(`${prefix}.type`, v as "textuel" | "iconographique");
-          }}
-          options={[...DOC_TYPE_SEGMENTS]}
-        />
+        <div {...typeFocus}>
+          <SegmentedControl
+            aria-labelledby={typeDocId}
+            value={docType ?? ""}
+            onChange={(v) => {
+              setValue(`${prefix}.type`, v as "textuel" | "iconographique");
+            }}
+            options={[...DOC_TYPE_SEGMENTS]}
+          />
+        </div>
       </FieldLayout>
 
       {/* Champs contextuels */}
@@ -266,6 +280,7 @@ export function DocumentElementFields({
             type="text"
             value={watch(`${prefix}.auteur`) ?? ""}
             onChange={(e) => setValue(`${prefix}.auteur`, e.target.value)}
+            {...auteurFocus}
             autoComplete="off"
             placeholder="Ex. : Louis-Joseph Papineau, chef patriote"
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
@@ -285,6 +300,7 @@ export function DocumentElementFields({
             type="text"
             value={watch(`${prefix}.repere_temporel`) ?? ""}
             onChange={(e) => setValue(`${prefix}.repere_temporel`, e.target.value)}
+            {...repereElementFocus}
             autoComplete="off"
             placeholder="Ex. : 1713, vers 1760"
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
@@ -303,6 +319,7 @@ export function DocumentElementFields({
             type="text"
             value={watch(`${prefix}.sous_titre`) ?? ""}
             onChange={(e) => setValue(`${prefix}.sous_titre`, e.target.value)}
+            {...sousTitreFocus}
             autoComplete="off"
             placeholder="Ex. : Avant la Conquête"
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
@@ -322,7 +339,9 @@ export function DocumentElementFields({
             labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("contenu")} />}
             error={elErrors?.contenu?.message}
           >
-            <DocumentContentRichEditor prefix={prefix} contenuEditorId={contenuEditorId} />
+            <div {...contenuFocus}>
+              <DocumentContentRichEditor prefix={prefix} contenuEditorId={contenuEditorId} />
+            </div>
           </FieldLayout>
 
           <FieldLayout
@@ -331,19 +350,21 @@ export function DocumentElementFields({
             required
             error={elErrors?.categorie_textuelle?.message}
           >
-            <Controller
-              name={`${prefix}.categorie_textuelle`}
-              control={control}
-              render={({ field }) => (
-                <DocumentCategorieTextuelleSelect
-                  id={catTextId}
-                  value={(field.value ?? "") as CategorieTextuelleValue | ""}
-                  onChange={(v) => field.onChange(v === "" ? null : v)}
-                  showDescription={false}
-                  showLabel={false}
-                />
-              )}
-            />
+            <div {...categorieFocus}>
+              <Controller
+                name={`${prefix}.categorie_textuelle`}
+                control={control}
+                render={({ field }) => (
+                  <DocumentCategorieTextuelleSelect
+                    id={catTextId}
+                    value={(field.value ?? "") as CategorieTextuelleValue | ""}
+                    onChange={(v) => field.onChange(v === "" ? null : v)}
+                    showDescription={false}
+                    showLabel={false}
+                  />
+                )}
+              />
+            </div>
           </FieldLayout>
         </>
       ) : (
@@ -355,65 +376,69 @@ export function DocumentElementFields({
             labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("file")} />}
             error={elErrors?.image_url?.message}
           >
-            {isPdfLegacy ? (
-              <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface p-4">
-                <span
-                  className="material-symbols-outlined flex h-16 w-16 shrink-0 items-center justify-center text-4xl text-muted"
-                  aria-hidden="true"
-                >
-                  picture_as_pdf
-                </span>
-                <div className="min-w-0 flex-1 text-sm text-deep">
-                  {DOCUMENT_WIZARD_PDF_LEGACY_PREVIEW}
+            <div {...imageFocus}>
+              {isPdfLegacy ? (
+                <div className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface p-4">
+                  <span
+                    className="material-symbols-outlined flex h-16 w-16 shrink-0 items-center justify-center text-4xl text-muted"
+                    aria-hidden="true"
+                  >
+                    picture_as_pdf
+                  </span>
+                  <div className="min-w-0 flex-1 text-sm text-deep">
+                    {DOCUMENT_WIZARD_PDF_LEGACY_PREVIEW}
+                  </div>
+                  <button
+                    type="button"
+                    className="text-sm text-accent hover:underline"
+                    disabled={imageUploading}
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    Remplacer
+                  </button>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept={IMAGE_UPLOAD_ACCEPT_ATTR}
+                    disabled={imageUploading}
+                    className="sr-only"
+                    onChange={(e) => void onFile(e.target.files?.[0] ?? null)}
+                  />
                 </div>
-                <button
-                  type="button"
-                  className="text-sm text-accent hover:underline"
-                  disabled={imageUploading}
-                  onClick={() => fileRef.current?.click()}
-                >
-                  Remplacer
-                </button>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept={IMAGE_UPLOAD_ACCEPT_ATTR}
-                  disabled={imageUploading}
-                  className="sr-only"
-                  onChange={(e) => void onFile(e.target.files?.[0] ?? null)}
+              ) : (
+                <ImageUploadDropzone
+                  fileRef={fileRef}
+                  imageUploading={imageUploading}
+                  onFile={onFile}
+                  imageUrl={imageUrl?.trim() ? imageUrl : null}
+                  imageAlt={titre?.trim() || ""}
+                  uploadMeta={imageUploadMeta}
+                  imageUnoptimized={Boolean(imageUrl && !isPublicHttpUrl(imageUrl))}
+                  hideFormatsHint
                 />
-              </div>
-            ) : (
-              <ImageUploadDropzone
-                fileRef={fileRef}
-                imageUploading={imageUploading}
-                onFile={onFile}
-                imageUrl={imageUrl?.trim() ? imageUrl : null}
-                imageAlt={titre?.trim() || ""}
-                uploadMeta={imageUploadMeta}
-                imageUnoptimized={Boolean(imageUrl && !isPublicHttpUrl(imageUrl))}
-                hideFormatsHint
-              />
-            )}
+              )}
+            </div>
           </FieldLayout>
 
-          <Controller
-            name={`${prefix}.image_legende`}
-            control={control}
-            render={({ field }) => (
-              <DocumentLegendTextField
-                value={field.value ?? ""}
-                onChange={field.onChange}
-                legendWords={legendWords}
-                showWordsError={
-                  Boolean(elErrors?.image_legende) || legendWords > DOCUMENT_LEGEND_MAX_WORDS
-                }
-                placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_LEGENDE}
-                helpModalTitle={DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_TITLE}
-                helpModalBody={DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_BODY}
-              />
-            )}
-          />
+          <div {...imageLegendeFocus}>
+            <Controller
+              name={`${prefix}.image_legende`}
+              control={control}
+              render={({ field }) => (
+                <DocumentLegendTextField
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                  legendWords={legendWords}
+                  showWordsError={
+                    Boolean(elErrors?.image_legende) || legendWords > DOCUMENT_LEGEND_MAX_WORDS
+                  }
+                  placeholder={DOCUMENT_WIZARD_STEP1_PLACEHOLDER_LEGENDE}
+                  helpModalTitle={DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_TITLE}
+                  helpModalBody={DOCUMENT_WIZARD_STEP1_HELP_LEGENDE_BODY}
+                />
+              )}
+            />
+          </div>
 
           {showLegendPosition ? (
             <div className={cn(stepStyles.legendReveal)}>
@@ -437,19 +462,21 @@ export function DocumentElementFields({
             required
             labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("icono")} />}
           >
-            <Controller
-              name={`${prefix}.type_iconographique`}
-              control={control}
-              render={({ field }) => (
-                <DocumentTypeIconographiqueSelect
-                  id={typeIconoId}
-                  value={(field.value ?? "") as DocumentCategorieIconographiqueId | ""}
-                  onChange={(v) => field.onChange(v === "" ? null : v)}
-                  showDescription={false}
-                  showLabel={false}
-                />
-              )}
-            />
+            <div {...categorieFocus}>
+              <Controller
+                name={`${prefix}.type_iconographique`}
+                control={control}
+                render={({ field }) => (
+                  <DocumentTypeIconographiqueSelect
+                    id={typeIconoId}
+                    value={(field.value ?? "") as DocumentCategorieIconographiqueId | ""}
+                    onChange={(v) => field.onChange(v === "" ? null : v)}
+                    showDescription={false}
+                    showLabel={false}
+                  />
+                )}
+              />
+            </div>
           </FieldLayout>
         </>
       )}
@@ -464,21 +491,23 @@ export function DocumentElementFields({
         labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("source")} />}
         error={elErrors?.source_citation?.message}
       >
-        <Controller
-          name={`${prefix}.source_citation`}
-          control={control}
-          render={({ field }) => (
-            <RichTextEditor
-              id={sourceId}
-              instanceId={sourceId}
-              value={field.value}
-              onChange={field.onChange}
-              minHeight={88}
-              placeholder={DOCUMENT_WIZARD_STEP1_SOURCE_ARIA_PLACEHOLDER}
-              toolbarAriaLabel="Mise en forme de la source"
-            />
-          )}
-        />
+        <div {...sourceCitationFocus}>
+          <Controller
+            name={`${prefix}.source_citation`}
+            control={control}
+            render={({ field }) => (
+              <RichTextEditor
+                id={sourceId}
+                instanceId={sourceId}
+                value={field.value}
+                onChange={field.onChange}
+                minHeight={88}
+                placeholder={DOCUMENT_WIZARD_STEP1_SOURCE_ARIA_PLACEHOLDER}
+                toolbarAriaLabel="Mise en forme de la source"
+              />
+            )}
+          />
+        </div>
       </FieldLayout>
 
       {/* Type de source */}
@@ -488,22 +517,20 @@ export function DocumentElementFields({
         required
         labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("sourceType")} />}
       >
-        <Controller
-          name={`${prefix}.source_type`}
-          control={control}
-          render={({ field }) => (
-            <SegmentedControl
-              aria-label={DOCUMENT_MODULE_SOURCE_TYPE_LABEL}
-              value={
-                field.value === "primaire" || field.value === "secondaire"
-                  ? field.value
-                  : "secondaire"
-              }
-              onChange={field.onChange}
-              options={[...SOURCE_TYPE_SEGMENTS]}
-            />
-          )}
-        />
+        <div {...sourceTypeFocus}>
+          <Controller
+            name={`${prefix}.source_type`}
+            control={control}
+            render={({ field }) => (
+              <SegmentedControl
+                aria-label={DOCUMENT_MODULE_SOURCE_TYPE_LABEL}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                options={[...SOURCE_TYPE_SEGMENTS]}
+              />
+            )}
+          />
+        </div>
       </FieldLayout>
     </div>
   );

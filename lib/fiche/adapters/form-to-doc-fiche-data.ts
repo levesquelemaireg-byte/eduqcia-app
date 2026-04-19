@@ -28,31 +28,31 @@ function toRendererElement(el: FormElement): DocumentElement {
   const base = {
     id: el.id,
     source: el.source_citation,
-    sourceType: el.source_type,
+    sourceType: el.source_type ?? "secondaire",
     auteur: el.auteur,
     repereTemporel: el.repere_temporel,
     sousTitre: el.sous_titre,
   };
 
-  if (el.type === "textuel") {
+  if (el.type === "iconographique") {
     return {
       ...base,
-      type: "textuel",
-      contenu: el.contenu ?? "",
-      categorieTextuelle: (el.categorie_textuelle ??
-        "documents_officiels") as CategorieTextuelleValue,
-    } satisfies TextuelElement;
+      type: "iconographique",
+      imageUrl: el.image_url ?? "",
+      legende: el.image_legende,
+      legendePosition: el.image_legende_position ?? undefined,
+      categorieIconographique: (el.type_iconographique ??
+        "carte") as DocumentCategorieIconographiqueId,
+    } satisfies IconographiqueElement;
   }
 
   return {
     ...base,
-    type: "iconographique",
-    imageUrl: el.image_url ?? "",
-    legende: el.image_legende,
-    legendePosition: el.image_legende_position ?? undefined,
-    categorieIconographique: (el.type_iconographique ??
-      "carte") as DocumentCategorieIconographiqueId,
-  } satisfies IconographiqueElement;
+    type: "textuel",
+    contenu: el.contenu ?? "",
+    categorieTextuelle: (el.categorie_textuelle ??
+      "documents_officiels") as CategorieTextuelleValue,
+  } satisfies TextuelElement;
 }
 
 /** Convertit les valeurs du formulaire document en DocFicheData pour FicheRenderer. */
@@ -65,7 +65,7 @@ export function formValuesToDocFicheData(
   const rendererDoc: RendererDocument = {
     id: "preview",
     titre: values.titre || "",
-    structure: values.structure,
+    structure: values.structure ?? "simple",
     elements: values.elements.map(toRendererElement),
     repereTemporelDocument: values.repere_temporel,
   };

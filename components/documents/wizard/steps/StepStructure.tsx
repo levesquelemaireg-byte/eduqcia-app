@@ -6,6 +6,7 @@ import { SimpleModal } from "@/components/ui/SimpleModal";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DocumentStructure } from "@/lib/types/document-renderer";
 import { createElementsForStructure } from "@/lib/documents/document-element-defaults";
+import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { cn } from "@/lib/utils/cn";
 import {
   DOC_STRUCTURE_SIMPLE_TITLE,
@@ -85,10 +86,16 @@ export function StepStructure() {
   };
 
   const modalOption = modalOpen ? STRUCTURE_OPTIONS.find((o) => o.value === modalOpen) : null;
+  const structureFocus = useFieldFocusHandlers("structure");
 
   return (
     <>
-      <div className="flex flex-col gap-3" role="radiogroup" aria-label="Structure du document">
+      <div
+        className="flex flex-col gap-3"
+        role="radiogroup"
+        aria-label="Structure du document"
+        {...structureFocus}
+      >
         {STRUCTURE_OPTIONS.map((opt) => {
           const checked = structure === opt.value;
           return (
