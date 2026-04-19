@@ -2,16 +2,19 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
-import { fetchProfileDocuments, type ProfileDocument } from "@/lib/queries/profile-contributions";
+import { toast } from "sonner";
+
+import { DocumentMiniature, DocumentMiniatureList } from "@/components/document/miniature";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
+import { loadMoreProfileDocumentsAction } from "@/lib/actions/load-more-profile-documents";
+import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
 
 type Props = {
   profileId: string;
   isOwner: boolean;
   totalCount: number;
-  initialItems: ProfileDocument[];
+  initialItems: DocumentEnrichedRow[];
 };
 
 export function ProfileDocumentsList({ profileId, isOwner, totalCount, initialItems }: Props) {
@@ -23,12 +26,15 @@ export function ProfileDocumentsList({ profileId, isOwner, totalCount, initialIt
 
   async function loadMore() {
     setLoading(true);
-    const supabase = createClient();
-    const more = await fetchProfileDocuments(supabase, profileId, items.length);
-    setItems((prev) => [...prev, ...more]);
+    const result = await loadMoreProfileDocumentsAction(profileId, items.length);
     setLoading(false);
+    if (!result.ok) {
+      toast.error("Impossible de charger plus de documents.");
+      return;
+    }
+    setItems((prev) => [...prev, ...result.items]);
     if (liveRef.current) {
-      liveRef.current.textContent = `${more.length} nouveaux résultats chargés`;
+      liveRef.current.textContent = `${result.items.length} nouveaux résultats chargés`;
     }
   }
 
@@ -57,28 +63,16 @@ export function ProfileDocumentsList({ profileId, isOwner, totalCount, initialIt
   return (
     <>
       <div aria-live="polite" ref={liveRef} className="sr-only" />
-      <ul className="space-y-3">
+      <DocumentMiniatureList>
         {items.map((doc) => (
-          <li key={doc.id}>
-            <Link
-              href={`/documents/${doc.id}`}
-              className="block rounded-xl border border-border bg-panel p-4 transition-all duration-150 hover:border-border hover:shadow-sm focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:outline-none"
-            >
-              <p className="font-medium text-deep">{doc.titre}</p>
-              <div className="mt-1 flex items-center gap-2 text-sm text-muted">
-                <span className="inline-flex items-center gap-1">
-                  <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                    {doc.type === "textuel" ? "description" : "image"}
-                  </span>
-                  {doc.type === "textuel" ? "Textuel" : "Iconographique"}
-                </span>
-                <span>·</span>
-                <span>{new Date(doc.createdAt).toLocaleDateString("fr-CA")}</span>
-              </div>
-            </Link>
-          </li>
+          <DocumentMiniature
+            key={doc.id}
+            document={doc}
+            context="profile"
+            href={`/documents/${doc.id}`}
+          />
         ))}
-      </ul>
+      </DocumentMiniatureList>
       {remaining > 0 && (
         <LoadMoreButton remaining={remaining} loading={loading} onClick={loadMore} />
       )}

@@ -1,10 +1,22 @@
 import { TaeForm } from "@/components/tae/TaeForm";
+import type { PendingInjection } from "@/components/tae/TaeForm/InjectDocumentController";
 import { getWizardDraftForUser } from "@/lib/queries/tae-draft";
+import { documentsRepository } from "@/lib/repositories/documents-repository";
 import { createClient } from "@/lib/supabase/server";
+import { injectDocumentIntoSlot } from "@/lib/tae/inject-document-into-slot";
 import { CTA_CREER_UNE_TACHE, PAGE_CREER_UNE_TACHE_SUBTITLE } from "@/lib/ui/ui-copy";
 import { redirect } from "next/navigation";
 
-export default async function NewQuestionPage() {
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+function firstParam(value: string | string[] | undefined): string | null {
+  if (Array.isArray(value)) return value[0] ?? null;
+  return value ?? null;
+}
+
+export default async function NewQuestionPage({ searchParams }: PageProps) {
   const draftLoad = await getWizardDraftForUser();
   const savedServerDraft = draftLoad.status === "ok" ? draftLoad.state : null;
   const serverDraftObsolete = draftLoad.status === "obsolete";
@@ -30,12 +42,29 @@ export default async function NewQuestionPage() {
     draftStartedAtIso: new Date().toISOString(),
   };
 
+  const params = await searchParams;
+  const docId = firstParam(params.doc);
+
+  let pendingInjection: PendingInjection | null = null;
+  let injectionError: "not_found" | null = null;
+
+  if (docId) {
+    const doc = await documentsRepository.getById(docId);
+    if (doc) {
+      pendingInjection = { data: injectDocumentIntoSlot(doc) };
+    } else {
+      injectionError = "not_found";
+    }
+  }
+
   return (
     <TaeForm
       savedServerDraft={savedServerDraft}
       serverDraftObsolete={serverDraftObsolete}
       wizardPreviewMeta={wizardPreviewMeta}
       currentUserId={user.id}
+      pendingInjection={pendingInjection}
+      injectionError={injectionError}
     >
       <header className="max-w-2xl">
         <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">

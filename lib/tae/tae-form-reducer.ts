@@ -27,6 +27,7 @@ import {
   initialBloc3,
   initialBloc5,
   initialBloc7,
+  initialTaeFormState,
   TAE_FORM_STEP_COUNT,
   type NonRedactionData,
   type TaeFormAction,
@@ -460,6 +461,53 @@ export function taeFormReducer(state: TaeFormState, action: TaeFormAction): TaeF
     }
     case "SET_PERSPECTIVES_MODE_WITH_MIGRATION":
       return handlePerspectivesModeWithMigration(state, action);
+    case "INJECT_DOCUMENT_SLOT_REPLACE": {
+      return {
+        ...state,
+        currentStep: 3,
+        highestReachedStep: Math.max(state.highestReachedStep, 3),
+        bloc4: {
+          ...state.bloc4,
+          documents: {
+            ...state.bloc4.documents,
+            [action.slotId]: action.data,
+          },
+        },
+      };
+    }
+    case "INJECT_DOCUMENT_SLOT_FIRST_EMPTY": {
+      const slots = state.bloc2.documentSlots;
+      let targetSlotId: string | null = null;
+      for (const { slotId } of slots) {
+        const existing = state.bloc4.documents[slotId];
+        if (!existing || existing.mode === "idle") {
+          targetSlotId = slotId;
+          break;
+        }
+      }
+      if (!targetSlotId) return state;
+      return {
+        ...state,
+        currentStep: 3,
+        highestReachedStep: Math.max(state.highestReachedStep, 3),
+        bloc4: {
+          ...state.bloc4,
+          documents: {
+            ...state.bloc4.documents,
+            [targetSlotId]: action.data,
+          },
+        },
+      };
+    }
+    case "RESET_DRAFT_AND_INJECT_DOCUMENT": {
+      return {
+        ...initialTaeFormState,
+        bloc4: {
+          ...initialTaeFormState.bloc4,
+          documents: { doc_A: action.data },
+        },
+      };
+    }
     default:
       return state;
   }

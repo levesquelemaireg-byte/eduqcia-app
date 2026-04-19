@@ -8,8 +8,11 @@ import {
 import { Bloc2EspaceProductionReadonly } from "@/components/tae/TaeForm/bloc2/Bloc2EspaceProductionReadonly";
 import { ComportementPicker } from "@/components/tae/TaeForm/bloc2/ComportementPicker";
 import { DISCIPLINE_LABEL, NIVEAU_SELECT_OPTIONS } from "@/components/tae/TaeForm/bloc2/constants";
+import { useTaeForm } from "@/components/tae/TaeForm/FormState";
+import { InlineWarning } from "@/components/ui/InlineWarning";
 import { ListboxField } from "@/components/ui/ListboxField";
 import { RequiredMark } from "@/components/ui/RequiredMark";
+import { BLOC2_SOFT_WARNING_NB_DOCUMENTS } from "@/lib/ui/copy/document";
 import { materialIconTooltip } from "@/lib/tae/icon-justifications";
 import { isDisciplineAutoAssignedForNiveau } from "@/lib/tae/blueprint-helpers";
 import { OiPicker } from "@/components/tae/TaeForm/bloc2/OiPicker";
@@ -64,11 +67,17 @@ export function Bloc2EditFields({
   modalComportementOpen,
   onModalComportementOpenChange,
 }: Props) {
+  const { state } = useTaeForm();
   const disciplineLocked = isDisciplineAutoAssignedForNiveau(b.niveau);
   const disciplineLabel =
     b.discipline && b.discipline in DISCIPLINE_LABEL
       ? DISCIPLINE_LABEL[b.discipline as DisciplineCode]
       : "";
+
+  const filledSlots = Object.values(state.bloc4.documents).filter(
+    (d) => d !== undefined && d.mode !== "idle",
+  ).length;
+  const showSoftWarning = b.nbDocuments != null && filledSlots > b.nbDocuments;
 
   return (
     <div className="space-y-6">
@@ -173,6 +182,12 @@ export function Bloc2EditFields({
         onSelectComportement={onSetComportement}
         onInfoClick={() => onModalComportementOpenChange(true)}
       />
+
+      {showSoftWarning ? (
+        <InlineWarning icon="warning">
+          {BLOC2_SOFT_WARNING_NB_DOCUMENTS(filledSlots, b.nbDocuments ?? 0)}
+        </InlineWarning>
+      ) : null}
 
       <Bloc2VoirGrilleCorrectionCta
         disabled={!b.outilEvaluation}

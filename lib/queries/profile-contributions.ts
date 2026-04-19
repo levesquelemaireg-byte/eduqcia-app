@@ -4,13 +4,6 @@ const PAGE_SIZE = 10;
 
 // ── Types ────────────────────────────────────────────────────────────
 
-export type ProfileDocument = {
-  id: string;
-  titre: string;
-  type: "textuel" | "iconographique";
-  createdAt: string;
-};
-
 export type ProfileTask = {
   id: string;
   consigne: string | null;
@@ -28,31 +21,6 @@ export type ProfileEvaluation = {
   taeCount: number;
   createdAt: string;
 };
-
-// ── Documents ────────────────────────────────────────────────────────
-
-export async function fetchProfileDocuments(
-  supabase: SupabaseClient,
-  auteurId: string,
-  offset: number = 0,
-): Promise<ProfileDocument[]> {
-  const { data, error } = await supabase
-    .from("documents")
-    .select("id, titre, type, created_at")
-    .eq("auteur_id", auteurId)
-    .eq("is_published", true)
-    .order("created_at", { ascending: false })
-    .range(offset, offset + PAGE_SIZE - 1);
-
-  if (error || !data) return [];
-
-  return data.map((d) => ({
-    id: d.id,
-    titre: d.titre,
-    type: d.type,
-    createdAt: d.created_at,
-  }));
-}
 
 // ── Tâches (avec usage_count via sous-query) ────────────────────────
 

@@ -21,6 +21,10 @@ import { WizardDraftIndicator } from "@/components/tae/TaeForm/WizardDraftIndica
 import { WizardDraftObsoleteToast } from "@/components/tae/TaeForm/WizardDraftObsoleteToast";
 import { WizardSessionProvider } from "@/components/tae/TaeForm/WizardSessionContext";
 import {
+  InjectDocumentController,
+  type PendingInjection,
+} from "@/components/tae/TaeForm/InjectDocumentController";
+import {
   TaeFormProvider,
   useTaeForm,
   TAE_BLUEPRINT_STEP_INDEX,
@@ -71,6 +75,8 @@ type TaeFormInnerProps = {
   serverDraftObsolete: boolean;
   wizardPreviewMeta: WizardFichePreviewMeta;
   showDraftBanners: boolean;
+  pendingInjection: PendingInjection | null;
+  injectionError: "not_found" | null;
 };
 
 function TaeFormInner({
@@ -79,6 +85,8 @@ function TaeFormInner({
   serverDraftObsolete,
   wizardPreviewMeta,
   showDraftBanners,
+  pendingInjection,
+  injectionError,
 }: TaeFormInnerProps) {
   const { state } = useTaeForm();
   const stepBase = TAE_FORM_STEPS[state.currentStep];
@@ -139,6 +147,10 @@ function TaeFormInner({
   return (
     <>
       <WizardDraftObsoleteToast show={serverDraftObsolete} />
+      <InjectDocumentController
+        pendingInjection={pendingInjection}
+        injectionError={injectionError}
+      />
       <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
         {/* Colonne édition — fond blanc (token panel), pas de carte ; scroll interne sur xl */}
         <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
@@ -257,6 +269,10 @@ type TaeFormProps = {
   children?: ReactNode;
   /** Pied de fiche sommaire : nom réel + date d’ouverture (serveur, stable SSR/hydratation). */
   wizardPreviewMeta: WizardFichePreviewMeta;
+  /** Deep-link banque → wizard tâche — document à injecter (SPEC §4). */
+  pendingInjection?: PendingInjection | null;
+  /** Deep-link banque — document introuvable ou inaccessible (toast erreur). */
+  injectionError?: "not_found" | null;
 };
 
 export function TaeForm({
@@ -268,6 +284,8 @@ export function TaeForm({
   currentUserId = null,
   children,
   wizardPreviewMeta,
+  pendingInjection = null,
+  injectionError = null,
 }: TaeFormProps) {
   const persistSessionDraft = !editingTaeId;
   const showDraftBanners = persistSessionDraft;
@@ -291,6 +309,8 @@ export function TaeForm({
           serverDraftObsolete={serverDraftObsolete}
           wizardPreviewMeta={wizardPreviewMeta}
           showDraftBanners={showDraftBanners}
+          pendingInjection={pendingInjection}
+          injectionError={injectionError}
         />
       </TaeFormProvider>
     </WizardSessionProvider>

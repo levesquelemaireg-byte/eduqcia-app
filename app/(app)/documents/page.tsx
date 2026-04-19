@@ -1,17 +1,15 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { DeleteDocumentButton } from "@/components/documents/DeleteDocumentButton";
+
+import { DocumentMiniatureList } from "@/components/document/miniature";
+import { OwnerDocumentMiniatureEntry } from "@/components/document/miniature/owner-entry";
+import { documentsRepository } from "@/lib/repositories/documents-repository";
 import { createClient } from "@/lib/supabase/server";
-import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
-import type { DocumentElementJson } from "@/lib/types/document-element-json";
-import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import {
   CTA_CREER_UN_DOCUMENT,
   LISTE_DOCUMENTS_VIDE,
   PAGE_LISTE_MES_DOCUMENTS_SUBTITLE,
   PAGE_LISTE_MES_DOCUMENTS_TITLE,
-  DOCUMENT_MODULE_TYPE_TEXT,
-  DOCUMENT_MODULE_TYPE_IMAGE,
 } from "@/lib/ui/ui-copy";
 import { cn } from "@/lib/utils/cn";
 
@@ -22,13 +20,11 @@ export default async function MesDocumentsPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: rows } = await supabase
-    .from("documents")
-    .select("id, titre, type, elements, is_published, created_at")
-    .eq("auteur_id", user.id)
-    .order("created_at", { ascending: false });
-
-  const documents = rows ?? [];
+  const documents = await documentsRepository.listForOwner(user.id, {
+    includeDrafts: true,
+    orderBy: "created_at_desc",
+    limit: 200,
+  });
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-6">
@@ -57,56 +53,13 @@ export default async function MesDocumentsPage() {
       {documents.length === 0 ? (
         <p className="mt-10 text-center text-sm text-muted">{LISTE_DOCUMENTS_VIDE}</p>
       ) : (
-        <ul className="mt-6 divide-y divide-border rounded-2xl border border-border bg-panel shadow-sm">
-          {documents.map((doc) => {
-            const rawEls = (
-              Array.isArray(doc.elements) ? doc.elements : []
-            ) as DocumentElementJson[];
-            const sourcePlain = stripHtmlToPlainText(rawEls[0]?.source_citation ?? "");
-            const sourcePreview =
-              sourcePlain.length > 120 ? `${sourcePlain.slice(0, 117)}…` : sourcePlain;
-            return (
-              <li
-                key={doc.id}
-                className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="flex flex-wrap items-center gap-2 font-semibold text-deep">
-                    <span>{doc.titre}</span>
-                    <span
-                      className={cn(
-                        "rounded-md px-1.5 py-0.5 text-[11px] font-medium",
-                        doc.is_published ? "bg-success/15 text-success" : "bg-steel/20 text-muted",
-                      )}
-                    >
-                      {doc.is_published ? "Publié" : "Brouillon"}
-                    </span>
-                  </p>
-                  <p className="mt-1 text-xs text-muted">
-                    {doc.type === "textuel"
-                      ? DOCUMENT_MODULE_TYPE_TEXT
-                      : DOCUMENT_MODULE_TYPE_IMAGE}
-                    {" · "}
-                    {sourcePreview || "—"}
-                  </p>
-                  <p className="mt-1 text-xs text-muted">{formatDateFrCaMedium(doc.created_at)}</p>
-                </div>
-                <div className="flex shrink-0 gap-2">
-                  <Link
-                    href={`/documents/${doc.id}`}
-                    className={cn(
-                      "inline-flex min-h-11 items-center justify-center rounded-lg border border-border px-4 text-sm font-semibold text-accent",
-                      "hover:bg-accent/5",
-                    )}
-                  >
-                    Voir
-                  </Link>
-                  <DeleteDocumentButton documentId={doc.id} />
-                </div>
-              </li>
-            );
-          })}
-        </ul>
+        <div className="mt-6">
+          <DocumentMiniatureList>
+            {documents.map((doc) => (
+              <OwnerDocumentMiniatureEntry key={doc.id} document={doc} />
+            ))}
+          </DocumentMiniatureList>
+        </div>
       )}
     </div>
   );

@@ -313,3 +313,54 @@ export const TOAST_DOCUMENT_IMAGE_UPLOAD_FAILED =
 /** Bloc 4 — session requise pour l'upload */
 export const TOAST_DOCUMENT_IMAGE_UPLOAD_AUTH =
   "Connectez-vous pour importer une image, puis réessayez.";
+
+/** Miniature document unifiée — `docs/specs/SPEC-SOMMAIRE-DOCUMENT.md` §3. */
+export const DOC_MINIATURE_STATUT_PUBLIE = "Publié";
+export const DOC_MINIATURE_STATUT_BROUILLON = "Brouillon";
+export const DOC_MINIATURE_AUTEUR_PREFIX = "Par";
+export const DOC_MINIATURE_UTILISATION_SINGULIER = "1 utilisation";
+export const DOC_MINIATURE_UTILISATION_PLURIEL = (n: number) => `${n} utilisations`;
+export const DOC_MINIATURE_UTILISATION_AUCUNE = "Aucune utilisation";
+export const DOC_MINIATURE_UPDATED_PREFIX = "Mis à jour le";
+export const DOC_MINIATURE_CREATED_PREFIX = "Créé le";
+/** Libellé actions kebab — miniature. */
+export const DOC_MINIATURE_ACTION_OUVRIR = "Ouvrir la fiche";
+export const DOC_MINIATURE_ACTION_MODIFIER = "Modifier";
+export const DOC_MINIATURE_ACTION_SUPPRIMER = "Supprimer";
+export const DOC_MINIATURE_ACTION_REUTILISER = "Réutiliser dans une tâche";
+export const DOC_MINIATURE_ACTIONS_ARIA = "Actions du document";
+
+/** Deep-link banque → wizard tâche — modale de confirmation brouillon en cours. */
+export const INJECT_DOC_MODAL_TITLE = "Un brouillon de tâche est déjà en cours";
+export const INJECT_DOC_MODAL_INTRO =
+  "Vous avez une tâche non publiée en cours de rédaction. Que souhaitez-vous faire de ce document ?";
+export const INJECT_DOC_MODAL_DRAFT_LABEL = "Brouillon en cours";
+export const INJECT_DOC_MODAL_DRAFT_UNTITLED = "Tâche sans consigne";
+export const INJECT_DOC_MODAL_SLOTS_FILLED = (n: number, total: number) =>
+  `${n} document${n > 1 ? "s" : ""} renseigné${n > 1 ? "s" : ""} sur ${total}`;
+export const INJECT_DOC_MODAL_SLOTS_EMPTY = "Aucun document renseigné";
+export const INJECT_DOC_MODAL_ACTION_REPLACE_A = "Remplacer le document A par celui-ci";
+export const INJECT_DOC_MODAL_ACTION_REPLACE_A_HINT =
+  "Écrase le contenu actuel du slot A par le document choisi.";
+export const INJECT_DOC_MODAL_ACTION_FIRST_EMPTY = "Injecter dans le premier slot libre";
+export const INJECT_DOC_MODAL_ACTION_FIRST_EMPTY_HINT =
+  "Ajoute le document dans le premier slot encore vide sans toucher aux autres.";
+export const INJECT_DOC_MODAL_ACTION_FIRST_EMPTY_NONE =
+  "Tous les slots sont déjà remplis — choisissez une autre option.";
+export const INJECT_DOC_MODAL_ACTION_RESET = "Repartir de zéro avec ce document";
+export const INJECT_DOC_MODAL_ACTION_RESET_HINT =
+  "Supprime le brouillon en cours et démarre une nouvelle tâche avec ce document en slot A.";
+export const INJECT_DOC_MODAL_CANCEL = "Annuler";
+
+/** Deep-link — toasts d'injection. */
+export const TOAST_INJECT_DOC_REPLACED = "Document injecté dans le slot A.";
+export const TOAST_INJECT_DOC_FIRST_EMPTY = (slot: "A" | "B" | "C" | "D") =>
+  `Document injecté dans le slot ${slot}.`;
+export const TOAST_INJECT_DOC_RESET = "Nouveau brouillon démarré avec ce document en slot A.";
+export const TOAST_INJECT_DOC_NOT_FOUND = "Document introuvable ou inaccessible.";
+
+/** Bloc 2 — alerte douce si nb_documents passe en-dessous du nombre de slots remplis. */
+export const BLOC2_SOFT_WARNING_NB_DOCUMENTS = (remplis: number, nb: number) =>
+  `Ce comportement n'accepte que ${nb} document${nb > 1 ? "s" : ""}, mais ${remplis} slot${
+    remplis > 1 ? "s" : ""
+  } sont déjà remplis. Videz les slots excédentaires au Bloc 4 avant de changer de comportement.`;

@@ -1,16 +1,13 @@
 # SPEC-SOMMAIRE-DOCUMENT.md
 
-**Statut :** **PARTIELLEMENT LIVRÉE** (Tranches 1 + 2 — 18 avril 2026).
+**Statut :** **LIVRÉE** (18 avril 2026) — spec archivée dans `docs/specs/fermees/`.
 
 **Livré :**
 
 - Tranche 1 — Terminologie « Repère temporel » → « Ancrage temporel », primitive `Tooltip` light card, tooltip sur le champ Ancrage du wizard document.
 - Tranche 2 — Sommaire détaillé du wizard document (layout 2 colonnes, pulse de la zone active via `@keyframes zonePulse` + `.doc-sommaire-zone-highlighted`, header `StatusBadge` + sub-chips, colonne droite = 3 groupes de badges).
-
-**À livrer (lot distinct) :**
-
-- Tranche 3 — Miniature du document **unifiée** pour les 3 surfaces (Mes documents, Profil collègue, Banque collaborative) — nécessite enrichissement des queries (`ProfileDocument`, `BankDocumentListRow`, liste `/documents`) pour exposer aspects, connaissances, auteur, dates, nb_utilisations avant de pouvoir afficher les badges spécifiés §3.
-- Tranche 4 — Deep-link « Réutiliser dans une tâche » depuis la banque (`/questions/new?doc=<id>&slot=A`) — action dans le kebab de `BankDocumentsPanel`, query param consommé par le wizard tâche pour pré-remplir le slot A.
+- Tranche 3 — Miniature du document **unifiée** pour les 3 surfaces (Mes documents, Profil collègue, Banque collaborative). RPC `get_documents_enriched` (source de vérité), `documentsRepository`, composant `DocumentMiniature` unique, suppression de `DocumentFicheThumbnail`.
+- Tranche 4 — Deep-link « Réutiliser dans une tâche » depuis la banque (`/questions/new?doc=<id>&slot=A`). Kebab `BankDocumentsPanel` → wizard tâche → `InjectDocumentModal` (Remplacer slot A · Injecter dans slot libre · Repartir de zéro) ou injection silencieuse si brouillon vierge. Alerte douce Bloc 2 si `nb_documents < slots remplis`.
 
 > **Spécification de design — Sommaire détaillé du document + miniature unifiée + tooltip du design system**
 >

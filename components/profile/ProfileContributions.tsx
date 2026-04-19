@@ -6,11 +6,8 @@ import { pluralize } from "@/lib/utils/pluralize";
 import { ProfileDocumentsList } from "@/components/profile/ProfileDocumentsList";
 import { ProfileTasksList } from "@/components/profile/ProfileTasksList";
 import { ProfileEvaluationsList } from "@/components/profile/ProfileEvaluationsList";
-import type {
-  ProfileDocument,
-  ProfileTask,
-  ProfileEvaluation,
-} from "@/lib/queries/profile-contributions";
+import type { ProfileTask, ProfileEvaluation } from "@/lib/queries/profile-contributions";
+import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
 
 type TabId = "documents" | "taches" | "epreuves";
 
@@ -24,7 +21,7 @@ type Props = {
   profileId: string;
   isOwner: boolean;
   counts: { documents: number; tasks: number; evaluations: number };
-  initialDocuments: ProfileDocument[];
+  initialDocuments: DocumentEnrichedRow[];
   initialTasks: ProfileTask[];
   initialEvaluations: ProfileEvaluation[];
 };

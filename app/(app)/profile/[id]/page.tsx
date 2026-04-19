@@ -1,11 +1,8 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { fetchProfileOverview } from "@/lib/queries/profile-overview";
-import {
-  fetchProfileDocuments,
-  fetchProfileTasks,
-  fetchProfileEvaluations,
-} from "@/lib/queries/profile-contributions";
+import { fetchProfileTasks, fetchProfileEvaluations } from "@/lib/queries/profile-contributions";
+import { documentsRepository } from "@/lib/repositories/documents-repository";
 import { ProfilePageClient } from "@/components/profile/ProfilePageClient";
 
 export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
@@ -40,7 +37,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
 
   // Charger les 10 premiers items de chaque onglet en parallèle
   const [initialDocuments, initialTasks, initialEvaluations] = await Promise.all([
-    fetchProfileDocuments(supabase, id),
+    documentsRepository.listForProfile(id, { limit: 10 }),
     fetchProfileTasks(supabase, id),
     fetchProfileEvaluations(supabase, id),
   ]);

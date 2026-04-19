@@ -7,15 +7,12 @@ import { ProfileEditSheet } from "@/components/profile/ProfileEditSheet";
 import { DeleteAccountSection } from "@/components/profile/DeleteAccountSection";
 import { ChangePasswordSection } from "@/components/profile/ChangePasswordSection";
 import type { ProfileOverview } from "@/lib/queries/profile-overview";
-import type {
-  ProfileDocument,
-  ProfileTask,
-  ProfileEvaluation,
-} from "@/lib/queries/profile-contributions";
+import type { ProfileTask, ProfileEvaluation } from "@/lib/queries/profile-contributions";
+import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
 
 type Props = {
   overview: ProfileOverview;
-  initialDocuments: ProfileDocument[];
+  initialDocuments: DocumentEnrichedRow[];
   initialTasks: ProfileTask[];
   initialEvaluations: ProfileEvaluation[];
   cssOptions: { id: string; nomOfficiel: string }[];

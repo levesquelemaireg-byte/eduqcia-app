@@ -1356,6 +1356,35 @@ export type Database = {
         Args: { p_user_id: string };
         Returns: undefined;
       };
+      get_documents_enriched: {
+        Args: { filters?: Json };
+        Returns: {
+          annee_normalisee: number;
+          aspects_societe: Database["public"]["Enums"]["aspect_societe"][];
+          auteur: Json;
+          auteur_id: string;
+          connaissances_breadcrumbs: Json;
+          connaissances_ids: number[];
+          created_at: string;
+          disciplines_ids: number[];
+          disciplines_labels: string[];
+          elements: Json;
+          id: string;
+          is_modified: boolean;
+          is_published: boolean;
+          nb_utilisations: number;
+          niveaux_ids: number[];
+          niveaux_labels: string[];
+          repere_temporel: string;
+          source_document_id: string;
+          source_version: number;
+          structure: Database["public"]["Enums"]["document_structure"];
+          titre: string;
+          type: Database["public"]["Enums"]["doc_type"];
+          updated_at: string;
+          version: number;
+        }[];
+      };
       get_field_version_type: {
         Args: { field_name: string };
         Returns: Database["public"]["Enums"]["version_trigger"];

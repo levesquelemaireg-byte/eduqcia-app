@@ -227,6 +227,54 @@ Route `app/(app)/documents/page.tsx`. Constantes `MY_DOCUMENTS_DELETE_*` dans `l
 
 ---
 
+## Miniature document unifiée
+
+Composant `components/document/miniature/index.tsx`. Surfaces : Mes documents, Profil collègue, Banque collaborative. Constantes `DOC_MINIATURE_*` dans `lib/ui/copy/document.ts`.
+
+- Publié
+- Brouillon
+- Par {{auteur}}
+- 1 utilisation · {{n}} utilisations · Aucune utilisation
+- Mis à jour le {{date}}
+- Créé le {{date}}
+- Actions du document (`aria-label`)
+
+### Actions du menu kebab
+
+- Ouvrir la fiche
+- Modifier (propriétaire uniquement)
+- Supprimer (propriétaire uniquement)
+- Réutiliser dans une tâche (banque uniquement)
+
+---
+
+## Deep-link banque → wizard tâche
+
+Modale affichée lorsque le bouton « Réutiliser dans une tâche » est cliqué et qu'un brouillon de tâche est déjà présent. Constantes `INJECT_DOC_MODAL_*` et `TOAST_INJECT_DOC_*` dans `lib/ui/copy/document.ts`.
+
+### Modale de confirmation
+
+- Titre : « Un brouillon de tâche est déjà en cours »
+- Intro : « Vous avez une tâche non publiée en cours de rédaction. Que souhaitez-vous faire de ce document ? »
+- État du brouillon : « Brouillon en cours — Tâche sans consigne » ou consigne tronquée. « {{n}} documents renseignés sur {{total}} » ou « Aucun document renseigné ».
+- Action 1 : « Remplacer le document A par celui-ci » — hint : « Écrase le contenu actuel du slot A par le document choisi. »
+- Action 2 : « Injecter dans le premier slot libre » — hint : « Ajoute le document dans le premier slot encore vide sans toucher aux autres. » (désactivée si aucun slot libre → « Tous les slots sont déjà remplis — choisissez une autre option. »)
+- Action 3 : « Repartir de zéro avec ce document » — hint : « Supprime le brouillon en cours et démarre une nouvelle tâche avec ce document en slot A. »
+- Bouton fermeture : « Annuler » (+ X en haut à droite)
+
+### Toasts
+
+- Document injecté dans le slot A.
+- Document injecté dans le slot {{A|B|C|D}}.
+- Nouveau brouillon démarré avec ce document en slot A.
+- Document introuvable ou inaccessible.
+
+### Alerte douce — Bloc 2 (nb_documents inférieur au nombre de slots remplis)
+
+- « Ce comportement n'accepte que {{nb}} document(s), mais {{remplis}} slot(s) sont déjà remplis. Videz les slots excédentaires au Bloc 4 avant de changer de comportement. »
+
+---
+
 ## Page — Mes épreuves
 
 ### Modale de suppression

@@ -174,7 +174,10 @@ export type TaeFormAction =
   | { type: "SET_MOMENTS_TITRE"; value: string }
   | { type: "SET_INTRUS_LETTER"; value: PerspectiveLetter | "" }
   | { type: "SET_INTRUS_EXPLICATION"; value: string }
-  | { type: "SET_INTRUS_POINT_COMMUN"; value: string };
+  | { type: "SET_INTRUS_POINT_COMMUN"; value: string }
+  | { type: "INJECT_DOCUMENT_SLOT_REPLACE"; slotId: DocumentSlotId; data: DocumentSlotData }
+  | { type: "INJECT_DOCUMENT_SLOT_FIRST_EMPTY"; data: DocumentSlotData }
+  | { type: "RESET_DRAFT_AND_INJECT_DOCUMENT"; data: DocumentSlotData };
 
 export const initialBlueprint: BlueprintSlice = {
   niveau: "",

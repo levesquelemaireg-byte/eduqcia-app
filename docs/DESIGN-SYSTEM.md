@@ -268,6 +268,24 @@ Pattern pour les formulaires avec slots ou perspectives complétables dans l'ord
 
 **Règle icône :** `check_circle` est réservé au corrigé (Bloc 5) et aux étapes wizard complétées (stepper). Ne pas l'utiliser pour les slots documents ou les perspectives.
 
+### Miniature document (`DocumentMiniature`)
+
+Composant **unifié** rendu à la fois dans la banque collaborative (`BankDocumentsGrid`) et dans « Mes documents » (`MyDocumentsGrid`). Source de vérité unique pour la vignette d'un document. Vit dans `components/document/miniature/`.
+
+- **Données :** `DocumentEnrichedRow` produit par le repository `lib/repositories/documents-repository.ts` au-dessus de la RPC `get_documents_enriched(filters jsonb)` — une seule requête enrichit titre, niveau, discipline, aspects, auteur, dates et compteurs.
+- **Mapping d'icônes :** toutes les métadonnées visibles suivent la règle absolue de cohérence d'icône doc / tâche — Niveau `school`, Discipline `menu_book`, Aspects de société `deployed_code`, Auteur `person`, Date création `calendar_today`, Date mise à jour `history`, Utilisation `link`, Ancrage temporel `anchor`. Toute divergence = dette visuelle.
+- **Kebab menu :** « Voir », « Réutiliser dans une tâche » (deep-link `/questions/new?doc=<id>`), « Modifier » (si propriétaire), « Supprimer » (si propriétaire, confirmation `SimpleModal`).
+- **Règle :** toute nouvelle vue liste de documents consomme `DocumentMiniature` — jamais de re-implémentation locale d'une vignette document.
+
+### Injection document dans le wizard tâche (`InjectDocumentModal`)
+
+Modale de confirmation déclenchée par le deep-link `/questions/new?doc=<id>` quand le wizard contient déjà une progression significative. `SimpleModal` avec trois `ActionRow` (label + hint + chevron, disabled si non applicable) et un bouton Annuler dans le footer.
+
+- **Actions :** « Remplacer slot A » (écrase `doc_A` sans toucher le reste du brouillon), « Injecter dans le premier slot libre » (désactivée si aucun slot libre), « Repartir de zéro et injecter ».
+- **Injection silencieuse :** si `hasMeaningfulWizardProgress(state)` retourne `false`, l'`InjectDocumentController` dispatch directement `INJECT_DOCUMENT_SLOT_REPLACE` sur `doc_A` + toast succès + nettoyage URL — sans ouvrir la modale.
+- **Document non trouvé :** toast d'erreur + nettoyage URL.
+- **Copy :** constantes `INJECT_DOC_MODAL_*` et `TOAST_INJECT_DOC_*` dans `lib/ui/copy/document.ts`.
+
 ## Layout — Créer une tâche
 
 Split 50/50 (≥ `lg`), stepper dans la carte formulaire, sommaire à droite. Voir [WORKFLOWS.md](./WORKFLOWS.md#vue-densemble-du-formulaire).

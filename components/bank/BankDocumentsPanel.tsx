@@ -1,18 +1,15 @@
 import Link from "next/link";
+
+import { DocumentMiniature, DocumentMiniatureList } from "@/components/document/miniature";
+import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
 import {
-  getBankPublishedDocumentsPage,
   serializeBankDocumentsQueryForHref,
   type BankDocumentFilters,
 } from "@/lib/queries/bank-documents";
-import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
-import { DocumentFicheThumbnail } from "@/components/documents/DocumentFicheThumbnail";
-import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
-import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
-import type { DocFicheData } from "@/lib/fiche/types";
-import type { DocumentElement } from "@/lib/types/document-renderer";
-import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
-import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
+import { documentsRepository } from "@/lib/repositories/documents-repository";
+import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
+import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
 import {
   BANK_DOCUMENT_FILTER_RESET,
   BANK_DOCUMENT_FILTER_SUBMIT,
@@ -33,21 +30,60 @@ import {
   PAGE_BANK_DOCUMENTS_SEARCH_LABEL,
 } from "@/lib/ui/ui-copy";
 import { cn } from "@/lib/utils/cn";
-import { createClient } from "@/lib/supabase/server";
 
 type Props = {
   filters: BankDocumentFilters;
   page: number;
 };
 
+const BANK_OVERFETCH_MULTIPLIER = 4;
+
+function applyIconoFilter(
+  rows: DocumentEnrichedRow[],
+  iconoCategories: string[] | undefined,
+): DocumentEnrichedRow[] {
+  if (!iconoCategories || iconoCategories.length === 0) return rows;
+  const set = new Set(iconoCategories);
+  return rows.filter((row) => {
+    if (row.type !== "iconographique") return true;
+    const first = row.elements[0];
+    const cat = first?.categorie_iconographique ?? null;
+    return cat !== null && set.has(cat);
+  });
+}
+
 export async function BankDocumentsPanel({ filters, page }: Props) {
-  const supabase = await createClient();
-  const [{ niveaux, disciplines }, pageResult] = await Promise.all([
-    getDocumentFormRefOptions(),
-    getBankPublishedDocumentsPage(supabase, filters, page),
-  ]);
-  const { rows, total } = pageResult;
-  const hasMore = (page + 1) * BANK_PAGE_SIZE < total;
+  const { niveaux, disciplines } = await getDocumentFormRefOptions();
+
+  const hasIconoFilter =
+    filters.docType !== "textuel" &&
+    filters.iconoCategories !== undefined &&
+    filters.iconoCategories.length > 0;
+
+  // Pagination : sans filtre icono, on pagine via offset/limit RPC.
+  // Avec filtre icono, on sur-récupère puis on filtre en mémoire (PostgREST ne filtre pas dans JSONB array).
+  const offset = page * BANK_PAGE_SIZE;
+  const limit = hasIconoFilter ? BANK_PAGE_SIZE * BANK_OVERFETCH_MULTIPLIER : BANK_PAGE_SIZE + 1;
+
+  const rawRows = await documentsRepository.listForBank({
+    search: filters.search,
+    niveauIds: filters.niveauId != null ? [filters.niveauId] : undefined,
+    disciplineIds: filters.disciplineId != null ? [filters.disciplineId] : undefined,
+    type: filters.docType,
+    orderBy: "created_at_desc",
+    offset: hasIconoFilter ? 0 : offset,
+    limit,
+  });
+
+  const filteredRows = applyIconoFilter(rawRows, filters.iconoCategories);
+
+  const pagedRows = hasIconoFilter
+    ? filteredRows.slice(offset, offset + BANK_PAGE_SIZE)
+    : filteredRows.slice(0, BANK_PAGE_SIZE);
+
+  const hasMore = hasIconoFilter
+    ? filteredRows.length > offset + BANK_PAGE_SIZE
+    : filteredRows.length > BANK_PAGE_SIZE;
 
   const q = filters.search ?? "";
   const d = filters.disciplineId != null ? String(filters.disciplineId) : "";
@@ -183,21 +219,24 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
         </div>
       </form>
 
-      {rows.length === 0 ? (
+      {pagedRows.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-border bg-panel-alt/50 px-6 py-10 text-center text-sm text-muted">
           {PAGE_BANK_DOCUMENTS_EMPTY}
         </p>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((row) => (
-              <DocumentFicheThumbnail
+          <DocumentMiniatureList>
+            {pagedRows.map((row) => (
+              <DocumentMiniature
                 key={row.id}
+                document={row}
+                context="bank"
                 href={`/documents/${row.id}`}
-                data={bankRowToDocFicheData(row)}
+                reuseHref={`/questions/new?doc=${row.id}&slot=A`}
+                authorHref={`/profile/${row.auteur_id}`}
               />
             ))}
-          </div>
+          </DocumentMiniatureList>
           {hasMore ? (
             <div className="flex justify-center">
               <Link
@@ -215,61 +254,4 @@ export async function BankDocumentsPanel({ filters, page }: Props) {
       )}
     </div>
   );
-}
-
-/** Construit un DocFicheData minimal pour le thumbnail depuis une ligne de la banque. */
-function bankRowToDocFicheData(row: {
-  id: string;
-  titre: string;
-  type: "textuel" | "iconographique";
-  source_type: "primaire" | "secondaire";
-  structure: "simple" | "perspectives" | "deux_temps";
-  elementCount: number | null;
-  contenu: string | null;
-  image_url: string | null;
-  type_iconographique: string | null;
-  categorie_textuelle: string | null;
-}): DocFicheData {
-  const elCount = row.elementCount || 1;
-
-  const mainElement: DocumentElement =
-    row.type === "textuel"
-      ? {
-          id: "el-1",
-          type: "textuel",
-          contenu: row.contenu || "",
-          source: "",
-          sourceType: row.source_type,
-          categorieTextuelle: (row.categorie_textuelle ||
-            "documents_officiels") as CategorieTextuelleValue,
-        }
-      : {
-          id: "el-1",
-          type: "iconographique",
-          imageUrl: row.image_url || "",
-          source: "",
-          sourceType: row.source_type,
-          categorieIconographique: (parseTypeIconographique(row.type_iconographique) ||
-            "carte") as DocumentCategorieIconographiqueId,
-        };
-
-  // Dupliquer l'élément pour que elements.length reflète la structure réelle
-  const elements: DocumentElement[] = [mainElement];
-  for (let i = 1; i < elCount; i++) {
-    elements.push({ ...mainElement, id: `el-${i + 1}` });
-  }
-
-  return {
-    document: { id: row.id, titre: row.titre, structure: row.structure, elements },
-    sourceType: row.source_type,
-    sourceCitation: "",
-    niveauLabels: "",
-    disciplineLabels: "",
-    aspectsStr: "",
-    connLabels: "",
-    authorName: "",
-    created: "",
-    usageCaption: "",
-    isPublished: true,
-  };
 }
