@@ -3,7 +3,7 @@
 import type { HeaderData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
-import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
+import { MetaChip, chipPropsForFicheMode } from "@/lib/fiche/primitives/MetaChip";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
 import { cn } from "@/lib/utils/cn";
@@ -24,6 +24,7 @@ export function FicheHeader({ data, mode }: Props) {
     showAspectsPill ||
     Boolean(data.niveau) ||
     Boolean(data.discipline);
+  const chipProps = chipPropsForFicheMode(mode);
 
   if (mode === "thumbnail") {
     return (
@@ -31,8 +32,10 @@ export function FicheHeader({ data, mode }: Props) {
         {data.oi ? <IconBadge glyph={data.oi.icone} mode={mode} /> : null}
         {hasAnyPill ? (
           <ChipBar className="gap-1.5">
-            {showOiPill ? <MetaChip icon="psychology" label={data.oi!.titre} mode={mode} /> : null}
-            {data.niveau ? <MetaChip icon="school" label={data.niveau} mode={mode} /> : null}
+            {showOiPill ? (
+              <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
+            ) : null}
+            {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
           </ChipBar>
         ) : null}
       </div>
@@ -59,13 +62,19 @@ export function FicheHeader({ data, mode }: Props) {
       <div className="min-w-0 px-4 py-[1.35rem] pr-5 sm:px-5">
         {hasAnyPill ? (
           <ChipBar>
-            {showOiPill ? <MetaChip icon="psychology" label={data.oi!.titre} mode={mode} /> : null}
-            {data.niveau ? <MetaChip icon="school" label={data.niveau} mode={mode} /> : null}
+            {showOiPill ? (
+              <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
+            ) : null}
+            {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
             {data.discipline ? (
-              <MetaChip icon="menu_book" label={data.discipline} mode={mode} />
+              <MetaChip icon="menu_book" label={data.discipline} {...chipProps} />
             ) : null}
             {showAspectsPill ? (
-              <MetaChip icon="deployed_code" label={data.aspectsSociete.join(" · ")} mode={mode} />
+              <MetaChip
+                icon="deployed_code"
+                label={data.aspectsSociete.join(" · ")}
+                {...chipProps}
+              />
             ) : null}
           </ChipBar>
         ) : null}

@@ -324,7 +324,7 @@ export const DOC_MINIATURE_UTILISATION_AUCUNE = "Aucune utilisation";
 export const DOC_MINIATURE_UPDATED_PREFIX = "Mis à jour le";
 export const DOC_MINIATURE_CREATED_PREFIX = "Créé le";
 /** Libellé actions kebab — miniature. */
-export const DOC_MINIATURE_ACTION_OUVRIR = "Ouvrir la fiche";
+export const DOC_MINIATURE_ACTION_OUVRIR = "Vue détaillée";
 export const DOC_MINIATURE_ACTION_MODIFIER = "Modifier";
 export const DOC_MINIATURE_ACTION_SUPPRIMER = "Supprimer";
 export const DOC_MINIATURE_ACTION_REUTILISER = "Réutiliser dans une tâche";

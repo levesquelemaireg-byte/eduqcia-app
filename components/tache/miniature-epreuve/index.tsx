@@ -47,11 +47,9 @@ export function TacheMiniatureEpreuve({ rang, donnees, surClic }: Props) {
 
         {/* Pills */}
         <div className="flex flex-wrap items-stretch gap-2">
-          <MetaChip icon={donnees.oi.icone} label={donnees.oi.titre} mode="sommaire" />
-          <MetaChip icon="table" label={donnees.comportement.enonce} mode="sommaire" />
-          {derniereConnaissance && (
-            <MetaChip icon="lightbulb" label={derniereConnaissance} mode="sommaire" />
-          )}
+          <MetaChip icon={donnees.oi.icone} label={donnees.oi.titre} />
+          <MetaChip icon="table" label={donnees.comportement.enonce} />
+          {derniereConnaissance && <MetaChip icon="lightbulb" label={derniereConnaissance} />}
         </div>
 
         {/* Séparateur + footer */}

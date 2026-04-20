@@ -16,9 +16,9 @@ export function SectionHero({ data, heroRef }: Props) {
     <section>
       {/* Overline — pill OI (glyphe spécifique) + comportement attendu (icône OI générique) */}
       <div className="mb-2 flex flex-wrap items-center gap-1.5">
-        <MetaChip icon={data.oiGlyph} label={data.oiLabel} mode="lecture" />
+        <MetaChip icon={data.oiGlyph} label={data.oiLabel} />
         {data.comportementAttendu ? (
-          <MetaChip icon="psychology" label={data.comportementAttendu} mode="lecture" />
+          <MetaChip icon="psychology" label={data.comportementAttendu} />
         ) : null}
       </div>
 

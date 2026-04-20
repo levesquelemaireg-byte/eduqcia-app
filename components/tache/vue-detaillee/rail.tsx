@@ -68,12 +68,10 @@ export function TacheRail({ tae }: Props) {
       {/* Paramètres — niveau, discipline, aspects */}
       <SectionRail titre="Paramètres">
         <ChipBar>
-          <MetaChip icon="school" label={niveau.label} mode={mode} />
-          <MetaChip icon="menu_book" label={discipline.label} mode={mode} />
+          <MetaChip icon="school" label={niveau.label} />
+          <MetaChip icon="menu_book" label={discipline.label} />
           {aspects &&
-            aspects.labels.map((label) => (
-              <MetaChip key={label} icon="public" label={label} mode={mode} />
-            ))}
+            aspects.labels.map((label) => <MetaChip key={label} icon="public" label={label} />)}
         </ChipBar>
       </SectionRail>
 

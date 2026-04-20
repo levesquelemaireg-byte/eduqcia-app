@@ -14,7 +14,7 @@ import {
   type ReactNode,
 } from "react";
 
-import { PeriodeIcon } from "@/components/ui/PeriodeIcon";
+import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
 import {
   DOC_MINIATURE_ACTION_MODIFIER,
   DOC_MINIATURE_ACTION_OUVRIR,
@@ -112,46 +112,6 @@ function StatusPill({ published }: { published: boolean }) {
   );
 }
 
-function MetaBadge({ icon, children }: { icon: ReactNode; children: ReactNode }) {
-  return (
-    <span className="inline-flex min-h-7 items-center gap-1 rounded-lg bg-panel-alt px-2.5 py-1 text-xs font-bold text-deep">
-      {icon}
-      <span className="truncate">{children}</span>
-    </span>
-  );
-}
-
-function IconGlyph({ icon }: { icon: string }) {
-  return (
-    <span className="material-symbols-outlined text-[0.9em] text-accent" aria-hidden="true">
-      {icon}
-    </span>
-  );
-}
-
-function KnowledgeBadge({ parent, leaf }: { parent: string | null; leaf: string }) {
-  return (
-    <span className="inline-flex min-h-7 items-center gap-1 rounded-lg bg-panel-alt px-2.5 py-1 text-xs font-bold text-deep">
-      <IconGlyph icon="lightbulb" />
-      {parent ? (
-        <>
-          <span className="truncate">{parent}</span>
-          <span
-            className="material-symbols-outlined text-[0.85em] text-muted"
-            style={{ transform: "scaleX(-1)" }}
-            aria-hidden="true"
-          >
-            keyboard_return
-          </span>
-          <span className="truncate">{leaf}</span>
-        </>
-      ) : (
-        <span className="truncate">{leaf}</span>
-      )}
-    </span>
-  );
-}
-
 function LeftGlyph({ document }: { document: DocumentEnrichedRow }) {
   const element = getPrimaryElement(document.elements);
   const imageUrl =
@@ -159,12 +119,12 @@ function LeftGlyph({ document }: { document: DocumentEnrichedRow }) {
 
   if (imageUrl) {
     return (
-      <span className="relative block h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-panel-alt">
+      <span className="relative block h-24 w-24 shrink-0 overflow-hidden rounded-xl bg-panel-alt">
         <Image
           src={imageUrl}
           alt=""
           fill
-          sizes="48px"
+          sizes="96px"
           className="object-cover"
           aria-hidden="true"
         />
@@ -174,10 +134,11 @@ function LeftGlyph({ document }: { document: DocumentEnrichedRow }) {
 
   return (
     <span
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent"
+      className="flex h-24 w-24 shrink-0 items-center justify-center rounded-xl text-[48px] text-accent"
+      style={{ backgroundColor: "var(--color-accent-soft)" }}
       aria-hidden="true"
     >
-      <span className="material-symbols-outlined text-[24px]">article</span>
+      <span className="material-symbols-outlined">article</span>
     </span>
   );
 }
@@ -401,39 +362,55 @@ export function DocumentMiniature({
       onClick={onRowClick}
       onKeyDown={onRowKey}
       className={cn(
-        "group relative grid cursor-pointer gap-3.5 rounded-lg py-3.5 pl-3.5 pr-11 transition-colors hover:bg-panel-alt focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
+        "group relative grid cursor-pointer gap-5 rounded-md border border-border bg-panel py-5 pl-5 pr-12 shadow-sm transition-[border-color,box-shadow] hover:border-accent hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
       )}
-      style={{ gridTemplateColumns: "48px minmax(0, 1fr)" }}
+      style={{ gridTemplateColumns: "96px minmax(0, 1fr)" }}
     >
       <LeftGlyph document={document} />
 
       <div className="flex min-w-0 flex-col gap-1.5">
+        {niveauxLabel || disciplinesLabel ? (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {niveauxLabel ? <MetaChip icon="school" label={niveauxLabel} /> : null}
+            {disciplinesLabel ? <MetaChip icon="menu_book" label={disciplinesLabel} /> : null}
+          </div>
+        ) : null}
+
         <div className="flex min-w-0 items-center gap-2">
-          <h3 className="min-w-0 flex-1 truncate text-[14.5px] font-semibold text-deep">
+          <h3 className="min-w-0 flex-1 truncate text-[29px] font-bold leading-tight text-deep">
             {document.titre}
           </h3>
           {showStatus ? <StatusPill published={document.is_published} /> : null}
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
-          {disciplinesLabel ? (
-            <MetaBadge icon={<IconGlyph icon="menu_book" />}>{disciplinesLabel}</MetaBadge>
-          ) : null}
-          {niveauxLabel ? (
-            <MetaBadge icon={<IconGlyph icon="school" />}>{niveauxLabel}</MetaBadge>
-          ) : null}
-          {hasAnchor ? (
-            <MetaBadge icon={<PeriodeIcon className="text-accent" />}>
-              {document.repere_temporel ?? (annee !== null ? String(annee) : "")}
-            </MetaBadge>
-          ) : null}
-          {aspectsLabel ? (
-            <MetaBadge icon={<IconGlyph icon="deployed_code" />}>{aspectsLabel}</MetaBadge>
-          ) : null}
-          {connaissanceBranch ? (
-            <KnowledgeBadge parent={connaissanceBranch.parent} leaf={connaissanceBranch.leaf} />
-          ) : null}
-        </div>
+        {hasAnchor || aspectsLabel || connaissanceBranch ? (
+          <div className="flex flex-wrap items-center gap-1.5">
+            {hasAnchor ? (
+              <MetaChip
+                icon="anchor"
+                label={document.repere_temporel ?? (annee !== null ? String(annee) : "")}
+              />
+            ) : null}
+            {aspectsLabel ? <MetaChip icon="deployed_code" label={aspectsLabel} /> : null}
+            {connaissanceBranch ? (
+              connaissanceBranch.parent ? (
+                <MetaChip icon="lightbulb">
+                  <span className="min-w-0 truncate">{connaissanceBranch.parent}</span>
+                  <span
+                    className="material-symbols-outlined shrink-0 text-[0.85em] text-muted"
+                    style={{ transform: "scaleX(-1)" }}
+                    aria-hidden="true"
+                  >
+                    keyboard_return
+                  </span>
+                  <span className="min-w-0 truncate">{connaissanceBranch.leaf}</span>
+                </MetaChip>
+              ) : (
+                <MetaChip icon="lightbulb" label={connaissanceBranch.leaf} />
+              )
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted">
           {showAuthor && auteurNom ? (
@@ -486,11 +463,7 @@ export function DocumentMiniature({
   );
 }
 
-/** Conteneur liste aligné sur la SPEC §3.6. */
+/** Conteneur liste — cartes séparées avec espacement vertical. */
 export function DocumentMiniatureList({ children }: { children: ReactNode }) {
-  return (
-    <div className="rounded-xl border border-border bg-panel p-1.5">
-      <div className="divide-y divide-[color:var(--color-line-soft)]">{children}</div>
-    </div>
-  );
+  return <div className="flex flex-col gap-3">{children}</div>;
 }

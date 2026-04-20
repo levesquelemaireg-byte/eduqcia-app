@@ -3,7 +3,7 @@
 import type { DocHeaderData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
-import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
+import { MetaChip, chipPropsForFicheMode } from "@/lib/fiche/primitives/MetaChip";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
 import { DOCUMENT_FICHE_EYEBROW } from "@/lib/ui/ui-copy";
@@ -16,6 +16,8 @@ type Props = { data: DocHeaderData; mode: FicheMode };
  * Layout identique au FicheHeader TAÉ (grille 96px + contenu).
  */
 export function DocFicheHeader({ data, mode }: Props) {
+  const chipProps = chipPropsForFicheMode(mode);
+
   if (mode === "thumbnail") {
     return (
       <div className="px-4 pt-3 pb-2.5">
@@ -24,9 +26,9 @@ export function DocFicheHeader({ data, mode }: Props) {
           <p className="line-clamp-2 min-w-0 text-sm font-bold text-deep">{data.titre}</p>
         </div>
         <ChipBar className="mt-2">
-          <MetaChip icon="category" label={data.typeLabel} mode={mode} />
-          <MetaChip icon="view_column" label={data.structureLabel} mode={mode} />
-          <MetaChip icon="bookmark" label={data.sourceTypeLabel} mode={mode} />
+          <MetaChip icon="category" label={data.typeLabel} {...chipProps} />
+          <MetaChip icon="view_column" label={data.structureLabel} {...chipProps} />
+          <MetaChip icon="bookmark" label={data.sourceTypeLabel} {...chipProps} />
         </ChipBar>
       </div>
     );
@@ -50,9 +52,9 @@ export function DocFicheHeader({ data, mode }: Props) {
           {data.titre}
         </h1>
         <ChipBar className="mt-3">
-          <MetaChip icon="category" label={data.typeLabel} mode={mode} />
-          <MetaChip icon="view_column" label={data.structureLabel} mode={mode} />
-          <MetaChip icon="bookmark" label={data.sourceTypeLabel} mode={mode} />
+          <MetaChip icon="category" label={data.typeLabel} {...chipProps} />
+          <MetaChip icon="view_column" label={data.structureLabel} {...chipProps} />
+          <MetaChip icon="bookmark" label={data.sourceTypeLabel} {...chipProps} />
         </ChipBar>
       </div>
     </header>

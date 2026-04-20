@@ -48,10 +48,8 @@ export function EpreuveRail({
       {(niveauLabel || disciplineLabel) && (
         <SectionRail titre="Indexation">
           <ChipBar>
-            {niveauLabel && <MetaChip icon="school" label={niveauLabel} mode="lecture" />}
-            {disciplineLabel && (
-              <MetaChip icon="menu_book" label={disciplineLabel} mode="lecture" />
-            )}
+            {niveauLabel && <MetaChip icon="school" label={niveauLabel} />}
+            {disciplineLabel && <MetaChip icon="menu_book" label={disciplineLabel} />}
           </ChipBar>
         </SectionRail>
       )}

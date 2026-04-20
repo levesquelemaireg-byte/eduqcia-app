@@ -50,18 +50,12 @@ export function DocumentRail({ data }: Props) {
       {(data.niveauLabels || data.disciplineLabels || data.aspectsStr) && (
         <SectionRail titre="Indexation">
           <ChipBar>
-            {data.niveauLabels && (
-              <MetaChip icon="school" label={data.niveauLabels} mode="lecture" />
-            )}
-            {data.disciplineLabels && (
-              <MetaChip icon="menu_book" label={data.disciplineLabels} mode="lecture" />
-            )}
+            {data.niveauLabels && <MetaChip icon="school" label={data.niveauLabels} />}
+            {data.disciplineLabels && <MetaChip icon="menu_book" label={data.disciplineLabels} />}
             {data.aspectsStr &&
               data.aspectsStr
                 .split(", ")
-                .map((aspect) => (
-                  <MetaChip key={aspect} icon="public" label={aspect} mode="lecture" />
-                ))}
+                .map((aspect) => <MetaChip key={aspect} icon="public" label={aspect} />)}
           </ChipBar>
         </SectionRail>
       )}
