@@ -13,6 +13,7 @@ import { Bloc3LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-tem
 import { Bloc4LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-temps/Bloc4LigneDuTemps";
 import { Bloc3OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc3OrdreChronologique";
 import { Bloc4OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc4OrdreChronologique";
+import { assertNever } from "@/lib/tache/assert-never";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import type { TacheNonRedactionVariantSlug } from "@/lib/tache/non-redaction/variant-slugs";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
@@ -106,7 +107,7 @@ function resolvePerspectivesBlocComponent(
       case "pur":
         return Bloc3TemplatePur;
       default:
-        return null;
+        return assertNever(config.bloc3);
     }
   }
 
