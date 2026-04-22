@@ -4,8 +4,8 @@
 
 import { initialAvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
-import { parseNonRedactionData } from "@/lib/tache/tae-form-hydrate";
-import type { NonRedactionData } from "@/lib/tache/tae-form-state-types";
+import { parseNonRedactionData } from "@/lib/tache/tache-form-hydrate";
+import type { NonRedactionData } from "@/lib/tache/tache-form-state-types";
 
 export function nonRedactionFromDbColumn(
   comportementId: string,

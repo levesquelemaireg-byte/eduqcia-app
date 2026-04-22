@@ -48,7 +48,7 @@ export function sanitizeCdFormSlice(raw: unknown): CdFormSlice {
   const composanteId = typeof s.composanteId === "string" ? s.composanteId : "";
   const critereId = typeof s.critereId === "string" ? s.critereId : "";
   if (!competence.trim() || !composante.trim() || !critere.trim()) return { selection: null };
-  /* IDs optionnels côté persistance : le RPC résout `cd_id` par texte (`publish-tae.resolveCdId`). */
+  /* IDs optionnels côté persistance : le RPC résout `cd_id` par texte (`publish-tache.resolveCdId`). */
   return {
     selection: {
       competence,

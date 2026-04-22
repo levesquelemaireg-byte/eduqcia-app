@@ -10,15 +10,15 @@ import {
   type Dispatch,
   type ReactNode,
 } from "react";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
-import { taeFormReducer } from "@/lib/tache/tae-form-reducer";
+import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
+import { tacheFormReducer } from "@/lib/tache/tache-form-reducer";
 import { isProfileCollaborateurId } from "@/lib/tache/collaborateur-user-ids";
 import {
-  initialTaeFormState,
+  initialTacheFormState,
   type ConceptionSlice,
-  type TaeFormAction,
-  type TaeFormState,
-} from "@/lib/tache/tae-form-state-types";
+  type TacheFormAction,
+  type TacheFormState,
+} from "@/lib/tache/tache-form-state-types";
 
 export type {
   Bloc3Slice,
@@ -30,9 +30,9 @@ export type {
   BlueprintSlice,
   ConceptionSlice,
   NonRedactionData,
-  TaeFormAction,
-  TaeFormState,
-} from "@/lib/tache/tae-form-state-types";
+  TacheFormAction,
+  TacheFormState,
+} from "@/lib/tache/tache-form-state-types";
 
 export {
   getRedactionSliceForPreview,
@@ -41,53 +41,55 @@ export {
   initialBloc5,
   initialBloc7,
   initialConception,
-  initialTaeFormState,
-  TAE_BLUEPRINT_STEP_INDEX,
-  TAE_BLOC5_STEP_INDEX,
-  TAE_CD_STEP_INDEX,
-  TAE_CONCEPTION_STEP_INDEX,
-  TAE_CONNAISSANCES_STEP_INDEX,
-  TAE_DOCUMENTS_STEP_INDEX,
-  TAE_FORM_STEP_COUNT,
-  TAE_REDACTION_STEP_INDEX,
-} from "@/lib/tache/tae-form-state-types";
+  initialTacheFormState,
+  TACHE_BLUEPRINT_STEP_INDEX,
+  TACHE_BLOC5_STEP_INDEX,
+  TACHE_CD_STEP_INDEX,
+  TACHE_CONCEPTION_STEP_INDEX,
+  TACHE_CONNAISSANCES_STEP_INDEX,
+  TACHE_DOCUMENTS_STEP_INDEX,
+  TACHE_FORM_STEP_COUNT,
+  TACHE_REDACTION_STEP_INDEX,
+} from "@/lib/tache/tache-form-state-types";
 
-export { taeFormReducer } from "@/lib/tache/tae-form-reducer";
+export { tacheFormReducer } from "@/lib/tache/tache-form-reducer";
 
-export { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
+export { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
 
-type TaeFormContextValue = {
-  state: TaeFormState;
-  dispatch: Dispatch<TaeFormAction>;
+type TacheFormContextValue = {
+  state: TacheFormState;
+  dispatch: Dispatch<TacheFormAction>;
 };
 
-const TaeFormContext = createContext<TaeFormContextValue | null>(null);
+const TacheFormContext = createContext<TacheFormContextValue | null>(null);
 
-type TaeFormProviderProps = {
+type TacheFormProviderProps = {
   children: ReactNode;
   /**
    * État initial serveur (édition d’une TAÉ). Sinon le formulaire démarre vide ; la reprise « Créer »
    * se fait via `WizardDraftBanners` + `HYDRATE` — `docs/DECISIONS.md` § brouillons.
    */
-  serverInitialState?: TaeFormState | null;
-  /** Faux sur `/questions/[id]/edit` : ne pas persister dans `TAE_DRAFT_STORAGE_KEY`. */
+  serverInitialState?: TacheFormState | null;
+  /** Faux sur `/questions/[id]/edit` : ne pas persister dans `TACHE_DRAFT_STORAGE_KEY`. */
   persistSessionDraft?: boolean;
 };
 
-function initFormState(serverInitial: TaeFormState | null | undefined): TaeFormState {
+function initFormState(serverInitial: TacheFormState | null | undefined): TacheFormState {
   if (serverInitial) {
-    return taeFormReducer(initialTaeFormState, { type: "HYDRATE", state: serverInitial });
+    return tacheFormReducer(initialTacheFormState, { type: "HYDRATE", state: serverInitial });
   }
-  return initialTaeFormState;
+  return initialTacheFormState;
 }
 
-export function TaeFormProvider({
+export function TacheFormProvider({
   children,
   serverInitialState = null,
   persistSessionDraft = true,
-}: TaeFormProviderProps) {
-  const [state, dispatch] = useReducer(taeFormReducer, serverInitialState ?? undefined, (initArg) =>
-    initFormState(initArg ?? null),
+}: TacheFormProviderProps) {
+  const [state, dispatch] = useReducer(
+    tacheFormReducer,
+    serverInitialState ?? undefined,
+    (initArg) => initFormState(initArg ?? null),
   );
   /** Évite d’écraser le brouillon local avant la première interaction utile. */
   const skipFirstPersistRef = useRef(true);
@@ -100,7 +102,7 @@ export function TaeFormProvider({
     }
     const id = window.setTimeout(() => {
       try {
-        sessionStorage.setItem(TAE_DRAFT_STORAGE_KEY, JSON.stringify(state));
+        sessionStorage.setItem(TACHE_DRAFT_STORAGE_KEY, JSON.stringify(state));
       } catch {
         /* quota */
       }
@@ -109,13 +111,13 @@ export function TaeFormProvider({
   }, [state, persistSessionDraft]);
 
   const value = useMemo(() => ({ state, dispatch }), [state, dispatch]);
-  return <TaeFormContext.Provider value={value}>{children}</TaeFormContext.Provider>;
+  return <TacheFormContext.Provider value={value}>{children}</TacheFormContext.Provider>;
 }
 
-export function useTaeForm(): TaeFormContextValue {
-  const ctx = useContext(TaeFormContext);
+export function useTacheForm(): TacheFormContextValue {
+  const ctx = useContext(TacheFormContext);
   if (!ctx) {
-    throw new Error("useTaeForm doit être utilisé dans un TaeFormProvider");
+    throw new Error("useTacheForm doit être utilisé dans un TacheFormProvider");
   }
   return ctx;
 }

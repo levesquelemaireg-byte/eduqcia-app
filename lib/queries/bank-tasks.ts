@@ -29,9 +29,9 @@ export function parseBankListPage(sp: Record<string, string | string[] | undefin
   return Number.isFinite(n) && n >= 0 ? Math.floor(n) : 0;
 }
 
-export type BankTaeSort = "recent" | "popular";
+export type BankTacheSort = "recent" | "popular";
 
-export type BankTaeFilters = {
+export type BankTacheFilters = {
   q?: string;
   oiId?: string;
   comportementId?: string;
@@ -44,14 +44,14 @@ export type BankTaeFilters = {
   connaissancesIds?: string;
 };
 
-export type BankTaeQuery = {
-  filters: BankTaeFilters;
+export type BankTacheQuery = {
+  filters: BankTacheFilters;
   page: number;
-  sort: BankTaeSort;
+  sort: BankTacheSort;
 };
 
 /** Ligne liste banque — `consigne` HTML complète pour `plainConsigneForMiniature`. */
-export type BankTaeRow = {
+export type BankTacheRow = {
   id: string;
   consigne: string | null;
   created_at: string | null;
@@ -86,12 +86,12 @@ function parseConnaissanceIds(raw: string | undefined): number[] {
   return out;
 }
 
-export function parseBankTaeQueryFromSearchParams(
+export function parseBankTacheQueryFromSearchParams(
   sp: Record<string, string | string[] | undefined>,
 ): {
-  filters: BankTaeFilters;
+  filters: BankTacheFilters;
   page: number;
-  sort: BankTaeSort;
+  sort: BankTacheSort;
 } {
   const g = (k: string): string | undefined => {
     const v = sp[k];
@@ -99,7 +99,7 @@ export function parseBankTaeQueryFromSearchParams(
     return v;
   };
   const sortRaw = g("sort");
-  const sort: BankTaeSort = sortRaw === "popular" ? "popular" : "recent";
+  const sort: BankTacheSort = sortRaw === "popular" ? "popular" : "recent";
   const pageRaw = g("page");
   const p = pageRaw !== undefined ? Number(pageRaw) : 0;
   const page = Number.isFinite(p) && p >= 0 ? Math.floor(p) : 0;
@@ -124,8 +124,8 @@ export function parseBankTaeQueryFromSearchParams(
 }
 
 /** Lien `/bank` onglet Tâches avec les mêmes filtres (pagination modifiable). */
-export function serializeBankTaeQueryForHref(
-  query: BankTaeQuery,
+export function serializeBankTacheQueryForHref(
+  query: BankTacheQuery,
   overrides?: { page?: number },
 ): string {
   const u = new URLSearchParams();
@@ -146,13 +146,13 @@ export function serializeBankTaeQueryForHref(
 }
 
 /** Colonnes présentes dans le `select` sur `banque_tae` — la vue dans `database.ts` peut être incomplète tant que les types ne sont pas régénérés. */
-type BanqueTaeJoinRow = Database["public"]["Views"]["banque_tae"]["Row"] & {
+type BanqueTacheJoinRow = Database["public"]["Views"]["banque_tae"]["Row"] & {
   consigne?: string | null;
   consigne_search_plain?: string | null;
   bank_popularity_score?: number | null;
 };
 
-function mapBanqueRow(row: BanqueTaeJoinRow): BankTaeRow | null {
+function mapBanqueRow(row: BanqueTacheJoinRow): BankTacheRow | null {
   if (!row.id) return null;
   return {
     id: row.id,
@@ -172,10 +172,10 @@ function mapBanqueRow(row: BanqueTaeJoinRow): BankTaeRow | null {
 /**
  * Liste paginée des TAÉ publiées (vue `banque_tae`) — filtres + tri + recherche sur `consigne_search_plain`.
  */
-export async function getBankPublishedTaePage(
+export async function getBankPublishedTachePage(
   supabase: Client,
-  query: BankTaeQuery,
-): Promise<{ rows: BankTaeRow[]; total: number }> {
+  query: BankTacheQuery,
+): Promise<{ rows: BankTacheRow[]; total: number }> {
   const { filters, page, sort } = query;
   const from = page * BANK_PAGE_SIZE;
   const to = from + BANK_PAGE_SIZE - 1;
@@ -239,12 +239,12 @@ export async function getBankPublishedTaePage(
   const { data, error, count } = await q.range(from, to);
 
   if (error || !data) {
-    if (error) console.error("[getBankPublishedTaePage]", error.message);
+    if (error) console.error("[getBankPublishedTachePage]", error.message);
     return { rows: [], total: 0 };
   }
 
-  const rows: BankTaeRow[] = [];
-  for (const raw of data as unknown as BanqueTaeJoinRow[]) {
+  const rows: BankTacheRow[] = [];
+  for (const raw of data as unknown as BanqueTacheJoinRow[]) {
     const m = mapBanqueRow(raw);
     if (m) rows.push(m);
   }
@@ -252,7 +252,7 @@ export async function getBankPublishedTaePage(
   return { rows, total: count ?? 0 };
 }
 
-export function bankTaeQueryHasActiveFilters(filters: BankTaeFilters): boolean {
+export function bankTacheQueryHasActiveFilters(filters: BankTacheFilters): boolean {
   return Boolean(
     filters.q ||
     filters.oiId ||

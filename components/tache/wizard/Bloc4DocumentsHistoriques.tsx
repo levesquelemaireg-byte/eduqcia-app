@@ -8,14 +8,14 @@ import { useMemo } from "react";
 import { DocumentSlotPanel } from "@/components/tache/wizard/bloc4";
 import { DocumentSlotsAccordionProvider } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { DocumentSlotsAccordionSync } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionSync";
-import { getRedactionSliceForPreview, useTaeForm } from "@/components/tache/wizard/FormState";
+import { getRedactionSliceForPreview, useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { isRedactionSliceConsigneReady } from "@/lib/tache/redaction-helpers";
 import { BLOC4_GATE_WIZARD } from "@/lib/ui/ui-copy";
 
 export function Bloc4DocumentsHistoriques() {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const b = state.bloc2;
   const nb = b.nbDocuments;
   const slots = b.documentSlots;

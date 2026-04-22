@@ -1,15 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { useGrilles, useOiData } from "@/components/tache/wizard/bloc2/useBloc2Data";
 import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
 import styles from "@/components/tache/wizard/preview/printable-fiche-preview.module.css";
 import { PRINTABLE_FICHE_SECTION_COPY } from "@/components/tache/wizard/preview/wizard-print-preview-copy";
 import {
-  TaePrintFeuilletToggle,
-  type TaePrintFeuilletId,
-} from "@/components/tache/wizard/preview/TaePrintFeuilletToggle";
+  TachePrintFeuilletToggle,
+  type TachePrintFeuilletId,
+} from "@/components/tache/wizard/preview/TachePrintFeuilletToggle";
 import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import {
@@ -25,7 +25,7 @@ import {
 import { getSlotData, slotLetter } from "@/lib/tache/document-helpers";
 import { isActiveNonRedactionVariant } from "@/lib/tache/non-redaction/wizard-variant";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
-import type { DocumentFiche, TaeFicheData } from "@/lib/types/fiche";
+import type { DocumentFiche, TacheFicheData } from "@/lib/types/fiche";
 import { cn } from "@/lib/utils/cn";
 import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
 import { AvantApresPrintableQuestionnaireCore } from "@/components/tache/wizard/preview/AvantApresPrintableQuestionnaireCore";
@@ -42,7 +42,7 @@ type WizardProps = {
   /** Affiche la vue corrigée (consigne + corrigé uniquement). */
   estCorrige?: boolean;
   /** Feuillet contrôlé (PreviewPanel). Si fourni, le toggle interne est masqué. */
-  feuillet?: TaePrintFeuilletId;
+  feuillet?: TachePrintFeuilletId;
 };
 
 export function PrintableHtml({
@@ -95,25 +95,25 @@ export function PrintableGrilleSection({
   );
 }
 
-type FromTaeProps = {
-  tae: TaeFicheData;
+type FromTacheProps = {
+  tache: TacheFicheData;
   className?: string;
   mode?: ModeImpression;
   estCorrige?: boolean;
   /** Feuillet contrôlé de l'extérieur (PreviewPanel). Si fourni, pas de toggle interne. */
-  feuillet?: TaePrintFeuilletId;
+  feuillet?: TachePrintFeuilletId;
 };
 
-function PrintableFicheDocumentsSection({ tae }: { tae: TaeFicheData }) {
+function PrintableFicheDocumentsSection({ tache }: { tache: TacheFicheData }) {
   const hasIcono = useMemo(
-    () => tae.documents.some((d) => d.type === "iconographique"),
-    [tae.documents],
+    () => tache.documents.some((d) => d.type === "iconographique"),
+    [tache.documents],
   );
 
   return (
     <div className={styles.sectionBlock}>
       <div className={cn(styles.docsGrid, hasIcono && styles.docsGridHasIcono)}>
-        {tae.documents.map((doc) => (
+        {tache.documents.map((doc) => (
           <DocumentCardPrint key={doc.letter} document={documentFicheVersRenderer(doc)} />
         ))}
       </div>
@@ -121,16 +121,16 @@ function PrintableFicheDocumentsSection({ tae }: { tae: TaeFicheData }) {
   );
 }
 
-function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
+function PrintableFicheQuestionnaireSection({ tache }: { tache: TacheFicheData }) {
   const grilles = useGrilles();
   const grilleEntry = useMemo(() => {
-    if (!tae.outilEvaluation || !grilles) return null;
-    return grilles.find((g) => g.id === tae.outilEvaluation) ?? null;
-  }, [tae, grilles]);
+    if (!tache.outilEvaluation || !grilles) return null;
+    return grilles.find((g) => g.id === tache.outilEvaluation) ?? null;
+  }, [tache, grilles]);
 
-  const lineCount = tae.nb_lignes ?? 5;
-  const showAnswerLines = tae.showStudentAnswerLines !== false;
-  const variantSlug = getVariantSlugForComportementId(tae.comportement.id);
+  const lineCount = tache.nb_lignes ?? 5;
+  const showAnswerLines = tache.showStudentAnswerLines !== false;
+  const variantSlug = getVariantSlugForComportementId(tache.comportement.id);
   const isOrdreChronologique = variantSlug === "ordre-chronologique";
   const isLigneDuTemps = variantSlug === "ligne-du-temps";
   const isAvantApres = variantSlug === "avant-apres";
@@ -145,35 +145,35 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
       >
         {isOrdreChronologique ? (
           <OrdreChronologiquePrintableQuestionnaireCore
-            consigneHtml={tae.consigne}
-            guidageHtml={tae.guidage}
-            documentSlotCount={tae.documents.length}
-            showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
+            consigneHtml={tache.consigne}
+            guidageHtml={tache.guidage}
+            documentSlotCount={tache.documents.length}
+            showGuidageOnStudentSheet={tache.showGuidageOnStudentSheet}
           />
         ) : isLigneDuTemps ? (
           <LigneDuTempsPrintableQuestionnaireCore
-            consigneHtml={tae.consigne}
-            guidageHtml={tae.guidage}
-            documentSlotCount={tae.documents.length}
-            showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
+            consigneHtml={tache.consigne}
+            guidageHtml={tache.guidage}
+            documentSlotCount={tache.documents.length}
+            showGuidageOnStudentSheet={tache.showGuidageOnStudentSheet}
           />
         ) : isAvantApres ? (
           <AvantApresPrintableQuestionnaireCore
-            consigneHtml={tae.consigne}
-            guidageHtml={tae.guidage}
-            documentSlotCount={tae.documents.length}
-            showGuidageOnStudentSheet={tae.showGuidageOnStudentSheet}
+            consigneHtml={tache.consigne}
+            guidageHtml={tache.guidage}
+            documentSlotCount={tache.documents.length}
+            showGuidageOnStudentSheet={tache.showGuidageOnStudentSheet}
           />
         ) : (
-          <PrintableHtml html={tae.consigne} documentSlotCount={tae.documents.length} />
+          <PrintableHtml html={tache.consigne} documentSlotCount={tache.documents.length} />
         )}
       </section>
 
       {!structuredNonRedactionQuestionnaire &&
-      shouldShowGuidageOnStudentSheet(tae.guidage, tae.showGuidageOnStudentSheet) ? (
+      shouldShowGuidageOnStudentSheet(tache.guidage, tache.showGuidageOnStudentSheet) ? (
         <section className={styles.sectionBlock} aria-label={PRINTABLE_FICHE_SECTION_COPY.guidage}>
           <div className={styles.guidageBlock}>
-            <PrintableHtml html={tae.guidage} documentSlotCount={tae.documents.length} />
+            <PrintableHtml html={tache.guidage} documentSlotCount={tache.documents.length} />
           </div>
         </section>
       ) : null}
@@ -193,7 +193,7 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
 
       <section className={styles.sectionBlock} aria-label={PRINTABLE_FICHE_SECTION_COPY.grille}>
         <PrintableGrilleSection
-          outilEvaluation={tae.outilEvaluation}
+          outilEvaluation={tache.outilEvaluation}
           grille={grilleEntry}
           grillesLoaded={grilles !== null}
         />
@@ -202,18 +202,18 @@ function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
   );
 }
 
-function PrintableFicheCorrigeSection({ tae }: { tae: TaeFicheData }) {
+function PrintableFicheCorrigeSection({ tache }: { tache: TacheFicheData }) {
   return (
     <div className={styles.postDocumentsPrintGroup}>
       <section
         className={cn(styles.sectionBlock, styles.sectionTightToNext)}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.consigne}
       >
-        <PrintableHtml html={tae.consigne} documentSlotCount={tae.documents.length} />
+        <PrintableHtml html={tache.consigne} documentSlotCount={tache.documents.length} />
       </section>
 
       <section className={styles.sectionBlock} aria-label={FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE}>
-        <PrintableHtml html={tae.corrige} documentSlotCount={tae.documents.length} />
+        <PrintableHtml html={tache.corrige} documentSlotCount={tache.documents.length} />
       </section>
     </div>
   );
@@ -223,25 +223,25 @@ function PrintableFicheCorrigeSection({ tae }: { tae: TaeFicheData }) {
  * Contenu imprimable à partir d’une fiche persistée (lecture) — même mise en page que le wizard.
  * Deux feuillets (dossier documentaire / questionnaire) : aperçu écran avec bascule ; impression des deux.
  */
-export function PrintableFicheFromTaeData({
-  tae,
+export function PrintableFicheFromTacheData({
+  tache,
   className,
   mode = "sommatif-standard",
   estCorrige = false,
   feuillet: controlledFeuillet,
-}: FromTaeProps) {
-  const [internalFeuillet, setInternalFeuillet] = useState<TaePrintFeuilletId>("dossier");
+}: FromTacheProps) {
+  const [internalFeuillet, setInternalFeuillet] = useState<TachePrintFeuilletId>("dossier");
   const isControlled = controlledFeuillet != null;
   const activeFeuillet = isControlled ? controlledFeuillet : internalFeuillet;
 
   if (estCorrige) {
     return (
       <div
-        id="tae-wizard-printable-fiche"
+        id="tache-wizard-printable-fiche"
         className={cn("printable-sheet", styles.printFeuilletRoot, className)}
       >
         <section className={cn(styles.paper)} aria-label={FICHE_SECTION_TITLE_PRODUCTION_ATTENDUE}>
-          <PrintableFicheCorrigeSection tae={tae} />
+          <PrintableFicheCorrigeSection tache={tache} />
         </section>
       </div>
     );
@@ -250,15 +250,15 @@ export function PrintableFicheFromTaeData({
   if (mode === "formatif") {
     return (
       <div
-        id="tae-wizard-printable-fiche"
+        id="tache-wizard-printable-fiche"
         className={cn("printable-sheet", styles.printFeuilletRoot, className)}
       >
         <section
           className={cn(styles.paper)}
           aria-label={PRINTABLE_FICHE_SECTION_COPY.questionnaireFeuillet}
         >
-          <PrintableFicheDocumentsSection tae={tae} />
-          <PrintableFicheQuestionnaireSection tae={tae} />
+          <PrintableFicheDocumentsSection tache={tache} />
+          <PrintableFicheQuestionnaireSection tache={tache} />
         </section>
       </div>
     );
@@ -266,11 +266,11 @@ export function PrintableFicheFromTaeData({
 
   return (
     <div
-      id="tae-wizard-printable-fiche"
+      id="tache-wizard-printable-fiche"
       className={cn("printable-sheet", styles.printFeuilletRoot, className)}
     >
       {!isControlled ? (
-        <TaePrintFeuilletToggle active={activeFeuillet} onChange={setInternalFeuillet} />
+        <TachePrintFeuilletToggle active={activeFeuillet} onChange={setInternalFeuillet} />
       ) : null}
       <section
         className={cn(
@@ -280,7 +280,7 @@ export function PrintableFicheFromTaeData({
         )}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.documents}
       >
-        <PrintableFicheDocumentsSection tae={tae} />
+        <PrintableFicheDocumentsSection tache={tache} />
       </section>
       <section
         className={cn(
@@ -289,14 +289,14 @@ export function PrintableFicheFromTaeData({
         )}
         aria-label={PRINTABLE_FICHE_SECTION_COPY.questionnaireFeuillet}
       >
-        <PrintableFicheQuestionnaireSection tae={tae} />
+        <PrintableFicheQuestionnaireSection tache={tache} />
       </section>
     </div>
   );
 }
 
 /**
- * Aperçu impression wizard — `etatWizardVersTache` + adaptateur local vers `TaeFicheData`.
+ * Aperçu impression wizard — `etatWizardVersTache` + adaptateur local vers `TacheFicheData`.
  */
 export function PrintableFichePreview({
   previewMeta,
@@ -305,11 +305,11 @@ export function PrintableFichePreview({
   estCorrige = false,
   feuillet,
 }: WizardProps) {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const { oiList } = useOiData();
   const grilles = useGrilles();
 
-  const tae = useMemo(() => {
+  const tache = useMemo(() => {
     if (!oiList || oiList.length === 0) return null;
     if (!grilles) return null;
 
@@ -324,7 +324,7 @@ export function PrintableFichePreview({
 
     /* Documents : DonneesTache.documents est trop léger pour le rendu
        (pas d'image_url, source_citation, etc.). On construit DocumentFiche[]
-       depuis les slots du wizard — identique à l'ancien formStateToTae. */
+       depuis les slots du wizard — identique à l'ancien formStateToTache. */
     const documents: DocumentFiche[] = state.bloc2.documentSlots.map(({ slotId }) => {
       const slot = getSlotData(state.bloc4.documents, slotId);
       const legendTrim = slot.image_legende.trim();
@@ -344,8 +344,8 @@ export function PrintableFichePreview({
       };
     });
 
-    /* Adaptateur DonneesTache → TaeFicheData (provisoire — D0 print-engine §7). */
-    const taeFiche: TaeFicheData = {
+    /* Adaptateur DonneesTache → TacheFicheData (provisoire — D0 print-engine §7). */
+    const tacheFiche: TacheFicheData = {
       id: donnees.id,
       auteur_id: donnees.auteur_id,
       auteurs: donnees.auteurs,
@@ -371,13 +371,13 @@ export function PrintableFichePreview({
       updated_at: donnees.updated_at,
     };
 
-    return taeFiche;
+    return tacheFiche;
   }, [state, oiList, grilles, previewMeta, mode, estCorrige]);
 
-  if (!tae) {
+  if (!tache) {
     return (
       <div
-        id="tae-wizard-printable-fiche"
+        id="tache-wizard-printable-fiche"
         className={cn("printable-sheet", styles.printFeuilletRoot, className)}
         aria-busy="true"
         aria-label="Chargement de l’aperçu"
@@ -390,8 +390,8 @@ export function PrintableFichePreview({
   }
 
   return (
-    <PrintableFicheFromTaeData
-      tae={tae}
+    <PrintableFicheFromTacheData
+      tache={tache}
       className={className}
       mode={mode}
       estCorrige={estCorrige}

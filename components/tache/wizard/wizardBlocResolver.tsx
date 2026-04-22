@@ -14,13 +14,13 @@ import { Bloc4LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-tem
 import { Bloc3OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc3OrdreChronologique";
 import { Bloc4OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc4OrdreChronologique";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
-import type { TaeNonRedactionVariantSlug } from "@/lib/tache/non-redaction/variant-slugs";
+import type { TacheNonRedactionVariantSlug } from "@/lib/tache/non-redaction/variant-slugs";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import {
-  TAE_DOCUMENTS_STEP_INDEX,
-  TAE_REDACTION_STEP_INDEX,
-  type TaeFormState,
-} from "@/lib/tache/tae-form-state-types";
+  TACHE_DOCUMENTS_STEP_INDEX,
+  TACHE_REDACTION_STEP_INDEX,
+  type TacheFormState,
+} from "@/lib/tache/tache-form-state-types";
 
 type VariantBlocPair = {
   Bloc3: ComponentType;
@@ -31,8 +31,8 @@ type VariantBlocPair = {
  * Paires Bloc3 / Bloc4 par slug — à remplir lorsque l’UI variante est livrée.
  * Tant qu’une entrée manque, le wizard conserve les blocs rédactionnels par défaut.
  */
-export const TAE_NON_REDACTION_WIZARD_BLOCS: Partial<
-  Record<TaeNonRedactionVariantSlug, VariantBlocPair>
+export const TACHE_NON_REDACTION_WIZARD_BLOCS: Partial<
+  Record<TacheNonRedactionVariantSlug, VariantBlocPair>
 > = {
   "ordre-chronologique": {
     Bloc3: Bloc3OrdreChronologique,
@@ -54,16 +54,16 @@ export const TAE_NON_REDACTION_WIZARD_BLOCS: Partial<
  */
 export function resolveWizardBlocComponent(
   stepIndex: number,
-  state: TaeFormState,
+  state: TacheFormState,
 ): ComponentType | null {
-  if (stepIndex !== TAE_REDACTION_STEP_INDEX && stepIndex !== TAE_DOCUMENTS_STEP_INDEX) {
+  if (stepIndex !== TACHE_REDACTION_STEP_INDEX && stepIndex !== TACHE_DOCUMENTS_STEP_INDEX) {
     return null;
   }
   const slug = getVariantSlugForComportementId(state.bloc2.comportementId);
   if (!slug) return resolvePerspectivesBlocComponent(stepIndex, state);
-  const pair = TAE_NON_REDACTION_WIZARD_BLOCS[slug];
+  const pair = TACHE_NON_REDACTION_WIZARD_BLOCS[slug];
   if (!pair) return null;
-  return stepIndex === TAE_REDACTION_STEP_INDEX ? pair.Bloc3 : pair.Bloc4;
+  return stepIndex === TACHE_REDACTION_STEP_INDEX ? pair.Bloc3 : pair.Bloc4;
 }
 
 // ---------------------------------------------------------------------------
@@ -92,12 +92,12 @@ const Bloc4Moments = dynamic(() => import("@/components/tache/wizard/bloc4/Bloc4
 
 function resolvePerspectivesBlocComponent(
   stepIndex: number,
-  state: TaeFormState,
+  state: TacheFormState,
 ): ComponentType | null {
   const config = getWizardBlocConfig(state.bloc2.comportementId);
   if (!config) return null;
 
-  if (stepIndex === TAE_REDACTION_STEP_INDEX) {
+  if (stepIndex === TACHE_REDACTION_STEP_INDEX) {
     switch (config.bloc3.type) {
       case "modele_souple":
         return Bloc3ModeleSouple;
@@ -110,7 +110,7 @@ function resolvePerspectivesBlocComponent(
     }
   }
 
-  if (stepIndex === TAE_DOCUMENTS_STEP_INDEX) {
+  if (stepIndex === TACHE_DOCUMENTS_STEP_INDEX) {
     if (config.bloc4.type === "perspectives") return Bloc4Perspectives;
     if (config.bloc4.type === "moments") return Bloc4Moments;
   }

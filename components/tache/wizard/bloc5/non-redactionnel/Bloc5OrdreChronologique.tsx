@@ -16,7 +16,7 @@ import {
   normalizeOrdreChronologiquePayload,
   type OrdreChronologiquePayload,
 } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import {
   NR_ORDRE_GATE_BLOC5_OPTIONS,
   NR_ORDRE_GATE_BLOC5_PRE_CONSIGNE,

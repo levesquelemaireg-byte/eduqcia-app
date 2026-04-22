@@ -2,7 +2,7 @@
  * Adaptateur DocumentFiche -> RendererDocument.
  *
  * Utilisé quand le pipeline fournit des DocumentFiche (wizard state,
- * selectors TaeFicheData) mais que le composant canonique attend un
+ * selectors TacheFicheData) mais que le composant canonique attend un
  * RendererDocument.
  *
  * Si `doc.rendererDocument` est déjà hydraté (multi-éléments),

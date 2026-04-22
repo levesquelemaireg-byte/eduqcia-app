@@ -17,7 +17,7 @@ import {
 } from "@/lib/ui/ui-copy";
 
 type Props = {
-  taeId: string;
+  tacheId: string;
   estAuteur: boolean;
 };
 
@@ -26,7 +26,7 @@ type Props = {
  * Chrome global : bouton retour + actions sur l'item.
  * Aucune contextualisation au scroll.
  */
-export function TacheBarreActions({ taeId, estAuteur }: Props) {
+export function TacheBarreActions({ tacheId, estAuteur }: Props) {
   const [epinglee, setEpinglee] = useState(false);
   const [kebabOuvert, setKebabOuvert] = useState(false);
   const kebabTriggerRef = useRef<HTMLButtonElement>(null);
@@ -34,16 +34,16 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
   /* ─── Handlers ─────────────────────────────────────────────── */
 
   const surAjouterEpreuve = useCallback(() => {
-    console.warn("ajouter à épreuve", taeId);
+    console.warn("ajouter à épreuve", tacheId);
     toast.info(TOAST_FICHE_FONCTIONNALITE_A_VENIR);
-  }, [taeId]);
+  }, [tacheId]);
 
   const surEpingler = useCallback(() => {
     const prochain = !epinglee;
     setEpinglee(prochain);
-    console.warn("épingler toggle", taeId, prochain);
+    console.warn("épingler toggle", tacheId, prochain);
     toast.info(TOAST_FICHE_FONCTIONNALITE_A_VENIR);
-  }, [epinglee, taeId]);
+  }, [epinglee, tacheId]);
 
   const surPartager = useCallback(async () => {
     setKebabOuvert(false);
@@ -57,14 +57,14 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
 
   const surExporterPdf = useCallback(() => {
     setKebabOuvert(false);
-    console.warn("exporter PDF", taeId);
+    console.warn("exporter PDF", tacheId);
     toast.info(TOAST_FICHE_FONCTIONNALITE_A_VENIR);
-  }, [taeId]);
+  }, [tacheId]);
 
   const surSupprimer = useCallback(() => {
     setKebabOuvert(false);
-    console.warn("supprimer", taeId);
-  }, [taeId]);
+    console.warn("supprimer", tacheId);
+  }, [tacheId]);
 
   /* ─── Fermeture kebab sur Escape ───────────────────────────── */
 
@@ -134,7 +134,7 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
         {/* Modifier — auteur uniquement, masqué sur mobile (dans kebab) */}
         {estAuteur ? (
           <Link
-            href={`/questions/${taeId}/edit`}
+            href={`/questions/${tacheId}/edit`}
             className="hidden min-h-11 items-center gap-1.5 rounded-lg border-[0.5px] border-border bg-panel px-3 py-2 text-[13px] font-medium text-deep transition-colors hover:bg-surface md:inline-flex"
           >
             <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
@@ -190,7 +190,7 @@ export function TacheBarreActions({ taeId, estAuteur }: Props) {
                 {/* Mobile-only: Modifier dans le kebab (auteur) */}
                 {estAuteur ? (
                   <Link
-                    href={`/questions/${taeId}/edit`}
+                    href={`/questions/${tacheId}/edit`}
                     className={cn(menuItem, "md:hidden")}
                     role="menuitem"
                     onClick={() => setKebabOuvert(false)}

@@ -1,4 +1,4 @@
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { CdSelection } from "@/lib/types/fiche";
 
 export type RailCompetenceData = {
@@ -8,7 +8,7 @@ export type RailCompetenceData = {
   cd: CdSelection;
 };
 
-export function selectRailCompetence(state: TaeFicheData): RailCompetenceData | null {
+export function selectRailCompetence(state: TacheFicheData): RailCompetenceData | null {
   if (!state.cd) return null;
   return {
     racine: state.cd.competence,

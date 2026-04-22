@@ -1,6 +1,6 @@
 import { ready, skeleton, hidden, sanitize, resolveDocPlaceholders } from "@/lib/fiche/helpers";
 import type { SectionState, ConsigneData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { selectNRContent } from "@/lib/fiche/selectors/selectNRContent";
 import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
@@ -12,7 +12,7 @@ import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tache/non-re
  * Rédactionnel : consigne brute du bloc 3.
  */
 export function selectConsigne(
-  state: TaeFormState,
+  state: TacheFormState,
   _refs: SelectorRefs,
 ): SectionState<ConsigneData> {
   if (!state.bloc2.oiId) return hidden();

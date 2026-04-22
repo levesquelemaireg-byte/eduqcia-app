@@ -20,12 +20,12 @@ export const WIZARD_BANNER_RESUME = "Reprendre";
 export const WIZARD_BANNER_DISMISS_SERVER = "Masquer pour cette visite";
 export const WIZARD_BANNER_DISMISS_LOCAL = "Ignorer le brouillon local";
 
-/** Wizard — Étape 2 — texte d'aide dans l'infobulle (ⓘ) du titre d'étape (`TaeForm` + `step-meta`). */
-export const TAE_BLUEPRINT_STEP_DESCRIPTION =
+/** Wizard — Étape 2 — texte d'aide dans l'infobulle (ⓘ) du titre d'étape (`TacheForm` + `step-meta`). */
+export const TACHE_BLUEPRINT_STEP_DESCRIPTION =
   "Définissez les paramètres pédagogiques requis : niveau scolaire, discipline, opération intellectuelle et comportement attendu. Le comportement attendu détermine l'outil d'évaluation, dont la grille de correction ministérielle. L'espace de production (lignes ou formats non rédactionnels) est fixé automatiquement selon le comportement.";
 
 /** Wizard — Étape 2 — `aria-label` du bouton info à côté du titre */
-export const TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA = "Afficher l'aide sur cette étape";
+export const TACHE_BLUEPRINT_STEP_INFO_BUTTON_ARIA = "Afficher l'aide sur cette étape";
 
 /** Panneau d'aperçu wizard — navigation sommaire / aperçu imprimé. */
 export const PREVIEW_PANEL_SUMMARY_LABEL = "Sommaire détaillé";

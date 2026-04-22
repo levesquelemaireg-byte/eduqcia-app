@@ -9,11 +9,11 @@
 // sur un périmètre clair, conformément au principe de séparation des responsabilités.
 
 import dynamic from "next/dynamic";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { resolveComportementSlug } from "@/lib/tache/behaviours/comportement-slug";
 import { BLOC5_DYNAMIC_BY_SLUG } from "@/lib/tache/behaviours/registry";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import type { ComponentType } from "react";
 
 const Bloc5IntrusDynamic: ComponentType<Bloc5Props> = dynamic(
@@ -27,7 +27,7 @@ const Bloc5IntrusDynamic: ComponentType<Bloc5Props> = dynamic(
  * puis tombe sur `BLOC5_DYNAMIC_BY_SLUG` (NR / rédactionnel).
  */
 export function Bloc5() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
 
   const config = getWizardBlocConfig(state.bloc2.comportementId);
   if (config?.bloc5?.type === "intrus") {

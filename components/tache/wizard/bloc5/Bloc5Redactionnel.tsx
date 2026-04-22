@@ -5,7 +5,7 @@ import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { BLOC3_SECTION_ICON } from "@/components/tache/wizard/bloc3-stepper-icons";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { RequiredMark } from "@/components/ui/RequiredMark";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
 import {
   BLOC5_NOTES_CORRECTEUR_HELP,
@@ -68,7 +68,7 @@ export default function Bloc5Redactionnel({ state, dispatch }: Bloc5Props) {
           className="mt-2"
           value={state.bloc5.corrige}
           onChange={setCorrige}
-          autosaveKey="eduqcia-tae-corrige-new"
+          autosaveKey="eduqcia-tache-corrige-new"
           minHeight={100}
         />
       </section>
@@ -91,7 +91,7 @@ export default function Bloc5Redactionnel({ state, dispatch }: Bloc5Props) {
           className="mt-2"
           value={state.bloc5.notesCorrecteur}
           onChange={setNotesCorrecteur}
-          autosaveKey="eduqcia-tae-notes-correcteur-new"
+          autosaveKey="eduqcia-tache-notes-correcteur-new"
           minHeight={80}
         />
       </section>

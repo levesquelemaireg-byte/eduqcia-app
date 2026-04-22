@@ -6,14 +6,14 @@
 
 import { sanitize } from "@/lib/fiche/helpers";
 import { hasFicheContent } from "@/lib/tache/fiche-helpers";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 
 export type CorrigeData = {
   /** HTML sanitisé */
   html: string;
 };
 
-export function selectCorrige(state: TaeFicheData): CorrigeData | null {
+export function selectCorrige(state: TacheFicheData): CorrigeData | null {
   if (!hasFicheContent(state.corrige)) return null;
   return { html: sanitize(state.corrige) };
 }

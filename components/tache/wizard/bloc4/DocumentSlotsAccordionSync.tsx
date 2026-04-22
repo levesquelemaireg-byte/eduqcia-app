@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { useDocumentSlotsAccordion } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { canAccessDocumentSlot, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
@@ -24,7 +24,7 @@ type Props = {
 
 /** Si le panneau ouvert devient inaccessible (ex. remise à vide d’un slot amont), rouvre le premier slot accessible. */
 export function DocumentSlotsAccordionSync({ orderedIds }: Props) {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const { expandedSlotId, setExpandedSlotId } = useDocumentSlotsAccordion();
 
   useEffect(() => {

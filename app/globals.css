@@ -199,18 +199,18 @@
   /*
    * Feuille imprimable TAÉ — Letter portrait.
    * Aperçu écran (`.paper`) : marges blanches = ce padding.
-   * Impression : `@page { margin: … }` dans `lib/tache/print-page-css.ts` (**TAE_PRINT_PAGE_MARGIN**, = cette valeur)
+   * Impression : `@page { margin: … }` dans `lib/tache/print-page-css.ts` (**TACHE_PRINT_PAGE_MARGIN**, = cette valeur)
    * — répété sur chaque page ; le padding ne le serait pas sur un bloc fragmenté.
    */
-  --tae-print-sheet-width: 8.5in;
-  --tae-print-sheet-min-height: 11in;
-  --tae-print-sheet-padding: 2cm;
+  --tache-print-sheet-width: 8.5in;
+  --tache-print-sheet-min-height: 11in;
+  --tache-print-sheet-padding: 2cm;
 
   /*
    * Documents iconographiques — fiche / aperçu (`printable-fiche-preview.module.css`).
-   * Plafond hauteur sur l’`<img>` (images déjà bornées côté serveur ~400 px) ; `--tae-doc-print-figure-scale` défaut 1.
+   * Plafond hauteur sur l’`<img>` (images déjà bornées côté serveur ~400 px) ; `--tache-doc-print-figure-scale` défaut 1.
    */
-  --tae-print-document-figure-max-height: 11cm;
+  --tache-print-document-figure-max-height: 11cm;
 }
 
 /*
@@ -218,7 +218,7 @@
  * En dessous du seuil : empilement vertical (lisible). Au-dessus : grille horizontale avec minmax(0,1fr).
  */
 /* Fond colonne aperçu wizard — léger relief sur gris moyen */
-.tae-wizard-preview-canvas {
+.tache-wizard-preview-canvas {
   background-color: var(--wizard-preview-canvas);
   background-image: radial-gradient(ellipse 90% 60% at 50% -5%, hsl(0 0% 58%) 0%, transparent 52%);
 }
@@ -406,38 +406,38 @@ body {
 
 /* Wizard — aperçu impression : masque AppShell + split wizard + chrome modale (`html` pendant l’ouverture) */
 @media print {
-  html.tae-print-preview-modal-open [data-sonner-toaster] {
+  html.tache-print-preview-modal-open [data-sonner-toaster] {
     display: none !important;
   }
 
-  html.tae-print-preview-modal-open aside[aria-label="Menu application"],
-  html.tae-print-preview-modal-open .app-shell-root > button[aria-label="Fermer le menu"],
-  html.tae-print-preview-modal-open .app-shell-mobile-header {
+  html.tache-print-preview-modal-open aside[aria-label="Menu application"],
+  html.tache-print-preview-modal-open .app-shell-root > button[aria-label="Fermer le menu"],
+  html.tache-print-preview-modal-open .app-shell-mobile-header {
     display: none !important;
   }
 
-  html.tae-print-preview-modal-open .app-shell-main {
+  html.tache-print-preview-modal-open .app-shell-main {
     margin-left: 0 !important;
   }
 
-  html.tae-print-preview-modal-open .main--app {
+  html.tache-print-preview-modal-open .main--app {
     padding: 0 !important;
   }
 
-  html.tae-print-preview-modal-open .app-shell-root {
+  html.tache-print-preview-modal-open .app-shell-root {
     background: var(--color-bg) !important;
   }
 
   /* Tout le split wizard (titres page, stepper, sommaire) — la modale porte seule la feuille */
-  html.tae-print-preview-modal-open .tae-wizard-split-root {
+  html.tache-print-preview-modal-open .tache-wizard-split-root {
     display: none !important;
   }
 
-  html.tae-print-preview-modal-open .tae-print-preview-chrome {
+  html.tache-print-preview-modal-open .tache-print-preview-chrome {
     display: none !important;
   }
 
-  html.tae-print-preview-modal-open .tae-print-preview-root {
+  html.tache-print-preview-modal-open .tache-print-preview-root {
     position: static !important;
     inset: auto !important;
     z-index: auto !important;
@@ -445,7 +445,7 @@ body {
     min-height: 0 !important;
   }
 
-  html.tae-print-preview-modal-open .tae-print-preview-scroll {
+  html.tache-print-preview-modal-open .tache-print-preview-scroll {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -459,7 +459,7 @@ body {
     background: var(--color-bg) !important;
   }
 
-  html.tae-print-preview-modal-open .tae-print-preview-root [role="dialog"] {
+  html.tache-print-preview-modal-open .tache-print-preview-root [role="dialog"] {
     display: block !important;
     width: 100% !important;
     max-width: none !important;
@@ -470,22 +470,22 @@ body {
   }
 }
 
-/* Route `/questions/[id]/print` — document minimal (pas d’AppShell) ; `@page` injecté par `TaePrintRouteShell` */
+/* Route `/questions/[id]/print` — document minimal (pas d’AppShell) ; `@page` injecté par `TachePrintRouteShell` */
 @media print {
-  html[data-tae-print-route] [data-sonner-toaster] {
+  html[data-tache-print-route] [data-sonner-toaster] {
     display: none !important;
   }
 
-  html[data-tae-print-route] .tae-print-screen-only {
+  html[data-tache-print-route] .tache-print-screen-only {
     display: none !important;
   }
 
-  html[data-tae-print-route] .tae-print-document-layout {
+  html[data-tache-print-route] .tache-print-document-layout {
     background: transparent !important;
     min-height: 0 !important;
   }
 
-  html[data-tae-print-route] .tae-print-page-main {
+  html[data-tache-print-route] .tache-print-page-main {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -499,8 +499,8 @@ body {
 
 /* Feuille Letter : marges blanches = `@page` injecté (`lib/tache/print-page-css.ts`) — pas de padding ici en print */
 @media print {
-  html.tae-print-preview-modal-open #tae-wizard-printable-fiche,
-  html[data-tae-print-route] #tae-wizard-printable-fiche {
+  html.tache-print-preview-modal-open #tache-wizard-printable-fiche,
+  html[data-tache-print-route] #tache-wizard-printable-fiche {
     /* Remplir la zone utile après marges `@page` ; `max-width: 100%` sur un parent étroit rétrécissait la feuille. */
     width: 100% !important;
     max-width: none !important;
@@ -518,8 +518,8 @@ body {
     line-height: 1.5 !important;
   }
 
-  html.tae-print-preview-modal-open body,
-  html[data-tae-print-route] body {
+  html.tache-print-preview-modal-open body,
+  html[data-tache-print-route] body {
     margin: 0 !important;
     padding: 0 !important;
     background: var(--color-bg) !important;

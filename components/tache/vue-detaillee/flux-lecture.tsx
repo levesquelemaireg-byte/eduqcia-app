@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
+import type { TacheFicheData, PeerVoteTally } from "@/lib/types/fiche";
 import { selectHero } from "@/lib/fiche/selectors/tache/hero";
 import { selectDocuments } from "@/lib/fiche/selectors/tache/documents";
 import { selectGuidage } from "@/lib/fiche/selectors/tache/guidage";
@@ -14,7 +14,7 @@ import { SectionCorrige } from "@/components/tache/vue-detaillee/sections/corrig
 import { SectionGrille } from "@/components/tache/vue-detaillee/sections/grille";
 
 type Props = {
-  tae: TaeFicheData;
+  tache: TacheFicheData;
   votes: PeerVoteTally | null;
   peutVoter: boolean;
   /** Handler de clic sur un document — ouvre la modale fiche document. Phase 6. */
@@ -29,17 +29,17 @@ type Props = {
  * Pas de carte englobante, pas de hairlines — whitespace comme séparateur.
  */
 export function FluxLecture({
-  tae,
+  tache,
   votes: _votes,
   peutVoter: _peutVoter,
   surClicDocument,
   heroRef,
 }: Props) {
-  const hero = useMemo(() => selectHero(tae), [tae]);
-  const documents = useMemo(() => selectDocuments(tae), [tae]);
-  const guidage = useMemo(() => selectGuidage(tae), [tae]);
-  const corrige = useMemo(() => selectCorrige(tae), [tae]);
-  const grille = useMemo(() => selectGrille(tae), [tae]);
+  const hero = useMemo(() => selectHero(tache), [tache]);
+  const documents = useMemo(() => selectDocuments(tache), [tache]);
+  const guidage = useMemo(() => selectGuidage(tache), [tache]);
+  const corrige = useMemo(() => selectCorrige(tache), [tache]);
+  const grille = useMemo(() => selectGrille(tache), [tache]);
 
   return (
     <div className="flex flex-col gap-12">
@@ -59,7 +59,7 @@ export function FluxLecture({
       {grille ? <SectionGrille data={grille} /> : null}
 
       {/* PROVISOIRE — Évaluation par les pairs masquée (fonctionnalité en développement) */}
-      {/* <SectionVotes taeId={tae.id} votes={votes} canVote={peutVoter} /> */}
+      {/* <SectionVotes tacheId={tache.id} votes={votes} canVote={peutVoter} /> */}
     </div>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { uploadTaeDocumentImageAction } from "@/lib/actions/documents";
+import { uploadTacheDocumentImageAction } from "@/lib/actions/documents";
 import { validateClientImageFile } from "@/lib/images/image-upload-constants";
 import type { DocumentSlotData } from "@/lib/tache/document-helpers";
 import { messageForUploadValidationReason } from "@/lib/ui/upload-image-validation-toast";
@@ -77,7 +77,7 @@ export function useDocumentSlotImageUpload(patch: PatchFn) {
       try {
         const fd = new FormData();
         fd.set("file", file);
-        const result = await uploadTaeDocumentImageAction(fd);
+        const result = await uploadTacheDocumentImageAction(fd);
         if (!result.ok) {
           if (blobUrlRef.current === previewUrl) {
             URL.revokeObjectURL(previewUrl);

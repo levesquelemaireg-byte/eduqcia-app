@@ -103,7 +103,7 @@ export default async function Page() {
 
 // ✅ Parallel fetching — éviter les waterfalls
 const [tae, documents, grilles] = await Promise.all([
-  getTae(id),
+  getTache(id),
   getDocuments(id),
   getGrilles(),
 ])
@@ -177,11 +177,11 @@ export const getOiList = cache(async () => {
 // ✅ Revalidation ciblée après mutation
 import { revalidatePath, revalidateTag } from "next/cache";
 revalidatePath("/questions/[id]", "page"); // page précise
-revalidateTag("tae-list"); // tag groupé
+revalidateTag("tache-list"); // tag groupé
 
 // ✅ fetch avec tags pour invalidation groupée
 const data = await fetch("/api/...", {
-  next: { tags: ["tae-list"], revalidate: 3600 },
+  next: { tags: ["tache-list"], revalidate: 3600 },
 });
 ```
 
@@ -220,7 +220,7 @@ const ICON_MAP = {
 } satisfies Record<string, string>
 
 // ✅ Branded types pour les IDs — éviter les confusions uuid/uuid
-type TaeId = string & { readonly _brand: 'TaeId' }
+type TacheId = string & { readonly _brand: 'TacheId' }
 type DocumentId = string & { readonly _brand: 'DocumentId' }
 
 // ✅ const assertions pour les littéraux
@@ -275,7 +275,7 @@ export const ok = <T>(value: T): Result<T> => ({ ok: true, value });
 export const err = <E = string>(error: E): Result<never, E> => ({ ok: false, error });
 
 // Usage dans lib/ — pas de try/catch partout dans les composants
-async function publishTae(payload: TaePayload): Promise<Result<string>> {
+async function publishTache(payload: TachePayload): Promise<Result<string>> {
   const { data, error } = await supabase.rpc("publish_tae_transaction", { p_payload: payload });
   if (error) return err(normalizeRpcError(error));
   return ok(data);
@@ -308,7 +308,7 @@ import { createBrowserClient } from "@/lib/supabase/client";
 
 // ✅ Toujours typer le retour depuis database.types.ts
 import type { Database } from "@/lib/types/database";
-type TaeRow = Database["public"]["Tables"]["tae"]["Row"];
+type TacheRow = Database["public"]["Tables"]["tae"]["Row"];
 
 // ✅ Sélection explicite des colonnes — jamais select('*') en prod
 const { data, error } = await supabase
@@ -320,7 +320,7 @@ const { data, error } = await supabase
 // ✅ Vérifier l'erreur avant d'utiliser data
 if (error)
   throw (
-    new Error(`[getTaeList] ${error.message}`)
+    new Error(`[getTacheList] ${error.message}`)
 
       // ✅ Pagination cursor-based (scalable) plutôt qu'offset
       .range(cursor, cursor + PAGE_SIZE - 1)
@@ -423,12 +423,12 @@ type DocumentSlotProps =
 // 3. Profilage Profiler confirme un problème réel
 
 // ✅ React.memo pour les lignes de liste avec props stables
-const TaeCard = React.memo(function TaeCard({ tae }: { tae: TaeData }) {
+const TacheCard = React.memo(function TacheCard({ tae }: { tae: TacheData }) {
   return (/* ... */)
 })
 
 // ✅ useMemo pour les calculs coûteux
-const filteredTaes = useMemo(
+const filteredTaches = useMemo(
   () => taes.filter(filterFn),
   [taes, filterFn]  // dépendances précises
 )
@@ -448,7 +448,7 @@ const handleRemove = useCallback((id: string) => {
 ### Reducer pattern pour les états complexes (déjà en place)
 
 ```typescript
-// ✅ Pattern existant à respecter : tae-form-reducer.ts
+// ✅ Pattern existant à respecter : tache-form-reducer.ts
 // Actions typées exhaustivement
 type WizardAction =
   | { type: "SET_NIVEAU"; niveau: Niveau }
@@ -457,7 +457,7 @@ type WizardAction =
 // ... toutes les actions
 
 // Reducer pur — facilement testable
-function taeFormReducer(state: FormState, action: WizardAction): FormState {
+function tacheFormReducer(state: FormState, action: WizardAction): FormState {
   switch (action.type) {
     case "SET_COMPORTEMENT":
       return {
@@ -478,7 +478,7 @@ function taeFormReducer(state: FormState, action: WizardAction): FormState {
 Règle absolue : FormState (wizard) est la seule source de vérité.
 Jamais de useState parallèles pour la même donnée.
 Jamais de state local qui duplique FormState.
-La colonne sommaire (FicheSommaireColumn) dérive de FormState via formStateToTae().
+La colonne sommaire (FicheSommaireColumn) dérive de FormState via formStateToTache().
 ```
 
 ### React Hook Form — patterns corrects
@@ -651,21 +651,21 @@ NEXT_PUBLIC_ * // côté client — jamais de secrets
 // lib/tache/*.test.ts déjà en place — continuer ce pattern
 
 // Priorité haute :
-// - tae-form-reducer.ts (logique critique du wizard)
+// - tache-form-reducer.ts (logique critique du wizard)
 // - consigne-helpers.ts (transformations affichage)
-// - publish-tae-payload.ts (construction payload RPC)
+// - publish-tache-payload.ts (construction payload RPC)
 // - connaissances-helpers.ts (filtrage Miller)
 // - document-annee.ts (extraction année, OI1)
 // - ordre-chronologique-*.ts (génération options)
 
 // Pattern de test :
 import { describe, it, expect } from "vitest";
-import { taeFormReducer } from "@/lib/tache/tae-form-reducer";
+import { tacheFormReducer } from "@/lib/tache/tache-form-reducer";
 
 describe("SET_COMPORTEMENT", () => {
   it("remet guidage à vide lors du changement de comportement", () => {
     const state = { ...initialState, redaction: { guidage: "texte existant" } };
-    const next = taeFormReducer(state, {
+    const next = tacheFormReducer(state, {
       type: "SET_COMPORTEMENT",
       comportement: mockComportement,
     });
@@ -698,7 +698,7 @@ app/
 components/
   ui/              # primitives : Button, Field, ListboxField, SimpleModal, RichTextEditor…
   layout/          # AppShell, Sidebar
-  tae/             # TaeForm (wizard), FicheTache, grilles, print, non-redaction
+  tae/             # TacheForm (wizard), FicheTache, grilles, print, non-redaction
   documents/       # AutonomousDocumentWizard, étapes, aperçu
   evaluations/     # EvaluationCompositionEditor
   bank/            # BankTasksPanel, BankDocumentsPanel, BankEvaluationsPanel
@@ -917,7 +917,7 @@ Règle d'or : générosité là où l'œil se pose, densité là où on travaill
 
 Pages principales (dashboard, banque) : espace généreux, respiration
 Wizard formulaire : densité contrôlée, information accessible sans scroll excessif
-Impression : géométrie précise — Letter portrait, marges 2cm, variables --tae-print-*
+Impression : géométrie précise — Letter portrait, marges 2cm, variables --tache-print-*
 ```
 
 **Grille et alignement :**
@@ -931,7 +931,7 @@ Impression : géométrie précise — Letter portrait, marges 2cm, variables --t
 - Filets fins (`0.5px`, `1px`) plutôt que borders épaisses
 - Ombres subtiles pour la profondeur (`--wizard-preview-card-shadow`)
 - Arrondis cohérents : `rounded-md` sur les panneaux (moins arrondi = plus éditorial)
-- Fonds de canevas distincts du contenu (ex. `.tae-wizard-preview-canvas` gris moyen)
+- Fonds de canevas distincts du contenu (ex. `.tache-wizard-preview-canvas` gris moyen)
 
 ### Animations et micro-interactions — sobres et purposeful
 
@@ -1077,7 +1077,7 @@ Tout nouveau comportement implémenté doit :
 
 1. Vérifier visuellement que le sommaire (colonne droite)
    affiche correctement : consigne, corrigé, documents
-2. Si données manquantes → vérifier formStateToTae()
+2. Si données manquantes → vérifier formStateToTache()
    et adapter le mapping avant de considérer la tâche terminée
 3. Ne jamais marquer une livraison complète sans avoir
    confirmé que le sommaire reflète les données saisies
@@ -1282,7 +1282,7 @@ Les fichiers déjà en place ne sont pas renommés, notamment :
 
 - Les primitives dans `lib/fiche/primitives/` (`MetaChip`, `IconBadge`, `SectionLabel`, `ChipBar`, `ContentBlock`, `DocCard`, `MetaRow`)
 - Les selectors existants dans `lib/fiche/selectors/lecture-selectors.ts`
-- Le `FicheRenderer` existant et son config `TAE_LECTURE_SECTIONS`
+- Le `FicheRenderer` existant et son config `TACHE_LECTURE_SECTIONS`
 - Les routes et composants de banque, wizard, thumbnail existants
 
 La convention s'applique uniquement aux nouveaux fichiers créés à partir de la mise en place de cette règle. Quand un fichier existant est significativement modifié, son renommage reste optionnel et décidé au cas par cas — jamais imposé mécaniquement.

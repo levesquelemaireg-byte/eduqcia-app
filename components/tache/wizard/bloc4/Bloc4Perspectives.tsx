@@ -11,7 +11,7 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { DocumentSlotPanel } from "@/components/tache/wizard/bloc4";
 import { DocumentSlotsAccordionProvider } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { DocumentSlotsAccordionSync } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionSync";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { RequiredMark } from "@/components/ui/RequiredMark";
@@ -27,7 +27,7 @@ import {
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import type { PerspectiveData } from "@/lib/tache/oi-perspectives/perspectives-types";
 import type { Dispatch } from "react";
-import type { TaeFormAction } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormAction } from "@/lib/tache/tache-form-state-types";
 import { cn } from "@/lib/utils/cn";
 import {
   BLOC4_GATE_WIZARD,
@@ -50,7 +50,7 @@ import {
 // ---------------------------------------------------------------------------
 
 export default function Bloc4Perspectives() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const mode = state.bloc3.perspectivesMode;
   const perspectives = state.bloc4.perspectives;
@@ -180,7 +180,7 @@ function PerspectivesGroupeAccordion({
 }: {
   perspectives: PerspectiveData[] | null;
   count: 2 | 3;
-  dispatch: Dispatch<TaeFormAction>;
+  dispatch: Dispatch<TacheFormAction>;
 }) {
   const [openIndex, setOpenIndex] = useState(0);
 
@@ -298,7 +298,7 @@ function PerspectiveSection({
 }: {
   index: number;
   data: PerspectiveData;
-  dispatch: Dispatch<TaeFormAction>;
+  dispatch: Dispatch<TacheFormAction>;
 }) {
   const acteurId = useId();
 

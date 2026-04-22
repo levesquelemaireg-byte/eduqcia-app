@@ -97,14 +97,16 @@ export async function getEvaluationEditBundle(
   };
 }
 
-export type TaeCartMeta = {
+export type TacheCartMeta = {
   id: string;
   consigne: string | null;
   nbDocuments: number;
 };
 
-/** Métadonnées d’une TAÉ pour préremplir le panier (ex. `?addTae=`). */
-export async function getTaeMetaForEvaluationCart(taeId: string): Promise<TaeCartMeta | null> {
+/** Métadonnées d’une TAÉ pour préremplir le panier (ex. `?addTache=`). */
+export async function getTacheMetaForEvaluationCart(
+  tacheId: string,
+): Promise<TacheCartMeta | null> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -123,7 +125,7 @@ export async function getTaeMetaForEvaluationCart(taeId: string): Promise<TaeCar
       comportements!tae_comportement_id_fkey ( nb_documents )
     `,
     )
-    .eq("id", taeId)
+    .eq("id", tacheId)
     .maybeSingle();
 
   if (error || !data) return null;
@@ -145,7 +147,7 @@ export async function getTaeMetaForEvaluationCart(taeId: string): Promise<TaeCar
     const { data: collab } = await supabase
       .from("tae_collaborateurs")
       .select("tae_id")
-      .eq("tae_id", taeId)
+      .eq("tae_id", tacheId)
       .eq("user_id", user.id)
       .maybeSingle();
     collaborator = !!collab;

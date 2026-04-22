@@ -4,7 +4,7 @@ import type { PeerVoteTally } from "@/lib/types/fiche";
 import { FICHE_SECTION_BODY_INSET, FICHE_SECTION_TITLE_CLASS } from "@/lib/ui/fiche-layout";
 
 type Props = {
-  taeId: string;
+  tacheId: string;
   votes: PeerVoteTally | null;
   canVote?: boolean;
 };
@@ -26,11 +26,11 @@ function tallyFor(
 }
 
 /** docs/FEATURES.md §8.3 — nombres bruts uniquement, jamais de moyenne publique. */
-export function SectionVotes({ taeId, votes, canVote }: Props) {
+export function SectionVotes({ tacheId, votes, canVote }: Props) {
   const total = votes?.total_votants ?? 0;
 
   return (
-    <section data-tae-votes={taeId}>
+    <section data-tache-votes={tacheId}>
       <h3 className={FICHE_SECTION_TITLE_CLASS}>
         <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
           how_to_vote

@@ -1,4 +1,4 @@
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { isBlueprintFieldsComplete, type DisciplineCode } from "@/lib/tache/blueprint-helpers";
 import { isDocumentsStepComplete } from "@/lib/tache/document-helpers";
 import {
@@ -24,7 +24,7 @@ import {
   isMomentsStepComplete,
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import { isRedactionSliceReadyForCdGate } from "@/lib/tache/redaction-helpers";
-import { getRedactionSliceForPreview } from "@/lib/tache/tae-form-state-types";
+import { getRedactionSliceForPreview } from "@/lib/tache/tache-form-state-types";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import {
   nonRedactionAvantApresPayload,
@@ -33,7 +33,7 @@ import {
 } from "@/lib/tache/wizard-state-nr";
 
 /** Géographie : pas de fichier CD — étape considérée complète sans sélection (BLOC5-CD.md §2). */
-export function isCdStepComplete(state: TaeFormState): boolean {
+export function isCdStepComplete(state: TacheFormState): boolean {
   const disc = state.bloc2.discipline as DisciplineCode;
   if (disc === "geo") return true;
   const sel = state.bloc6.cd.selection;
@@ -45,7 +45,7 @@ export function isCdStepComplete(state: TaeFormState): boolean {
  * Accès étape 6 (compétence disciplinaire) : blueprint verrouillé, étape 3 et 4 cohérentes,
  * étape 5 (corrigé rédactionnel) si parcours rédactionnel — **sans** exiger les aspects (étape 7).
  */
-export function isCdStepGateOk(state: TaeFormState): boolean {
+export function isCdStepGateOk(state: TacheFormState): boolean {
   const b = state.bloc2;
   const blueprintGate = isBlueprintFieldsComplete(b) && b.blueprintLocked;
   if (!blueprintGate) return false;

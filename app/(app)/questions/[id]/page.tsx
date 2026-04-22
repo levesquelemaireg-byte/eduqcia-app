@@ -3,7 +3,7 @@ import path from "path";
 import { notFound } from "next/navigation";
 import { TacheVueDetaillee } from "@/components/tache/vue-detaillee";
 import { createClient } from "@/lib/supabase/server";
-import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
+import { fetchTacheFicheBundle } from "@/lib/tache/server-fiche-map";
 import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
 import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";
 
@@ -29,7 +29,7 @@ export default async function QuestionPage({ params }: PageProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const bundle = await fetchTaeFicheBundle(supabase, id);
+  const bundle = await fetchTacheFicheBundle(supabase, id);
   if (!bundle) notFound();
 
   const peutVoter = Boolean(user?.id && bundle.fiche.auteur_id !== user.id);
@@ -38,7 +38,7 @@ export default async function QuestionPage({ params }: PageProps) {
 
   return (
     <TacheVueDetaillee
-      tae={bundle.fiche}
+      tache={bundle.fiche}
       donneesTache={donneesTache}
       votes={bundle.votes}
       peutVoter={peutVoter}

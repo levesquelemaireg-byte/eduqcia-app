@@ -18,7 +18,7 @@ import {
   runAvantApresGeneration,
 } from "@/lib/tache/non-redaction/avant-apres-payload";
 import type { AvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import {
   NR_AVANT_APRES_BLOC5_HELP,

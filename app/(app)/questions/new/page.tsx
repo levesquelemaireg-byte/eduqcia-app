@@ -1,6 +1,6 @@
-import { TaeForm } from "@/components/tache/wizard";
+import { TacheForm } from "@/components/tache/wizard";
 import type { PendingInjection } from "@/components/tache/wizard/InjectDocumentController";
-import { getWizardDraftForUser } from "@/lib/queries/tae-draft";
+import { getWizardDraftForUser } from "@/lib/queries/tache-draft";
 import { documentsRepository } from "@/lib/repositories/documents-repository";
 import { createClient } from "@/lib/supabase/server";
 import { injectDocumentIntoSlot } from "@/lib/tache/inject-document-into-slot";
@@ -58,7 +58,7 @@ export default async function NewQuestionPage({ searchParams }: PageProps) {
   }
 
   return (
-    <TaeForm
+    <TacheForm
       savedServerDraft={savedServerDraft}
       serverDraftObsolete={serverDraftObsolete}
       wizardPreviewMeta={wizardPreviewMeta}
@@ -74,6 +74,6 @@ export default async function NewQuestionPage({ searchParams }: PageProps) {
           {PAGE_CREER_UNE_TACHE_SUBTITLE}
         </p>
       </header>
-    </TaeForm>
+    </TacheForm>
   );
 }

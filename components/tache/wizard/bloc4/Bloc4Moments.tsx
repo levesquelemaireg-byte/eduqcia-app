@@ -11,7 +11,7 @@ import { useCallback, useId, useMemo, useState } from "react";
 import { DocumentSlotPanel } from "@/components/tache/wizard/bloc4";
 import { DocumentSlotsAccordionProvider } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { DocumentSlotsAccordionSync } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionSync";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
@@ -20,7 +20,7 @@ import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import { emptyMoment } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import type { MomentData } from "@/lib/tache/oi-perspectives/perspectives-types";
 import type { Dispatch } from "react";
-import type { TaeFormAction } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormAction } from "@/lib/tache/tache-form-state-types";
 import { cn } from "@/lib/utils/cn";
 import {
   BLOC4_GATE_WIZARD,
@@ -41,7 +41,7 @@ import {
 // ---------------------------------------------------------------------------
 
 export default function Bloc4Moments() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const mode = state.bloc3.perspectivesMode;
   const moments = state.bloc4.moments;
@@ -158,7 +158,7 @@ function MomentsAccordion({
   dispatch,
 }: {
   moments: MomentData[] | null;
-  dispatch: Dispatch<TaeFormAction>;
+  dispatch: Dispatch<TacheFormAction>;
 }) {
   const [openIndex, setOpenIndex] = useState(0);
 
@@ -261,7 +261,7 @@ function MomentSection({
 }: {
   index: number;
   data: MomentData;
-  dispatch: Dispatch<TaeFormAction>;
+  dispatch: Dispatch<TacheFormAction>;
 }) {
   const titreId = useId();
 

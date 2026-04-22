@@ -18,7 +18,7 @@ export type ProfileTask = {
 export type ProfileEvaluation = {
   id: string;
   titre: string;
-  taeCount: number;
+  tacheCount: number;
   createdAt: string;
 };
 
@@ -42,8 +42,11 @@ export async function fetchProfileTasks(
   if (error || !data) return [];
 
   // Charger les usage_count pour les IDs retournés
-  const taeIds = data.map((t) => t.id);
-  const { data: usages } = await supabase.from("tae_usages").select("tae_id").in("tae_id", taeIds);
+  const tacheIds = data.map((t) => t.id);
+  const { data: usages } = await supabase
+    .from("tae_usages")
+    .select("tae_id")
+    .in("tae_id", tacheIds);
 
   const usageMap = new Map<string, number>();
   for (const u of usages ?? []) {
@@ -99,7 +102,7 @@ export async function fetchProfileEvaluations(
   return (data as unknown as EvalRow[]).map((e) => ({
     id: e.id,
     titre: e.titre,
-    taeCount: e.evaluation_tae?.[0]?.count ?? 0,
+    tacheCount: e.evaluation_tae?.[0]?.count ?? 0,
     createdAt: e.created_at,
   }));
 }

@@ -9,7 +9,7 @@ import { SimpleModal } from "@/components/ui/SimpleModal";
 import { BLOC3_MODAL_GUIDAGE_TITLE } from "@/components/tache/wizard/bloc3/modalCopy";
 import { BLOC3_SECTION_ICON } from "@/components/tache/wizard/bloc3-stepper-icons";
 import { OrdreChronologiqueConsigneMinisterialBadge } from "@/components/tache/non-redaction/consigne-template/OrdreChronologiqueConsigneTemplate";
-import { getRedactionSliceForPreview, useTaeForm } from "@/components/tache/wizard/FormState";
+import { getRedactionSliceForPreview, useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import {
   buildLigneDuTempsGuidageHtml,
@@ -41,7 +41,7 @@ import { resolveConsigneHtmlForDisplay } from "@/lib/tache/consigne-helpers";
 import { nonRedactionLignePayload } from "@/lib/tache/wizard-state-nr";
 
 export function Bloc3LigneDuTemps() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const r = getRedactionSliceForPreview(state);
   const [modalGuidage, setModalGuidage] = useState(false);

@@ -12,9 +12,9 @@
 **Adresse** : E3.4.4, E3.6.3, E3.7.1, E3.8.3, E3.8.4, E3.8.5, points 1-5 de la section « code mort suspect » de l'audit
 **Caractère** : aucun changement fonctionnel — uniquement nettoyage structurel et renommage. À traiter en un seul lot pour éviter les renommages partiels successifs.
 
-> **Note d'estimation** : chaque renommage est une opération multi-fichiers (composant + tous les imports + entrées dans `BLOC_COMPONENTS` de `TaeForm/index.tsx` + références dans `step-meta.ts` + éventuellement la slice du state qui s'appelle encore `bloc6` dans le code alors que le composant devient `Bloc6`). Compte 30 à 60 minutes par renommage plutôt que 5 minutes.
+> **Note d'estimation** : chaque renommage est une opération multi-fichiers (composant + tous les imports + entrées dans `BLOC_COMPONENTS` de `TacheForm/index.tsx` + références dans `step-meta.ts` + éventuellement la slice du state qui s'appelle encore `bloc6` dans le code alors que le composant devient `Bloc6`). Compte 30 à 60 minutes par renommage plutôt que 5 minutes.
 
-- [x] Renommer `Bloc5CompetenceDisciplinaire` en `Bloc6CompetenceDisciplinaire` (fichier + import dans `BLOC_COMPONENTS` de `TaeForm/index.tsx`)
+- [x] Renommer `Bloc5CompetenceDisciplinaire` en `Bloc6CompetenceDisciplinaire` (fichier + import dans `BLOC_COMPONENTS` de `TacheForm/index.tsx`)
 - [x] Renommer `Bloc7Indexation` en `Bloc7AspectsConnaissances` (ou nom plus explicite à finaliser)
 - [x] Déplacer le contenu du dossier `bloc6/` vers `bloc7/` (Miller columns pour l'étape 7) et mettre à jour les imports
 - [x] Déplacer `bloc3/SectionAspects.tsx` vers `bloc7/` (mal rangé, mais utilisé activement par `Bloc7AspectsConnaissances` — pas mort)
@@ -55,11 +55,11 @@
 - Passer à un vrai système d'onglets dans la colonne droite du wizard (Aperçu sommaire / Aperçu imprimé), au lieu de garder l'aperçu imprimé enfermé dans une modale
 - Conserver optionnellement un bouton « Agrandir » qui ouvre `PrintPreviewModal` en mode plein écran pour validation finale
 
-- [ ] Créer un composant d'onglets inline dans la colonne droite de `TaeForm/index.tsx` : Aperçu sommaire (par défaut) / Aperçu imprimé
+- [ ] Créer un composant d'onglets inline dans la colonne droite de `TacheForm/index.tsx` : Aperçu sommaire (par défaut) / Aperçu imprimé
 - [ ] Brancher l'onglet Sommaire sur `FicheSommaireColumn` existant
 - [ ] Brancher l'onglet Imprimé sur `PrintableFichePreview` (rendu inline, pas modal)
 - [ ] Conserver `PrintPreviewModal` accessible via un bouton « Agrandir » dans le toolbar de l'onglet Imprimé
-- [ ] Ajouter le toggle Formatif/Sommatif dans le sous-onglet Questionnaire de l'aperçu imprimé — la donnée `showGuidageOnStudentSheet` existe déjà dans `TaeFicheData`, il manque juste le contrôle UI qui l'écrit
+- [ ] Ajouter le toggle Formatif/Sommatif dans le sous-onglet Questionnaire de l'aperçu imprimé — la donnée `showGuidageOnStudentSheet` existe déjà dans `TacheFicheData`, il manque juste le contrôle UI qui l'écrit
 - [ ] Vérifier que la bascule Formatif → Sommatif masque bien le guidage en temps réel dans l'aperçu
 
 ---
@@ -75,7 +75,7 @@
 
 - [ ] Migrer le projet vers Vercel (ou créer un déploiement Vercel parallèle pour valider la chaîne PDF avant de basculer)
 - [ ] Installer `@sparticuz/chromium-min` et `puppeteer-core`
-- [ ] Créer la route API `/api/tae/[id]/pdf` qui rend `PrintableFicheFromTaeData` côté serveur via Puppeteer headless
+- [ ] Créer la route API `/api/tae/[id]/pdf` qui rend `PrintableFicheFromTacheData` côté serveur via Puppeteer headless
 - [ ] Verrouiller la version de Chromium côté serveur pour garantir la cohérence avec le rendu client
 - [ ] Activer le bouton « Télécharger le PDF » dans `PrintPreviewModal` (actuellement `disabled` ligne 104-115) et le brancher sur la route API
 - [ ] Supprimer la dépendance à `window.print()` côté navigateur — l'utilisateur télécharge un PDF, il n'imprime pas directement

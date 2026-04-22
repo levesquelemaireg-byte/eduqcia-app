@@ -84,7 +84,7 @@ export async function saveEvaluationCompositionAction(
   const { data: evalId, error } = await supabase.rpc("save_evaluation_composition", {
     p_evaluation_id: body.evaluationId,
     p_titre: body.titre,
-    p_tae_ids: body.taeIds,
+    p_tae_ids: body.tacheIds,
     p_publish: publish,
   });
 

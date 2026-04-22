@@ -18,7 +18,7 @@ export type FicheMode = "thumbnail" | "sommaire" | "lecture";
 /* ─── Step ID ──────────────────────────────────────────────────── */
 
 /**
- * Union fermée, alignée sur `TAE_FORM_STEPS[].id` (step-meta.ts).
+ * Union fermée, alignée sur `TACHE_FORM_STEPS[].id` (step-meta.ts).
  * Élimine les typos silencieuses.
  */
 export type StepId =

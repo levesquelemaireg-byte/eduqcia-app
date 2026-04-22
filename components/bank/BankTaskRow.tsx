@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
-import type { BankTaeRow } from "@/lib/queries/bank-tasks";
+import type { BankTacheRow } from "@/lib/queries/bank-tasks";
 import {
   BANK_TASK_BY,
   BANK_TASK_LINK_VOIR,
@@ -12,12 +12,12 @@ import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import { truncateText } from "@/lib/utils/stripHtml";
 
 type Props = {
-  row: BankTaeRow;
+  row: BankTacheRow;
   /** CTA additionnel (ex. ajout à une épreuve brouillon). */
   trailingSlot?: ReactNode;
 };
 
-function metaParts(row: BankTaeRow): string[] {
+function metaParts(row: BankTacheRow): string[] {
   return [row.oi_titre, row.niveau_label, row.discipline_label].filter((x): x is string =>
     Boolean(x && x.trim()),
   );

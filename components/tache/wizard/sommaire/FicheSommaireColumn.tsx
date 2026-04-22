@@ -2,9 +2,9 @@
 
 import { useMemo } from "react";
 import { FicheRenderer } from "@/lib/fiche/FicheRenderer";
-import { TAE_FICHE_SECTIONS } from "@/lib/fiche/configs/tae-fiche-sections";
+import { TACHE_FICHE_SECTIONS } from "@/lib/fiche/configs/tache-fiche-sections";
 import { getCurrentStepId } from "@/lib/fiche/getCurrentStepId";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { useOiData, useGrilles } from "@/components/tache/wizard/bloc2/useBloc2Data";
 import type { SelectorRefs } from "@/lib/fiche/types";
 
@@ -17,7 +17,7 @@ type Props = {
 
 /** Sommaire formulaire — FicheRenderer mode `sommaire`. */
 export function FicheSommaireColumn({ previewMeta }: Props) {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const { oiList } = useOiData();
   const grilles = useGrilles();
 
@@ -35,7 +35,7 @@ export function FicheSommaireColumn({ previewMeta }: Props) {
 
   return (
     <FicheRenderer
-      sections={TAE_FICHE_SECTIONS}
+      sections={TACHE_FICHE_SECTIONS}
       state={state}
       refs={refs}
       mode="sommaire"

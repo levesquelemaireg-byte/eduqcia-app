@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import {
   initialAvantApresPayload,
   normalizeAvantApresPayload,
@@ -11,7 +11,7 @@ import { nonRedactionAvantApresPayload } from "@/lib/tache/wizard-state-nr";
 
 /** Réinitialise un payload illisible (brouillon corrompu). */
 export function useAvantApresPayloadBootstrap(): void {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
 
   useLayoutEffect(() => {
     if (getVariantSlugForComportementId(state.bloc2.comportementId) !== "avant-apres") return;

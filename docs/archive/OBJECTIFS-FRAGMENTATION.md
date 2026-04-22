@@ -10,8 +10,8 @@ Les composants de rendu sont aujourd'hui **monolithiques** :
 
 ```
 FicheTache.tsx                 ← fiche complète, mode "sommaire" | "lecture"
-PrintableFicheFromTaeData.tsx  ← rendu print complet
-TaeCard.tsx                    ← thumbnail complet
+PrintableFicheFromTacheData.tsx  ← rendu print complet
+TacheCard.tsx                    ← thumbnail complet
 ```
 
 La logique de rendu est **éparpillée** à l'intérieur de ces composants via des conditions `if mode === "sommaire"`, des blocs inline, des styles couplés. Ce n'est pas du mauvais code — c'est une dette de _connaissance implicite_ qui grossit à chaque nouveau comportement ajouté.
@@ -47,7 +47,7 @@ FicheTache devient un assembleur :
 ### 1. Modifier une fois, propager partout
 
 ```
-Sans fragments : changer la consigne = modifier FicheTache + PrintableFicheFromTaeData
+Sans fragments : changer la consigne = modifier FicheTache + PrintableFicheFromTacheData
                  + FicheSommaireColumn + espérer ne pas oublier un 4e endroit
 
 Avec fragments : changer ConsigneApp = une modification, propagée dans tous les contextes
@@ -167,22 +167,22 @@ Extraire ce bloc en fragments selon les conventions :
 
 Étapes :
 1. Créer components/fragments/«NomFragment1App».tsx (et «NomFragment2App».tsx)
-   — props typées depuis lib/types/fiche.ts (TaeFicheData ou sous-type)
+   — props typées depuis lib/types/fiche.ts (TacheFicheData ou sous-type)
    — data-fragment="«NomFragment1App»" sur la racine de chaque composant
-2. «NomComposantParent» (ex. FicheTache, TaeCard) importe ces fragments
+2. «NomComposantParent» (ex. FicheTache, TacheCard) importe ces fragments
    au lieu du code inline correspondant
 3. Vérifier dans le playground que le debug mode affiche les encadrés distincts
 4. npm run lint && npm run build verts
 5. Mettre à jour la colonne **Statut** du tableau « Ordre de priorité » pour la ligne concernée (⏳ → ✅) ; si le fragment n’y figure pas, ajouter une courte note sous le tableau
 ```
 
-### Exemple concret — TaeCard / Thumbnail
+### Exemple concret — TacheCard / Thumbnail
 
 ```
 Lis docs/OBJECTIFS-FRAGMENTATION.md et docs/CONVENTIONS-FRAGMENTS.md.
 
 Dans le playground, contexte Thumbnail, fragment isolé "Carte — en-tête et extrait",
-le debug mode montre un bloc TaeCardCorps monolithique.
+le debug mode montre un bloc TacheCardCorps monolithique.
 
 Extraire ce bloc en deux fragments :
 - EnteteCarteApp → icône OI + consigne tronquée (plainConsigneForMiniature)
@@ -190,9 +190,9 @@ Extraire ce bloc en deux fragments :
 
 Étapes :
 1. Créer components/fragments/EnteteCarteApp.tsx et MetaCarteApp.tsx
-   — props typées TaeFicheData depuis lib/types/fiche.ts
+   — props typées TacheFicheData depuis lib/types/fiche.ts
    — data-fragment="EnteteCarteApp" et data-fragment="MetaCarteApp" sur leurs racines
-2. TaeCard importe EnteteCarteApp et MetaCarteApp au lieu du code inline
+2. TacheCard importe EnteteCarteApp et MetaCarteApp au lieu du code inline
 3. Vérifier dans le playground Thumbnail que le debug mode affiche deux encadrés distincts
 4. npm run lint && npm run build verts
 5. Mettre à jour la colonne **Statut** dans docs/OBJECTIFS-FRAGMENTATION.md (lignes concernées : ⏳ → ✅)

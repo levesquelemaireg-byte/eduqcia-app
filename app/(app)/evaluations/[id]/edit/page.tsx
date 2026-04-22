@@ -3,18 +3,18 @@ import { EvaluationCompositionEditor } from "@/components/evaluations/Evaluation
 import { createClient } from "@/lib/supabase/server";
 import {
   getEvaluationEditBundle,
-  getTaeMetaForEvaluationCart,
+  getTacheMetaForEvaluationCart,
 } from "@/lib/queries/evaluation-composition";
 import {
   getEvaluationPickerBankPage,
   getEvaluationPickerMinePage,
-} from "@/lib/queries/evaluation-tae-picker";
+} from "@/lib/queries/evaluation-tache-picker";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 type PageProps = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ addTae?: string }>;
+  searchParams: Promise<{ addTache?: string }>;
 };
 
 export default async function EditEvaluationPage({ params, searchParams }: PageProps) {
@@ -33,10 +33,10 @@ export default async function EditEvaluationPage({ params, searchParams }: PageP
   if (!bundle) notFound();
 
   let cart = bundle.cart;
-  const rawAdd = sp.addTae;
-  const addTae = typeof rawAdd === "string" && UUID_RE.test(rawAdd) ? rawAdd : null;
-  if (addTae) {
-    const meta = await getTaeMetaForEvaluationCart(addTae);
+  const rawAdd = sp.addTache;
+  const addTache = typeof rawAdd === "string" && UUID_RE.test(rawAdd) ? rawAdd : null;
+  if (addTache) {
+    const meta = await getTacheMetaForEvaluationCart(addTache);
     if (meta && !cart.some((c) => c.id === meta.id)) {
       cart = [...cart, { id: meta.id, consigne: meta.consigne, nbDocuments: meta.nbDocuments }];
     }

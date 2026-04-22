@@ -20,7 +20,7 @@ import type {
   EvaluationPickerPage,
   EvaluationPickerRow,
   EvaluationPickerSource,
-} from "@/lib/queries/evaluation-tae-picker";
+} from "@/lib/queries/evaluation-tache-picker";
 import {
   EVAL_COMP_ADD,
   EVAL_COMP_ALREADY_ADDED,
@@ -49,7 +49,7 @@ import {
   TOAST_EVAL_PUBLISH_OK,
   TOAST_EVAL_RPC_MISSING,
   TOAST_EVAL_SAVE_DRAFT_OK,
-  TOAST_EVAL_TAE_INELIGIBLE,
+  TOAST_EVAL_TACHE_INELIGIBLE,
   TOAST_EVAL_TITRE_REQUIS,
 } from "@/lib/ui/ui-copy";
 import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
@@ -74,7 +74,7 @@ function toastForSaveError(code: SaveEvaluationErrorCode): void {
       toast.error(TOAST_EVAL_NOT_FOUND);
       break;
     case "tache_non_eligible":
-      toast.error(TOAST_EVAL_TAE_INELIGIBLE);
+      toast.error(TOAST_EVAL_TACHE_INELIGIBLE);
       break;
     case "rpc_function_missing":
       toast.error(TOAST_EVAL_RPC_MISSING);
@@ -124,7 +124,7 @@ export function EvaluationCompositionEditor({
         const payload = {
           evaluationId: evalId,
           titre: titre.trim(),
-          taeIds: cart.map((c) => c.id),
+          tacheIds: cart.map((c) => c.id),
         };
         const result: SaveEvaluationResult = await saveEvaluationCompositionAction(
           payload,
@@ -154,7 +154,7 @@ export function EvaluationCompositionEditor({
       const payload = {
         evaluationId: evalId,
         titre: titre.trim(),
-        taeIds: cart.map((c) => c.id),
+        tacheIds: cart.map((c) => c.id),
       };
       const result: SaveEvaluationResult = await saveEvaluationCompositionAction(payload, false);
       if (!result.ok) {

@@ -16,7 +16,7 @@
 | **INV-R1** — Rendu d'un document passe par un seul composant canonique                          | ❌      | Au moins **6 renderers** distincts rendent du contenu documentaire. Le renderer canonique (`DocumentCard` + variants + `DocumentElementRenderer`) coexiste avec 4 chemins parallèles.                                                                                                                                                                                                                                                                     |
 | **INV-R2** — Les conteneurs délèguent, ne re-rendent pas                                        | ⚠️      | Délégation correcte pour `DocumentCardReader`, `DocumentPrintView`, `DocumentWizardPrintPreview`, `SectionDocContent`, `DOC_FICHE_SECTIONS`. Délégation rompue pour `SectionDocument` (aperçu imprimé épreuve/tâche), `DocCard` (vue détaillée tâche), `DocumentCardCompact` (sommaire wizard tâche), `PrintableDocumentCell` pour structure `simple`, et `DocumentFicheRead` (mort).                                                                     |
 | **INV-R3** — Le mode de rendu est propagé sans être re-deviné                                   | ⚠️      | `FicheMode` couvre **3 modes** (`thumbnail`, `sommaire`, `lecture`) via `FicheRenderer`. L'aperçu imprimé **n'est pas** un `FicheMode` : c'est un pipeline parallèle (`ApercuImpression`, `RenduImprimable`, `ContexteImpression`). Les renderers hors `FicheRenderer` (`DocumentCardThumbnail`, `DocumentCardPrint`, `PrintableDocumentCell`, `SectionDocument`) n'acceptent pas de prop `mode` unifiée.                                                 |
-| **INV-R4** — Wizard preview et vue détaillée donnent le même rendu documentaire                 | ❌      | Le wizard (`PrintableDocumentCell`) et la vue détaillée (`DocCard` via `components/tache/vue-detaillee/sections/documents.tsx`) utilisent des composants **différents**, avec des contrats de données **différents** (`DocumentFiche` vs `TaeFicheData.documents[]` construit par `selectDocuments`). Aucune garantie de parité visuelle hors inspection manuelle.                                                                                        |
+| **INV-R4** — Wizard preview et vue détaillée donnent le même rendu documentaire                 | ❌      | Le wizard (`PrintableDocumentCell`) et la vue détaillée (`DocCard` via `components/tache/vue-detaillee/sections/documents.tsx`) utilisent des composants **différents**, avec des contrats de données **différents** (`DocumentFiche` vs `TacheFicheData.documents[]` construit par `selectDocuments`). Aucune garantie de parité visuelle hors inspection manuelle.                                                                                      |
 | **INV-R5** — Wizard preview et export PDF donnent le même rendu                                 | ❌      | **Le bug PDF**. Wizard : `PrintableDocumentCell(doc: DocumentFiche)` — type riche avec `source_citation`, `image_legende`, `imagePixelWidth`, `rendererDocument.elements[]`. PDF (`ApercuImpression` → `SectionDocument`) : reçoit `DocumentReference` — type minimal (`id`, `kind`, `titre`, `contenu`, `echelle`). Le mapper `construireDocuments` détruit les champs riches en amont.                                                                  |
 | **INV-R6** — Les variantes (`ModeImpression`, `estCorrige`) n'altèrent pas le rendu intrinsèque | ⚠️      | Au niveau de la pagination (`epreuve-vers-paginee`, `tache-vers-imprimable`, `document-vers-imprimable`), les variantes n'influencent que la **composition** (titre visible, présence du corrigé, dossier documentaire pré/post). Le rendu du document lui-même est stable **dans chaque pipeline** mais **pas entre** pipelines (voir INV-R5). Verdict ⚠️ et pas ✅ car la fragmentation des renderers empêche de vérifier l'invariant au niveau global. |
 
@@ -76,7 +76,7 @@ app/(apercu)/apercu/[token]/page.tsx
 ```
 app/(print)/evaluations/[id]/print/page.tsx
   └─ EvaluationFichePrintView
-       └─ EvaluationPrintableBody(titre, fiches: TaeFicheData[])
+       └─ EvaluationPrintableBody(titre, fiches: TacheFicheData[])
             └─ PrintableEvaluationQuestionBlock
                  └─ PrintableDocumentCell(doc: DocumentFiche)  ⚠️ 3ᵉ pipeline parallèle
 ```
@@ -256,11 +256,11 @@ Deux systèmes de modes coexistent sans pont explicite :
 
 #### 2.4.1 Composants utilisés
 
-| Surface                               | Composant                                                               | Contrat                                                    |
-| ------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
-| Aperçu wizard (feuillet élève)        | `PrintableDocumentCell`                                                 | `DocumentFiche`                                            |
-| Sommaire wizard (colonne droite)      | `DocumentCardCompact`                                                   | dérivé de `TaeFicheData.documents[]` via selector          |
-| Vue détaillée tâche `/questions/[id]` | `DocCard` (via `components/tache/vue-detaillee/sections/documents.tsx`) | dérivé de `TaeFicheData.documents[]` via `selectDocuments` |
+| Surface                               | Composant                                                               | Contrat                                                      |
+| ------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Aperçu wizard (feuillet élève)        | `PrintableDocumentCell`                                                 | `DocumentFiche`                                              |
+| Sommaire wizard (colonne droite)      | `DocumentCardCompact`                                                   | dérivé de `TacheFicheData.documents[]` via selector          |
+| Vue détaillée tâche `/questions/[id]` | `DocCard` (via `components/tache/vue-detaillee/sections/documents.tsx`) | dérivé de `TacheFicheData.documents[]` via `selectDocuments` |
 
 **Trois composants différents, trois chemins de données différents.** L'invariant ne peut être respecté que par coïncidence visuelle.
 
@@ -318,7 +318,7 @@ L'invariant est **respecté dans chaque pipeline isolément**, mais la fragmenta
 
 ### 3.1 Symptôme
 
-L'export PDF via `/apercu/[token]` (pipeline tâche ou épreuve) ne ressemble pas à l'aperçu wizard affiché dans la colonne preview de `TaeForm`. Champs manquants ou différemment formatés.
+L'export PDF via `/apercu/[token]` (pipeline tâche ou épreuve) ne ressemble pas à l'aperçu wizard affiché dans la colonne preview de `TacheForm`. Champs manquants ou différemment formatés.
 
 ### 3.2 Pipelines comparés
 
@@ -329,7 +329,7 @@ FormState (reducer wizard)
   → etatWizardVersTache(formState)           lib/tache/contrats/etat-wizard-vers-tache.ts
     → construireDocuments(state)              ligne 186-197 — mapper vers DocumentReference[]
   (et en parallèle)
-  → selectors → TaeFicheData                  lib/fiche/selectors/...
+  → selectors → TacheFicheData                  lib/fiche/selectors/...
   → PrintableFichePreview
     → PrintableDocumentCell(doc: DocumentFiche)   <-- type riche ici
 ```
@@ -377,7 +377,7 @@ export type DocumentReference = {
 [lib/tache/contrats/etat-wizard-vers-tache.ts:186-197](../../lib/tache/contrats/etat-wizard-vers-tache.ts#L186-L197) :
 
 ```ts
-function construireDocuments(state: TaeFormState): DocumentReference[] {
+function construireDocuments(state: TacheFormState): DocumentReference[] {
   return state.bloc2.documentSlots.map(({ slotId }) => {
     const slot = getSlotData(state.bloc4.documents, slotId);
     return {
@@ -428,7 +428,7 @@ Tous les champs suivants sont **détruits** à ce point :
 
 ### 3.7 Pourquoi l'impression évaluation (`/evaluations/[id]/print`) ne souffre pas du même bug
 
-Cette route (§1.3) utilise `EvaluationPrintableBody` → `PrintableDocumentCell` avec `DocumentFiche`, **pas** `SectionDocument` avec `DocumentReference`. Elle reconstruit le `TaeFicheData` complet côté serveur et le passe au composant wizard. **Elle évite donc le contrat appauvri** — mais elle **dédouble** la logique d'impression d'épreuve, ce qui est un autre problème (un changement au pipeline `/apercu/[token]` ne se répercute pas automatiquement sur l'impression évaluation, et vice-versa).
+Cette route (§1.3) utilise `EvaluationPrintableBody` → `PrintableDocumentCell` avec `DocumentFiche`, **pas** `SectionDocument` avec `DocumentReference`. Elle reconstruit le `TacheFicheData` complet côté serveur et le passe au composant wizard. **Elle évite donc le contrat appauvri** — mais elle **dédouble** la logique d'impression d'épreuve, ce qui est un autre problème (un changement au pipeline `/apercu/[token]` ne se répercute pas automatiquement sur l'impression évaluation, et vice-versa).
 
 ### 3.8 Réparation conceptuelle (non proposée ici, pour référence)
 
@@ -483,7 +483,7 @@ Cette réparation n'est **pas** proposée ici — elle relève d'une passe de re
 ### Contrats de données
 
 - [lib/tache/contrats/donnees.ts:19-25](../../lib/tache/contrats/donnees.ts#L19-L25) — `DocumentReference` (contrat minimal)
-- [lib/types/fiche.ts](../../lib/types/fiche.ts) — `DocumentFiche`, `TaeFicheData` (contrats riches)
+- [lib/types/fiche.ts](../../lib/types/fiche.ts) — `DocumentFiche`, `TacheFicheData` (contrats riches)
 - [lib/impression/types.ts:17-20](../../lib/impression/types.ts#L17-L20) — `ContexteImpression`
 - [lib/fiche/types.ts:16](../../lib/fiche/types.ts#L16) — `FicheMode`
 

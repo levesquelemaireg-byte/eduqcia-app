@@ -1,7 +1,7 @@
 /**
  * Mapper officiel wizard → DonneesTache (print-engine v2.1 §4.5).
  *
- * Fonction pure. Remplace `formStateToTae()` (dépréciée) pour la chaîne d'impression.
+ * Fonction pure. Remplace `formStateToTache()` (dépréciée) pour la chaîne d'impression.
  * Les selectors de `lib/fiche/selectors/` restent pour le sommaire wizard.
  *
  * D0 partiel : coexiste avec l'ancien code — aucun consommateur n'est modifié.
@@ -12,7 +12,10 @@ import { getSlotData } from "@/lib/tache/document-helpers";
 import type { NiveauCode, DisciplineCode } from "@/lib/tache/blueprint-helpers";
 import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
 import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
-import { getRedactionSliceForPreview, type TaeFormState } from "@/lib/tache/tae-form-state-types";
+import {
+  getRedactionSliceForPreview,
+  type TacheFormState,
+} from "@/lib/tache/tache-form-state-types";
 import { cdSelectionToFicheSlice } from "@/lib/tache/cd-helpers";
 import { connaissancesToFicheSlice } from "@/lib/tache/connaissances-selection";
 import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tache/auteur-display-sort";
@@ -108,7 +111,7 @@ export function resoudreOutilEvaluation(
 }
 
 /** Déduit l'espace de production depuis l'état du wizard. */
-function deduireEspaceProduction(state: TaeFormState): EspaceProduction {
+function deduireEspaceProduction(state: TacheFormState): EspaceProduction {
   if (isActiveOrdreChronologiqueVariant(state)) {
     return { type: "cases", options: ["A", "B", "C", "D"] };
   }
@@ -119,7 +122,7 @@ function deduireEspaceProduction(state: TaeFormState): EspaceProduction {
 }
 
 /** Construit le guidage structuré. */
-function construireGuidage(state: TaeFormState): Guidage {
+function construireGuidage(state: TacheFormState): Guidage {
   if (isActiveNonRedactionVariant(state)) {
     const ordreNorm = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
     if (isActiveOrdreChronologiqueVariant(state) && ordreNorm) {
@@ -144,7 +147,7 @@ function construireGuidage(state: TaeFormState): Guidage {
 }
 
 /** Construit la consigne (HTML propre, sans ancre). */
-function construireConsigne(state: TaeFormState): string {
+function construireConsigne(state: TacheFormState): string {
   const ordreNorm = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
   if (isActiveOrdreChronologiqueVariant(state) && ordreNorm) {
     return supprimerAncres(buildOrdreChronologiqueConsigneHtml(ordreNorm));
@@ -161,7 +164,7 @@ function construireConsigne(state: TaeFormState): string {
 }
 
 /** Construit le corrigé. */
-function construireCorrige(state: TaeFormState): string {
+function construireCorrige(state: TacheFormState): string {
   const ordreNorm = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
   if (isActiveOrdreChronologiqueVariant(state) && ordreNorm) {
     return buildOrdreChronologiqueCorrigeHtml(ordreNorm);
@@ -178,7 +181,7 @@ function construireCorrige(state: TaeFormState): string {
 }
 
 /** Mappe les slots document vers `RendererDocument[]`. */
-function construireDocuments(state: TaeFormState): RendererDocument[] {
+function construireDocuments(state: TacheFormState): RendererDocument[] {
   return state.bloc2.documentSlots.map(({ slotId }) => {
     const slot = getSlotData(state.bloc4.documents, slotId);
 
@@ -232,7 +235,7 @@ function construireDocuments(state: TaeFormState): RendererDocument[] {
 
 /** Construit la liste des auteurs triés par nom de famille. */
 function construireAuteurs(
-  state: TaeFormState,
+  state: TacheFormState,
   meta?: MetaApercu | null,
 ): { id: string; first_name: string; last_name: string }[] {
   const fallbackAuthor = meta?.authorFullName?.trim() || "—";
@@ -265,7 +268,7 @@ function construireAuteurs(
  * structuré, outilEvaluation résolu, espaceProduction déduit).
  */
 export function etatWizardVersTache(
-  etat: TaeFormState,
+  etat: TacheFormState,
   oiList: OiEntryJson[],
   grilles: GrilleEvaluationEntree[],
   meta?: MetaApercu | null,

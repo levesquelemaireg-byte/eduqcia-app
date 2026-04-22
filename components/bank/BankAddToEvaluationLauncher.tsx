@@ -17,10 +17,10 @@ import {
 } from "@/lib/ui/ui-copy";
 
 type Props = {
-  taeId: string;
+  tacheId: string;
 };
 
-export function BankAddToEvaluationLauncher({ taeId }: Props) {
+export function BankAddToEvaluationLauncher({ tacheId }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [drafts, setDrafts] = useState<DraftEvaluationOption[]>([]);
@@ -38,7 +38,7 @@ export function BankAddToEvaluationLauncher({ taeId }: Props) {
 
   const handleGo = () => {
     if (!picked) return;
-    router.push(`/evaluations/${picked}/edit?addTae=${encodeURIComponent(taeId)}`);
+    router.push(`/evaluations/${picked}/edit?addTache=${encodeURIComponent(tacheId)}`);
     setOpen(false);
   };
 

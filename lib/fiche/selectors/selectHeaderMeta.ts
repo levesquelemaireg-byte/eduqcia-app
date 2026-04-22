@@ -1,6 +1,6 @@
 import { ready } from "@/lib/fiche/helpers";
 import type { SectionState, HeaderData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { NIVEAUX, DISCIPLINE_LABEL } from "@/components/tache/wizard/bloc2/constants";
 import type { NiveauCode, DisciplineCode } from "@/lib/tache/blueprint-helpers";
 import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
@@ -11,7 +11,7 @@ import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
  * Toujours `ready` — le composant gère les placeholders visuels pour les champs vides.
  */
 export function selectHeaderMeta(
-  state: TaeFormState,
+  state: TacheFormState,
   refs: SelectorRefs,
 ): SectionState<HeaderData> {
   const oiEntry = refs.oiList.find((o) => o.id === state.bloc2.oiId);

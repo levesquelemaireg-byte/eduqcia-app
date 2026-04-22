@@ -5,7 +5,7 @@
 
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import { ficheDocumentsSectionTitle } from "@/lib/ui/ui-copy";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 
 export type DocCardData = {
@@ -20,7 +20,7 @@ export type DocumentsSectionData = {
   cards: DocCardData[];
 };
 
-export function selectDocuments(state: TaeFicheData): DocumentsSectionData | null {
+export function selectDocuments(state: TacheFicheData): DocumentsSectionData | null {
   if (state.documents.length === 0) return null;
 
   return {

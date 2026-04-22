@@ -244,7 +244,7 @@ Le hero est la zone qui contient l'énoncé complet de la tâche, présenté com
 
 Le hero n'a pas de SectionLabel (contrairement aux autres sections du flux). Il est la tête de la fiche, pas une section parmi d'autres.
 
-**Règle de fusion amorce+consigne :** la fusion vit dans le selector `ficheTaeHeroSelector`, pas dans le composant. Les champs `amorce` et `consigne` restent distincts en base de données. Le selector concatène `amorce + " " + consigne` (avec placeholders résolus pour la consigne) et retourne un seul champ `enonce` au composant. Cette fusion est déjà en place dans le mode `sommaire` selon le brief initial, elle s'applique identiquement en mode `lecture`.
+**Règle de fusion amorce+consigne :** la fusion vit dans le selector `ficheTacheHeroSelector`, pas dans le composant. Les champs `amorce` et `consigne` restent distincts en base de données. Le selector concatène `amorce + " " + consigne` (avec placeholders résolus pour la consigne) et retourne un seul champ `enonce` au composant. Cette fusion est déjà en place dans le mode `sommaire` selon le brief initial, elle s'applique identiquement en mode `lecture`.
 
 ### 7. Flux principal de la fiche tâche
 
@@ -595,7 +595,7 @@ Tests unitaires sur chaque primitive pour vérifier le rendu, les props, et la c
 
 **Fichiers à créer dans `lib/fiche/selectors/task/` :**
 
-`ficheTaeHeroSelector.ts` — retourne le state du hero :
+`ficheTacheHeroSelector.ts` — retourne le state du hero :
 
 ```ts
 {
@@ -608,7 +608,7 @@ Tests unitaires sur chaque primitive pour vérifier le rendu, les props, et la c
 
 Logique : fusionner `amorce` et `consigne`, résoudre les placeholders `{{doc_A}}` → numéros, sanitiser.
 
-`ficheTaeDocumentsSelector.ts` — retourne un array de DocCardState :
+`ficheTacheDocumentsSelector.ts` — retourne un array de DocCardState :
 
 ```ts
 Array<{
@@ -623,11 +623,11 @@ Array<{
 
 Logique : mapper `refs.documents` → pour chaque doc, calculer le numéro (index+1), obtenir l'icône via `getDocumentTypeIcon()`, construire la ligne de source selon les champs disponibles.
 
-`ficheTaeGuidageSelector.ts` — retourne `{ contenu: string } | null`. Null si champ vide ou flag de masquage.
+`ficheTacheGuidageSelector.ts` — retourne `{ contenu: string } | null`. Null si champ vide ou flag de masquage.
 
-`ficheTaeCorrigeSelector.ts` — retourne `{ contenu: string, notesCorrecteur?: string }`.
+`ficheTacheCorrigeSelector.ts` — retourne `{ contenu: string, notesCorrecteur?: string }`.
 
-`ficheTaeGrilleSelector.ts` — retourne `{ componentId: string, critereCount: number }`. Le rendu réel délègue au composant ministériel embarqué.
+`ficheTacheGrilleSelector.ts` — retourne `{ componentId: string, critereCount: number }`. Le rendu réel délègue au composant ministériel embarqué.
 
 **Fichiers à créer dans `lib/fiche/selectors/task/rail/` :**
 
@@ -656,39 +656,39 @@ function extractTreePath(tree: TreeNode): string[];
 
 ### Phase 3 — Configuration et sections
 
-**Objectif :** le config `TAE_LECTURE_SECTIONS` est écrit et le `FicheRenderer` sait itérer dessus pour rendre les sections dans l'ordre.
+**Objectif :** le config `TACHE_LECTURE_SECTIONS` est écrit et le `FicheRenderer` sait itérer dessus pour rendre les sections dans l'ordre.
 
-**Fichier à créer :** `lib/fiche/config/taeLectureSections.ts`
+**Fichier à créer :** `lib/fiche/config/tacheLectureSections.ts`
 
 ```ts
-export const TAE_LECTURE_SECTIONS = [
+export const TACHE_LECTURE_SECTIONS = [
   {
     id: "hero",
-    selector: ficheTaeHeroSelector,
+    selector: ficheTacheHeroSelector,
     component: HeroSection,
     visibleIn: ["thumbnail", "sommaire", "lecture"],
   },
   {
     id: "documents",
-    selector: ficheTaeDocumentsSelector,
+    selector: ficheTacheDocumentsSelector,
     component: DocumentsSection,
     visibleIn: ["sommaire", "lecture"],
   },
   {
     id: "guidage",
-    selector: ficheTaeGuidageSelector,
+    selector: ficheTacheGuidageSelector,
     component: GuidageSection,
     visibleIn: ["sommaire", "lecture"],
   },
   {
     id: "corrige",
-    selector: ficheTaeCorrigeSelector,
+    selector: ficheTacheCorrigeSelector,
     component: CorrigeSection,
     visibleIn: ["lecture"],
   },
   {
     id: "grille",
-    selector: ficheTaeGrilleSelector,
+    selector: ficheTacheGrilleSelector,
     component: GrilleSection,
     visibleIn: ["lecture"],
   },
@@ -705,7 +705,7 @@ export const TAE_LECTURE_SECTIONS = [
 `CorrigeSection.tsx` — rend SectionLabel + ContentBlock color `--color-corrige` + paragraphe italique notes au correcteur en dessous si présent
 `GrilleSection.tsx` — rend SectionLabel + accordéon collapsed par défaut, contenu = composant ministériel embarqué existant
 
-**Critère de complétude Phase 3 :** `FicheRenderer<TaeState>` avec `config=TAE_LECTURE_SECTIONS` rend une fiche tâche dummy en données hardcodées. Les 5 sections apparaissent dans l'ordre, avec les styles fidèles à la spec.
+**Critère de complétude Phase 3 :** `FicheRenderer<TacheState>` avec `config=TACHE_LECTURE_SECTIONS` rend une fiche tâche dummy en données hardcodées. Les 5 sections apparaissent dans l'ordre, avec les styles fidèles à la spec.
 
 ### Phase 4 — Rail et layout desktop
 
@@ -750,7 +750,7 @@ Le rail est un composant qui reçoit un `railState` agrégeant tous les selector
   <TopNavBar variant="task" isAuthor={isAuthor} onAction={handleAction} />
   <div className="task-detail-grid">
     <main className="task-detail-grid__flow">
-      <FicheRenderer state={taeState} config={TAE_LECTURE_SECTIONS} mode="lecture" />
+      <FicheRenderer state={tacheState} config={TACHE_LECTURE_SECTIONS} mode="lecture" />
     </main>
     <TaskRail state={railState} />
   </div>
@@ -1003,16 +1003,16 @@ Tester avec les 3 viewports cibles (1440px, 768px, 375px) en E2E (Playwright ou 
 
 **Selectors (lib/fiche/selectors/task/) :**
 
-- ficheTaeHeroSelector
-- ficheTaeDocumentsSelector
-- ficheTaeGuidageSelector
-- ficheTaeCorrigeSelector
-- ficheTaeGrilleSelector
+- ficheTacheHeroSelector
+- ficheTacheDocumentsSelector
+- ficheTacheGuidageSelector
+- ficheTacheCorrigeSelector
+- ficheTacheGrilleSelector
 - Plus 10 selectors du rail dans `lib/fiche/selectors/task/rail/`
 
 **Configs (lib/fiche/config/) :**
 
-- taeLectureSections.ts
+- tacheLectureSections.ts
 
 **Sections (components/fiche/task/sections/) :**
 

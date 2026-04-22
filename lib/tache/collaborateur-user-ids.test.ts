@@ -3,8 +3,8 @@ import {
   buildCollaborateursUserIdsForPayload,
   isProfileCollaborateurId,
 } from "@/lib/tache/collaborateur-user-ids";
-import { initialTaeFormState } from "@/lib/tache/tae-form-state-types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { initialTacheFormState } from "@/lib/tache/tache-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
 const AUTEUR = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
 const C1 = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
@@ -17,14 +17,14 @@ describe("collaborateur-user-ids", () => {
   });
 
   it("mode seul → ids vides", () => {
-    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    const state = structuredClone(initialTacheFormState) as TacheFormState;
     state.bloc1.modeConception = "seul";
     state.bloc1.collaborateurs = [{ id: C1, displayName: "x" }];
     expect(buildCollaborateursUserIdsForPayload(state, AUTEUR)).toEqual({ ok: true, ids: [] });
   });
 
   it("équipe : déduplique et exclut auteur", () => {
-    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    const state = structuredClone(initialTacheFormState) as TacheFormState;
     state.bloc1.modeConception = "equipe";
     state.bloc1.collaborateurs = [
       { id: C1, displayName: "A" },
@@ -39,7 +39,7 @@ describe("collaborateur-user-ids", () => {
   });
 
   it("équipe sans UUID valide → échec", () => {
-    const state = structuredClone(initialTaeFormState) as TaeFormState;
+    const state = structuredClone(initialTacheFormState) as TacheFormState;
     state.bloc1.modeConception = "equipe";
     state.bloc1.collaborateurs = [{ id: "local-x", displayName: "x" }];
     expect(buildCollaborateursUserIdsForPayload(state, AUTEUR)).toEqual({ ok: false });

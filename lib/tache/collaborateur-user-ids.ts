@@ -3,7 +3,7 @@
  * Les ids factices `local-*` du prototype sont exclus.
  */
 
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
 /** UUID (forme Postgres / auth), insensible à la casse — aligné sur les garde-fous `tae.id`. */
 const PROFILE_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -17,7 +17,7 @@ export function isProfileCollaborateurId(id: string): boolean {
  * Mode équipe : au moins un id valide, distinct de l’auteur, sans doublon.
  */
 export function buildCollaborateursUserIdsForPayload(
-  state: TaeFormState,
+  state: TacheFormState,
   auteurId: string,
 ): { ok: true; ids: string[] } | { ok: false } {
   if (state.bloc1.modeConception !== "equipe") {

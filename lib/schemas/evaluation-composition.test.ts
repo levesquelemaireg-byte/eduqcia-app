@@ -4,18 +4,21 @@ import { parseEvaluationCompositionBody } from "@/lib/schemas/evaluation-composi
 describe("parseEvaluationCompositionBody", () => {
   it("accepte brouillon sans TAÉ", () => {
     const r = parseEvaluationCompositionBody(
-      { evaluationId: null, titre: "  Mon titre  ", taeIds: [] },
+      { evaluationId: null, titre: "  Mon titre  ", tacheIds: [] },
       false,
     );
     expect(r.ok).toBe(true);
     if (r.ok) {
       expect(r.data.titre).toBe("Mon titre");
-      expect(r.data.taeIds).toEqual([]);
+      expect(r.data.tacheIds).toEqual([]);
     }
   });
 
   it("refuse publication sans TAÉ", () => {
-    const r = parseEvaluationCompositionBody({ evaluationId: null, titre: "T", taeIds: [] }, true);
+    const r = parseEvaluationCompositionBody(
+      { evaluationId: null, titre: "T", tacheIds: [] },
+      true,
+    );
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("publication_sans_tache");
   });
@@ -23,7 +26,7 @@ describe("parseEvaluationCompositionBody", () => {
   it("refuse doublon d’UUID", () => {
     const u = "550e8400-e29b-41d4-a716-446655440000";
     const r = parseEvaluationCompositionBody(
-      { evaluationId: null, titre: "T", taeIds: [u, u] },
+      { evaluationId: null, titre: "T", tacheIds: [u, u] },
       false,
     );
     expect(r.ok).toBe(false);

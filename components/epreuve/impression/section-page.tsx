@@ -38,7 +38,7 @@ export function SectionPage({ enTete, numeroPage, totalPages, children }: Sectio
         boxSizing: "border-box",
         width: `${PAGE_WIDTH_PX}px`,
         height: `${PAGE_HEIGHT_PX}px`,
-        /* ~2 cm de marge de chaque cote — aligne sur --tae-print-sheet-padding */
+        /* ~2 cm de marge de chaque cote — aligne sur --tache-print-sheet-padding */
         padding: "2cm",
         fontFamily: 'Arial, "Liberation Sans", Helvetica, sans-serif',
         fontSize: "11pt",

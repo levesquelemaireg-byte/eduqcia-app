@@ -30,12 +30,12 @@
 
 ### Ce qui existe et correspond à la spec
 
-**Route** — `/questions/[id]` existe (`app/(app)/questions/[id]/page.tsx`). Server component qui fetch `TaeFicheData` via `fetchTaeFicheBundle()` et rend `FicheLecture`.
+**Route** — `/questions/[id]` existe (`app/(app)/questions/[id]/page.tsx`). Server component qui fetch `TacheFicheData` via `fetchTacheFicheBundle()` et rend `FicheLecture`.
 
 **Architecture 3 couches** — en place et fonctionnelle dans `lib/fiche/` :
 
-- **Config :** `TAE_LECTURE_SECTIONS` dans `lib/fiche/configs/tae-lecture-sections.ts` — 9 sections définies via `defineSection()`
-- **Selectors :** `lib/fiche/selectors/lecture-selectors.ts` — 9 selectors purs `(TaeFicheData, SelectorRefs) → SectionState<T>`
+- **Config :** `TACHE_LECTURE_SECTIONS` dans `lib/fiche/configs/tache-lecture-sections.ts` — 9 sections définies via `defineSection()`
+- **Selectors :** `lib/fiche/selectors/lecture-selectors.ts` — 9 selectors purs `(TacheFicheData, SelectorRefs) → SectionState<T>`
 - **View :** composants section dans `lib/fiche/sections/` — tous suivent le contrat `{ data: T; mode: FicheMode }`
 
 **Primitives** dans `lib/fiche/primitives/` — 7 primitives existantes :
@@ -48,7 +48,7 @@
 - `DocCard` — card document avec lettre (A-D), titre, source, aperçu, skeleton si incomplet
 - `MetaRow` — ligne icône+texte avec badge statut optionnel (array items + badge)
 
-**Données** — `TaeFicheData` (`lib/types/fiche.ts`) contient tous les champs nécessaires pour la vue lecture. `fetchTaeFicheBundle` (`lib/tache/server-fiche-map.ts`) construit le bundle complet depuis Supabase (tae + profiles + oi + comportements + niveaux + disciplines + cd + connaissances + documents + votes).
+**Données** — `TacheFicheData` (`lib/types/fiche.ts`) contient tous les champs nécessaires pour la vue lecture. `fetchTacheFicheBundle` (`lib/tache/server-fiche-map.ts`) construit le bundle complet depuis Supabase (tae + profiles + oi + comportements + niveaux + disciplines + cd + connaissances + documents + votes).
 
 **Composants embarqués (boîtes noires, ne pas toucher) :**
 
@@ -179,7 +179,7 @@ hooks/partagees/use-fiche-modale.ts                    → useFicheModale
 
 ### 4. Selectors atomiques pour le rail (correction)
 
-**Décision :** créer 10 selectors atomiques en fichiers séparés dans `lib/fiche/selectors/tache/rail/`, un par concept (niveau, discipline, aspects, chapitre-connaissances, competence, connaissances, documents-compte, auteur, dates, statut). Chaque selector suit le pattern `(TaeFicheData, SelectorRefs) → SectionState<T>`.
+**Décision :** créer 10 selectors atomiques en fichiers séparés dans `lib/fiche/selectors/tache/rail/`, un par concept (niveau, discipline, aspects, chapitre-connaissances, competence, connaissances, documents-compte, auteur, dates, statut). Chaque selector suit le pattern `(TacheFicheData, SelectorRefs) → SectionState<T>`.
 
 **Justification :** l'extraction inline dans un composant React casse l'architecture 3 couches, la testabilité, et la réutilisabilité. Un selector pur se teste en 3 lignes. Deux patterns concurrents dans le codebase (selectors purs vs extraction inline) créent de la confusion pour les futurs mainteneurs.
 
@@ -286,11 +286,11 @@ Les éléments suivants sont volontairement hors scope de cette implémentation 
 
 Flux principal (`lib/fiche/selectors/tache/`) :
 
-- `hero.ts` — `selectHero(TaeFicheData) → HeroData` : oiGlyph, oiLabel, enonce (HTML sanitisé, placeholders résolus), comportementAttendu
-- `documents.ts` — `selectDocuments(TaeFicheData) → DocumentsSectionData | null` : sectionLabel singulier/pluriel + array DocCardData (numero, docId, categorieGlyph, doc). Retourne null si 0 documents.
-- `guidage.ts` — `selectGuidage(TaeFicheData) → GuidageData | null` : HTML sanitisé ou null si vide
-- `corrige.ts` — `selectCorrige(TaeFicheData) → CorrigeData | null` : HTML sanitisé ou null si vide
-- `grille.ts` — `selectGrille(TaeFicheData) → GrilleData | null` : outilEvaluationId ou null si absent
+- `hero.ts` — `selectHero(TacheFicheData) → HeroData` : oiGlyph, oiLabel, enonce (HTML sanitisé, placeholders résolus), comportementAttendu
+- `documents.ts` — `selectDocuments(TacheFicheData) → DocumentsSectionData | null` : sectionLabel singulier/pluriel + array DocCardData (numero, docId, categorieGlyph, doc). Retourne null si 0 documents.
+- `guidage.ts` — `selectGuidage(TacheFicheData) → GuidageData | null` : HTML sanitisé ou null si vide
+- `corrige.ts` — `selectCorrige(TacheFicheData) → CorrigeData | null` : HTML sanitisé ou null si vide
+- `grille.ts` — `selectGrille(TacheFicheData) → GrilleData | null` : outilEvaluationId ou null si absent
 
 Rail (`lib/fiche/selectors/tache/rail/`) :
 
@@ -313,7 +313,7 @@ Rail (`lib/fiche/selectors/tache/rail/`) :
 
 **D7 — getCategoryIcon non utilisable :** `DocumentFiche.categorieLabel` est un label d'affichage, pas un ID de catégorie. Le selector documents utilise `getDocumentTypeIcon(doc.type)` comme source fiable pour le glyphe de catégorie.
 
-**D8 — Selectors simplifiés sans SelectorRefs :** les selectors de la vue détaillée prennent uniquement `TaeFicheData` (pas de `SelectorRefs`). Les données sont déjà pré-résolues côté serveur par `fetchTaeFicheBundle`. Seul `selectGrille` de l'ancien système avait besoin de `refs.grilles` — le nouveau selector retourne juste l'ID et le composant grille résoudra l'entrée lui-même.
+**D8 — Selectors simplifiés sans SelectorRefs :** les selectors de la vue détaillée prennent uniquement `TacheFicheData` (pas de `SelectorRefs`). Les données sont déjà pré-résolues côté serveur par `fetchTacheFicheBundle`. Seul `selectGrille` de l'ancien système avait besoin de `refs.grilles` — le nouveau selector retourne juste l'ID et le composant grille résoudra l'entrée lui-même.
 
 ## Journal de session — 12 avril 2026 (session 3)
 
@@ -375,7 +375,7 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 | `safeHtml()` helper                      | Phase 2 — Selectors    | Selectors doivent sanitiser le HTML via `safeHtml()`   |
 | Skeleton `/questions/[id]`               | Phase 4 — Route + page | `loading.tsx` skeleton 2 colonnes à créer avec la page |
 | Suspense boundaries                      | Phase 4 — Page serveur | Contenu et rail dans des `<Suspense>` séparées         |
-| `revalidatePath` publication             | Flux wizard → fiche    | Revalider `/questions/[id]` après `publishTaeAction`   |
+| `revalidatePath` publication             | Flux wizard → fiche    | Revalider `/questions/[id]` après `publishTacheAction` |
 | Audit axe-core CI                        | Phase 7+ — Tests       | `/questions/[id]` dans la liste des pages auditées     |
 | `select("*")` dans `server-fiche-map.ts` | Phase 1 — Data layer   | Colonnes explicites avant de brancher les selectors    |
 
@@ -426,7 +426,7 @@ Référence : `AUDIT_CODE_2026.md` — sections « Coordination avec le chantier
 
 ### Décisions prises — Phase 5
 
-**D17 — Positionnement kebab simplifié :** le kebab utilise un positionnement `absolute` relatif au bouton trigger (pas le `fixed` avec `computeMenuCoords` de `TaeCardMenu`). La barre d'actions est sticky et son contexte de positionnement est prévisible — pas besoin du pattern complexe avec scroll/resize listeners.
+**D17 — Positionnement kebab simplifié :** le kebab utilise un positionnement `absolute` relatif au bouton trigger (pas le `fixed` avec `computeMenuCoords` de `TacheCardMenu`). La barre d'actions est sticky et son contexte de positionnement est prévisible — pas besoin du pattern complexe avec scroll/resize listeners.
 
 **D18 — Partager fonctionne réellement :** contrairement aux autres actions hors scope v1, "Partager" (copier le lien) est trivial à implémenter via `navigator.clipboard.writeText`. Livré fonctionnel avec toast de confirmation.
 

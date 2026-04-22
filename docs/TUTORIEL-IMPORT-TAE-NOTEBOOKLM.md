@@ -10,7 +10,7 @@ Ce document s’adresse à l’**enseignant** ou au **contributeur** qui souhait
 
 Pour obtenir un JSON **fiable**, il faut la **synergie** entre :
 
-1. **Le logic-bundle** — `public/data/import-tae-notebooklm-bundle.json` : règles techniques, référentiels et protocole de vérification.
+1. **Le logic-bundle** — `public/data/import-tache-notebooklm-bundle.json` : règles techniques, référentiels et protocole de vérification.
 2. **Les référentiels ministériels (PDF obligatoires)** — progression / programme (PDA–PFEQ) pour les libellés **verbatim** de `connaissances_hors_rpc`, et **Précisions sur les outils d’évaluation** pour cadrer **OI / comportements** et la cohérence avec l’épreuve.
 3. **Les documents de l’épreuve** — questionnaire, corrigé, dossier documentaire : matière brute (consigne, documents, dates).
 
@@ -18,7 +18,7 @@ Sans le bundle, le modèle invente la structure. **Sans les PDF ministériels li
 
 ---
 
-## 1. Le fichier `import-tae-notebooklm-bundle.json` — manuel d’opérations techniques
+## 1. Le fichier `import-tache-notebooklm-bundle.json` — manuel d’opérations techniques
 
 Ce fichier est la **source de vérité** pour tout outil externe (ex. **NotebookLM**) auquel vous donnez le rôle de **générer un seul objet JSON** prêt pour un import ultérieur dans l’app.
 
@@ -36,7 +36,7 @@ Il contient notamment :
 **Régénération** (alignement sur `oi.json`) :
 
 ```bash
-node scripts/build-import-tae-notebooklm-bundle.mjs
+node scripts/build-import-tache-notebooklm-bundle.mjs
 ```
 
 **Version** : le champ **`bundle_version`** en tête du JSON permet de savoir quelle édition des règles vous utilisez dans NotebookLM.
@@ -87,7 +87,7 @@ Le bundle décrit le schéma sous **`connaissances_hors_rpc`** et rappelle que c
 
 ## 4. Déroulement recommandé dans NotebookLM
 
-1. **Créer un cahier** et y ajouter **en premier** le fichier **`import-tae-notebooklm-bundle.json`** à jour (téléchargé depuis le dépôt ou régénéré avec `node scripts/build-import-tae-notebooklm-bundle.mjs`).
+1. **Créer un cahier** et y ajouter **en premier** le fichier **`import-tache-notebooklm-bundle.json`** à jour (téléchargé depuis le dépôt ou régénéré avec `node scripts/build-import-tache-notebooklm-bundle.mjs`).
 2. **Ajouter les quatre PDF ministériels obligatoires** (section 3) : les trois documents PDA/PFEQ et **`HQC_Precisions_outils_evaluation.pdf`**. Sans eux, le moteur de conversion ne dispose pas du référentiel verbatim ni du cadre OI officiel.
 3. **Ajouter les PDF de l’épreuve** visée : questionnaire (ou énoncé), corrigé, dossier documentaire (ou équivalent selon votre matériel).
 4. Demander au modèle de produire **un seul objet JSON** conforme au bundle (racine : `auteur_id`, `connaissances_hors_rpc`, `tae`, `documents_new`, `slots`, `collaborateurs_user_ids` — **sans** `import_notes_fr`).
@@ -101,7 +101,7 @@ Quand le parcours import sera branché, le flux prévu côté code est du type :
 
 1. Parse JSON UTF-8.
 2. **`normalizeDocumentsNewTypesFromLlm`** sur `documents_new` (alias anglais → français).
-3. **`validateTaeImportVsOi`** avec `oi.json` (comptages, ids, présence / absence de `non_redaction_data` selon le comportement).
+3. **`validateTacheImportVsOi`** avec `oi.json` (comptages, ids, présence / absence de `non_redaction_data` selon le comportement).
 4. Résolution **`connaissances_hors_rpc`** → **`connaissances_ids`**, injection **`auteur_id`**, puis RPC **`publish_tae_transaction`**.
 
 Détail des modules : **[ARCHITECTURE.md](./ARCHITECTURE.md)** (`lib/tache/import/`).
@@ -119,7 +119,7 @@ Détail des modules : **[ARCHITECTURE.md](./ARCHITECTURE.md)** (`lib/tache/impor
 
 ## Voir aussi
 
-- [ARCHITECTURE.md](./ARCHITECTURE.md) — `public/data/import-tae-notebooklm-bundle.json`, `lib/tache/import/`
+- [ARCHITECTURE.md](./ARCHITECTURE.md) — `public/data/import-tache-notebooklm-bundle.json`, `lib/tache/import/`
 - [BACKLOG.md](./BACKLOG.md) — import JSON TAÉ (NotebookLM)
 - [WORKFLOWS.md](./WORKFLOWS.md) — wizard et parcours TAÉ dans l’app
 - [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) — parcours non rédactionnels (dont **1.3**)

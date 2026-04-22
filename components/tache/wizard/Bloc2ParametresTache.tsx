@@ -8,7 +8,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BlueprintLockedView } from "@/components/tache/wizard/bloc2/BlueprintLockedView";
 import { Bloc2EditFields } from "@/components/tache/wizard/bloc2/Bloc2EditFields";
 import { useGrilles, useOiData } from "@/components/tache/wizard/bloc2/useBloc2Data";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import {
   disciplinesForNiveau,
   findComportement,
@@ -23,7 +23,7 @@ import { BLOC2_LOADING_PARAMETERS } from "@/lib/ui/ui-copy";
 import { isActiveNonRedactionVariant } from "@/lib/tache/non-redaction/wizard-variant";
 
 export function Bloc2ParametresTache() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const { oiList, error: oiError } = useOiData();
   const grilles = useGrilles();

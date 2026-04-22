@@ -1,6 +1,6 @@
 import { ready, skeleton } from "@/lib/fiche/helpers";
 import type { SectionState, ConnaissancesData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { connaissancesToFicheSlice } from "@/lib/tache/connaissances-helpers";
 
 /**
@@ -8,7 +8,7 @@ import { connaissancesToFicheSlice } from "@/lib/tache/connaissances-helpers";
  * Skeleton si aucune connaissance sélectionnée.
  */
 export function selectConnaissances(
-  state: TaeFormState,
+  state: TacheFormState,
   _refs: SelectorRefs,
 ): SectionState<ConnaissancesData> {
   const connaissances = connaissancesToFicheSlice(state.bloc7.connaissances);

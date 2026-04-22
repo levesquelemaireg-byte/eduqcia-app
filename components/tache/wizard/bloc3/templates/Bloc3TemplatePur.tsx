@@ -22,7 +22,7 @@ import {
   docRefSpan,
 } from "@/lib/tache/consigne-helpers";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { BLOC3_SECTION_ICON } from "@/components/tache/wizard/bloc3-stepper-icons";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
@@ -70,7 +70,7 @@ import {
 } from "@/lib/ui/ui-copy";
 
 export default function Bloc3TemplatePur() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
 
   const config = getWizardBlocConfig(b.comportementId);
@@ -100,8 +100,8 @@ function VarianteTriple({
   state,
   dispatch,
 }: {
-  state: import("@/lib/tache/tae-form-state-types").TaeFormState;
-  dispatch: import("react").Dispatch<import("@/lib/tache/tae-form-state-types").TaeFormAction>;
+  state: import("@/lib/tache/tache-form-state-types").TacheFormState;
+  dispatch: import("react").Dispatch<import("@/lib/tache/tache-form-state-types").TacheFormAction>;
 }) {
   const modeStructure = state.bloc3.perspectivesMode ?? "groupe";
   const typePerspectives = state.bloc3.perspectivesType;
@@ -235,8 +235,8 @@ function VarianteOi6({
   state,
   dispatch,
 }: {
-  state: import("@/lib/tache/tae-form-state-types").TaeFormState;
-  dispatch: import("react").Dispatch<import("@/lib/tache/tae-form-state-types").TaeFormAction>;
+  state: import("@/lib/tache/tache-form-state-types").TacheFormState;
+  dispatch: import("react").Dispatch<import("@/lib/tache/tache-form-state-types").TacheFormAction>;
 }) {
   const modeStructure = state.bloc3.perspectivesMode ?? "groupe";
   const enjeu = state.bloc3.oi6Enjeu;
@@ -353,8 +353,8 @@ function VarianteOi7({
   state,
   dispatch,
 }: {
-  state: import("@/lib/tache/tae-form-state-types").TaeFormState;
-  dispatch: import("react").Dispatch<import("@/lib/tache/tae-form-state-types").TaeFormAction>;
+  state: import("@/lib/tache/tache-form-state-types").TacheFormState;
+  dispatch: import("react").Dispatch<import("@/lib/tache/tache-form-state-types").TacheFormAction>;
 }) {
   const b = state.bloc2;
   const mode = state.bloc3.consigneMode;

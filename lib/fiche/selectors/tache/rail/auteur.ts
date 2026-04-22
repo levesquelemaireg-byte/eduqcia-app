@@ -1,7 +1,7 @@
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import { getDisplayName } from "@/lib/utils/profile-display";
 
-export function selectRailAuteur(state: TaeFicheData): {
+export function selectRailAuteur(state: TacheFicheData): {
   nom: string;
   id: string | null;
 } {

@@ -1,6 +1,6 @@
 /**
  * Config FicheRenderer pour les fiches documents (RendererDocument + métadonnées).
- * Parallèle à tae-fiche-sections / tae-lecture-sections pour les TAÉ.
+ * Parallèle à tache-fiche-sections / tache-lecture-sections pour les TAÉ.
  *
  * Structure linéaire : header → contenu → indexation → footer.
  * Thumbnail : seul le header est visible (titre + icône).

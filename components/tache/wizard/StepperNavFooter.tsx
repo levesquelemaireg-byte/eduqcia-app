@@ -3,18 +3,18 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { publishTaeAction } from "@/lib/actions/tae-publish";
-import { saveWizardDraftAction } from "@/lib/actions/tae-draft";
+import { publishTacheAction } from "@/lib/actions/tache-publish";
+import { saveWizardDraftAction } from "@/lib/actions/tache-draft";
 import { useWizardSession } from "@/components/tache/wizard/WizardSessionContext";
 import {
-  TAE_BLUEPRINT_STEP_INDEX,
-  TAE_BLOC5_STEP_INDEX,
-  TAE_CD_STEP_INDEX,
-  TAE_DOCUMENTS_STEP_INDEX,
-  TAE_FORM_STEP_COUNT,
-  TAE_REDACTION_STEP_INDEX,
+  TACHE_BLUEPRINT_STEP_INDEX,
+  TACHE_BLOC5_STEP_INDEX,
+  TACHE_CD_STEP_INDEX,
+  TACHE_DOCUMENTS_STEP_INDEX,
+  TACHE_FORM_STEP_COUNT,
+  TACHE_REDACTION_STEP_INDEX,
   isConceptionStepComplete,
-  useTaeForm,
+  useTacheForm,
 } from "@/components/tache/wizard/FormState";
 import { isCdStepComplete } from "@/lib/tache/cd-step-guards";
 import { isDocumentsStepComplete } from "@/lib/tache/document-helpers";
@@ -57,10 +57,10 @@ import {
   isMomentsStepComplete,
   isPerspectivesStepComplete,
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
-import type { PublishTaeFailureCode } from "@/lib/tache/publish-tae";
-import { detectMajorChangeFromFormState } from "@/lib/tache/publish-tae-version";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
+import type { PublishTacheFailureCode } from "@/lib/tache/publish-tache";
+import { detectMajorChangeFromFormState } from "@/lib/tache/publish-tache-version";
+import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
 import { WarningModal } from "@/components/ui/WarningModal";
 import {
   PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE,
@@ -75,10 +75,10 @@ import {
   TOAST_PUBLICATION_RPC_FOREIGN_KEY,
   TOAST_PUBLICATION_RPC_FUNCTION_MISSING,
   TOAST_PUBLICATION_VALIDATION,
-  TOAST_PUBLICATION_TAE_LOCKED_EVALUATION,
+  TOAST_PUBLICATION_TACHE_LOCKED_EVALUATION,
   TOAST_TACHE_MAJ_SUCCES,
   TOAST_TACHE_PUBLIEE_SUCCES,
-  TOAST_TAE_PUBLISH_UNPUBLISHED_DOCS,
+  TOAST_TACHE_PUBLISH_UNPUBLISHED_DOCS,
   WIZARD_EDIT_SAVE_CTA,
   WIZARD_PUBLISH_CTA,
   EDIT_MAJOR_VERSION_MODAL_TITLE,
@@ -89,12 +89,12 @@ import {
 } from "@/lib/ui/ui-copy";
 
 /** Guard Bloc 5 intrus — vérifie que l'intrus est sélectionné et les champs remplis. */
-function isBloc5IntrusActive(state: TaeFormState): boolean {
+function isBloc5IntrusActive(state: TacheFormState): boolean {
   const config = getWizardBlocConfig(state.bloc2.comportementId);
   return config?.bloc5?.type === "intrus";
 }
 
-function isBloc5IntrusCompleteForNext(state: TaeFormState): boolean {
+function isBloc5IntrusCompleteForNext(state: TacheFormState): boolean {
   const intrus = state.bloc5.intrus;
   if (!intrus) return false;
   if (intrus.intrusLetter === "") return false;
@@ -104,7 +104,7 @@ function isBloc5IntrusCompleteForNext(state: TaeFormState): boolean {
 }
 
 /** Guard Bloc 3 templates structurés et purs. */
-function isBloc3PerspectivesReadyForNext(state: TaeFormState): boolean {
+function isBloc3PerspectivesReadyForNext(state: TacheFormState): boolean {
   const config = getWizardBlocConfig(state.bloc2.comportementId);
   if (!config) return true;
   if (config.bloc3.type === "structure") {
@@ -139,7 +139,7 @@ function isBloc3PerspectivesReadyForNext(state: TaeFormState): boolean {
   return true;
 }
 
-const PUBLISH_FAILURE_TOAST: Record<PublishTaeFailureCode, string> = {
+const PUBLISH_FAILURE_TOAST: Record<PublishTacheFailureCode, string> = {
   validation: TOAST_PUBLICATION_VALIDATION,
   lookup_niveau: TOAST_PUBLICATION_LOOKUP_NIVEAU,
   lookup_discipline: TOAST_PUBLICATION_LOOKUP_DISCIPLINE,
@@ -152,23 +152,23 @@ const PUBLISH_FAILURE_TOAST: Record<PublishTaeFailureCode, string> = {
   rpc_foreign_key: TOAST_PUBLICATION_RPC_FOREIGN_KEY,
   rpc_invalid_enum: TOAST_PUBLICATION_RPC_ENUM,
   rpc_function_missing: TOAST_PUBLICATION_RPC_FUNCTION_MISSING,
-  tae_locked_evaluation: TOAST_PUBLICATION_TAE_LOCKED_EVALUATION,
+  tae_locked_evaluation: TOAST_PUBLICATION_TACHE_LOCKED_EVALUATION,
 };
 
 export function StepperNavFooter() {
   const router = useRouter();
-  const { state, dispatch } = useTaeForm();
-  const { editingTaeId, persistSessionDraft, versionSnapshot } = useWizardSession();
+  const { state, dispatch } = useTacheForm();
+  const { editingTacheId, persistSessionDraft, versionSnapshot } = useWizardSession();
   const [draftSaving, setDraftSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [majorConfirmOpen, setMajorConfirmOpen] = useState(false);
   const canPrev = state.currentStep > 0;
-  const canNext = state.currentStep < TAE_FORM_STEP_COUNT - 1;
+  const canNext = state.currentStep < TACHE_FORM_STEP_COUNT - 1;
 
   const conceptionIncomplete = state.currentStep === 0 && !isConceptionStepComplete(state.bloc1);
 
   const blueprintIncomplete =
-    state.currentStep === TAE_BLUEPRINT_STEP_INDEX &&
+    state.currentStep === TACHE_BLUEPRINT_STEP_INDEX &&
     !state.bloc2.blueprintLocked &&
     !isBlueprintFieldsComplete(state.bloc2);
 
@@ -178,7 +178,7 @@ export function StepperNavFooter() {
 
   const handleNext = () => {
     if (nextDisabled) return;
-    if (state.currentStep === TAE_REDACTION_STEP_INDEX) {
+    if (state.currentStep === TACHE_REDACTION_STEP_INDEX) {
       if (!blueprintGate) {
         toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
         return;
@@ -209,7 +209,7 @@ export function StepperNavFooter() {
         return;
       }
     }
-    if (state.currentStep === TAE_BLOC5_STEP_INDEX) {
+    if (state.currentStep === TACHE_BLOC5_STEP_INDEX) {
       if (isActiveOrdreChronologiqueVariant(state)) {
         const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
         if (!p || !isOrdreChronologiqueStep5OptionsComplete(p)) {
@@ -240,7 +240,7 @@ export function StepperNavFooter() {
         }
       }
     }
-    if (state.currentStep === TAE_DOCUMENTS_STEP_INDEX) {
+    if (state.currentStep === TACHE_DOCUMENTS_STEP_INDEX) {
       // PROVISOIRE — anti-pattern d'énumération identifié le 8 avril 2026 :
       // ce guard énumère tous les cas particuliers et finit toujours par en oublier un
       // (perspectives groupées + moments groupés étaient cassés en silence avant le hotfix
@@ -295,13 +295,13 @@ export function StepperNavFooter() {
         return;
       }
     }
-    if (state.currentStep === TAE_CD_STEP_INDEX) {
+    if (state.currentStep === TACHE_CD_STEP_INDEX) {
       if (!isCdStepComplete(state)) {
         toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
         return;
       }
     }
-    if (state.currentStep === TAE_BLUEPRINT_STEP_INDEX) {
+    if (state.currentStep === TACHE_BLUEPRINT_STEP_INDEX) {
       if (!state.bloc2.blueprintLocked) {
         if (!isBlueprintFieldsComplete(state.bloc2)) return;
         dispatch({ type: "LOCK_BLUEPRINT" });
@@ -330,20 +330,20 @@ export function StepperNavFooter() {
   const doPublish = async () => {
     setPublishing(true);
     try {
-      const result = await publishTaeAction(state, editingTaeId ?? null);
+      const result = await publishTacheAction(state, editingTacheId ?? null);
       if (result.ok) {
         if (persistSessionDraft) {
           try {
-            sessionStorage.removeItem(TAE_DRAFT_STORAGE_KEY);
+            sessionStorage.removeItem(TACHE_DRAFT_STORAGE_KEY);
           } catch {
             /* ignore */
           }
         }
-        toast.success(editingTaeId ? TOAST_TACHE_MAJ_SUCCES : TOAST_TACHE_PUBLIEE_SUCCES);
+        toast.success(editingTacheId ? TOAST_TACHE_MAJ_SUCCES : TOAST_TACHE_PUBLIEE_SUCCES);
         if (result.unpublishedDocumentsCreated) {
-          toast.message(TOAST_TAE_PUBLISH_UNPUBLISHED_DOCS);
+          toast.message(TOAST_TACHE_PUBLISH_UNPUBLISHED_DOCS);
         }
-        router.push(`/questions/${result.taeId}`);
+        router.push(`/questions/${result.tacheId}`);
         return;
       }
       if (result.code === "validation") {
@@ -363,7 +363,11 @@ export function StepperNavFooter() {
   const handlePublish = () => {
     if (!canPublish || publishing) return;
     // En mode édition, détecter une modification majeure → modale de confirmation
-    if (editingTaeId && versionSnapshot && detectMajorChangeFromFormState(versionSnapshot, state)) {
+    if (
+      editingTacheId &&
+      versionSnapshot &&
+      detectMajorChangeFromFormState(versionSnapshot, state)
+    ) {
       setMajorConfirmOpen(true);
       return;
     }
@@ -460,7 +464,7 @@ export function StepperNavFooter() {
             >
               upload
             </span>
-            {editingTaeId ? WIZARD_EDIT_SAVE_CTA : WIZARD_PUBLISH_CTA}
+            {editingTacheId ? WIZARD_EDIT_SAVE_CTA : WIZARD_PUBLISH_CTA}
           </button>
         </div>
       </div>

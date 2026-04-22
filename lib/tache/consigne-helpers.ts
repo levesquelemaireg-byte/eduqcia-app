@@ -63,7 +63,7 @@ export function plainConsigneForMiniature(
   );
 }
 
-/** Texte brut sans balises — cartes, extraits (TaeCard). */
+/** Texte brut sans balises — cartes, extraits (TacheCard). */
 export function stripHtml(html: string): string {
   if (!html) return "";
   return html

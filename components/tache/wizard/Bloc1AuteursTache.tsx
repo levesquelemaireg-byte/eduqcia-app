@@ -7,13 +7,13 @@
 import { useCallback, useId, useMemo } from "react";
 import { CollaborateurSearchField } from "@/components/tache/wizard/CollaborateurSearchField";
 import { BLOC1_STEPPER_ICONS } from "@/components/tache/wizard/bloc1-stepper-icons";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { CollaborateurProfileSearchRow } from "@/lib/queries/collaborateur-profile-search";
 
 export function Bloc1AuteursTache() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const { modeConception, collaborateurs } = state.bloc1;
   const collabInputId = useId();
 

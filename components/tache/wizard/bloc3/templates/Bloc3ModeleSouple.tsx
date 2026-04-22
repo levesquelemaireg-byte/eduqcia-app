@@ -10,7 +10,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Bloc3InfoModals } from "@/components/tache/wizard/bloc3/Bloc3InfoModals";
 import { SectionConsigne } from "@/components/tache/wizard/bloc3/SectionConsigne";
 import { SectionGuidage } from "@/components/tache/wizard/bloc3/SectionGuidage";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import { CONSIGNE_TEMPLATES } from "@/lib/tache/consigne-templates";
@@ -18,7 +18,7 @@ import { BLOC3_GATE_BLUEPRINT } from "@/lib/ui/ui-copy";
 import { PERSP_BLOC3_TEMPLATE_BUTTON } from "@/lib/ui/ui-copy";
 
 export default function Bloc3ModeleSouple() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
 
   const [modalConsigne, setModalConsigne] = useState(false);

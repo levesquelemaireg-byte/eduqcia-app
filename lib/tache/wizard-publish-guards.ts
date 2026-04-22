@@ -3,7 +3,7 @@
  */
 
 import { isProfileCollaborateurId } from "@/lib/tache/collaborateur-user-ids";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import { isCdStepComplete } from "@/lib/tache/cd-step-guards";
 import { isConnaissancesStepComplete } from "@/lib/tache/connaissances-step-guards";
@@ -39,7 +39,7 @@ import {
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tache/non-redaction/wizard-variant";
 import { isRedactionStepComplete } from "@/lib/tache/redaction-helpers";
-import { getRedactionSliceForPreview } from "@/lib/tache/tae-form-state-types";
+import { getRedactionSliceForPreview } from "@/lib/tache/tache-form-state-types";
 import {
   nonRedactionAvantApresPayload,
   nonRedactionLignePayload,
@@ -47,7 +47,7 @@ import {
 } from "@/lib/tache/wizard-state-nr";
 
 /** Même règle que `FormState.isConceptionStepComplete` — évite d’importer le module client depuis `lib/`. */
-function conceptionOkForPublish(c: TaeFormState["bloc1"]): boolean {
+function conceptionOkForPublish(c: TacheFormState["bloc1"]): boolean {
   if (c.modeConception === "seul") return true;
   if (c.modeConception === "equipe") {
     if (c.collaborateurs.length < 1) return false;
@@ -56,7 +56,7 @@ function conceptionOkForPublish(c: TaeFormState["bloc1"]): boolean {
   return false;
 }
 
-function redactionStepOkForPublish(state: TaeFormState): boolean {
+function redactionStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveOrdreChronologiqueVariant(state)) {
     const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
     return p !== null && isOrdreChronologiqueStep3Complete(p);
@@ -68,7 +68,7 @@ function redactionStepOkForPublish(state: TaeFormState): boolean {
   return isRedactionStepComplete(getRedactionSliceForPreview(state));
 }
 
-function documentsStepOkForPublish(state: TaeFormState): boolean {
+function documentsStepOkForPublish(state: TacheFormState): boolean {
   const b = state.bloc2;
 
   // Perspectives groupé / moments : données dans bloc4.perspectives / bloc4.moments,
@@ -97,7 +97,7 @@ function documentsStepOkForPublish(state: TaeFormState): boolean {
   return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
 }
 
-function documentsCompleteButUrlsBlocked(state: TaeFormState): boolean {
+function documentsCompleteButUrlsBlocked(state: TacheFormState): boolean {
   const b = state.bloc2;
 
   // Perspectives groupé / moments : pas d'upload iconographique séparé → jamais bloqué par URL.
@@ -128,7 +128,7 @@ function documentsCompleteButUrlsBlocked(state: TaeFormState): boolean {
 }
 
 /** Toutes les étapes requises avant `is_published = true` côté serveur. */
-export function isWizardPublishReady(state: TaeFormState): boolean {
+export function isWizardPublishReady(state: TacheFormState): boolean {
   if (!conceptionOkForPublish(state.bloc1)) return false;
   const b = state.bloc2;
   if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
@@ -157,7 +157,7 @@ export function isWizardPublishReady(state: TaeFormState): boolean {
 }
 
 /** Prêt partout sauf URL publique pour un document iconographique (infobulle Publier). */
-export function isPublishBlockedOnlyByIconographicUrls(state: TaeFormState): boolean {
+export function isPublishBlockedOnlyByIconographicUrls(state: TacheFormState): boolean {
   if (!conceptionOkForPublish(state.bloc1)) return false;
   const b = state.bloc2;
   if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;

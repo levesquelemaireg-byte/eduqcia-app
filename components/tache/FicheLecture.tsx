@@ -2,14 +2,14 @@
 
 import { useMemo } from "react";
 import { FicheRenderer } from "@/lib/fiche/FicheRenderer";
-import { TAE_LECTURE_SECTIONS } from "@/lib/fiche/configs/tae-lecture-sections";
-import { TaeCardMenu } from "@/components/tache/fiche/TaeCardMenu";
+import { TACHE_LECTURE_SECTIONS } from "@/lib/fiche/configs/tache-lecture-sections";
+import { TacheCardMenu } from "@/components/tache/fiche/TacheCardMenu";
 import { useGrilles } from "@/components/tache/wizard/bloc2/useBloc2Data";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { SelectorRefs } from "@/lib/fiche/types";
 
 type Props = {
-  tae: TaeFicheData;
+  tache: TacheFicheData;
   userId?: string;
 };
 
@@ -20,9 +20,9 @@ const EMPTY_PREVIEW_META: SelectorRefs["previewMeta"] = {
   draftStartedAtIso: "",
 };
 
-/** Fiche TAÉ en mode lecture — FicheRenderer + TaeCardMenu. */
-export function FicheLecture({ tae, userId }: Props) {
-  const isAuteur = Boolean(userId && tae.auteur_id === userId);
+/** Fiche TAÉ en mode lecture — FicheRenderer + TacheCardMenu. */
+export function FicheLecture({ tache, userId }: Props) {
+  const isAuteur = Boolean(userId && tache.auteur_id === userId);
   const grilles = useGrilles();
 
   const refs = useMemo<SelectorRefs>(
@@ -35,18 +35,18 @@ export function FicheLecture({ tae, userId }: Props) {
       {/* Menu ⋮ — coin supérieur droit, au-dessus du FicheRenderer */}
       <div className="pointer-events-none absolute right-2 top-2 z-20 sm:right-3 sm:top-3">
         <div className="pointer-events-auto">
-          <TaeCardMenu
-            taeId={tae.id}
+          <TacheCardMenu
+            tacheId={tache.id}
             isAuteur={isAuteur}
             menuContext="lecture"
-            printHref={`/questions/${tae.id}/print`}
+            printHref={`/questions/${tache.id}/print`}
           />
         </div>
       </div>
 
       <FicheRenderer
-        sections={TAE_LECTURE_SECTIONS}
-        state={tae}
+        sections={TACHE_LECTURE_SECTIONS}
+        state={tache}
         refs={refs}
         mode="lecture"
         activeStepId={null}

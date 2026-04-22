@@ -9,7 +9,7 @@
 ## Flux de données complet
 
 ```
-TaeForm (state wizard)
+TacheForm (state wizard)
   │ useMemo → etatWizardVersTache()
   ▼
 PayloadImpression { type, donnees, mode, estCorrige }

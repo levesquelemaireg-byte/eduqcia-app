@@ -7,12 +7,12 @@ import { useCallback, useState } from "react";
 import { Bloc3InfoModals } from "@/components/tache/wizard/bloc3/Bloc3InfoModals";
 import { SectionConsigne } from "@/components/tache/wizard/bloc3/SectionConsigne";
 import { SectionGuidage } from "@/components/tache/wizard/bloc3/SectionGuidage";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import { BLOC3_GATE_BLUEPRINT } from "@/lib/ui/ui-copy";
 
 export function Bloc3ConsigneProduction() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
 
   const [modalConsigne, setModalConsigne] = useState(false);

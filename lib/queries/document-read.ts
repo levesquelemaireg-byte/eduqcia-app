@@ -5,7 +5,7 @@ import type { Database } from "@/lib/types/database";
 type Client = SupabaseClient<Database>;
 
 /** Nombre de TAÉ **publiées** distinctes liées au document — `docs/FEATURES.md` §5.4. */
-export async function countPublishedTaeUsagesForDocument(
+export async function countPublishedTacheUsagesForDocument(
   supabase: Client,
   documentId: string,
 ): Promise<number> {

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { emptyDocumentSlot } from "@/lib/tache/document-helpers";
-import { initialTaeFormState } from "@/lib/tache/tae-form-state-types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { initialTacheFormState } from "@/lib/tache/tache-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { OiEntryJson } from "@/lib/types/oi";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import {
@@ -96,12 +96,12 @@ const META_FIXTURE: MetaApercu = {
 };
 
 /** État minimal pour un parcours rédactionnel OI0 comportement 0.1. */
-function etatRedactionnel(): TaeFormState {
+function etatRedactionnel(): TacheFormState {
   return {
-    ...initialTaeFormState,
+    ...initialTacheFormState,
     bloc1: { modeConception: "seul", collaborateurs: [] },
     bloc2: {
-      ...initialTaeFormState.bloc2,
+      ...initialTacheFormState.bloc2,
       niveau: "sec1",
       discipline: "hec",
       oiId: "OI0",
@@ -113,12 +113,12 @@ function etatRedactionnel(): TaeFormState {
       blueprintLocked: true,
     },
     bloc3: {
-      ...initialTaeFormState.bloc3,
+      ...initialTacheFormState.bloc3,
       consigne: "<p>Consigne rédactionnelle.</p>",
       guidage: "<p>Guidage complémentaire.</p>",
     },
     bloc5: {
-      ...initialTaeFormState.bloc5,
+      ...initialTacheFormState.bloc5,
       corrige: "<p>Réponse attendue.</p>",
       nonRedaction: null,
     },
@@ -126,12 +126,12 @@ function etatRedactionnel(): TaeFormState {
 }
 
 /** État minimal pour un parcours NR ordre chronologique OI1 comportement 1.1. */
-function etatOrdreChronologique(): TaeFormState {
+function etatOrdreChronologique(): TacheFormState {
   return {
-    ...initialTaeFormState,
+    ...initialTacheFormState,
     bloc1: { modeConception: "seul", collaborateurs: [] },
     bloc2: {
-      ...initialTaeFormState.bloc2,
+      ...initialTacheFormState.bloc2,
       niveau: "sec2",
       discipline: "hec",
       oiId: "OI1",
@@ -148,7 +148,7 @@ function etatOrdreChronologique(): TaeFormState {
       blueprintLocked: true,
     },
     bloc5: {
-      ...initialTaeFormState.bloc5,
+      ...initialTacheFormState.bloc5,
       nonRedaction: {
         type: "ordre-chronologique",
         payload: {

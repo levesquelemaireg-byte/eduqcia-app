@@ -1,4 +1,4 @@
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import { BLUEPRINT_INITIAL_NB_LIGNES } from "@/lib/tache/blueprint-helpers";
 import { formatFicheDate } from "@/lib/tache/fiche-helpers";
 import { getDisplayName } from "@/lib/utils/profile-display";
@@ -8,22 +8,22 @@ import {
 } from "@/components/tache/fiche/FicheSkeletons";
 
 type Props = {
-  tae: TaeFicheData;
-  /** TaeCard (§19) — pied de carte compact. */
+  tache: TacheFicheData;
+  /** TacheCard (§19) — pied de carte compact. */
   compact?: boolean;
   /** Sommaire wizard : éviter « N lignes » tant que c’est le défaut sans cadre (comportement). */
   mode?: "lecture" | "sommaire";
 };
 
-export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
-  const auteurs = tae.auteurs.map((a) => getDisplayName(a.first_name, a.last_name)).join(" · ");
-  const hasMeta = auteurs.length > 0 || tae.created_at;
-  const hideNbLignesInFooter = tae.showStudentAnswerLines === false;
+export function FicheFooter({ tache, compact, mode = "lecture" }: Props) {
+  const auteurs = tache.auteurs.map((a) => getDisplayName(a.first_name, a.last_name)).join(" · ");
+  const hasMeta = auteurs.length > 0 || tache.created_at;
+  const hideNbLignesInFooter = tache.showStudentAnswerLines === false;
   const sommaireNbLignesSkeleton =
     !hideNbLignesInFooter &&
     mode === "sommaire" &&
-    !tae.comportement.id &&
-    tae.nb_lignes === BLUEPRINT_INITIAL_NB_LIGNES;
+    !tache.comportement.id &&
+    tache.nb_lignes === BLUEPRINT_INITIAL_NB_LIGNES;
 
   if (compact) {
     return (
@@ -40,7 +40,7 @@ export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
               <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
                 calendar_today
               </span>
-              {formatFicheDate(tae.created_at)}
+              {formatFicheDate(tache.created_at)}
             </span>
           </div>
         ) : (
@@ -48,13 +48,13 @@ export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
         )}
         <span
           className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-            tae.is_published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
+            tache.is_published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
           }`}
         >
           <span
-            className={`h-1.5 w-1.5 rounded-full ${tae.is_published ? "bg-success" : "bg-warning"}`}
+            className={`h-1.5 w-1.5 rounded-full ${tache.is_published ? "bg-success" : "bg-warning"}`}
           />
-          {tae.is_published ? "Publiée" : "Brouillon"}
+          {tache.is_published ? "Publiée" : "Brouillon"}
         </span>
       </footer>
     );
@@ -73,7 +73,7 @@ export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
           <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
             calendar_today
           </span>
-          {formatFicheDate(tae.created_at)}
+          {formatFicheDate(tache.created_at)}
         </span>
         {hideNbLignesInFooter ? null : sommaireNbLignesSkeleton ? (
           <SkeletonFooterNbLignes />
@@ -82,20 +82,20 @@ export function FicheFooter({ tae, compact, mode = "lecture" }: Props) {
             <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
               format_line_spacing
             </span>
-            {tae.nb_lignes} lignes
+            {tache.nb_lignes} lignes
           </span>
         )}
       </div>
 
       <span
         className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium ${
-          tae.is_published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
+          tache.is_published ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
         }`}
       >
         <span
-          className={`h-1.5 w-1.5 rounded-full ${tae.is_published ? "bg-success" : "bg-warning"}`}
+          className={`h-1.5 w-1.5 rounded-full ${tache.is_published ? "bg-success" : "bg-warning"}`}
         />
-        {tae.is_published ? "Publiée" : "Brouillon"}
+        {tache.is_published ? "Publiée" : "Brouillon"}
       </span>
     </footer>
   );

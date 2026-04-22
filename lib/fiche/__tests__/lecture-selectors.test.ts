@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { SelectorRefs } from "@/lib/fiche/types";
 import {
   selectLectureHeader,
@@ -21,8 +21,8 @@ const EMPTY_REFS: SelectorRefs = {
   previewMeta: { authorFullName: "", draftStartedAtIso: "" },
 };
 
-/** Minimal valid TaeFicheData for testing. */
-function makeFiche(overrides: Partial<TaeFicheData> = {}): TaeFicheData {
+/** Minimal valid TacheFicheData for testing. */
+function makeFiche(overrides: Partial<TacheFicheData> = {}): TacheFicheData {
   return {
     id: "tae-1",
     auteur_id: "user-1",

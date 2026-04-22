@@ -1,5 +1,5 @@
 /**
- * Mapper TaeFicheData → DonneesTache.
+ * Mapper TacheFicheData → DonneesTache.
  *
  * Utilisé pour construire un DonneesEpreuve depuis des tâches publiées
  * (pipeline d'impression épreuve depuis l'éditeur de composition).
@@ -7,7 +7,7 @@
  * Fonction pure — les grilles d'évaluation sont passées en paramètre.
  */
 
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
@@ -15,7 +15,7 @@ import { resoudreOutilEvaluation, type GrilleEvaluationEntree } from "./etat-wiz
 import type { DonneesTache, EspaceProduction, Guidage } from "./donnees";
 
 /** Déduit l'espace de production depuis les données de la fiche. */
-function deduireEspaceProduction(fiche: TaeFicheData): EspaceProduction {
+function deduireEspaceProduction(fiche: TacheFicheData): EspaceProduction {
   const slug = getVariantSlugForComportementId(fiche.comportement.id);
   if (slug === "ordre-chronologique") return { type: "cases", options: ["A", "B", "C", "D"] };
   if (slug === "ligne-du-temps" || slug === "avant-apres") return { type: "libre" };
@@ -23,7 +23,7 @@ function deduireEspaceProduction(fiche: TaeFicheData): EspaceProduction {
 }
 
 /** Extrait les RendererDocument depuis les DocumentFiche. */
-function extraireDocuments(fiche: TaeFicheData): RendererDocument[] {
+function extraireDocuments(fiche: TacheFicheData): RendererDocument[] {
   return fiche.documents
     .map((d) => d.rendererDocument ?? documentFicheVersRenderer(d))
     .filter((d): d is RendererDocument => d != null);
@@ -36,11 +36,11 @@ function construireGuidage(guidage: string): Guidage {
 }
 
 /**
- * Convertit une TaeFicheData (format lecture/legacy) en DonneesTache
+ * Convertit une TacheFicheData (format lecture/legacy) en DonneesTache
  * (format structuré pour la chaîne d'impression).
  */
 export function ficheTaVersDonneesTache(
-  fiche: TaeFicheData,
+  fiche: TacheFicheData,
   grilles: GrilleEvaluationEntree[],
 ): DonneesTache {
   return {

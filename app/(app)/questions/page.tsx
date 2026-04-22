@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { MesQuestionsFiltres } from "@/components/questions/MesQuestionsFiltres";
 import { MesTachesThumbnailCard } from "@/components/questions/MesTachesThumbnailCard";
 import { createClient } from "@/lib/supabase/server";
-import { getMyTaeThumbnailList } from "@/lib/queries/my-tae-thumbnails";
-import { parseMyTaeListFiltre } from "@/lib/queries/user-content";
+import { getMyTacheThumbnailList } from "@/lib/queries/my-tache-thumbnails";
+import { parseMyTacheListFiltre } from "@/lib/queries/user-content";
 import {
   CTA_CREER_UNE_TACHE,
   LISTE_TACHES_VIDE_CATEGORIE,
@@ -25,8 +25,8 @@ export default async function QuestionsPage({ searchParams }: PageProps) {
   if (!user) redirect("/login");
 
   const sp = await searchParams;
-  const filtre = parseMyTaeListFiltre(sp.filtre);
-  const rows = await getMyTaeThumbnailList(filtre);
+  const filtre = parseMyTacheListFiltre(sp.filtre);
+  const rows = await getMyTacheThumbnailList(filtre);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 md:px-6">

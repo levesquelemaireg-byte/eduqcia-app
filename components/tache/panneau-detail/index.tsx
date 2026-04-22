@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { PanneauLateral } from "@/components/partagees/panneau-lateral";
 import { TacheVueDetaillee } from "@/components/tache/vue-detaillee";
-import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
+import type { TacheFicheData, PeerVoteTally } from "@/lib/types/fiche";
 
 type EtatChargement =
   | { statut: "chargement" }
-  | { statut: "pret"; tae: TaeFicheData; votes: PeerVoteTally | null }
+  | { statut: "pret"; tache: TacheFicheData; votes: PeerVoteTally | null }
   | { statut: "erreur" };
 
 type Props = {
-  taeId: string;
+  tacheId: string;
   surFermer: () => void;
 };
 
@@ -19,16 +19,16 @@ type Props = {
  * Panneau latéral (slide-over) affichant la vue détaillée d'une tâche.
  * Utilisé depuis la vue détaillée épreuve au clic sur une tâche.
  */
-export function TachePanneauDetail({ taeId, surFermer }: Props) {
+export function TachePanneauDetail({ tacheId, surFermer }: Props) {
   const [etat, setEtat] = useState<EtatChargement>({ statut: "chargement" });
 
   useEffect(() => {
     let annule = false;
 
-    fetchTaeFicheBundleClient(taeId).then((result) => {
+    fetchTacheFicheBundleClient(tacheId).then((result) => {
       if (annule) return;
       if (result) {
-        setEtat({ statut: "pret", tae: result.fiche, votes: result.votes });
+        setEtat({ statut: "pret", tache: result.fiche, votes: result.votes });
       } else {
         setEtat({ statut: "erreur" });
       }
@@ -37,7 +37,7 @@ export function TachePanneauDetail({ taeId, surFermer }: Props) {
     return () => {
       annule = true;
     };
-  }, [taeId]);
+  }, [tacheId]);
 
   return (
     <PanneauLateral surFermer={surFermer}>
@@ -52,7 +52,7 @@ export function TachePanneauDetail({ taeId, surFermer }: Props) {
       )}
       {etat.statut === "pret" && (
         <TacheVueDetaillee
-          tae={etat.tae}
+          tache={etat.tache}
           votes={etat.votes}
           peutVoter={false}
           estAuteur={false}
@@ -65,15 +65,15 @@ export function TachePanneauDetail({ taeId, surFermer }: Props) {
 
 /**
  * Fetch côté client via Server Action.
- * Le `fetchTaeFicheBundle` est une fonction serveur — on l'appelle
+ * Le `fetchTacheFicheBundle` est une fonction serveur — on l'appelle
  * indirectement via une action dédiée.
  */
-async function fetchTaeFicheBundleClient(
-  taeId: string,
-): Promise<{ fiche: TaeFicheData; votes: PeerVoteTally | null } | null> {
+async function fetchTacheFicheBundleClient(
+  tacheId: string,
+): Promise<{ fiche: TacheFicheData; votes: PeerVoteTally | null } | null> {
   try {
     const { fetchTachePanneauAction } = await import("@/lib/actions/fetch-tache-panneau");
-    const result = await fetchTachePanneauAction(taeId);
+    const result = await fetchTachePanneauAction(tacheId);
     if (result.ok) return result.data;
     return null;
   } catch {

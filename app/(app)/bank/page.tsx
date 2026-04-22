@@ -15,7 +15,7 @@ import {
 import {
   parseBankListPage,
   parseBankOnglet,
-  parseBankTaeQueryFromSearchParams,
+  parseBankTacheQueryFromSearchParams,
 } from "@/lib/queries/bank-tasks";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -69,7 +69,7 @@ export default async function BankPage({ searchParams }: PageProps) {
 
       {onglet === "taches" ? (
         <Suspense fallback={<CardGridSkeleton count={6} cols={2} />}>
-          <BankTasksPanel query={parseBankTaeQueryFromSearchParams(sp)} />
+          <BankTasksPanel query={parseBankTacheQueryFromSearchParams(sp)} />
         </Suspense>
       ) : null}
 

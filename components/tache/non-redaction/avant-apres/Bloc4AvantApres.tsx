@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import {
   initialAvantApresPayload,
@@ -16,7 +16,7 @@ import {
 import { nonRedactionAvantApresPayload } from "@/lib/tache/wizard-state-nr";
 
 export function Bloc4AvantApres() {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const b = state.bloc2;
   const blueprintOk = isBlueprintFieldsComplete(b) && b.blueprintLocked;
 

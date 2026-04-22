@@ -31,7 +31,7 @@
 | Table SQL                   | `tae`                                                                      | [supabase/schema.sql:275](../../supabase/schema.sql#L275)                                  |
 | Tables reliées              | `tae_collaborateurs`, `tae_wizard_drafts`, `tae_versions`, `tae_documents` | [supabase/schema.sql:324,334,345,409](../../supabase/schema.sql)                           |
 | Type domaine                | `DonneesTache`                                                             | [lib/tache/contrats/donnees.ts:63](../../lib/tache/contrats/donnees.ts#L63)                |
-| État wizard                 | `FormState` (7 blocs)                                                      | [lib/tache/tae-form-state-types.ts](../../lib/tache/tae-form-state-types.ts)               |
+| État wizard                 | `FormState` (7 blocs)                                                      | [lib/tache/tache-form-state-types.ts](../../lib/tache/tache-form-state-types.ts)           |
 | Vue détaillée (nouveau nom) | `components/tache/vue-detaillee/`                                          | [components/tache/vue-detaillee/index.tsx](../../components/tache/vue-detaillee/index.tsx) |
 | Vue détaillée (ancien nom)  | `FicheLecture`                                                             | [components/tache/FicheLecture.tsx](../../components/tache/FicheLecture.tsx)               |
 | Miniature                   | `FicheThumbnail`                                                           | [components/tache/FicheThumbnail.tsx](../../components/tache/FicheThumbnail.tsx)           |
@@ -40,7 +40,7 @@
 
 **`[dette de nommage connue]`** — Le code oscille entre trois appellations :
 
-- SQL + code legacy : `tae` / `Tae` / `TaeForm` / `tae_for_edit` / `TAE_FORM_STEPS`.
+- SQL + code legacy : `tae` / `Tache` / `TacheForm` / `tae_for_edit` / `TACHE_FORM_STEPS`.
 - Nouveau domaine (partiellement migré) : `Tache` / `DonneesTache` / `components/tache/vue-detaillee/`.
 - Route URL : `/questions` (héritage Next.js encore plus ancien).
 
@@ -117,7 +117,7 @@ Mapping direct, concentré dans le module `lib/epreuve/transformation/`.
 | Aspect         | Code                                   | Preuve                                                                                                                   |
 | -------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | Colonne SQL    | `tae.consigne`                         | [supabase/schema.sql:275](../../supabase/schema.sql#L275)                                                                |
-| État wizard    | `FormState.redaction.consigne` (Bloc3) | [lib/tache/tae-form-state-types.ts](../../lib/tache/tae-form-state-types.ts)                                             |
+| État wizard    | `FormState.redaction.consigne` (Bloc3) | [lib/tache/tache-form-state-types.ts](../../lib/tache/tache-form-state-types.ts)                                         |
 | Éditeur TipTap | `ConsigneTipTapEditor`                 | [components/tache/wizard/tiptap/ConsigneTipTapEditor.tsx](../../components/tache/wizard/tiptap/ConsigneTipTapEditor.tsx) |
 
 Mapping direct.
@@ -137,7 +137,7 @@ Mapping direct.
 | Aspect            | Code                                               | Preuve                                                                                                         |
 | ----------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
 | Colonne SQL       | `tae.corrige`                                      | [supabase/schema.sql:289](../../supabase/schema.sql#L289)                                                      |
-| État wizard       | `FormState.bloc5.corrige`                          | [lib/tache/tae-form-state-types.ts](../../lib/tache/tae-form-state-types.ts)                                   |
+| État wizard       | `FormState.bloc5.corrige`                          | [lib/tache/tache-form-state-types.ts](../../lib/tache/tache-form-state-types.ts)                               |
 | Libellé UI        | `BLOC5_REDACTIONNEL_LABEL = "Production attendue"` | [lib/ui/ui-copy.ts:436](../../lib/ui/ui-copy.ts#L436)                                                          |
 | Selector sommaire | `selectCorrige`                                    | [lib/fiche/selectors/selectCorrige.ts](../../lib/fiche/selectors/selectCorrige.ts)                             |
 | Section imprimée  | `SectionCorrige`                                   | [components/epreuve/impression/sections/corrige.tsx](../../components/epreuve/impression/sections/corrige.tsx) |
@@ -148,8 +148,8 @@ Mapping direct.
 
 | Aspect      | Code                                                                           | Preuve                                                                                                         |
 | ----------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| État wizard | `FormState.bloc5.notesCorrecteur`                                              | [lib/tache/tae-form-state-types.ts](../../lib/tache/tae-form-state-types.ts)                                   |
-| Lecture     | `loadTaeForEdit → notesCorrecteur`                                             | [lib/queries/tae-for-edit.ts:389](../../lib/queries/tae-for-edit.ts#L389)                                      |
+| État wizard | `FormState.bloc5.notesCorrecteur`                                              | [lib/tache/tache-form-state-types.ts](../../lib/tache/tache-form-state-types.ts)                               |
+| Lecture     | `loadTacheForEdit → notesCorrecteur`                                           | [lib/queries/tache-for-edit.ts:389](../../lib/queries/tache-for-edit.ts#L389)                                  |
 | Selector    | lit `state.bloc5.notesCorrecteur`                                              | [lib/fiche/selectors/selectCorrige.ts:16,20](../../lib/fiche/selectors/selectCorrige.ts)                       |
 | Colonne SQL | `[INTROUVABLE]` — aucune colonne `notes_correcteur` dans `supabase/schema.sql` | recherche grep sur `notes_correcteur\|notes_au_correcteur` → 0 hit en dehors de `favoris.notes` (sans rapport) |
 
@@ -238,12 +238,12 @@ Mapping direct.
 
 ### 4.2 Wizard tâche
 
-| Aspect      | Code                                                                                                 | Preuve                                                                             |
-| ----------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Dossier     | `components/tache/wizard/`                                                                           | [components/tache/wizard/](../../components/tache/wizard/)                         |
-| Stepper     | `Stepper.tsx`                                                                                        | [components/tache/wizard/Stepper.tsx](../../components/tache/wizard/Stepper.tsx)   |
-| Méta étapes | `TAE_FORM_STEPS` (7 éléments : auteurs, parametres, consigne, documents, corrige, cd, connaissances) | [components/tache/wizard/step-meta.ts](../../components/tache/wizard/step-meta.ts) |
-| État        | `FormState` (7 Blocs)                                                                                | [lib/tache/tae-form-state-types.ts](../../lib/tache/tae-form-state-types.ts)       |
+| Aspect      | Code                                                                                                   | Preuve                                                                             |
+| ----------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| Dossier     | `components/tache/wizard/`                                                                             | [components/tache/wizard/](../../components/tache/wizard/)                         |
+| Stepper     | `Stepper.tsx`                                                                                          | [components/tache/wizard/Stepper.tsx](../../components/tache/wizard/Stepper.tsx)   |
+| Méta étapes | `TACHE_FORM_STEPS` (7 éléments : auteurs, parametres, consigne, documents, corrige, cd, connaissances) | [components/tache/wizard/step-meta.ts](../../components/tache/wizard/step-meta.ts) |
+| État        | `FormState` (7 Blocs)                                                                                  | [lib/tache/tache-form-state-types.ts](../../lib/tache/tache-form-state-types.ts)   |
 
 Mapping conforme DOMAIN (7 étapes). Les identifiants internes mélangent français et anglais (`parametres`, `consigne` vs `cd`), dette mineure.
 
@@ -307,7 +307,7 @@ Pas une valeur de `FicheMode`. Pipeline dédié :
 - Type exhaustif : `ModeImpression = "formatif" \| "sommatif-standard" \| "epreuve-ministerielle"`.
 - Feuillets générés par mode : `TypeFeuillet = "dossier-documentaire" \| "questionnaire" \| "cahier-reponses"` [lib/epreuve/pagination/types.ts:12](../../lib/epreuve/pagination/types.ts#L12). Composition par mode : [lib/epreuve/transformation/epreuve-vers-paginee.ts:195-223](../../lib/epreuve/transformation/epreuve-vers-paginee.ts#L195).
 - Règles de visibilité (guidage / titres docs) par mode : [lib/impression/builders/regles-visibilite.ts](../../lib/impression/builders/regles-visibilite.ts).
-- Toggle feuillet dans wizard : `TaePrintFeuilletId = "dossier" \| "questionnaire"` [components/tache/wizard/preview/TaePrintFeuilletToggle.tsx](../../components/tache/wizard/preview/TaePrintFeuilletToggle.tsx).
+- Toggle feuillet dans wizard : `TachePrintFeuilletId = "dossier" \| "questionnaire"` [components/tache/wizard/preview/TachePrintFeuilletToggle.tsx](../../components/tache/wizard/preview/TachePrintFeuilletToggle.tsx).
 
 **Mapping exhaustif direct.** Le champ `estCorrige` est bien un flag booléen orthogonal aux 3 modes (conforme DOMAIN §1.3).
 
@@ -319,7 +319,7 @@ Synthèse des dettes repérées pendant cette passe. Aucune correction : seuleme
 
 | #   | Terme DOMAIN                                       | Forme code                                                               | Emplacements                                                                  | Qualification                                                                                        |
 | --- | -------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| D1  | Tâche                                              | `Tae` / `tae` / `/questions` / `TaeForm`                                 | schema.sql, lib/tache/, components/tache/, app/questions                      | `[dette de nommage connue]` — migration partielle vers `Tache` en cours                              |
+| D1  | Tâche                                              | `Tache` / `tae` / `/questions` / `TacheForm`                             | schema.sql, lib/tache/, components/tache/, app/questions                      | `[dette de nommage connue]` — migration partielle vers `Tache` en cours                              |
 | D2  | Épreuve                                            | `Evaluation` / `evaluations` / `/evaluations`                            | schema.sql, components/evaluations/                                           | `[dette de nommage connue]` — migration partielle vers `Epreuve` en cours                            |
 | D3  | Appel documentaire                                 | `amorce documentaire` / `amorceDocumentaire`                             | lib/tache/consigne-helpers.ts, components/tache/wizard/tiptap/insertAmorce.ts | `[divergence de nommage]` — terme de substitution, pas de trace d'« appel »                          |
 | D4  | Production attendue                                | `corrige`                                                                | schema.sql:289, FormState.bloc5.corrige, selectCorrige, SectionCorrige        | `[divergence de nommage]` — libellé UI aligné, champ/colonne legacy                                  |
@@ -328,7 +328,7 @@ Synthèse des dettes repérées pendant cette passe. Aucune correction : seuleme
 | D7  | Wizard épreuve                                     | `EvaluationCompositionEditor`                                            | components/evaluations/EvaluationCompositionEditor.tsx                        | `[divergence de nommage]` — pas de fichier « Wizard épreuve » ; à trancher : choix ou dette ?        |
 | D8  | Épingler                                           | `favoris` (SQL) / `favori_type` (enum) + `epinglee` / `surEpingler` (UI) | schema.sql:82,506, components/tache/vue-detaillee/barre-actions.tsx           | `[divergence de nommage]` + état fonctionnel seulement ébauché (toast « à venir »)                   |
 | D9  | `FicheMode`                                        | inclut `"lecture"` en plus des 3 modes DOMAIN                            | lib/fiche/types.ts:16                                                         | `[écart au DOMAIN]` — 4 valeurs côté code vs 3 côté DOMAIN                                           |
-| D10 | Notes au correcteur                                | `notesCorrecteur` en FormState, **aucune colonne SQL**                   | tae-form-state-types.ts, tae-for-edit.ts:389 ; absent de schema.sql           | `[incertain]` — persistance probablement en JSONB (`tae.non_redaction_data`?) à confirmer en passe 2 |
+| D10 | Notes au correcteur                                | `notesCorrecteur` en FormState, **aucune colonne SQL**                   | tache-form-state-types.ts, tache-for-edit.ts:389 ; absent de schema.sql       | `[incertain]` — persistance probablement en JSONB (`tae.non_redaction_data`?) à confirmer en passe 2 |
 | D11 | Wizard tâche : ids d'étapes mi-français mi-anglais | `cd` au lieu de `competence-disciplinaire`                               | components/tache/wizard/step-meta.ts                                          | `[dette mineure]`                                                                                    |
 
 ---

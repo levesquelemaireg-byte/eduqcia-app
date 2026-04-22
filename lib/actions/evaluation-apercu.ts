@@ -5,7 +5,7 @@ import path from "path";
 import { kv } from "@vercel/kv";
 import { createClient } from "@/lib/supabase/server";
 import { requireActiveAppUser } from "@/lib/auth/require-active-app-user";
-import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
+import { fetchTacheFicheBundle } from "@/lib/tache/server-fiche-map";
 import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
 import { signerTokenDraft } from "@/lib/epreuve/impression/token-draft";
 import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";
@@ -31,7 +31,7 @@ export type GenererTokenResult = { ok: true; token: string } | { ok: false; erro
  * Génère un token d'aperçu impression pour une épreuve publiée/brouillon.
  *
  * 1. Fetch évaluation + tâches liées depuis Supabase
- * 2. Convertit chaque TaeFicheData → DonneesTache
+ * 2. Convertit chaque TacheFicheData → DonneesTache
  * 3. Construit DonneesEpreuve, stocke dans Vercel KV
  * 4. Retourne le token HMAC signé
  */
@@ -61,13 +61,13 @@ export async function genererTokenApercuEpreuve(evaluationId: string): Promise<G
     return { ok: false, error: "Erreur lors du chargement des tâches." };
   }
 
-  const taeIds = (links ?? []).map((l) => l.tae_id as string);
+  const tacheIds = (links ?? []).map((l) => l.tae_id as string);
 
   // 3. Convertir chaque tâche (en parallèle)
   const grilles = chargerGrilles();
 
-  const bundles = await Promise.all(taeIds.map((id) => fetchTaeFicheBundle(supabase, id)));
-  const missing = taeIds.find((_, i) => !bundles[i]);
+  const bundles = await Promise.all(tacheIds.map((id) => fetchTacheFicheBundle(supabase, id)));
+  const missing = tacheIds.find((_, i) => !bundles[i]);
   if (missing) {
     return { ok: false, error: `Tâche introuvable (${missing}).` };
   }

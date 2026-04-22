@@ -14,7 +14,7 @@ import type {
 } from "@/lib/tache/oi-perspectives/perspectives-types";
 
 // ---------------------------------------------------------------------------
-// Type de sortie — sous-ensemble de PublishTaeRpcPayload["documents_new"][number]
+// Type de sortie — sous-ensemble de PublishTacheRpcPayload["documents_new"][number]
 // ---------------------------------------------------------------------------
 
 export type PerspectiveDocumentNew = {

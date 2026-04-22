@@ -5,7 +5,7 @@
  */
 
 import { sanitize, resolveDocPlaceholders } from "@/lib/fiche/helpers";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 
 export type HeroData = {
   /** Clé pour MaterialSymbolOiGlyph */
@@ -18,7 +18,7 @@ export type HeroData = {
   comportementAttendu: string;
 };
 
-export function selectHero(state: TaeFicheData): HeroData {
+export function selectHero(state: TacheFicheData): HeroData {
   const nbDocs = state.documents.length;
   const enonce = sanitize(resolveDocPlaceholders(state.consigne, nbDocs));
 

@@ -46,7 +46,7 @@ export function SectionGuidage({ value, onChange, onInfoClick }: Props) {
         className="mt-2"
         value={value}
         onChange={onChange}
-        autosaveKey="eduqcia-tae-guidage-new"
+        autosaveKey="eduqcia-tache-guidage-new"
         minHeight={88}
       />
       <p className="text-xs italic text-muted">{BLOC3_GUIDAGE_FORMATIF_SOMMATIF_HINT}</p>

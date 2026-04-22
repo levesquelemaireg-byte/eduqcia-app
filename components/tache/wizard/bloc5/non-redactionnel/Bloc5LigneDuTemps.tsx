@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef } from "react";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { LigneDuTempsFrisePicker } from "@/components/tache/non-redaction/ligne-du-temps/LigneDuTempsFrisePicker";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { getAnneePourComparaison } from "@/lib/tache/document-annee";
@@ -20,7 +20,7 @@ import {
   type LigneDuTempsPayload,
 } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import { ligneTempsLettersForSegmentCount } from "@/lib/tache/non-redaction/ligne-du-temps-model";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import { nonRedactionLignePayload } from "@/lib/tache/wizard-state-nr";
 import {
   NR_LIGNE_TEMPS_BLOC5_FRISE_RECAP_TITLE,
@@ -49,7 +49,7 @@ function computedLetterFromYearAndBoundaries(
 }
 
 export default function Bloc5LigneDuTemps(_props: Bloc5Props) {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const groupId = useId();
   const manualLockRef = useRef(false);

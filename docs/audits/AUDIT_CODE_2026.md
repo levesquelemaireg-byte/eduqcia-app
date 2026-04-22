@@ -167,7 +167,7 @@ Manque potentiellement :
 - **Sharp correctement configuré** — redimensionnement serveur boîte max 660×400px, pas d'upscale, proportions conservées.
 - **`dynamic import`** utilisé pour les blocs lourds du wizard (`Bloc5`, `wizardBlocResolver`, `behaviours/registry`).
 - **Indexes Supabase exhaustifs** — 44 index couvrant les filtres banque, recherche trigramme (`pg_trgm` GIN), array GIN, partiels sur booléens.
-- **Pagination cursor-based** déjà en place sur la banque (`getBankPublishedTaePage`, `BankDocumentsPanel`).
+- **Pagination cursor-based** déjà en place sur la banque (`getBankPublishedTachePage`, `BankDocumentsPanel`).
 - **`bodySizeLimit: 10mb`** — justifié par les payloads HTML grilles + métadonnées documents.
 
 ### Problèmes
@@ -186,7 +186,7 @@ Manque potentiellement :
 | `app/(app)/documents/[id]/page.tsx`         | L21             |
 | `lib/queries/autonomous-document-edit.ts`   | L47             |
 | `lib/tache/server-fiche-map.ts`             | L67, L102, L144 |
-| `lib/tache/load-tae-for-edit.ts`            | L90             |
+| `lib/tache/load-tache-for-edit.ts`          | L90             |
 
 **Impact :** Surcharge réseau (colonnes inutiles transmises), future exposition de colonnes sensibles, violation des conventions documentées du projet.
 
@@ -196,7 +196,7 @@ Manque potentiellement :
 
 #### 💡 Amélioration — Revalidation ciblée absente après publication
 
-Seuls `tae-delete.ts` et `evaluation-save.ts` appellent `revalidatePath`. La publication d'une TAÉ (`publishTaeAction`) ne revalide aucune route — la banque et la liste « Mes tâches » pourraient afficher des données périmées jusqu'au rechargement complet.
+Seuls `tache-delete.ts` et `evaluation-save.ts` appellent `revalidatePath`. La publication d'une TAÉ (`publishTacheAction`) ne revalide aucune route — la banque et la liste « Mes tâches » pourraient afficher des données périmées jusqu'au rechargement complet.
 
 **Recommandation :** Ajouter `revalidatePath("/questions")` et `revalidatePath("/bank")` après publication réussie.
 
@@ -243,7 +243,7 @@ Les 2 éditeurs TipTap (`RichTextEditor`, `ConsigneTipTapEditor`) ont bien `imme
 - **Design tokens complets et cohérents** — Palette HSL structurée (`--color-deep` à `--color-muted`), spacing scale (4px à 96px), radius, shadows, leading (interlignes resserrés pour 18px racine).
 - **Tailwind v4 avec `@theme inline`** — Tokens injectés proprement, `tailwind.config.ts` comme fallback pour l'outillage.
 - **Typography Manrope exploitée** — Font-weight 400–800, racine 112.5% (18px), interlignes calibrés.
-- **Print layout soigné** — Variables `--tae-print-*`, Letter portrait, marges 2cm, switch Arial pour l'impression, gestion `@page` via injection dynamique (`print-page-css.ts`).
+- **Print layout soigné** — Variables `--tache-print-*`, Letter portrait, marges 2cm, switch Arial pour l'impression, gestion `@page` via injection dynamique (`print-page-css.ts`).
 - **Toasts via `sonner`** — Position top-right, richColors, closeButton. Pattern toast unifié.
 - **Wizard split-screen** — Canvas gris moyen (`--wizard-preview-canvas`), shadow marquée pour l'effet feuille flottante.
 
@@ -320,7 +320,7 @@ Aucun lien « Passer au contenu » détecté dans le layout principal. Pour un o
 ### Points forts
 
 - **47 fichiers de test** — 44 unitaires Vitest + 3 E2E Playwright.
-- **Couverture logique métier excellente** — `tae-form-reducer`, `publish-tae-payload` (30+ cas), `connaissances-helpers` (parse, filter, selection, Miller), tous les payloads non-rédactionnels, selectors fiche.
+- **Couverture logique métier excellente** — `tache-form-reducer`, `publish-tache-payload` (30+ cas), `connaissances-helpers` (parse, filter, selection, Miller), tous les payloads non-rédactionnels, selectors fiche.
 - **Vitest config propre** — Environment `node`, alias `@/`, exclusions correctes.
 - **E2E grilles pixel-perfect** — 22 grilles testées visuellement (snapshot `maxDiffPixels: 900`), CI GitHub Windows.
 - **Pattern de test clean** — Fixtures typées, `structuredClone` pour isolation d'état, assertions custom (`assertPayload`).
@@ -331,19 +331,19 @@ Aucun lien « Passer au contenu » détecté dans le layout principal. Pour un o
 
 | Action non testée                    | Risque                             |
 | ------------------------------------ | ---------------------------------- |
-| `publishTaeAction()`                 | Publication TAÉ = flux critique #1 |
+| `publishTacheAction()`               | Publication TAÉ = flux critique #1 |
 | `saveWizardDraftAction()`            | Perte de brouillons                |
 | `createAutonomousDocumentAction()`   | Création de documents              |
 | `saveEvaluationCompositionAction()`  | Composition d'épreuves             |
 | `loginAction()` / `registerAction()` | Auth                               |
-| `uploadTaeDocumentImageAction()`     | Upload images                      |
+| `uploadTacheDocumentImageAction()`   | Upload images                      |
 
 **Impact :** Toute régression sur la validation Zod, l'auth guard, ou le mapping payload → RPC est invisible. Le seul filet est le build TypeScript (compile) + les tests unitaires sur les fonctions pures appelées par ces actions.
 
 **Recommandation :** Implémenter des tests d'intégration avec un mock Supabase ou un schéma de test dédié :
 
 ```ts
-// lib/actions/__tests__/tae-publish.integration.test.ts
+// lib/actions/__tests__/tache-publish.integration.test.ts
 import { vi } from "vitest";
 vi.mock("@/lib/supabase/server", () => ({
   createClient: () => mockSupabaseClient,
@@ -457,15 +457,15 @@ Mentionné dans `CLAUDE.md` comme optionnel. Pour un projet avec TipTap + Materi
 
 ### Quick Wins (1–2 semaines)
 
-| #       | Action                                                                                   | Fichiers                     | Impact                           |
-| ------- | ---------------------------------------------------------------------------------------- | ---------------------------- | -------------------------------- |
-| **QW1** | Ajouter `loading.tsx` dans `app/(app)/`, `app/(auth)/`, `app/(print)/`                   | 3 fichiers                   | Streaming natif, UX navigation   |
-| **QW2** | Ajouter `error.tsx` dans `app/(app)/` et `app/` (global)                                 | 2 fichiers                   | Récupération gracieuse d'erreurs |
-| **QW3** | Remplacer les 6 `select("*")` par des colonnes explicites                                | 4 fichiers                   | Sécurité + perf + conventions    |
-| **QW4** | Ajouter `revalidatePath("/questions")` + `revalidatePath("/bank")` après publication TAÉ | `lib/actions/tae-publish.ts` | Cache cohérent                   |
-| **QW5** | Ajouter la media query `prefers-reduced-motion` dans `globals.css`                       | 1 fichier                    | A11y WCAG AA                     |
-| **QW6** | Supprimer l'index fantôme `idx_doc_contenu_trgm` dans `schema.sql`                       | 1 fichier                    | Déploiement propre               |
-| **QW7** | Ajouter un script `"test:coverage": "vitest run --coverage"` dans `package.json`         | 1 fichier                    | Visibilité couverture            |
+| #       | Action                                                                                   | Fichiers                       | Impact                           |
+| ------- | ---------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------- |
+| **QW1** | Ajouter `loading.tsx` dans `app/(app)/`, `app/(auth)/`, `app/(print)/`                   | 3 fichiers                     | Streaming natif, UX navigation   |
+| **QW2** | Ajouter `error.tsx` dans `app/(app)/` et `app/` (global)                                 | 2 fichiers                     | Récupération gracieuse d'erreurs |
+| **QW3** | Remplacer les 6 `select("*")` par des colonnes explicites                                | 4 fichiers                     | Sécurité + perf + conventions    |
+| **QW4** | Ajouter `revalidatePath("/questions")` + `revalidatePath("/bank")` après publication TAÉ | `lib/actions/tache-publish.ts` | Cache cohérent                   |
+| **QW5** | Ajouter la media query `prefers-reduced-motion` dans `globals.css`                       | 1 fichier                      | A11y WCAG AA                     |
+| **QW6** | Supprimer l'index fantôme `idx_doc_contenu_trgm` dans `schema.sql`                       | 1 fichier                      | Déploiement propre               |
+| **QW7** | Ajouter un script `"test:coverage": "vitest run --coverage"` dans `package.json`         | 1 fichier                      | Visibilité couverture            |
 
 ### Améliorations Importantes (1 mois)
 
@@ -675,16 +675,16 @@ export function createMockSupabaseClient(overrides?: Partial<MockClient>) {
 
 | Action                            | Ce qu'on teste                                                                               |
 | --------------------------------- | -------------------------------------------------------------------------------------------- |
-| `publishTaeAction`                | Payload correct passé à `rpc('publish_tae_transaction')`, erreurs Zod rejetées, auth vérifié |
+| `publishTacheAction`              | Payload correct passé à `rpc('publish_tae_transaction')`, erreurs Zod rejetées, auth vérifié |
 | `saveWizardDraftAction`           | Sérialisation FormState → payload JSON, écrasement du brouillon existant                     |
 | `createAutonomousDocumentAction`  | Validation schéma, insertion correcte, fallback dégradé si colonne manquante                 |
 | `saveEvaluationCompositionAction` | Validation titre + TAÉ ids, mapping vers la RPC, erreurs métier (TAÉ non publiée)            |
-| `uploadTaeDocumentImageAction`    | Validation type MIME, taille max, appel Sharp, URL retournée                                 |
+| `uploadTacheDocumentImageAction`  | Validation type MIME, taille max, appel Sharp, URL retournée                                 |
 
 #### 2.2 — E2E happy path publication TAÉ
 
 ```ts
-// tests/e2e/publish-tae-happy-path.spec.ts
+// tests/e2e/publish-tache-happy-path.spec.ts
 import { test, expect } from "@playwright/test";
 
 // Auth réutilisée via storageState (voir bonnes pratiques ci-dessous)
@@ -910,7 +910,7 @@ export function checkRateLimit(userId: string, action: string, maxPerMinute: num
 }
 ```
 
-Appliquer sur `publishTaeAction` (5/min), `uploadTaeDocumentImageAction` (20/min), `saveEvaluationCompositionAction` (10/min).
+Appliquer sur `publishTacheAction` (5/min), `uploadTacheDocumentImageAction` (20/min), `saveEvaluationCompositionAction` (10/min).
 
 #### 3.4 — Migrer `requireActiveAppUser()` vers client standard
 
@@ -966,10 +966,10 @@ Même pattern pour `getNiveauList()`, `getDisciplineList()`, `getCdList()`, `get
 #### 4.2 — Revalidation complète après mutations
 
 ```ts
-// lib/actions/tae-publish.ts — après publication réussie
+// lib/actions/tache-publish.ts — après publication réussie
 revalidatePath("/questions");
 revalidatePath("/bank");
-revalidatePath(`/questions/${taeId}`);
+revalidatePath(`/questions/${tacheId}`);
 
 // lib/actions/create-autonomous-document.ts — après création
 revalidatePath("/documents");
@@ -1026,7 +1026,7 @@ Gain de 20–50 % sur les documents iconographiques par rapport au WebP seul.
 | `server-fiche-map.ts` L67           | `.select("id, auteur_id, consigne, guidage, corrige, oi_id, comportement_id, niveau_id, discipline_id, aspects_societe, cd_id, connaissances_ids, nb_lignes, is_published, conception_mode, non_redaction_data, created_at, updated_at")` |
 | `server-fiche-map.ts` L102          | `.select("id, tae_id, slot, document_id, tae_version")`                                                                                                                                                                                   |
 | `server-fiche-map.ts` L144          | `.select("id, titre, type, type_iconographique, auteur_id, elements, annee_normalisee, repere_temporel, source_type, image_legende, print_impression_scale")`                                                                             |
-| `load-tae-for-edit.ts` L90          | Idem que L67 ci-dessus                                                                                                                                                                                                                    |
+| `load-tache-for-edit.ts` L90        | Idem que L67 ci-dessus                                                                                                                                                                                                                    |
 | `documents/[id]/page.tsx` L21       | `.select("id, titre, type, type_iconographique, auteur_id, elements, niveaux_ids, disciplines_ids, connaissances_ids, aspects_societe, structure, source_type, image_legende, is_published, created_at, updated_at")`                     |
 | `documents/[id]/print/page.tsx` L22 | Idem                                                                                                                                                                                                                                      |
 
@@ -1109,7 +1109,7 @@ Supprimer la double déclaration `:root` / `@theme inline`. Un seul endroit :
 /* :root conserve uniquement les variables NON-Tailwind (animations, print, wizard) */
 :root {
   --wizard-preview-canvas: hsl(0 0% 50%);
-  --tae-print-sheet-width: 8.5in;
+  --tache-print-sheet-width: 8.5in;
   /* etc. */
 }
 ```
@@ -1127,9 +1127,9 @@ Ou configurer un projet Vitest browser pour tester les composants React (ex. `Ri
 Découper en 3 fonctions spécialisées dans `lib/queries/` :
 
 ```
-lib/queries/tae-fiche-read.ts     → fetchTaeForFiche(id) — colonnes explicites
-lib/queries/tae-documents-read.ts → fetchTaeDocuments(taeId) — colonnes explicites
-lib/queries/tae-slots-read.ts     → fetchTaeSlots(taeId) — colonnes explicites
+lib/queries/tache-fiche-read.ts     → fetchTacheForFiche(id) — colonnes explicites
+lib/queries/tache-documents-read.ts → fetchTacheDocuments(tacheId) — colonnes explicites
+lib/queries/tache-slots-read.ts     → fetchTacheSlots(tacheId) — colonnes explicites
 ```
 
 L'orchestration reste dans `server-fiche-map.ts` mais délègue le I/O.
@@ -1302,7 +1302,7 @@ L'audit enrichi touche plusieurs points qui intersectent directement les phases 
 | **`safeHtml()` helper**                      | Phase 2 — Selectors (`selectHero`, `selectGuidage`, `selectCorrige`) | **Créer `safeHtml()` AVANT la fin de Phase 2.** Les selectors qui retournent du HTML TipTap doivent l'utiliser directement pour que chaque composant `<SectionHero>`, `<SectionGuidage>`, `<SectionCorrige>` reçoive du HTML déjà sanitisé. Ne pas laisser la sanitisation aux composants de rendu. |
 | **Skeleton `/questions/[id]`**               | Phase 4 — Route + page serveur                                       | Le `loading.tsx` de la route `questions/[id]` doit être créé en même temps que la page serveur, avec un skeleton qui reflète le layout 2 colonnes (contenu + rail).                                                                                                                                 |
 | **Suspense boundaries**                      | Phase 4 — Page serveur async                                         | La page `/questions/[id]/page.tsx` doit envelopper le contenu principal et le rail dans des `<Suspense>` boundaries séparées — le rail (métadonnées légères) s'affiche vite, le contenu (HTML lourd + documents) peut streamer.                                                                     |
-| **`revalidatePath` publication**             | Flux complet wizard → fiche                                          | Après `publishTaeAction`, revalider `/questions/[id]` en plus de `/questions` et `/bank`. La fiche tâche publiée est le point d'aboutissement du workflow — son cache doit être frais.                                                                                                              |
+| **`revalidatePath` publication**             | Flux complet wizard → fiche                                          | Après `publishTacheAction`, revalider `/questions/[id]` en plus de `/questions` et `/bank`. La fiche tâche publiée est le point d'aboutissement du workflow — son cache doit être frais.                                                                                                            |
 | **Audit axe-core CI**                        | Phase 7+ — Tests                                                     | Le test `@axe-core/playwright` doit couvrir `/questions/[id]` (fiche tâche) car c'est la page la plus riche en HTML dynamique (TipTap, documents, grille).                                                                                                                                          |
 | **`select("*")` dans `server-fiche-map.ts`** | Phase 1 — Data layer                                                 | Les queries de `server-fiche-map.ts` alimentent directement la fiche tâche. Remplacer `select("*")` par des colonnes explicites AVANT de brancher les nouveaux selectors pour éviter des bugs de colonnes manquantes.                                                                               |
 
@@ -1311,7 +1311,7 @@ L'audit enrichi touche plusieurs points qui intersectent directement les phases 
 1. **Avant Phase 2 :** Créer `lib/utils/safe-html.ts` (config restrictive TipTap) + remplacer les 6 `select("*")`
 2. **Pendant Phase 2 :** Les selectors utilisent `safeHtml()` pour tout champ HTML
 3. **Pendant Phase 4 :** Créer `app/(app)/questions/[id]/loading.tsx` (skeleton 2 colonnes) + `<Suspense>` boundaries dans la page serveur
-4. **Après Phase 4 :** Ajouter `revalidatePath(`/questions/${taeId}`)` dans `publishTaeAction`
+4. **Après Phase 4 :** Ajouter `revalidatePath(`/questions/${tacheId}`)` dans `publishTacheAction`
 5. **Sprint dédié post-fiche :** `error.tsx`, CSP headers, `prefers-reduced-motion`, skip-to-content, `robots.ts`
 6. **Post-MVP :** Tests intégration, E2E, axe-core CI couvrant `/questions/[id]`
 

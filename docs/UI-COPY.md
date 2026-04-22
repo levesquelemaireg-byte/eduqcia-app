@@ -316,7 +316,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 `templates/create-question.php`
 
-> **Registre code (30 mars 2026) — étapes 3 et 7 :** `BLOC3_GATE_BLUEPRINT` (accès étape 3 si blueprint non verrouillé) ; `BLOC4_GATE_WIZARD`, `BLOC5_CD_GATE_WIZARD` (messages si prérequis non remplis) ; `BLOC7_GATE` (accès étape 7) ; `BLOC7_CONNAISSANCES_RESET` ; `BLOC7_ASPECTS_*`, `BLOC7_CONNAISSANCES_*` — `lib/ui/ui-copy.ts` ; `PAGE_CREER_UNE_TACHE_SUBTITLE`, `PAGE_MODIFIER_UNE_TACHE_SUBTITLE` (7 étapes). Les sous-sections détaillées ci-dessous peuvent encore mélanger d’anciens numéros d’étapes ; la vérité code = `step-meta.ts` + `TAE_FORM_STEP_COUNT`.
+> **Registre code (30 mars 2026) — étapes 3 et 7 :** `BLOC3_GATE_BLUEPRINT` (accès étape 3 si blueprint non verrouillé) ; `BLOC4_GATE_WIZARD`, `BLOC5_CD_GATE_WIZARD` (messages si prérequis non remplis) ; `BLOC7_GATE` (accès étape 7) ; `BLOC7_CONNAISSANCES_RESET` ; `BLOC7_ASPECTS_*`, `BLOC7_CONNAISSANCES_*` — `lib/ui/ui-copy.ts` ; `PAGE_CREER_UNE_TACHE_SUBTITLE`, `PAGE_MODIFIER_UNE_TACHE_SUBTITLE` (7 étapes). Les sous-sections détaillées ci-dessous peuvent encore mélanger d’anciens numéros d’étapes ; la vérité code = `step-meta.ts` + `TACHE_FORM_STEP_COUNT`.
 
 ### Titre principal
 
@@ -400,7 +400,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 #### Intro (infobulle ⓘ à côté du titre h2, plus de paragraphe sous le titre)
 
-- Texte long : `TAE_BLUEPRINT_STEP_DESCRIPTION` dans `lib/ui/ui-copy.ts` (paramètres pédagogiques ; comportement → outil d’évaluation / grille ; espace de production automatique selon le comportement).
+- Texte long : `TACHE_BLUEPRINT_STEP_DESCRIPTION` dans `lib/ui/ui-copy.ts` (paramètres pédagogiques ; comportement → outil d’évaluation / grille ; espace de production automatique selon le comportement).
 
 #### Niveau scolaire
 
@@ -542,7 +542,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ### Parcours non rédactionnel — ligne du temps (OI1 · comportement 1.2)
 
-**Registre :** constantes **`NR_LIGNE_TEMPS_*`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 2). **Branchement wizard / publication** : slug `ligne-du-temps` — `TAE_NON_REDACTION_WIZARD_BLOCS`, `buildPublishPayload` / `ligne-du-temps-payload.ts`, `NON_REDACTION_PATCH_LIGNE_TEMPS`.
+**Registre :** constantes **`NR_LIGNE_TEMPS_*`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 2). **Branchement wizard / publication** : slug `ligne-du-temps` — `TACHE_NON_REDACTION_WIZARD_BLOCS`, `buildPublishPayload` / `ligne-du-temps-payload.ts`, `NON_REDACTION_PATCH_LIGNE_TEMPS`.
 
 - **Guidage publié (`tae.guidage`) — élève :** texte **fixe** `NR_LIGNE_TEMPS_STUDENT_GUIDAGE` (validé produit).
 - **Bloc 3 — Consigne (en-tête) :** aligné sur l’ordre chronologique — `NR_ORDRE_CONSIGNE_LABEL`, `NR_ORDRE_CONSIGNE_HELP`, modale d’aide titre `NR_ORDRE_CONSIGNE_LABEL`, **`OrdreChronologiqueConsigneMinisterialBadge`** (`NR_ORDRE_CONSIGNE_MINISTERIAL_BADGE`).
@@ -553,14 +553,14 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ### Parcours non rédactionnel — avant / après (OI1 · comportement 1.3)
 
-**Registre :** constantes **`NR_AVANT_APRES_*`** et toast **`TOAST_TAE_NR_AVANT_APRES_HYDRATE_INVALID`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 3). **Branchement :** slug `avant-apres` — `TAE_NON_REDACTION_WIZARD_BLOCS`, `Bloc3AvantApres`, `Bloc4AvantApres`, `Bloc5AvantApres`, `NON_REDACTION_PATCH_AVANT_APRES`, `avant-apres-payload.ts` / `avant-apres-helpers.ts`, colonne **`tae.non_redaction_data`**.
+**Registre :** constantes **`NR_AVANT_APRES_*`** et toast **`TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 3). **Branchement :** slug `avant-apres` — `TACHE_NON_REDACTION_WIZARD_BLOCS`, `Bloc3AvantApres`, `Bloc4AvantApres`, `Bloc5AvantApres`, `NON_REDACTION_PATCH_AVANT_APRES`, `avant-apres-payload.ts` / `avant-apres-helpers.ts`, colonne **`tae.non_redaction_data`**.
 
 - **Étape 3 :** consigne ministérielle (jetons `{{doc_*}}`, thème, repère, **année ou période AAAA–AAAA**) — **`NR_AVANT_APRES_*`** (labels repère / année, aide consigne, guidage complémentaire, modale guidage) ; alignement visuel sur l’ordre chronologique (`OrdreChronologiqueConsigneMinisterialBadge`, `NR_ORDRE_CONSIGNE_*` réutilisés où indiqué dans le code).
 - **Étape 4 :** quatre documents — **`NR_AVANT_APRES_BLOC4_INFO`**, gates documents / repère.
 - **Étape 5 :** tableau 4×3 (AVANT | repère | APRÈS), **Générer** / **Régénérer**, overrides **année pivot ou inclusion dans la période repère**, justification, gate options — clés **`NR_AVANT_APRES_BLOC5_*`** ; accessibilité tableau / radios — **`NR_AVANT_APRES_TABLE_*`**, **`NR_AVANT_APRES_OVERRIDE_*`**.
 - **Guidage publié (`tae.guidage`) — élève :** **`NR_AVANT_APRES_STUDENT_GUIDAGE`**.
 - **Feuille élève (impression) :** intro publiée **`NR_AVANT_APRES_PUBLISHED_INTRO_*`** ; tableau des options — en-têtes **`NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_AVANT`** / **`NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES`**, **`NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR`** (colonne pivot sans titre visible) ; **`NR_AVANT_APRES_STUDENT_SHEET_*`** ; styles **`[data-avant-apres-student="true"]`** (`app/globals.css`). **Wizard Bloc 5 :** en-têtes explicites **`NR_AVANT_APRES_TABLE_COL_*`** (distincts de la feuille élève).
-- **Réhydratation JSON invalide (édition) :** **`TOAST_TAE_NR_AVANT_APRES_HYDRATE_INVALID`**.
+- **Réhydratation JSON invalide (édition) :** **`TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID`**.
 
 ### Parcours perspectives (OI3 · comportements 3.1–3.5)
 
@@ -628,12 +628,12 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 #### Téléversement image (document iconographique, mode création)
 
 - Texte permanent sous la zone de dépôt (verbatim `IMAGE_UPLOAD_FORMATS_INFO`) : formats JPG, PNG, WebP ; 10 Mo max ; redimensionnement automatique si l’image dépasse 660 × 400 px ; qualité visuelle préservée.
-- Après succès : dimensions finales, poids du fichier final, badge « Redimensionnée automatiquement » si applicable (`lib/images/resize-image.ts`, action `uploadTaeDocumentImageAction`).
+- Après succès : dimensions finales, poids du fichier final, badge « Redimensionnée automatiquement » si applicable (`lib/images/resize-image.ts`, action `uploadTacheDocumentImageAction`).
 - **Positionnement de la légende** (si légende non vide) : sous-titre ; modale d’aide avec corps `DOCUMENT_MODULE_LEGEND_POSITION_HELP_MODAL_BODY` (voir `lib/ui/ui-copy.ts`) ; **rangée horizontale** de 4 boutons radio iconiques (`role="radiogroup"` / `role="radio"`, flèches / Home / End) — `52×44px`, `gap` 8px, bordures `border-secondary` / `border-info`, états **info** / **secondary** via variables CSS (pas de `SegmentedControl`) ; `aria-label` par coin (pas de `title` natif sur les boutons). Glyphes : voir [DECISIONS.md](./DECISIONS.md#justifications--position-de-la-légende).
 
 #### Réutilisation depuis la banque (document iconographique)
 
-- Plus de ligne « échelle à l’impression » : l’affichage imprimé s’appuie sur le redimensionnement serveur des images (facteur CSS feuille inchangé à 1 — `--tae-doc-print-figure-scale` défaut).
+- Plus de ligne « échelle à l’impression » : l’affichage imprimé s’appuie sur le redimensionnement serveur des images (facteur CSS feuille inchangé à 1 — `--tache-doc-print-figure-scale` défaut).
 
 ### Étape 5 · Compétence disciplinaire
 
@@ -674,7 +674,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 - Impossible de publier la tâche. Réessayez.
 - Mise à jour impossible : la fonction SQL update_tae_transaction est absente sur Supabase. Exécutez la migration supabase/migrations/20250325180000_update_tae_transaction.sql (SQL Editor ou supabase db push), puis réessayez.
 - Impossible d'enregistrer le brouillon. Réessayez.
-- Après publication : message complémentaire si des **documents nouveaux** ont été créés avec la tâche et ne sont **pas encore visibles** dans la banque (`TOAST_TAE_PUBLISH_UNPUBLISHED_DOCS` — `toast.message` après le succès).
+- Après publication : message complémentaire si des **documents nouveaux** ont été créés avec la tâche et ne sont **pas encore visibles** dans la banque (`TOAST_TACHE_PUBLISH_UNPUBLISHED_DOCS` — `toast.message` après le succès).
 
 **Autres toasts publication / données** (référence `lib/ui/ui-copy.ts`) : refus validation, image document sans HTTPS, niveau/discipline introuvable, CD/connaissances introuvables (messages `seed:ref`), erreurs RPC enum / clé étrangère, etc. — à considérer comme partie du registre ; détail dans le fichier TypeScript.
 
@@ -775,7 +775,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 - Onglet **Documents historiques** : liste des documents publiés, filtres (**Niveau scolaire** = `PAGE_BANK_DOCUMENTS_FILTER_NIVEAU`), compteur d’usages, lien fiche, **Charger plus**, CTA création — copy dans `lib/ui/ui-copy.ts` (`PAGE_BANK_DOCUMENTS_*`, `BANK_DOCUMENT_*`, `BANK_TASK_LOAD_MORE`). Exemples :
   - « Aucun document ne correspond aux filtres. Ajustez la recherche ou créez un document. »
   - « Pour créer un document historique structuré, utilisez l’entrée dédiée. » + lien **Créer un document**
-  - « Utilisé dans : X tâche(s) » (formulations selon `copyDocumentPublishedTaeUsageCount`)
+  - « Utilisé dans : X tâche(s) » (formulations selon `copyDocumentPublishedTacheUsageCount`)
 - Onglet **Tâches** — filtres et tri : constantes `BANK_TASK_FILTER_*`, `BANK_TASK_SORT_*`, `BANK_TASK_LOAD_MORE` ; sous-titre `PAGE_BANK_TASKS_SUBTITLE`. Libellés alignés **étape 2** du wizard : **Niveau scolaire**, **Discipline**, **Opération intellectuelle**, **Comportement attendu** (pas d’acronyme « OI » — [DECISIONS.md](./DECISIONS.md#terminologie-ui--pas-dacronymes-interdits)). **Aspects de société** : `DOCUMENT_MODULE_ASPECTS_LABEL` (fieldset filtres). **Compétence disciplinaire** : `BANK_TASK_FILTER_CD` (libellé champ) + `BANK_TASK_FILTER_CD_HINT` (filtre sur le numéro technique du critère Miller en base, paramètre URL `cd` = `cd.id` ; jamais l’acronyme « CD » à l’écran). **Connaissances relatives** : `BANK_TASK_FILTER_CONNAISSANCES`. **Consigne** : `BANK_TASK_FILTER_SEARCH` (recherche sur texte sans mise en forme, colonne `consigne_search_plain`). Pastille liste : `BANK_TASK_LIST_BADGE_PUBLISHED` (**Publié**).
 - Onglet **Épreuves** : sous-titre `PAGE_BANK_EVALUATIONS_SUBTITLE` ; CTA « Pour composer une épreuve… » + **Créer une épreuve** (`PAGE_BANK_EVALUATIONS_CTA_*`) ; recherche `BANK_EVAL_SEARCH_LABEL` ; vide `PAGE_BANK_EVALUATIONS_EMPTY` ; compteur `copyBankEvaluationTaskCount` (forme longue **tâche d’apprentissage et d’évaluation**, pas l’abréviation TAÉ) ; **Charger plus** = `BANK_TASK_LOAD_MORE` ; épreuve d’un autre auteur : `BANK_EVAL_NO_EDIT_OTHER` (pas de lien **Modifier** — aligné sur `getEvaluationEditBundle`).
 
@@ -976,7 +976,7 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 
 ### Texte « Utilisé dans X tâches »
 
-- Indique combien de tâches réutilisent ce document ; calculé à partir des liaisons **`tae_documents`** — **uniquement les TAÉ publiées**, une fois par tâche ([FEATURES.md](./FEATURES.md) §5.4). Formulations : voir `copyDocumentPublishedTaeUsageCount` dans `lib/ui/ui-copy.ts`.
+- Indique combien de tâches réutilisent ce document ; calculé à partir des liaisons **`tae_documents`** — **uniquement les TAÉ publiées**, une fois par tâche ([FEATURES.md](./FEATURES.md) §5.4). Formulations : voir `copyDocumentPublishedTacheUsageCount` dans `lib/ui/ui-copy.ts`.
 
 ---
 

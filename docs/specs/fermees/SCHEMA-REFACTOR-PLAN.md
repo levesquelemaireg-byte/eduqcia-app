@@ -469,7 +469,7 @@ export function getSortKey(firstName: string, lastName: string): string {
 | `lib/types/database.ts`               | Régénéré via `npm run gen:types` après migrations 1-4                                                                                             |
 | `lib/auth/require-active-app-user.ts` | `ActiveAppUser` : remplacer `fullName: string` par `firstName: string`, `lastName: string` ; query `.select("id, first_name, last_name, status")` |
 | `lib/fiche/types.ts`                  | `AuteurInfo` : `full_name` → `first_name` + `last_name`                                                                                           |
-| `lib/tache/tae-form-state-types.ts`   | Vérifier si `full_name` apparaît dans les types auteur du wizard                                                                                  |
+| `lib/tache/tache-form-state-types.ts` | Vérifier si `full_name` apparaît dans les types auteur du wizard                                                                                  |
 
 ### 3.3 Queries à modifier (fichier par fichier)
 
@@ -499,11 +499,11 @@ export function getSortKey(firstName: string, lastName: string): string {
 
 Recommandation : stratégie 1 (sous-requête) — simple et suffisant.
 
-#### `lib/queries/tae-for-edit.ts`
+#### `lib/queries/tache-for-edit.ts`
 
 Remplacer `.select("… profiles!auteur_id(full_name) …")` par `.select("… profiles!auteur_id(first_name, last_name) …")`.
 
-#### `lib/queries/evaluation-tae-picker.ts`
+#### `lib/queries/evaluation-tache-picker.ts`
 
 Même pattern que ci-dessus.
 
@@ -564,7 +564,7 @@ Les selectors dans `lib/fiche/selectors/` qui extraient `auteur_nom` depuis `ban
 - `lib/fiche/selectors/lecture-selectors.ts`
 - `lib/fiche/fiche-helpers.ts`
 - `lib/tache/server-fiche-map.ts`
-- `lib/tache/load-tae-for-edit.ts`
+- `lib/tache/load-tache-for-edit.ts`
 - `lib/documents/fetch-doc-fiche-data.ts`
 
 ### 3.9 Ordre de modification build-safe
@@ -984,8 +984,8 @@ Ces décisions restent en suspens et devront être tranchées par le développeu
 
 - `lib/queries/collaborateurs-list.ts`
 - `lib/queries/collaborateur-profile-search.ts`
-- `lib/queries/tae-for-edit.ts`
-- `lib/queries/evaluation-tae-picker.ts`
+- `lib/queries/tache-for-edit.ts`
+- `lib/queries/evaluation-tache-picker.ts`
 - `lib/queries/bank-evaluations.ts`
 - `lib/queries/dashboard.ts`
 
@@ -1016,7 +1016,7 @@ Ces décisions restent en suspens et devront être tranchées par le développeu
 
 - `lib/tache/auteur-display-sort.ts`
 - `lib/tache/server-fiche-map.ts`
-- `lib/tache/load-tae-for-edit.ts`
+- `lib/tache/load-tache-for-edit.ts`
 - `lib/documents/fetch-doc-fiche-data.ts`
 - `lib/fiche/fiche-helpers.ts`
 - `lib/fiche/selectors/lecture-selectors.ts`

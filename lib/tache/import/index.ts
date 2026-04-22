@@ -9,9 +9,9 @@ export {
 } from "@/lib/tache/import/normalize-llm-aliases";
 export {
   COMPORTEMENT_IDS_REQUISANT_NON_REDACTION_STRUCT,
-  validateTaeImportVsOi,
+  validateTacheImportVsOi,
   type DocumentImportSnapshot,
   type SlotImportSnapshot,
-  type TaeImportSnapshotForOiValidation,
-  type ValidateTaeImportVsOiResult,
-} from "@/lib/tache/import/validate-tae-import-vs-oi";
+  type TacheImportSnapshotForOiValidation,
+  type ValidateTacheImportVsOiResult,
+} from "@/lib/tache/import/validate-tache-import-vs-oi";

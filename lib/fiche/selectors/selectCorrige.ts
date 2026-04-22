@@ -1,13 +1,16 @@
 import { ready, skeleton, sanitize } from "@/lib/fiche/helpers";
 import type { SectionState, CorrigeData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { selectNRContent } from "@/lib/fiche/selectors/selectNRContent";
 import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 
 /**
  * Corrigé de la tâche — HTML sanitisé + notes correcteur optionnelles.
  */
-export function selectCorrige(state: TaeFormState, _refs: SelectorRefs): SectionState<CorrigeData> {
+export function selectCorrige(
+  state: TacheFormState,
+  _refs: SelectorRefs,
+): SectionState<CorrigeData> {
   const nrContent = selectNRContent(state);
   const rawHtml = nrContent?.corrige ?? state.bloc5.corrige;
 

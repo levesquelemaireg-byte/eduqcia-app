@@ -128,7 +128,7 @@ type ArrayFacet = BaseFacetConfig & {
 type JoinedFacet = BaseFacetConfig & { dbType: "joined"; joinTable: string; joinColumn: string };
 type CascadedFacet = BaseFacetConfig & { dbType: "scalar"; column: string; dependsOn: string };
 
-type TaeFacetConfig = ScalarFacet | ArrayFacet | CascadedFacet;
+type TacheFacetConfig = ScalarFacet | ArrayFacet | CascadedFacet;
 type DocumentFacetConfig = ScalarFacet | ArrayFacet;
 type EvaluationFacetConfig = ScalarFacet | ArrayFacet | JoinedFacet;
 ```

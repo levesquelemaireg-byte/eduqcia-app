@@ -13,7 +13,7 @@
 
 ## 1. Problème actuel
 
-### 1.1 Le monolithe `formStateToTae()`
+### 1.1 Le monolithe `formStateToTache()`
 
 Fonction de 104 lignes qui cumule : lookup OI, extraction rédaction, mapping aspects,
 mapping documents, tri auteurs, normalisation 3 variantes NR, cascade conditionnelle
@@ -50,7 +50,7 @@ Un seul mode de rendu. Le design system cible demande 3 modes
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  COUCHE CONFIG                                                   │
-│  TAE_FICHE_SECTIONS / DOC_FICHE_SECTIONS                         │
+│  TACHE_FICHE_SECTIONS / DOC_FICHE_SECTIONS                         │
 │  Array déclaratif, constante module-level (jamais dans un render)│
 │  Réordonner = déplacer un élément dans l'array                   │
 │  Typé via defineSection() — lien selector↔component garanti      │
@@ -188,7 +188,7 @@ Usage :
 // TS infère TData = ConsigneData.
 // Si selectConsigne retourne SectionState<ConsigneData>
 // mais SectionConsigne attend { data: CorrigeData }, TS refuse à la compilation.
-const consigneSection = defineSection<TaeFormState, ConsigneData>({
+const consigneSection = defineSection<TacheFormState, ConsigneData>({
   id: "consigne",
   stepId: "consigne",
   selector: selectConsigne,
@@ -210,59 +210,59 @@ const consigneSection = defineSection<TaeFormState, ConsigneData>({
  * C'est voulu — les deux se highlight ensemble quand l'enseignant
  * travaille à l'étape 3 du wizard.
  */
-export const TAE_FICHE_SECTIONS = [
-  defineSection<TaeFormState, HeaderMetaData>({
+export const TACHE_FICHE_SECTIONS = [
+  defineSection<TacheFormState, HeaderMetaData>({
     id: "header",
     stepId: null,
     selector: selectHeaderMeta,
     component: FicheHeader,
   }),
-  defineSection<TaeFormState, ConsigneData>({
+  defineSection<TacheFormState, ConsigneData>({
     id: "consigne",
     stepId: "consigne",
     selector: selectConsigne,
     component: SectionConsigne,
   }),
-  defineSection<TaeFormState, GuidageData>({
+  defineSection<TacheFormState, GuidageData>({
     id: "guidage",
     stepId: "consigne", // même step que consigne — voulu
     selector: selectGuidage,
     component: SectionGuidage,
   }),
-  defineSection<TaeFormState, DocumentsSectionData>({
+  defineSection<TacheFormState, DocumentsSectionData>({
     id: "documents",
     stepId: "documents",
     selector: selectDocuments,
     component: SectionDocuments,
   }),
-  defineSection<TaeFormState, CorrigeData>({
+  defineSection<TacheFormState, CorrigeData>({
     id: "corrige",
     stepId: "corrige",
     selector: selectCorrige,
     component: SectionCorrige,
   }),
-  defineSection<TaeFormState, GrilleData>({
+  defineSection<TacheFormState, GrilleData>({
     id: "grille",
     stepId: "parametres",
     selector: selectGrille,
     component: SectionGrille,
     visibleIn: ["sommaire", "lecture"],
   }),
-  defineSection<TaeFormState, CDData>({
+  defineSection<TacheFormState, CDData>({
     id: "cd",
     stepId: "competence",
     selector: selectCD,
     component: SectionCD,
     visibleIn: ["sommaire", "lecture"],
   }),
-  defineSection<TaeFormState, ConnaissancesData>({
+  defineSection<TacheFormState, ConnaissancesData>({
     id: "connaissances",
     stepId: "connaissances",
     selector: selectConnaissances,
     component: SectionConnaissances,
     visibleIn: ["sommaire", "lecture"],
   }),
-  defineSection<TaeFormState, FooterData>({
+  defineSection<TacheFormState, FooterData>({
     id: "footer",
     stepId: null,
     selector: selectFooter,
@@ -422,7 +422,7 @@ interface NRContent {
  * avant/après > ordre chronologique > ligne du temps > null (rédactionnel)
  */
 export const selectNRContent = createSelector(
-  [(state: TaeFormState) => state.bloc5.nonRedaction, (state: TaeFormState) => state.documents],
+  [(state: TacheFormState) => state.bloc5.nonRedaction, (state: TacheFormState) => state.documents],
   (nonRedaction, documents): NRContent | null => {
     const avantPayload = normalizeAvantApresPayload(nonRedaction, documents);
     if (avantPayload)
@@ -464,7 +464,7 @@ export interface ConsigneData {
 }
 
 export function selectConsigne(
-  state: TaeFormState,
+  state: TacheFormState,
   refs: SelectorRefs,
 ): SectionState<ConsigneData> {
   if (!state.bloc2.oiId) return hidden();
@@ -489,7 +489,10 @@ export interface CorrigeData {
   notesCorrecteur: string | null;
 }
 
-export function selectCorrige(state: TaeFormState, refs: SelectorRefs): SectionState<CorrigeData> {
+export function selectCorrige(
+  state: TacheFormState,
+  refs: SelectorRefs,
+): SectionState<CorrigeData> {
   const nrContent = selectNRContent(state);
   const rawHtml = nrContent?.corrige ?? state.bloc5.corrige;
 
@@ -593,8 +596,8 @@ Le composant ne sanitise pas lui-même.
 ## 9. Intégration dans le wizard
 
 ```typescript
-function TaeWizardPage() {
-  const [state, dispatch] = useTaeFormReducer();
+function TacheWizardPage() {
+  const [state, dispatch] = useTacheFormReducer();
   const { activeStepId } = useWizardNavigation();
   const oiList = useOiList();
 
@@ -608,7 +611,7 @@ function TaeWizardPage() {
       </div>
       <div className="wizard-preview">
         <FicheRenderer
-          sections={TAE_FICHE_SECTIONS}
+          sections={TACHE_FICHE_SECTIONS}
           state={state}
           refs={refs}
           mode="sommaire"
@@ -624,11 +627,11 @@ Autres contextes :
 
 ```typescript
 // Banque — thumbnail
-<FicheRenderer sections={TAE_FICHE_SECTIONS} state={tae} refs={refs}
+<FicheRenderer sections={TACHE_FICHE_SECTIONS} state={tae} refs={refs}
   mode="thumbnail" activeStepId={null} />
 
 // Page standalone — lecture
-<FicheRenderer sections={TAE_FICHE_SECTIONS} state={tae} refs={refs}
+<FicheRenderer sections={TACHE_FICHE_SECTIONS} state={tae} refs={refs}
   mode="lecture" activeStepId={null} />
 ```
 
@@ -654,7 +657,7 @@ Autres contextes :
 
 8. Créer `FicheRenderer`, `FicheSection` (avec error boundary), `GenericSkeleton`
 9. Refactorer les `Section*` existants → props `{ data, mode }`
-10. Créer `TAE_FICHE_SECTIONS` config avec `defineSection()`
+10. Créer `TACHE_FICHE_SECTIONS` config avec `defineSection()`
 11. Brancher dans le wizard à la place de `FicheSommaireColumn`
 12. **Validation visuelle** : rendu côte à côte ancien/nouveau sur 3-4 cas représentatifs
     (rédactionnel, NR ordre chrono, NR avant/après, avec/sans documents icono)
@@ -713,7 +716,7 @@ lib/fiche/
 │   └── DocEmbed.tsx
 │
 ├── configs/
-│   ├── tae-fiche-sections.ts
+│   ├── tache-fiche-sections.ts
 │   └── doc-fiche-sections.ts
 │
 └── __tests__/

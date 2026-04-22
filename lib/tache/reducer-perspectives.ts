@@ -7,16 +7,16 @@ import {
   migrateSlotsToMoments,
   migrateSlotsToPerpsectives,
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
 /**
  * Gère la migration groupé ↔ séparé pour perspectives (OI3) et moments (OI6).
  * Extrait du reducer principal pour maintenir la taille sous contrôle.
  */
 export function handlePerspectivesModeWithMigration(
-  state: TaeFormState,
+  state: TacheFormState,
   action: { value: "groupe" | "separe"; count: 2 | 3 },
-): TaeFormState {
+): TacheFormState {
   const prev = state.bloc3.perspectivesMode;
   const next = action.value;
   if (prev === next) return state;

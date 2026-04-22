@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { DocumentSlotPanel } from "@/components/tache/wizard/bloc4/DocumentSlotPanel";
 import { DocumentSlotsAccordionProvider } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { DocumentSlotsAccordionSync } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionSync";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import {
@@ -15,7 +15,7 @@ import { NR_LIGNE_TEMPS_BLOC4_INFO, NR_LIGNE_TEMPS_GATE_PRE_DOCS } from "@/lib/u
 import { nonRedactionLignePayload } from "@/lib/tache/wizard-state-nr";
 
 export function Bloc4LigneDuTemps() {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const b = state.bloc2;
   const slots = b.documentSlots;
 

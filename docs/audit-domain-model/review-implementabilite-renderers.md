@@ -239,7 +239,7 @@ Tous les endroits qui construisent des `DocumentReference` de test (6 fichiers d
 Le code actuel (`etat-wizard-vers-tache.ts:186-197`) :
 
 ```typescript
-function construireDocuments(state: TaeFormState): DocumentReference[] {
+function construireDocuments(state: TacheFormState): DocumentReference[] {
   return state.bloc2.documentSlots.map(({ slotId }) => {
     const slot = getSlotData(state.bloc4.documents, slotId);
     return {

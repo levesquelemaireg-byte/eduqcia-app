@@ -99,11 +99,11 @@ Kimi propose `Bloc3`/`Bloc4` lazy loaded (code splitting via `React.lazy`) et `B
 
 Si Bloc5 importe aussi TipTap ou d'autres grosses dépendances, tout mettre en lazy. Sinon, l'asymétrie de Kimi est une bonne idée.
 
-### 1.5 Traitement explicite de `formStateToTae` (deprecated)
+### 1.5 Traitement explicite de `formStateToTache` (deprecated)
 
 **Sources : Gemini et DeepSeek (convergent)**
 
-`formStateToTae` est marquée deprecated mais encore consommée par `PrintableFichePreview`. Deux agents ont traité ce point explicitement : ne pas la laisser vivre après le refactor, la rebrancher sur `resolveNRContent` pendant la migration, puis la supprimer quand plus rien ne l'appelle. Sinon le refactor crée une cinquième cascade fantôme à maintenir.
+`formStateToTache` est marquée deprecated mais encore consommée par `PrintableFichePreview`. Deux agents ont traité ce point explicitement : ne pas la laisser vivre après le refactor, la rebrancher sur `resolveNRContent` pendant la migration, puis la supprimer quand plus rien ne l'appelle. Sinon le refactor crée une cinquième cascade fantôme à maintenir.
 
 Concrètement, étape obligatoire dans le plan : **une phase terminale qui solde cette dette**, pas un "à faire plus tard".
 
@@ -130,7 +130,7 @@ Ce n'est pas un gros travail — peut-être 30 lignes — mais ça élimine une 
 
 Tous les agents proposent un `NR_VARIANT_REGISTRY` unique qui contient à la fois les builders (pures fonctions serveur-safe) et les composants React (client). Le problème :
 
-- `selectNRContent`, `publish-tae-payload`, `resolveNRContent` sont probablement appelés depuis des Server Components ou des actions serveur.
+- `selectNRContent`, `publish-tache-payload`, `resolveNRContent` sont probablement appelés depuis des Server Components ou des actions serveur.
 - `wizardBlocResolver`, `Bloc5`, `PrintableFichePreview` sont des composants client.
 - Si les deux importent le _même_ registre, le bundler (Turbopack/Webpack) doit correctement identifier les frontières.
 
@@ -138,7 +138,7 @@ Kimi évite le problème par construction en utilisant `() => Promise<{ default:
 
 **Questions à trancher en lisant le code :**
 
-1. Depuis quels contextes `selectNRContent` et `publish-tae-payload` sont-ils appelés ? Server Components ? Route handlers ? Server actions ? Client Components ?
+1. Depuis quels contextes `selectNRContent` et `publish-tache-payload` sont-ils appelés ? Server Components ? Route handlers ? Server actions ? Client Components ?
 2. Le fichier qui contiendrait `NR_VARIANT_REGISTRY` aurait-il besoin d'une directive `'use client'` ou serait-il neutre ?
 3. Est-ce que séparer en deux registres (`nr-content-registry.ts` purement serveur + `nr-ui-registry.ts` côté client) simplifierait ou compliquerait la structure ?
 
@@ -244,7 +244,7 @@ Grok avait proposé de mettre `comportementIds: ['oi1-1.1', ...]` dans la config
 **Phase 1 — Option A minimale (factory centralisée)**
 
 - Créer `resolve-nr-content.ts` avec la fonction `resolveNRContent`
-- Rebrancher `selectNRContent`, `publish-tae-payload`, `fiche-helpers` (formStateToTae), `wizard-publish-guards` dessus
+- Rebrancher `selectNRContent`, `publish-tache-payload`, `fiche-helpers` (formStateToTache), `wizard-publish-guards` dessus
 - Les cascades existantes disparaissent, mais les isActive\*, composants wizard, step labels restent inchangés
 - Rejouer le snapshot : zéro diff attendu
 - **C'est une phase réversible et autonome.** Elle élimine P1 et P2 sans toucher à l'UI.
@@ -273,7 +273,7 @@ Grok avait proposé de mettre `comportementIds: ['oi1-1.1', ...]` dans la config
 
 **Phase 5 — Solder les dettes**
 
-- Supprimer `formStateToTae` (deprecated) maintenant que `PrintableFichePreview` est branché sur le nouveau helper
+- Supprimer `formStateToTache` (deprecated) maintenant que `PrintableFichePreview` est branché sur le nouveau helper
 - Supprimer `wizard-publish-guards.ts` si `validateForPublish` l'a absorbé
 - Ajouter le `console.error` + bannière pour les slugs non implémentés (P5)
 - Mettre à jour l'audit structurel pour refléter la nouvelle architecture
@@ -300,7 +300,7 @@ Grok avait proposé de mettre `comportementIds: ['oi1-1.1', ...]` dans la config
 ## Résumé des 7 critiques (classement par utilité technique)
 
 1. **Kimi** — meilleur contrat TypeScript, seul à proposer `validateForPublish`, nuance lazy/synchrone
-2. **Gemini** — `Extract<...>` comme idée-mère, phasage explicite de `formStateToTae`
+2. **Gemini** — `Extract<...>` comme idée-mère, phasage explicite de `formStateToTache`
 3. **DeepSeek** — exécution concrète (reducer, PrintableFichePreview), migration incrémentale
 4. **Grok** — phasage décisionnel + `assertNever`
 5. **Claude Opus (critique initiale)** — trois angles morts collectifs (couplage, snapshots, ordre), typage faible à corriger

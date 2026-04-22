@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useTaeForm, type TaeFormState } from "@/components/tache/wizard/FormState";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
-import { sanitizeHydratedState } from "@/lib/tache/tae-form-hydrate";
+import { useTacheForm, type TacheFormState } from "@/components/tache/wizard/FormState";
+import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
+import { sanitizeHydratedState } from "@/lib/tache/tache-form-hydrate";
 import { hasMeaningfulWizardProgress } from "@/lib/tache/wizard-draft-progress";
 import {
   WIZARD_BANNER_DISMISS_LOCAL,
@@ -17,10 +17,10 @@ import {
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 
-function readMeaningfulSessionDraft(): TaeFormState | null {
+function readMeaningfulSessionDraft(): TacheFormState | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = sessionStorage.getItem(TAE_DRAFT_STORAGE_KEY);
+    const raw = sessionStorage.getItem(TACHE_DRAFT_STORAGE_KEY);
     if (!raw) return null;
     const parsed = sanitizeHydratedState(JSON.parse(raw) as unknown);
     if (parsed && hasMeaningfulWizardProgress(parsed)) return parsed;
@@ -31,15 +31,15 @@ function readMeaningfulSessionDraft(): TaeFormState | null {
 }
 
 type Props = {
-  savedServerDraft: TaeFormState | null;
+  savedServerDraft: TacheFormState | null;
 };
 
 export function WizardDraftBanners({ savedServerDraft }: Props) {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const [dismissedServer, setDismissedServer] = useState(false);
   const [dismissedLocal, setDismissedLocal] = useState(false);
   /** Toujours `null` au 1er rendu (SSR = client) — lecture `sessionStorage` après hydratation uniquement. */
-  const [sessionDraft, setSessionDraft] = useState<TaeFormState | null>(null);
+  const [sessionDraft, setSessionDraft] = useState<TacheFormState | null>(null);
 
   useEffect(() => {
     const draft = readMeaningfulSessionDraft();
@@ -129,7 +129,7 @@ export function WizardDraftBanners({ savedServerDraft }: Props) {
               className="min-h-11"
               onClick={() => {
                 try {
-                  sessionStorage.removeItem(TAE_DRAFT_STORAGE_KEY);
+                  sessionStorage.removeItem(TACHE_DRAFT_STORAGE_KEY);
                 } catch {
                   /* ignore */
                 }

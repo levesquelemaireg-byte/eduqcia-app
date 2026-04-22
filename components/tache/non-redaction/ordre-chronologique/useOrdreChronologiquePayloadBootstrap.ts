@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect } from "react";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import {
   initialOrdreChronologiquePayload,
   normalizeOrdreChronologiquePayload,
@@ -14,7 +14,7 @@ import { nonRedactionOrdrePayload } from "@/lib/tache/wizard-state-nr";
  * à l’étape 5 seul, le composant de l’étape 3 n’est pas monté.
  */
 export function useOrdreChronologiquePayloadBootstrap(): void {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
 
   useLayoutEffect(() => {
     const n = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));

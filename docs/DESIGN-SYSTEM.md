@@ -88,7 +88,7 @@ Les types de document ont des icônes **fixes** utilisées de manière cohérent
 
 #### Glyphes OI (données `oi.json` / fiche / liste)
 
-- **Composant unique :** `components/ui/MaterialSymbolOiGlyph.tsx` — enveloppe **`material-symbols-outlined`** et pose **`data-oi-glyph="{nom}"`** pour tout glyphe issu du **catalogue OI** (listes Bloc 2, en-tête fiche, `TaeCard`, modales d’aide).
+- **Composant unique :** `components/ui/MaterialSymbolOiGlyph.tsx` — enveloppe **`material-symbols-outlined`** et pose **`data-oi-glyph="{nom}"`** pour tout glyphe issu du **catalogue OI** (listes Bloc 2, en-tête fiche, `TacheCard`, modales d’aide).
 - **Icône + titre (liste, modale OI, options listbox) :** utiliser le conteneur **`.icon-lead`** (`app/globals.css`) — `align-items: flex-start` et **`margin-top: 0.125em`** sur le **`material-symbols-outlined`** pour l’alignement optique sur la **première** ligne de texte (éviter seul `items-baseline` / `items-center`, les métriques du font icon ne coïncident pas avec le texte).
 - **Présentation (rotation, correctifs) :** **`app/globals.css`** — sélecteurs **`.material-symbols-outlined[data-oi-glyph="…"]`** et variables **`--oi-glyph-*`** sur **`:root`**. **Interdit** de répéter `rotate-*` ou `transform` sur chaque écran pour ces glyphes : ajouter une règle / token global et, si besoin, une ligne dans cette section.
 - **Exemple :** **`alt_route`** (OI _Changements et continuités_) — rotation **`var(--oi-glyph-alt-route-rotate)`** (**90°**, sens horaire) pour que les deux branches pointent vers la **droite** (orientation pédagogique retenue).
@@ -221,7 +221,7 @@ Bouton de pagination en bas de liste. `components/ui/LoadMoreButton.tsx`.
 
 ### Actions destructrices
 
-Texte/icône discrets (`text-muted`), **`hover:text-error`**, **`hover:bg-error/5`**, jamais gros bouton rouge plein pour une action secondaire. Références : `ConnaissanceRemoveButton`, `TaeCardMenu`, réinitialiser connaissances.
+Texte/icône discrets (`text-muted`), **`hover:text-error`**, **`hover:bg-error/5`**, jamais gros bouton rouge plein pour une action secondaire. Références : `ConnaissanceRemoveButton`, `TacheCardMenu`, réinitialiser connaissances.
 
 ### Tooltip (light card)
 

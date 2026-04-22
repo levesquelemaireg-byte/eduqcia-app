@@ -43,7 +43,7 @@ export function SectionPileTaches({ taches }: Props) {
       </div>
 
       {tachePanneauId && (
-        <TachePanneauDetail taeId={tachePanneauId} surFermer={() => setTachePanneauId(null)} />
+        <TachePanneauDetail tacheId={tachePanneauId} surFermer={() => setTachePanneauId(null)} />
       )}
     </>
   );

@@ -1,21 +1,21 @@
 "use client";
 
 import { createContext, useContext, type ReactNode } from "react";
-import type { TaeVersionSnapshot } from "@/lib/tache/publish-tae-types";
+import type { TacheVersionSnapshot } from "@/lib/tache/publish-tache-types";
 
 export type WizardSessionValue = {
   /** Si défini, publication appelle `update_tae_transaction` pour cette TAÉ. */
-  editingTaeId: string | null;
+  editingTacheId: string | null;
   /** Faux en édition : évite d’écraser `sessionStorage` du parcours « Créer une tâche ». */
   persistSessionDraft: boolean;
   /** Utilisateur connecté — recherche collaborateurs (exclusion, action serveur). */
   currentUserId: string | null;
   /** Snapshot des champs majeurs au chargement de la page d’édition — détection version. */
-  versionSnapshot: TaeVersionSnapshot | null;
+  versionSnapshot: TacheVersionSnapshot | null;
 };
 
 const defaultValue: WizardSessionValue = {
-  editingTaeId: null,
+  editingTacheId: null,
   persistSessionDraft: true,
   currentUserId: null,
   versionSnapshot: null,

@@ -5,14 +5,14 @@
 
 import { sanitize } from "@/lib/fiche/helpers";
 import { hasFicheContent } from "@/lib/tache/fiche-helpers";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 
 export type GuidageData = {
   /** HTML sanitisé */
   html: string;
 };
 
-export function selectGuidage(state: TaeFicheData): GuidageData | null {
+export function selectGuidage(state: TacheFicheData): GuidageData | null {
   if (!hasFicheContent(state.guidage)) return null;
   return { html: sanitize(state.guidage) };
 }

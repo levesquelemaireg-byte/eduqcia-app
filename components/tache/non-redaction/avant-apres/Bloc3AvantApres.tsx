@@ -8,7 +8,7 @@ import { SimpleModal } from "@/components/ui/SimpleModal";
 import { BLOC3_SECTION_ICON } from "@/components/tache/wizard/bloc3-stepper-icons";
 import { BLOC3_MODAL_GUIDAGE_TITLE } from "@/components/tache/wizard/bloc3/modalCopy";
 import { useAvantApresPayloadBootstrap } from "@/components/tache/non-redaction/avant-apres/useAvantApresPayloadBootstrap";
-import { getRedactionSliceForPreview, useTaeForm } from "@/components/tache/wizard/FormState";
+import { getRedactionSliceForPreview, useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import {
   buildAvantApresGuidageHtml,
@@ -39,7 +39,7 @@ import { cn } from "@/lib/utils/cn";
 import { nonRedactionAvantApresPayload } from "@/lib/tache/wizard-state-nr";
 
 export function Bloc3AvantApres() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const r = getRedactionSliceForPreview(state);
   const themeId = useId();

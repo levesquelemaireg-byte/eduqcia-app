@@ -11,7 +11,7 @@ import {
   OrdreChronologiqueConsigneTemplate,
 } from "@/components/tache/non-redaction/consigne-template/OrdreChronologiqueConsigneTemplate";
 import { useOrdreChronologiquePayloadBootstrap } from "@/components/tache/non-redaction/ordre-chronologique/useOrdreChronologiquePayloadBootstrap";
-import { getRedactionSliceForPreview, useTaeForm } from "@/components/tache/wizard/FormState";
+import { getRedactionSliceForPreview, useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import {
   buildOrdreChronologiqueGuidageHtml,
@@ -31,7 +31,7 @@ import { BLOC3_MODAL_GUIDAGE_TITLE } from "@/components/tache/wizard/bloc3/modal
 import { nonRedactionOrdrePayload } from "@/lib/tache/wizard-state-nr";
 
 export function Bloc3OrdreChronologique() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const r = getRedactionSliceForPreview(state);
   const consigneId = useId();

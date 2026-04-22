@@ -8,7 +8,7 @@ import {
 import { Bloc2EspaceProductionReadonly } from "@/components/tache/wizard/bloc2/Bloc2EspaceProductionReadonly";
 import { ComportementPicker } from "@/components/tache/wizard/bloc2/ComportementPicker";
 import { DISCIPLINE_LABEL, NIVEAU_SELECT_OPTIONS } from "@/components/tache/wizard/bloc2/constants";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { InlineWarning } from "@/components/ui/InlineWarning";
 import { ListboxField } from "@/components/ui/ListboxField";
 import { RequiredMark } from "@/components/ui/RequiredMark";
@@ -67,7 +67,7 @@ export function Bloc2EditFields({
   modalComportementOpen,
   onModalComportementOpenChange,
 }: Props) {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const disciplineLocked = isDisciplineAutoAssignedForNiveau(b.niveau);
   const disciplineLabel =
     b.discipline && b.discipline in DISCIPLINE_LABEL
@@ -83,7 +83,7 @@ export function Bloc2EditFields({
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <label htmlFor="tae-niveau" className="icon-text text-sm font-semibold text-deep">
+          <label htmlFor="tache-niveau" className="icon-text text-sm font-semibold text-deep">
             <span
               className="material-symbols-outlined text-accent"
               aria-hidden="true"
@@ -96,7 +96,7 @@ export function Bloc2EditFields({
             </span>
           </label>
           <ListboxField
-            id="tae-niveau"
+            id="tache-niveau"
             value={b.niveau}
             onChange={onSetNiveau}
             allowEmpty
@@ -112,7 +112,7 @@ export function Bloc2EditFields({
         </div>
 
         <div className="space-y-2">
-          <label htmlFor="tae-discipline" className="icon-text text-sm font-semibold text-deep">
+          <label htmlFor="tache-discipline" className="icon-text text-sm font-semibold text-deep">
             <span
               className="material-symbols-outlined text-accent"
               aria-hidden="true"
@@ -126,7 +126,7 @@ export function Bloc2EditFields({
           </label>
           {disciplineLocked && b.discipline ? (
             <div
-              id="tae-discipline"
+              id="tache-discipline"
               className="auth-input flex min-h-11 w-full flex-col justify-center rounded-lg border border-border bg-panel px-3 py-2 text-sm text-deep"
             >
               <span className="font-medium text-deep">{disciplineLabel}</span>
@@ -144,7 +144,7 @@ export function Bloc2EditFields({
           ) : (
             <>
               <ListboxField
-                id="tae-discipline"
+                id="tache-discipline"
                 value={b.discipline}
                 onChange={onSetDiscipline}
                 disabled={!b.niveau}

@@ -3,8 +3,8 @@ import {
   ASPECT_SOCIETE_KEYS,
   parseAspectKeysFromParam,
 } from "@/lib/bank/bank-aspect-param";
-import type { BankTaeFilterRefs } from "@/lib/queries/bank-filter-ref-data";
-import type { BankTaeQuery } from "@/lib/queries/bank-tasks";
+import type { BankTacheFilterRefs } from "@/lib/queries/bank-filter-ref-data";
+import type { BankTacheQuery } from "@/lib/queries/bank-tasks";
 import {
   BANK_TASK_FILTER_CD,
   BANK_TASK_FILTER_CD_HINT,
@@ -31,8 +31,8 @@ import { cn } from "@/lib/utils/cn";
 import Link from "next/link";
 
 type Props = {
-  refs: BankTaeFilterRefs;
-  query: BankTaeQuery;
+  refs: BankTacheFilterRefs;
+  query: BankTacheQuery;
 };
 
 export function BankTaskFilters({ refs, query }: Props) {
@@ -50,11 +50,11 @@ export function BankTaskFilters({ refs, query }: Props) {
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-1 md:col-span-2">
-          <label htmlFor="bank-tae-q" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-q" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_SEARCH}
           </label>
           <input
-            id="bank-tae-q"
+            id="bank-tache-q"
             name="q"
             type="search"
             defaultValue={filters.q ?? ""}
@@ -64,11 +64,11 @@ export function BankTaskFilters({ refs, query }: Props) {
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="bank-tae-sort" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-sort" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_SORT}
           </label>
           <select
-            id="bank-tae-sort"
+            id="bank-tache-sort"
             name="sort"
             defaultValue={sort}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
@@ -79,11 +79,11 @@ export function BankTaskFilters({ refs, query }: Props) {
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="bank-tae-oi" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-oi" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_OI}
           </label>
           <select
-            id="bank-tae-oi"
+            id="bank-tache-oi"
             name="oi"
             defaultValue={filters.oiId ?? ""}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
@@ -98,11 +98,11 @@ export function BankTaskFilters({ refs, query }: Props) {
         </div>
 
         <div className="space-y-1 md:col-span-2">
-          <label htmlFor="bank-tae-comp" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-comp" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_COMPORTEMENT}
           </label>
           <select
-            id="bank-tae-comp"
+            id="bank-tache-comp"
             name="comportement"
             defaultValue={filters.comportementId ?? ""}
             disabled={!filters.oiId || refs.comportements.length === 0}
@@ -124,11 +124,11 @@ export function BankTaskFilters({ refs, query }: Props) {
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="bank-tae-niv" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-niv" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_NIVEAU}
           </label>
           <select
-            id="bank-tae-niv"
+            id="bank-tache-niv"
             name="niveau"
             defaultValue={filters.niveauId != null ? String(filters.niveauId) : ""}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
@@ -143,11 +143,11 @@ export function BankTaskFilters({ refs, query }: Props) {
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="bank-tae-disc" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-disc" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_DISCIPLINE}
           </label>
           <select
-            id="bank-tae-disc"
+            id="bank-tache-disc"
             name="discipline"
             defaultValue={filters.disciplineId != null ? String(filters.disciplineId) : ""}
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
@@ -162,30 +162,30 @@ export function BankTaskFilters({ refs, query }: Props) {
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="bank-tae-cd" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-cd" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_CD}
           </label>
           <input
-            id="bank-tae-cd"
+            id="bank-tache-cd"
             name="cd"
             type="number"
             min={1}
             step={1}
             defaultValue={filters.cdId != null ? String(filters.cdId) : ""}
-            aria-describedby="bank-tae-cd-hint"
+            aria-describedby="bank-tache-cd-hint"
             className="auth-input h-11 w-full rounded-lg border border-border bg-panel-alt px-3 text-sm text-deep"
           />
-          <p id="bank-tae-cd-hint" className="text-xs text-muted">
+          <p id="bank-tache-cd-hint" className="text-xs text-muted">
             {BANK_TASK_FILTER_CD_HINT}
           </p>
         </div>
 
         <div className="space-y-1">
-          <label htmlFor="bank-tae-conn" className="text-xs font-semibold text-muted">
+          <label htmlFor="bank-tache-conn" className="text-xs font-semibold text-muted">
             {BANK_TASK_FILTER_CONNAISSANCES}
           </label>
           <input
-            id="bank-tae-conn"
+            id="bank-tache-conn"
             name="connaissances"
             type="text"
             defaultValue={filters.connaissancesIds ?? ""}

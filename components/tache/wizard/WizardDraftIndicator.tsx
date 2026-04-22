@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { WIZARD_DRAFT_INDICATOR_SAVING } from "@/lib/ui/ui-copy";
 
 type Phase = "idle" | "saving" | "saved" | "fading";
@@ -18,7 +18,7 @@ const FADE_DELAY_MS = 3500;
  * - Si le save est perceptiblement long : affiche « Sauvegarde… »
  */
 export function WizardDraftIndicator() {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const [phase, setPhase] = useState<Phase>("idle");
   const isFirstRef = useRef(true);
 

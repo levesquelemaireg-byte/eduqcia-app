@@ -1,4 +1,4 @@
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
 /**
  * Slugs de comportement wizard — alignés sur `public/data/oi.json` (`variant_slug`) + `redactionnel`.
@@ -21,10 +21,10 @@ export interface ComportementConfig {
     requiresRepereTemporel: boolean;
   };
   completionCriteria: {
-    bloc3: (state: TaeFormState) => boolean;
-    bloc4: (state: TaeFormState) => boolean;
-    bloc5: (state: TaeFormState) => boolean;
-    bloc6: (state: TaeFormState) => boolean;
-    bloc7: (state: TaeFormState) => boolean;
+    bloc3: (state: TacheFormState) => boolean;
+    bloc4: (state: TacheFormState) => boolean;
+    bloc5: (state: TacheFormState) => boolean;
+    bloc6: (state: TacheFormState) => boolean;
+    bloc7: (state: TacheFormState) => boolean;
   };
 }

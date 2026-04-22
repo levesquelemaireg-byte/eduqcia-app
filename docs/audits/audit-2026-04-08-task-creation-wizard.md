@@ -37,7 +37,7 @@ Localisation Étape 5 confirmée : pas de composant parent Bloc5Principal ; le m
 Section 2 — Modèle de données
 ✓ Conformités
 §2.1 Document — propriétés visibles : type textuel/iconographique, titre, contenu, source, position de légende, source primaire/secondaire — tous présents dans les schémas et le wizard de slot (DocumentSlotPanel.tsx, DocumentSlotLegendBlock.tsx).
-§2.1 Tâche — encapsulation : TaeFormState regroupe paramètres, slots de documents, consigne, guidage, corrigé, CD, aspects, connaissances, métadonnées auteurs (FormState.tsx).
+§2.1 Tâche — encapsulation : TacheFormState regroupe paramètres, slots de documents, consigne, guidage, corrigé, CD, aspects, connaissances, métadonnées auteurs (FormState.tsx).
 §2.2 Référencement, pas inclusion : les slots Bloc 4 stockent des références ; BanqueDocumentsStub permet la réutilisation depuis la banque (BanqueDocumentsStub.tsx, DocumentSlotIdleChoices.tsx).
 §2.3 Stockage TipTap structuré : la consigne est bien du HTML TipTap avec nœuds docRef, pas du texte brut (extensionDocRef.ts).
 §2.4 Représentation contextuelle distincte : DocRefNodeView (chip teal en édition) ≠ resolveDocRefsForPreview qui aplatit en lettre dans l'aperçu print (DocRefNodeView.tsx, consigne-helpers.ts).
@@ -61,8 +61,8 @@ Stepper horizontal cliquable : Stepper → WizardStepper avec onCompletedStepCli
 Bouton Suivant bloqué tant que les champs requis ne sont pas remplis : nextDisabled calculé à partir d'une batterie de guards (StepperNavFooter.tsx:387 + wizard-publish-guards.ts, cd-step-guards.ts, connaissances-step-guards.ts).
 Navigation libre vers étapes complétées : onCompletedStepClick borne au currentStep côté WizardStepper.
 Bouton Enregistrer comme brouillon toujours actif : présent dans le footer si persistSessionDraft (StepperNavFooter.tsx:397-411).
-Sauvegarde automatique en fond : useEffect débouncé 300 ms écrit sessionStorage[TAE_DRAFT_STORAGE_KEY] à chaque mutation du state (FormState.tsx:95-109).
-Aperçu à droite toujours visible, mise à jour temps réel : FicheSommaireColumn lit state via useTaeForm, formStateToTae recalculé à chaque rendu (FicheSommaireColumn.tsx).
+Sauvegarde automatique en fond : useEffect débouncé 300 ms écrit sessionStorage[TACHE_DRAFT_STORAGE_KEY] à chaque mutation du state (FormState.tsx:95-109).
+Aperçu à droite toujours visible, mise à jour temps réel : FicheSommaireColumn lit state via useTacheForm, formStateToTache recalculé à chaque rendu (FicheSommaireColumn.tsx).
 Pas de scroll vertical du panneau d'édition : conteneur du wizard xl:h-[calc(100dvh-3rem)] xl:overflow-hidden + colonne édition xl:overflow-y-auto (index.tsx:104-106). À noter : la spec dit « chaque étape tient dans la hauteur disponible » — la colonne édition scrolle quand même en interne sur xl, la spec est plus stricte que le build (voir AMBIGUÏTÉ).
 ⚠ Écarts
 E3.1.1 — AMBIGUÏTÉ — Spec §3.1 : « Pas de scroll vertical dans le panneau d'édition : chaque étape tient dans la hauteur disponible ». Le build autorise un scroll interne (xl:overflow-y-auto sur la colonne édition). Soit la spec est trop stricte (il est probablement irréaliste de tenir Bloc 4 + Bloc 7 dans 100dvh sans scroll), soit le build a relâché la contrainte sciemment. À clarifier.
@@ -72,7 +72,7 @@ E3.1.2 — RÉGRESSION — Spec §5.3 : « Indicateur visible en permanence : "B
 3.2 Étape 1 — Signature
 ✓ Conformités
 Toggle Seul / En équipe via RadioCardGroup (Bloc1AuteursTache.tsx:42-63).
-Auteur = utilisateur courant en mode seul (résolu côté formStateToTae via previewMeta.authorFullName).
+Auteur = utilisateur courant en mode seul (résolu côté formStateToTache via previewMeta.authorFullName).
 Recherche de co-auteurs depuis le répertoire (CollaborateurSearchField.tsx + useCollaborateurProfileSearch.ts).
 Liste des co-auteurs avec bouton retirer (Bloc1AuteursTache.tsx:100-121).
 Validation : aucune — isConceptionStepComplete accepte seul immédiatement.
@@ -177,8 +177,8 @@ A3.8.1 — Bouton final « Terminer » / « Enregistrer dans la banque » à la 
 
 Section 4 — Aperçu et rendu
 ✓ Conformités
-§4.1 : aperçu à droite du wizard, mise à jour temps réel — FicheSommaireColumn recalcule formStateToTae à chaque mutation du state.
-§4.2 : sous-onglets dossier documentaire / questionnaire — TaePrintFeuilletToggle avec role="tablist" (TaePrintFeuilletToggle.tsx).
+§4.1 : aperçu à droite du wizard, mise à jour temps réel — FicheSommaireColumn recalcule formStateToTache à chaque mutation du state.
+§4.2 : sous-onglets dossier documentaire / questionnaire — TachePrintFeuilletToggle avec role="tablist" (TachePrintFeuilletToggle.tsx).
 §4.4 : page Letter, marges 2 cm, contenu nu — défini dans printable-fiche-preview.module.css + print-page-css.ts (@page { size: letter; margin: 2cm; }).
 §4.4 : grille bicolonne avec largeur automatique selon densité → shouldPrintDocumentFullWidth (print-document-full-width.ts) classe « simple » (auto-fit) ou « double » (documentCellFull) selon longueur de texte / présence de table / taille de listes.
 §4.4 : encadrement document avec label « Document N » + titre + contenu + source — PrintableDocumentCell (PrintableFichePreview.tsx:68-142).
@@ -189,7 +189,7 @@ E4.1 — RÉGRESSION — Spec §4.1 : « Onglet Aperçu sommaire — vue structu
 
 À classer comme RÉGRESSION ou INNOVATION ? La modale est sans doute plus agréable pour vérifier la mise en page A4 (pas de compression), mais on perd la cohabitation continue des deux vues. À trancher.
 
-E4.2 — RÉGRESSION — Spec §4.3 : « Toggle Formatif / Sommatif — présent uniquement dans le sous-onglet Questionnaire. Bascule vers Sommatif masque le guidage en temps réel. ». Pas trouvé. La donnée showGuidageOnStudentSheet existe dans TaeFicheData et est consommée par shouldShowGuidageOnStudentSheet mais aucun composant UI ne la modifie. Le toggle Formatif/Sommatif n'est exposé nulle part dans le wizard ni dans la modale d'aperçu impression. Cherché : grep Formatif, Sommatif, showGuidageOnStudentSheet= (assignation) → seul le PASSAGE en lecture est trouvé, pas d'écriture par l'utilisateur. Fichier suggéré : à ajouter dans TaePrintFeuilletToggle.tsx (à étendre) ou nouveau composant dans preview/.
+E4.2 — RÉGRESSION — Spec §4.3 : « Toggle Formatif / Sommatif — présent uniquement dans le sous-onglet Questionnaire. Bascule vers Sommatif masque le guidage en temps réel. ». Pas trouvé. La donnée showGuidageOnStudentSheet existe dans TacheFicheData et est consommée par shouldShowGuidageOnStudentSheet mais aucun composant UI ne la modifie. Le toggle Formatif/Sommatif n'est exposé nulle part dans le wizard ni dans la modale d'aperçu impression. Cherché : grep Formatif, Sommatif, showGuidageOnStudentSheet= (assignation) → seul le PASSAGE en lecture est trouvé, pas d'écriture par l'utilisateur. Fichier suggéré : à ajouter dans TachePrintFeuilletToggle.tsx (à étendre) ou nouveau composant dans preview/.
 
 E4.3 — RÉGRESSION — Spec §4.4 : « Si les documents débordent, le système signale le problème en temps réel : "Le dossier documentaire dépasse une page. Réduisez le nombre de documents…" ». Pas implémenté. Aucun calcul de débordement actif (grep dépasse, overflow.\*page, isOverflow → 0 occurrence pertinente). Le CSS commente même « Limite UA : si le bloc dépasse une page entière, fragmentation ou débordement possible » (printable-fiche-preview.module.css) — donc le débordement existe mais n'est pas signalé.
 
@@ -206,7 +206,7 @@ A4.3 — Onglet inline « Aperçu sommaire / Aperçu imprimé » dans la colonne
 
 Section 5 — Architecture technique
 ✓ Conformités
-§5.1 Rendu unique : PrintableFicheFromTaeData est utilisé à la fois dans PrintPreviewModal (aperçu écran) et la route /questions/[id]/print (impression). Pas de double-rendereur. CSS print appliqué via print-page-css.ts injecté par la modale.
+§5.1 Rendu unique : PrintableFicheFromTacheData est utilisé à la fois dans PrintPreviewModal (aperçu écran) et la route /questions/[id]/print (impression). Pas de double-rendereur. CSS print appliqué via print-page-css.ts injecté par la modale.
 §5.2 Layout engine isolé : shouldPrintDocumentFullWidth est une fonction pure dans lib/tache/, réutilisable par tout consommateur. La spec décrit « algorithme glouton et local » — le code est encore plus simple (un booléen par document), ce qui convient.
 §5.3 Sauvegarde automatique en fond : useEffect débouncé 300 ms (FormState.tsx:95-109).
 §5.3 Brouillon explicite : saveWizardDraftAction côté serveur via bouton « Sauvegarder le brouillon » (StepperNavFooter.tsx:399-411).

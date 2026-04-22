@@ -1,4 +1,4 @@
-import type { UploadTaeDocumentImageValidationReason } from "@/lib/types/upload-tae-document-image";
+import type { UploadTacheDocumentImageValidationReason } from "@/lib/types/upload-tache-document-image";
 import {
   IMAGE_UPLOAD_ERROR_FILE_TOO_LARGE_AFTER_RESIZE,
   IMAGE_UPLOAD_ERROR_FORMAT_NOT_ACCEPTED,
@@ -8,7 +8,7 @@ import {
 } from "@/lib/ui/ui-copy";
 
 export function messageForUploadValidationReason(
-  reason: UploadTaeDocumentImageValidationReason | undefined,
+  reason: UploadTacheDocumentImageValidationReason | undefined,
 ): string {
   switch (reason) {
     case "oversized":

@@ -8,7 +8,7 @@ import {
   BLOC3_MODAL_ASPECTS_BODY,
   BLOC3_MODAL_ASPECTS_TITLE,
 } from "@/components/tache/wizard/bloc3/modalCopy";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import type { DisciplineCode, NiveauCode } from "@/lib/tache/blueprint-helpers";
 import { isConnaissancesStepGateOk } from "@/lib/tache/connaissances-step-guards";
 import {
@@ -36,7 +36,7 @@ import { RequiredMark } from "@/components/ui/RequiredMark";
  * Étape 7 — Aspects de société + connaissances relatives — docs/WORKFLOWS.md
  */
 export function Bloc7AspectsConnaissances() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const discipline = state.bloc2.discipline as DisciplineCode;
   const niveau = state.bloc2.niveau as NiveauCode;
   const [rows, setRows] = useState<ConnRawRow[] | null>(null);

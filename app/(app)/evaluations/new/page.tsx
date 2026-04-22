@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import {
   getEvaluationPickerBankPage,
   getEvaluationPickerMinePage,
-} from "@/lib/queries/evaluation-tae-picker";
+} from "@/lib/queries/evaluation-tache-picker";
 
 export default async function NewEvaluationPage() {
   const supabase = await createClient();

@@ -60,7 +60,7 @@ export function connaissanceRealiteLookupVariants(
   return out;
 }
 
-/** Pour `TaeFicheData` / API — retire l’identifiant de ligne du JSON source. */
+/** Pour `TacheFicheData` / API — retire l’identifiant de ligne du JSON source. */
 export function connaissancesToFicheSlice(
   rows: ConnaissanceSelectionWithIds[],
 ): ConnaissanceSelection[] {

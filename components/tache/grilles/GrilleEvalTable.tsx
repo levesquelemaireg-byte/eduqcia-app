@@ -33,14 +33,14 @@ export function GrilleEvalTable({ entry, outilEvaluationId, viewport = "default"
         ? outilEvaluationId.trim()
         : "—";
     return (
-      <div className={shellClass} data-tae-print-eval-grid>
+      <div className={shellClass} data-tache-print-eval-grid>
         <GrilleAbsente id={idLabel} />
       </div>
     );
   }
 
   return (
-    <div className={shellClass} data-tae-print-eval-grid>
+    <div className={shellClass} data-tache-print-eval-grid>
       {renderGrilleNode(entry)}
     </div>
   );

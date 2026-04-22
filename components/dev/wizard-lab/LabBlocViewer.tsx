@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * Monte le vrai composant bloc résolu dans un TaeFormProvider avec state mocké.
+ * Monte le vrai composant bloc résolu dans un TacheFormProvider avec state mocké.
  * Même logique que index.tsx — resolveWizardBlocComponent + fallback BLOC_COMPONENTS.
  */
 import { type ComponentType, useMemo } from "react";
-import { TaeFormProvider } from "@/components/tache/wizard/FormState";
+import { TacheFormProvider } from "@/components/tache/wizard/FormState";
 import { Bloc3ConsigneProduction } from "@/components/tache/wizard/bloc3/Bloc3ConsigneProduction";
 import Bloc3ModeleSouple from "@/components/tache/wizard/bloc3/templates/Bloc3ModeleSouple";
 import Bloc3TemplateStructure from "@/components/tache/wizard/bloc3/templates/Bloc3TemplateStructure";
@@ -18,12 +18,12 @@ import { FicheSommaireColumn } from "@/components/tache/wizard/sommaire";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import {
-  initialTaeFormState,
-  TAE_REDACTION_STEP_INDEX,
-  TAE_DOCUMENTS_STEP_INDEX,
-  TAE_BLOC5_STEP_INDEX,
-  type TaeFormState,
-} from "@/lib/tache/tae-form-state-types";
+  initialTacheFormState,
+  TACHE_REDACTION_STEP_INDEX,
+  TACHE_DOCUMENTS_STEP_INDEX,
+  TACHE_BLOC5_STEP_INDEX,
+  type TacheFormState,
+} from "@/lib/tache/tache-form-state-types";
 import { documentSlotsFromCount } from "@/lib/tache/blueprint-helpers";
 import { emptyPerspectives, emptyMoments } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import type { OiEntryJson } from "@/lib/types/oi";
@@ -50,13 +50,13 @@ function resolveBloc(comportementId: string, bloc: 3 | 4 | 5): ComponentType {
   // Bloc 5 — toujours Bloc5 (son routing interne gère intrus/redactionnel)
   if (bloc === 5) return Bloc5;
 
-  const stepIndex = bloc === 3 ? TAE_REDACTION_STEP_INDEX : TAE_DOCUMENTS_STEP_INDEX;
+  const stepIndex = bloc === 3 ? TACHE_REDACTION_STEP_INDEX : TACHE_DOCUMENTS_STEP_INDEX;
 
   // Passe 1 — NR par variant_slug
   const slug = getVariantSlugForComportementId(comportementId);
   if (slug) {
     const pair = NR_BLOCS[slug];
-    if (pair) return stepIndex === TAE_REDACTION_STEP_INDEX ? pair.Bloc3 : pair.Bloc4;
+    if (pair) return stepIndex === TACHE_REDACTION_STEP_INDEX ? pair.Bloc3 : pair.Bloc4;
   }
 
   // Passe 2 — WizardBlocConfig
@@ -90,7 +90,7 @@ function buildMockedState(
   comportementId: string,
   bloc: 3 | 4 | 5,
   oiList: OiEntryJson[],
-): TaeFormState {
+): TacheFormState {
   const oi = oiList.find((o) => o.comportements_attendus.some((c) => c.id === comportementId));
   const comp = oi?.comportements_attendus.find((c) => c.id === comportementId);
   const nb = comp?.nb_documents ?? 1;
@@ -98,16 +98,16 @@ function buildMockedState(
 
   const stepIndex =
     bloc === 3
-      ? TAE_REDACTION_STEP_INDEX
+      ? TACHE_REDACTION_STEP_INDEX
       : bloc === 4
-        ? TAE_DOCUMENTS_STEP_INDEX
-        : TAE_BLOC5_STEP_INDEX;
+        ? TACHE_DOCUMENTS_STEP_INDEX
+        : TACHE_BLOC5_STEP_INDEX;
 
   return {
-    ...initialTaeFormState,
+    ...initialTacheFormState,
     currentStep: stepIndex,
     bloc2: {
-      ...initialTaeFormState.bloc2,
+      ...initialTacheFormState.bloc2,
       niveau: "sec3",
       discipline: "hqc",
       comportementId,
@@ -119,13 +119,13 @@ function buildMockedState(
       documentSlots: documentSlotsFromCount(nb),
     },
     bloc3: {
-      ...initialTaeFormState.bloc3,
+      ...initialTacheFormState.bloc3,
       consigne: "<p>Consigne de test — wizard lab.</p>",
       perspectivesMode:
         config?.bloc4.type === "perspectives" || config?.bloc4.type === "moments" ? "groupe" : null,
     },
     bloc4: {
-      ...initialTaeFormState.bloc4,
+      ...initialTacheFormState.bloc4,
       perspectives:
         config?.bloc4.type === "perspectives" ? emptyPerspectives(config.bloc4.count) : null,
       moments: config?.bloc4.type === "moments" ? emptyMoments(2) : null,
@@ -151,7 +151,7 @@ export function LabBlocViewer({ comportementId, bloc, showSommaire, oiList }: Pr
   const Comp = useMemo(() => resolveBloc(comportementId, bloc), [comportementId, bloc]);
 
   return (
-    <TaeFormProvider
+    <TacheFormProvider
       key={`${comportementId}-${bloc}`}
       serverInitialState={mockedState}
       persistSessionDraft={false}
@@ -171,6 +171,6 @@ export function LabBlocViewer({ comportementId, bloc, showSommaire, oiList }: Pr
           </div>
         ) : null}
       </div>
-    </TaeFormProvider>
+    </TacheFormProvider>
   );
 }

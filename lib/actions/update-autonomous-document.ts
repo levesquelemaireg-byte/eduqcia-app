@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { autonomousDocumentUpdateFormSchema } from "@/lib/schemas/autonomous-document";
 import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
 import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
-import { resolveConnaissanceSelectionsToIds } from "@/lib/tache/publish-tae-lookups";
+import { resolveConnaissanceSelectionsToIds } from "@/lib/tache/publish-tache-lookups";
 import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import { DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR } from "@/lib/ui/ui-copy";
 import { createClient } from "@/lib/supabase/server";

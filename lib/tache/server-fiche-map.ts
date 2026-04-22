@@ -1,5 +1,5 @@
 /**
- * Mappe les lignes Supabase → `TaeFicheData` pour la page lecture.
+ * Mappe les lignes Supabase → `TacheFicheData` pour la page lecture.
  */
 
 import type { SupabaseClient } from "@supabase/supabase-js";
@@ -7,7 +7,7 @@ import type {
   ConnaissanceSelection,
   DocumentFiche,
   PeerVoteTally,
-  TaeFicheData,
+  TacheFicheData,
 } from "@/lib/types/fiche";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { canonicalOiIcone } from "@/lib/tache/oi-canonical";
@@ -22,7 +22,7 @@ import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-docume
 import type { Database } from "@/lib/types/database";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
 
-type TaeRow = {
+type TacheRow = {
   id: string;
   auteur_id: string;
   consigne: string | null;
@@ -60,10 +60,10 @@ function slotLetterFromSlot(slot: string): "A" | "B" | "C" | "D" {
   return "D";
 }
 
-export async function fetchTaeFicheBundle(
+export async function fetchTacheFicheBundle(
   supabase: SupabaseClient,
   id: string,
-): Promise<{ fiche: TaeFicheData; votes: PeerVoteTally | null } | null> {
+): Promise<{ fiche: TacheFicheData; votes: PeerVoteTally | null } | null> {
   const { data: raw, error } = await supabase
     .from("tae")
     .select(
@@ -73,7 +73,7 @@ export async function fetchTaeFicheBundle(
     .maybeSingle();
 
   if (error || !raw) return null;
-  const t = raw as unknown as TaeRow;
+  const t = raw as unknown as TacheRow;
 
   const [auteurRes, oiRes, compRes, niveauRes, discRes, cdRes, collabRes, docLinksRes, voteRes] =
     await Promise.all([
@@ -231,7 +231,7 @@ export async function fetchTaeFicheBundle(
 
   const oiData = oiRes.data as { id: string; titre: string; icone: string | null } | null;
   const iconeFromJson = canonicalOiIcone(oiData?.id ?? t.oi_id);
-  const oi: TaeFicheData["oi"] = oiData
+  const oi: TacheFicheData["oi"] = oiData
     ? {
         id: oiData.id,
         titre: oiData.titre,
@@ -248,7 +248,7 @@ export async function fetchTaeFicheBundle(
     enonce: string;
     outil_evaluation: string;
   } | null;
-  const comportement: TaeFicheData["comportement"] = compData
+  const comportement: TacheFicheData["comportement"] = compData
     ? { id: compData.id, enonce: compData.enonce }
     : { id: t.comportement_id ?? "", enonce: "" };
   const outilEvaluation = compData?.outil_evaluation ?? null;
@@ -267,7 +267,7 @@ export async function fetchTaeFicheBundle(
   const showGuidageOnStudentSheet = variantSlug !== null ? true : undefined;
   const guidageHtml = t.guidage ?? "";
 
-  const fiche: TaeFicheData = {
+  const fiche: TacheFicheData = {
     id: t.id,
     auteur_id: t.auteur_id,
     auteurs: auteursSorted,

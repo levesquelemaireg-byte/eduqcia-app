@@ -1,9 +1,9 @@
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
 import { isCdStepComplete, isCdStepGateOk } from "@/lib/tache/cd-step-guards";
 
 /** Accès étape indexation (Bloc 7) : même base que Bloc 5 + étape compétence disciplinaire complète. */
-export function isConnaissancesStepGateOk(state: TaeFormState): boolean {
+export function isConnaissancesStepGateOk(state: TacheFormState): boolean {
   if (!isCdStepGateOk(state)) return false;
   return isCdStepComplete(state);
 }
@@ -11,7 +11,7 @@ export function isConnaissancesStepGateOk(state: TaeFormState): boolean {
 /**
  * Au moins une connaissance pour HEC/HQC. Géographie : pas de fichier (comme CD) — étape complète sans sélection.
  */
-export function isConnaissancesStepComplete(state: TaeFormState): boolean {
+export function isConnaissancesStepComplete(state: TacheFormState): boolean {
   const disc = state.bloc2.discipline as DisciplineCode;
   if (disc === "geo") return true;
   return state.bloc7.connaissances.length >= 1;

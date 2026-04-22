@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { FicheMode, CompetenceData, ConnaissancesData } from "@/lib/fiche/types";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
@@ -29,7 +29,7 @@ import {
 } from "@/lib/ui/ui-copy";
 
 type Props = {
-  tae: TaeFicheData;
+  tache: TacheFicheData;
 };
 
 /**
@@ -37,24 +37,24 @@ type Props = {
  * Utilise RailLayout + SectionRail partagés — le conteneur responsive
  * est géré par VueDetailleeLayout (border-l sticky en sidebar, empilé en stacked).
  */
-export function TacheRail({ tae }: Props) {
+export function TacheRail({ tache }: Props) {
   const mode: FicheMode = "lecture";
-  const niveau = useMemo(() => selectRailNiveau(tae), [tae]);
-  const discipline = useMemo(() => selectRailDiscipline(tae), [tae]);
-  const aspects = useMemo(() => selectRailAspects(tae), [tae]);
-  const competence = useMemo(() => selectRailCompetence(tae), [tae]);
-  const connaissances = useMemo(() => selectRailConnaissances(tae), [tae]);
-  const docsCompte = useMemo(() => selectRailDocumentsCompte(tae), [tae]);
-  const auteur = useMemo(() => selectRailAuteur(tae), [tae]);
-  const dates = useMemo(() => selectRailDates(tae), [tae]);
-  const statut = useMemo(() => selectRailStatut(tae), [tae]);
+  const niveau = useMemo(() => selectRailNiveau(tache), [tache]);
+  const discipline = useMemo(() => selectRailDiscipline(tache), [tache]);
+  const aspects = useMemo(() => selectRailAspects(tache), [tache]);
+  const competence = useMemo(() => selectRailCompetence(tache), [tache]);
+  const connaissances = useMemo(() => selectRailConnaissances(tache), [tache]);
+  const docsCompte = useMemo(() => selectRailDocumentsCompte(tache), [tache]);
+  const auteur = useMemo(() => selectRailAuteur(tache), [tache]);
+  const dates = useMemo(() => selectRailDates(tache), [tache]);
+  const statut = useMemo(() => selectRailStatut(tache), [tache]);
 
   const cdData: CompetenceData | null = competence ? { cd: competence.cd } : null;
   const connData: ConnaissancesData | null = connaissances
     ? { connaissances: connaissances.connaissances }
     : null;
 
-  const oiGlyph = tae.oi?.icone ?? "";
+  const oiGlyph = tache.oi?.icone ?? "";
 
   return (
     <RailLayout>
@@ -76,9 +76,9 @@ export function TacheRail({ tae }: Props) {
       </SectionRail>
 
       {/* Outil d'évaluation */}
-      {tae.outilEvaluation && (
+      {tache.outilEvaluation && (
         <SectionRail titre="Outil d'évaluation">
-          <MetaRowSimple icon="table" label={tae.outilEvaluation} noBorderTop />
+          <MetaRowSimple icon="table" label={tache.outilEvaluation} noBorderTop />
         </SectionRail>
       )}
 

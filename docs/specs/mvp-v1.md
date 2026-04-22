@@ -185,7 +185,7 @@ Ces exigences s'appliquent à l'ensemble des fonctionnalités du MVP v1.
 - Architecture serveur-first avec Server Actions (pas de route handlers REST inutiles)
 - Conventions de nommage du projet respectées (voir `CLAUDE.md`)
 - Tests unitaires sur la logique métier critique
-- Tests d'intégration sur les Server Actions critiques (au minimum `publishTaeAction`, `saveWizardDraftAction`, `publishEpreuveAction`)
+- Tests d'intégration sur les Server Actions critiques (au minimum `publishTacheAction`, `saveWizardDraftAction`, `publishEpreuveAction`)
 
 **UX et accessibilité**
 
@@ -242,7 +242,7 @@ Ces coupes ne sont **pas** acceptées d'avance — elles ne s'activent que si la
 - Toutes les OI et comportements attendus supportés (C13)
 - Capacité technique 23+ tâches par épreuve (C16)
 - Aucun bug bloquant sur les 5 parcours principaux
-- Tests d'intégration sur les 3 Server Actions critiques (publishTae, saveWizardDraft, publishEpreuve)
+- Tests d'intégration sur les 3 Server Actions critiques (publishTache, saveWizardDraft, publishEpreuve)
 
 ---
 

@@ -21,7 +21,7 @@
 
 - **« Charger plus »** — pas de pagination classique numérotée, pas d’infinite scroll automatique.
 - **Taille de page banque :** **20** résultats par chargement (tâches, documents, épreuves).
-- **Picker épreuve (hors liste banque) :** **8** résultats par page — `lib/queries/evaluation-tae-picker.ts` (`EVALUATION_PICKER_PAGE_SIZE`). Deux standards **volontairement distincts** ; les documenter dans les composants concernés.
+- **Picker épreuve (hors liste banque) :** **8** résultats par page — `lib/queries/evaluation-tache-picker.ts` (`EVALUATION_PICKER_PAGE_SIZE`). Deux standards **volontairement distincts** ; les documenter dans les composants concernés.
 - Le bouton « Charger plus » est masqué lorsque tous les résultats sont chargés.
 - Paramètre URL **`page`** (ou équivalent **offset / curseur** — à trancher à l’implémentation) pour synchroniser l’état avec un lien partageable.
 
@@ -86,7 +86,7 @@
 
 ### Query
 
-- **`lib/queries/bank-tasks.ts`** : **`getBankPublishedTaePage`** — filtres, tri, pagination / offset (remplace l’ancienne liste non paginée).
+- **`lib/queries/bank-tasks.ts`** : **`getBankPublishedTachePage`** — filtres, tri, pagination / offset (remplace l’ancienne liste non paginée).
 - Ne pas confondre avec la liste **Mes tâches** ni la sentinelle wizard `MY_QUESTIONS_WIZARD_SERVER_DRAFT_ID`.
 
 ---
@@ -251,8 +251,8 @@ Si `consigne` est **NULL**, l’expression PostgreSQL s’évalue en **NULL** (p
 
 ## Implémentation actuelle (référence)
 
-- **`/bank`** : onglets **Tâches** / **Documents** / **Épreuves**. **Tâches** : vue **`banque_tae`**, `getBankPublishedTaePage` (`lib/queries/bank-tasks.ts`) — filtres URL (OI, comportement, niveau, discipline, CD, aspects, connaissances, recherche `consigne_search_plain`), tri `recent` / `popular` (`bank_popularity_score`), pagination **20** + **Charger plus** ; UI `BankTasksPanel`, `BankTaskFilters`. **Documents** : `getBankPublishedDocumentsPage`, mêmes filtres qu’avant + pagination **20** + **Charger plus** (`BankDocumentsPanel`). **Épreuves** : `getBankPublishedEvaluationsPage` (`lib/queries/bank-evaluations.ts`), recherche titre, pagination **20** ; **Modifier** → `/evaluations/[id]/edit` **uniquement** si `auteur_id` = utilisateur connecté (`canEdit`) ; sinon copy `BANK_EVAL_NO_EDIT_OTHER` ; filtres dérivés (niveau, discipline, connaissances) — phase 2 (voir § dérivation épreuves).
-- **`parseBankOnglet`**, **`parseBankListPage`**, **`parseBankTaeQueryFromSearchParams`**, **`serializeBankTaeQueryForHref`** : `lib/queries/bank-tasks.ts` ; **`BankOnglets`**, **`BankAddToEvaluationLauncher`** : `components/bank/*`.
+- **`/bank`** : onglets **Tâches** / **Documents** / **Épreuves**. **Tâches** : vue **`banque_tae`**, `getBankPublishedTachePage` (`lib/queries/bank-tasks.ts`) — filtres URL (OI, comportement, niveau, discipline, CD, aspects, connaissances, recherche `consigne_search_plain`), tri `recent` / `popular` (`bank_popularity_score`), pagination **20** + **Charger plus** ; UI `BankTasksPanel`, `BankTaskFilters`. **Documents** : `getBankPublishedDocumentsPage`, mêmes filtres qu’avant + pagination **20** + **Charger plus** (`BankDocumentsPanel`). **Épreuves** : `getBankPublishedEvaluationsPage` (`lib/queries/bank-evaluations.ts`), recherche titre, pagination **20** ; **Modifier** → `/evaluations/[id]/edit` **uniquement** si `auteur_id` = utilisateur connecté (`canEdit`) ; sinon copy `BANK_EVAL_NO_EDIT_OTHER` ; filtres dérivés (niveau, discipline, connaissances) — phase 2 (voir § dérivation épreuves).
+- **`parseBankOnglet`**, **`parseBankListPage`**, **`parseBankTacheQueryFromSearchParams`**, **`serializeBankTacheQueryForHref`** : `lib/queries/bank-tasks.ts` ; **`BankOnglets`**, **`BankAddToEvaluationLauncher`** : `components/bank/*`.
 
 ---
 

@@ -16,7 +16,7 @@ import {
   SELECT_PLACEHOLDER_COMPORTEMENT,
 } from "@/lib/ui/ui-copy";
 
-const LABEL_ID = "tae-comportement-label";
+const LABEL_ID = "tache-comportement-label";
 
 type Props = {
   comportements: ComportementAttenduJson[];

@@ -3,7 +3,7 @@ import { resolveConsigneHtmlForDisplay } from "@/lib/tache/consigne-helpers";
 import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 import { sanitize } from "@/lib/fiche/helpers";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import { GrilleEvaluationMetaButton } from "@/components/tache/fiche/GrilleEvaluationMetaButton";
 import { MetaPill } from "@/components/tache/fiche/MetaPill";
 import { SkeletonConsigneBody } from "@/components/tache/fiche/FicheSkeletons";
@@ -12,7 +12,7 @@ import { MaterialSymbolOiGlyph } from "@/components/ui/MaterialSymbolOiGlyph";
 import { cn } from "@/lib/utils/cn";
 
 type Props = {
-  tae: TaeFicheData;
+  tache: TacheFicheData;
   /** Menu ⋮ (lecture) — coin supérieur droit du bloc consigne, sans colonne dédiée. */
   headerMenu?: ReactNode;
 };
@@ -21,17 +21,17 @@ type Props = {
  * En-tête P0 fiche — grille 96px + corps (consigne, pastilles). Séparateur sous P0 : `FicheTache` + `FICHE_HAIRLINE_RULE`.
  * FICHE-TACHE.md §3 — pastilles dès que blueprint / rédaction fournit des libellés.
  */
-export function SectionConsigne({ tae, headerMenu }: Props) {
-  const consigneOk = hasFicheContent(tae.consigne);
-  const showOiPill = Boolean(tae.oi.titre?.trim());
-  const showComportementPill = Boolean(tae.comportement.id?.trim());
-  const showAspectsPill = tae.aspects_societe.length > 0;
+export function SectionConsigne({ tache, headerMenu }: Props) {
+  const consigneOk = hasFicheContent(tache.consigne);
+  const showOiPill = Boolean(tache.oi.titre?.trim());
+  const showComportementPill = Boolean(tache.comportement.id?.trim());
+  const showAspectsPill = tache.aspects_societe.length > 0;
   const showMetaPills =
     showOiPill ||
     showComportementPill ||
     showAspectsPill ||
-    Boolean(tae.niveau.label?.trim()) ||
-    Boolean(tae.discipline.label?.trim());
+    Boolean(tache.niveau.label?.trim()) ||
+    Boolean(tache.discipline.label?.trim());
   const showOiIcon = consigneOk || showOiPill;
 
   return (
@@ -39,7 +39,7 @@ export function SectionConsigne({ tae, headerMenu }: Props) {
       <div className="relative flex items-center justify-center px-1 py-0">
         {showOiIcon ? (
           <MaterialSymbolOiGlyph
-            glyph={tae.oi.icone}
+            glyph={tache.oi.icone}
             className="leading-none text-accent opacity-[0.88]"
             style={{
               fontSize: "clamp(2.5rem, 4.25vmin, 3.35rem)",
@@ -87,8 +87,8 @@ export function SectionConsigne({ tae, headerMenu }: Props) {
             dangerouslySetInnerHTML={{
               __html: sanitize(
                 resolveConsigneHtmlForDisplay(
-                  prepareNonRedactionConsigneForTeacherDisplay(tae.consigne),
-                  tae.documents.length,
+                  prepareNonRedactionConsigneForTeacherDisplay(tache.consigne),
+                  tache.documents.length,
                 ),
               ),
             }}
@@ -101,18 +101,20 @@ export function SectionConsigne({ tae, headerMenu }: Props) {
 
         {showMetaPills ? (
           <div className="flex flex-wrap items-stretch gap-2">
-            {/* Pastille OI : icône générique catégorie ; grand glyphe marge = `MaterialSymbolOiGlyph` + `tae.oi.icone`. */}
-            {showOiPill ? <MetaPill icon="psychology" label={tae.oi.titre} /> : null}
+            {/* Pastille OI : icône générique catégorie ; grand glyphe marge = `MaterialSymbolOiGlyph` + `tache.oi.icone`. */}
+            {showOiPill ? <MetaPill icon="psychology" label={tache.oi.titre} /> : null}
             <GrilleEvaluationMetaButton
               visible={showComportementPill}
-              outilEvaluation={tae.outilEvaluation}
+              outilEvaluation={tache.outilEvaluation}
             />
-            {tae.niveau.label?.trim() ? <MetaPill icon="school" label={tae.niveau.label} /> : null}
-            {tae.discipline.label?.trim() ? (
-              <MetaPill icon="menu_book" label={tae.discipline.label} />
+            {tache.niveau.label?.trim() ? (
+              <MetaPill icon="school" label={tache.niveau.label} />
+            ) : null}
+            {tache.discipline.label?.trim() ? (
+              <MetaPill icon="menu_book" label={tache.discipline.label} />
             ) : null}
             {showAspectsPill ? (
-              <MetaPill icon="deployed_code" label={tae.aspects_societe.join(" · ")} />
+              <MetaPill icon="deployed_code" label={tache.aspects_societe.join(" · ")} />
             ) : null}
           </div>
         ) : null}

@@ -176,15 +176,15 @@ async function main(): Promise<void> {
   const supabase = createServiceClient();
 
   if (!fillEmpty) {
-    const { count: taeCount, error: taeErr } = await supabase
+    const { count: tacheCount, error: tacheErr } = await supabase
       .from("tae")
       .select("*", { count: "exact", head: true });
-    if (taeErr) {
-      console.error("Erreur lecture tae:", taeErr);
+    if (tacheErr) {
+      console.error("Erreur lecture tae:", tacheErr);
       process.exitCode = 1;
       return;
     }
-    if ((taeCount ?? 0) > 0) {
+    if ((tacheCount ?? 0) > 0) {
       console.error(
         "Refus : la table `tae` contient déjà des lignes. Le réensemencement destructif des cd / connaissances pourrait invalider les références.",
       );

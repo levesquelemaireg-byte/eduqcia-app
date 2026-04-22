@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import { deleteWizardDraftAction } from "@/lib/actions/tae-draft";
-import { deleteTaeAction } from "@/lib/actions/tae-delete";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
+import { deleteWizardDraftAction } from "@/lib/actions/tache-draft";
+import { deleteTacheAction } from "@/lib/actions/tache-delete";
+import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
 import { cn } from "@/lib/utils/cn";
 import {
   MY_QUESTIONS_DELETE_BLOCKED_IN_EVALUATION,
@@ -50,7 +50,7 @@ export function MesQuestionsRow({
         setConfirmOpen(false);
         if (result.ok) {
           try {
-            sessionStorage.removeItem(TAE_DRAFT_STORAGE_KEY);
+            sessionStorage.removeItem(TACHE_DRAFT_STORAGE_KEY);
           } catch {
             /* ignore */
           }
@@ -62,7 +62,7 @@ export function MesQuestionsRow({
         return;
       }
 
-      const result = await deleteTaeAction(id);
+      const result = await deleteTacheAction(id);
       setConfirmOpen(false);
       if (result.ok) {
         toast.success(TOAST_MES_QUESTIONS_DELETED);

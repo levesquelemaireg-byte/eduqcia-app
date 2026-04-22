@@ -22,7 +22,7 @@ Document de **référence normative** pour nommer et structurer les fragments de
 
 **Objectif :** noms **français**, **stables**, **grep-friendly**, qui disent **quoi** (métier) et **où** (app vs feuille).
 
-**Emplacement des fichiers (nouveaux fragments) :** les composants `…App` et `…Print` **extraits** vivent sous **`components/fragments/`** (un fichier **PascalCase** par composant — créer le dossier au premier besoin). Les **assembleurs** existants (`FicheTache`, `TaeCard`, `PrintableFicheFromTaeData`, etc.) restent sous leurs chemins actuels (souvent **`components/tache/`**) et importent depuis `components/fragments/`. Détail arborescence : [ARCHITECTURE.md](./ARCHITECTURE.md#structure-des-dossiers-état-du-dépôt).
+**Emplacement des fichiers (nouveaux fragments) :** les composants `…App` et `…Print` **extraits** vivent sous **`components/fragments/`** (un fichier **PascalCase** par composant — créer le dossier au premier besoin). Les **assembleurs** existants (`FicheTache`, `TacheCard`, `PrintableFicheFromTacheData`, etc.) restent sous leurs chemins actuels (souvent **`components/tache/`**) et importent depuis `components/fragments/`. Détail arborescence : [ARCHITECTURE.md](./ARCHITECTURE.md#structure-des-dossiers-état-du-dépôt).
 
 ---
 
@@ -62,7 +62,7 @@ Pour une copie élève **rédactionnelle**, les blocs habituels sont :
 | `EspaceReponseEleveRedactionnelFragment` | `EspaceReponseEleveRedactionnelApp` | `EspaceReponseEleveRedactionnelPrint` |
 | `GrilleCorrectionFragment`               | `GrilleCorrectionApp`               | `GrilleCorrectionPrint`               |
 
-**Note :** en code existant, des noms anglais historiques (`ConsigneContent`, `GridContent`, etc.) peuvent subsister ailleurs jusqu’à migration ; le playground DEV monte désormais **`FicheTache` / `TaeCard` / `PrintableFicheFromTaeData`** à partir de mocks `TaeFicheData` — [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md). Les **nouveaux** composants suivent ce tableau.
+**Note :** en code existant, des noms anglais historiques (`ConsigneContent`, `GridContent`, etc.) peuvent subsister ailleurs jusqu’à migration ; le playground DEV monte désormais **`FicheTache` / `TacheCard` / `PrintableFicheFromTacheData`** à partir de mocks `TacheFicheData` — [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md). Les **nouveaux** composants suivent ce tableau.
 
 ---
 
@@ -113,9 +113,9 @@ Ne pas inventer de `…Print` vide « pour faire pareil ».
 
 ## 8. Playground (DEV)
 
-- **`components/playground/*`** : UI DEV — sélecteur **OI / comportement** (`useOiData`) et onglets **contexte** (`FicheTache`, `TaeCard`, `PrintableFicheFromTaeData`).
-- **`lib/fragment-playground/mocks.ts`** : mocks **`TaeFicheData`** par `comportement_id` — **import playground uniquement**.
-- **`lib/fragment-playground/types.ts`** : onglets / clé `localStorage` — pas de duplication de `TaeFicheData`.
+- **`components/playground/*`** : UI DEV — sélecteur **OI / comportement** (`useOiData`) et onglets **contexte** (`FicheTache`, `TacheCard`, `PrintableFicheFromTacheData`).
+- **`lib/fragment-playground/mocks.ts`** : mocks **`TacheFicheData`** par `comportement_id` — **import playground uniquement**.
+- **`lib/fragment-playground/types.ts`** : onglets / clé `localStorage` — pas de duplication de `TacheFicheData`.
 - **Ne jamais importer** `components/playground/` ni `lib/fragment-playground/mocks.ts` depuis du code **production**.
 
 Détail : [FRAGMENT-PLAYGROUND.md](./FRAGMENT-PLAYGROUND.md).

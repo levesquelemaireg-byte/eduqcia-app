@@ -7,7 +7,7 @@
 
 import { createSelector } from "@/lib/fiche/helpers";
 import type { NonRedactionContent } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import {
   buildAvantApresConsigneHtml,
@@ -30,8 +30,8 @@ import {
 
 export const selectNRContent = createSelector(
   [
-    (state: TaeFormState) => state.bloc2.comportementId,
-    (state: TaeFormState) => state.bloc5.nonRedaction,
+    (state: TacheFormState) => state.bloc2.comportementId,
+    (state: TacheFormState) => state.bloc5.nonRedaction,
   ],
   (comportementId, nonRedaction): NonRedactionContent | null => {
     const slug = getVariantSlugForComportementId(comportementId);

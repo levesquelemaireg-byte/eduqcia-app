@@ -1,12 +1,12 @@
 import { ready, hidden } from "@/lib/fiche/helpers";
 import type { SectionState, GrilleData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
 /**
  * Grille d'évaluation — visible seulement si un outil d'évaluation est sélectionné.
  * Résout l'entrée complète depuis refs.grilles pour rendu inline.
  */
-export function selectGrille(state: TaeFormState, refs: SelectorRefs): SectionState<GrilleData> {
+export function selectGrille(state: TacheFormState, refs: SelectorRefs): SectionState<GrilleData> {
   const outil = state.bloc2.outilEvaluation;
   if (!outil) return hidden();
 

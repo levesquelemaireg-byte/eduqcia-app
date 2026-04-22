@@ -3,7 +3,7 @@ import "server-only";
 import fs from "fs";
 import path from "path";
 import { createClient } from "@/lib/supabase/server";
-import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
+import { fetchTacheFicheBundle } from "@/lib/tache/server-fiche-map";
 import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
 import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
@@ -72,14 +72,14 @@ export async function getEvaluationDetailBundle(
 
   if (linkErr) return null;
 
-  const taeIds = (links ?? []).map((l) => l.tae_id as string);
+  const tacheIds = (links ?? []).map((l) => l.tae_id as string);
 
-  // 4. Convertir chaque tâche TaeFicheData → DonneesTache
+  // 4. Convertir chaque tâche TacheFicheData → DonneesTache
   const grilles = chargerGrilles();
   const taches: DonneesTache[] = [];
 
-  for (const taeId of taeIds) {
-    const bundle = await fetchTaeFicheBundle(supabase, taeId);
+  for (const tacheId of tacheIds) {
+    const bundle = await fetchTacheFicheBundle(supabase, tacheId);
     if (!bundle) continue; // skip broken links
     taches.push(ficheTaVersDonneesTache(bundle.fiche, grilles));
   }

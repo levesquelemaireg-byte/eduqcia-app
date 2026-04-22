@@ -6,15 +6,15 @@ import {
 import { isDocumentsStepComplete } from "@/lib/tache/document-helpers";
 import type { ComportementConfig } from "@/lib/tache/behaviours/types";
 import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
-function lignePayload(state: TaeFormState) {
+function lignePayload(state: TacheFormState) {
   const nr = state.bloc5.nonRedaction;
   if (nr?.type !== "ligne-du-temps") return null;
   return normalizeLigneDuTempsPayload(nr.payload);
 }
 
-function isBloc6Complete(state: TaeFormState): boolean {
+function isBloc6Complete(state: TacheFormState): boolean {
   const disc = state.bloc2.discipline as DisciplineCode;
   if (disc === "geo") return true;
   const sel = state.bloc6.cd.selection;
@@ -22,7 +22,7 @@ function isBloc6Complete(state: TaeFormState): boolean {
   return [sel.competence, sel.composante, sel.critere].every((s) => s.trim().length > 0);
 }
 
-function isBloc7Complete(state: TaeFormState): boolean {
+function isBloc7Complete(state: TacheFormState): boolean {
   const disc = state.bloc2.discipline as DisciplineCode;
   if (!Object.values(state.bloc7.aspects).some(Boolean)) return false;
   if (disc === "geo") return true;

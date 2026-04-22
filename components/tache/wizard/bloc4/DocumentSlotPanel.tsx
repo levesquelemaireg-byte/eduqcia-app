@@ -9,7 +9,7 @@ import {
   slotLetter,
   type DocumentSlotData,
 } from "@/lib/tache/document-helpers";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { useDocumentSlotsAccordion } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { DocumentSlotCreateForm } from "@/components/tache/wizard/bloc4/DocumentSlotCreateForm";
 import { DocumentSlotIdleChoices } from "@/components/tache/wizard/bloc4/DocumentSlotIdleChoices";
@@ -27,7 +27,7 @@ type Props = {
 };
 
 export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const slot = getSlotData(state.bloc4.documents, slotId);
   const status = computeSlotStatus(slot);
   const letter = slotLetter(slotId);

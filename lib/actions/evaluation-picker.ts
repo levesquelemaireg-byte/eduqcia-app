@@ -5,7 +5,7 @@ import {
   getEvaluationPickerMinePage,
   type EvaluationPickerPage,
   type EvaluationPickerSource,
-} from "@/lib/queries/evaluation-tae-picker";
+} from "@/lib/queries/evaluation-tache-picker";
 
 export async function fetchEvaluationPickerPageAction(
   source: EvaluationPickerSource,

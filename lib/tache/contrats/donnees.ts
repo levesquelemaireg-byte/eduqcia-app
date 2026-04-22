@@ -1,6 +1,6 @@
 /**
  * Contrat de données pivot — type unique `DonneesTache`.
- * Remplace le legacy `TaeFicheData` pour la chaîne d'impression (print-engine v2.1 §4.1).
+ * Remplace le legacy `TacheFicheData` pour la chaîne d'impression (print-engine v2.1 §4.1).
  *
  * Le print-engine consomme un sous-ensemble via `Pick<DonneesTache, ...>` local.
  * Les selectors de `lib/fiche/selectors/` restent pour le sommaire wizard.
@@ -49,7 +49,7 @@ export type EspaceProduction =
  * Type pivot unique pour toutes les données d'une tâche.
  * Contient les données métier ET les données structurées pour l'impression.
  *
- * Champs métier issus de `TaeFicheData` (inchangés sémantiquement).
+ * Champs métier issus de `TacheFicheData` (inchangés sémantiquement).
  * Champs impression structurés (guidage, espaceProduction, outilEvaluation).
  */
 export type DonneesTache = {

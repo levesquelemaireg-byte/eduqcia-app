@@ -54,7 +54,7 @@ export function OiPicker({
     <div className="space-y-2">
       <div className="relative" ref={anchorRef}>
         <LabelWithInfo
-          id="tae-oi-label"
+          id="tache-oi-label"
           labelText="Opération intellectuelle"
           leadingIcon={BLOC2_STEPPER_ICON.oi}
           leadingIconTitle={materialIconTooltip(BLOC2_STEPPER_ICON.oi)}
@@ -64,7 +64,7 @@ export function OiPicker({
           type="button"
           aria-haspopup="listbox"
           aria-expanded={menuOpen}
-          aria-labelledby="tae-oi-label"
+          aria-labelledby="tache-oi-label"
           disabled={!disciplineSet}
           onClick={() => setMenuOpen((o) => !o)}
           className={listboxFieldClassName({

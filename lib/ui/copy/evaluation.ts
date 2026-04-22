@@ -35,7 +35,7 @@ export const TOAST_EVAL_PUBLISH_OK = "Épreuve publiée.";
 export const TOAST_EVAL_AUTH = "Connectez-vous pour enregistrer.";
 export const TOAST_EVAL_TITRE_REQUIS = "Indiquez un titre d'épreuve.";
 export const TOAST_EVAL_PUBLISH_EMPTY = "Ajoutez au moins une tâche avant de publier.";
-export const TOAST_EVAL_TAE_INELIGIBLE = "Une ou plusieurs tâches ne peuvent pas être ajoutées.";
+export const TOAST_EVAL_TACHE_INELIGIBLE = "Une ou plusieurs tâches ne peuvent pas être ajoutées.";
 export const TOAST_EVAL_NOT_FOUND = "Épreuve introuvable.";
 export const TOAST_EVAL_RPC_MISSING =
   "Enregistrement impossible : la fonction SQL save_evaluation_composition est absente sur Supabase. Appliquez la migration puis réessayez.";

@@ -76,7 +76,7 @@ La documentation du backlog est allégée : la chronologie détaillée est dépl
 
 ## 1er avril 2026 — Import NotebookLM et playground
 
-Le bundle d'import TAÉ via NotebookLM évolue rapidement à travers 6 versions (v1.1.1 à v2.3.0) : ajout des connaissances verbatim, protocole de vérification obligatoire en 12 passes, instructions d'autonomie pour le LLM, double stratégie (bundle + normalisation côté app), gestion des erreurs fréquentes. Un module de validation côté serveur (`normalize-llm-aliases`, `validate-tae-import-vs-oi`) est créé pour fiabiliser les imports.
+Le bundle d'import TAÉ via NotebookLM évolue rapidement à travers 6 versions (v1.1.1 à v2.3.0) : ajout des connaissances verbatim, protocole de vérification obligatoire en 12 passes, instructions d'autonomie pour le LLM, double stratégie (bundle + normalisation côté app), gestion des erreurs fréquentes. Un module de validation côté serveur (`normalize-llm-aliases`, `validate-tache-import-vs-oi`) est créé pour fiabiliser les imports.
 
 Le Fragment Playground (route dev `/dev/fragments`) est mis en place pour visualiser les composants React avec des mocks, avec 5 onglets (Wizard, Sommaire, Lecture, Thumbnail, Print) et navigation par OI/comportement.
 

@@ -1,14 +1,14 @@
 /**
- * Adapter : données minimales liste → TaeFicheData pour FicheThumbnail.
+ * Adapter : données minimales liste → TacheFicheData pour FicheThumbnail.
  *
  * En mode thumbnail, seuls header (OI icon + titre, niveau) et consigne
  * (line-clamp 3) sont rendus. Les champs non affichés reçoivent des
  * valeurs par défaut neutres.
  */
 
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 
-/** Entrée minimale nécessaire pour construire un TaeFicheData thumbnail. */
+/** Entrée minimale nécessaire pour construire un TacheFicheData thumbnail. */
 export type ThumbnailInput = {
   id: string;
   consigne: string;
@@ -22,8 +22,8 @@ export type ThumbnailInput = {
   nbDocuments: number;
 };
 
-/** Construit un TaeFicheData valide pour le mode thumbnail uniquement. */
-export function toThumbnailFicheData(input: ThumbnailInput): TaeFicheData {
+/** Construit un TacheFicheData valide pour le mode thumbnail uniquement. */
+export function toThumbnailFicheData(input: ThumbnailInput): TacheFicheData {
   const fakeDocs = Array.from({ length: input.nbDocuments }, (_, i) => ({
     letter: (["A", "B", "C", "D"] as const)[i] ?? ("A" as const),
     titre: "",

@@ -1,22 +1,25 @@
 import { createClient } from "@/lib/supabase/server";
-import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tache/tae-form-hydrate";
+import {
+  isWizardDraftObsoletePayload,
+  sanitizeHydratedState,
+} from "@/lib/tache/tache-form-hydrate";
 import { MY_QUESTIONS_WIZARD_PREVIEW_FALLBACK } from "@/lib/ui/ui-copy";
 import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
 import { truncateText } from "@/lib/utils/stripHtml";
 
 /** Valeurs d’URL `?filtre=` — alignées sur `docs/DECISIONS.md` (page Mes tâches). */
-export type MyTaeListFiltre = "toutes" | "brouillons" | "publiees";
+export type MyTacheListFiltre = "toutes" | "brouillons" | "publiees";
 
 /** Identifiant sentinelle pour la ligne « brouillon wizard » (pas d’UUID `tae`). */
 export const MY_QUESTIONS_WIZARD_SERVER_DRAFT_ID = "wizard-server-draft" as const;
 
-export function parseMyTaeListFiltre(raw: string | string[] | undefined): MyTaeListFiltre {
+export function parseMyTacheListFiltre(raw: string | string[] | undefined): MyTacheListFiltre {
   const v = Array.isArray(raw) ? raw[0] : raw;
   if (v === "brouillons" || v === "publiees" || v === "toutes") return v;
   return "toutes";
 }
 
-export type MyTaeRow = {
+export type MyTacheRow = {
   id: string;
   consigne: string | null;
   is_published: boolean;
@@ -32,7 +35,7 @@ export type MyEvaluationRow = {
   updated_at: string;
 };
 
-export async function getMyTaeList(filtre: MyTaeListFiltre = "toutes"): Promise<MyTaeRow[]> {
+export async function getMyTacheList(filtre: MyTacheListFiltre = "toutes"): Promise<MyTacheRow[]> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -55,7 +58,7 @@ export async function getMyTaeList(filtre: MyTaeListFiltre = "toutes"): Promise<
 
   if (error) return [];
 
-  const taeRows: MyTaeRow[] = (data ?? []).map((row) => ({
+  const tacheRows: MyTacheRow[] = (data ?? []).map((row) => ({
     id: row.id,
     consigne: row.consigne,
     is_published: row.is_published,
@@ -63,7 +66,7 @@ export async function getMyTaeList(filtre: MyTaeListFiltre = "toutes"): Promise<
   }));
 
   if (filtre === "publiees") {
-    return taeRows;
+    return tacheRows;
   }
 
   const { data: draftRow, error: draftErr } = await supabase
@@ -73,12 +76,12 @@ export async function getMyTaeList(filtre: MyTaeListFiltre = "toutes"): Promise<
     .maybeSingle();
 
   if (draftErr || !draftRow?.payload) {
-    return taeRows;
+    return tacheRows;
   }
 
   const rawPayload = draftRow.payload as unknown;
   if (isWizardDraftObsoletePayload(rawPayload)) {
-    return taeRows;
+    return tacheRows;
   }
 
   const hydrated = sanitizeHydratedState(rawPayload);
@@ -89,7 +92,7 @@ export async function getMyTaeList(filtre: MyTaeListFiltre = "toutes"): Promise<
   const preview =
     rawPreview.length > 0 ? truncateText(rawPreview, 160) : MY_QUESTIONS_WIZARD_PREVIEW_FALLBACK;
 
-  const wizardRow: MyTaeRow = {
+  const wizardRow: MyTacheRow = {
     id: MY_QUESTIONS_WIZARD_SERVER_DRAFT_ID,
     consigne: preview,
     is_published: false,
@@ -97,7 +100,7 @@ export async function getMyTaeList(filtre: MyTaeListFiltre = "toutes"): Promise<
     isWizardServerDraft: true,
   };
 
-  return [...taeRows, wizardRow].sort(
+  return [...tacheRows, wizardRow].sort(
     (a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime(),
   );
 }

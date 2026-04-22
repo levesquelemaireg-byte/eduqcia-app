@@ -1,4 +1,4 @@
-/** Plafond avant envoi — aligné action serveur `uploadTaeDocumentImageAction`. */
+/** Plafond avant envoi — aligné action serveur `uploadTacheDocumentImageAction`. */
 export const IMAGE_UPLOAD_MAX_BYTES = 10 * 1024 * 1024;
 
 export const CLIENT_IMAGE_ALLOWED_TYPES = new Set<string>([

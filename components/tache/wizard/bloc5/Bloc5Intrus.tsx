@@ -12,7 +12,7 @@ import { RequiredMark } from "@/components/ui/RequiredMark";
 import { intrusRadioLabels } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import { emptyPerspective } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import type { PerspectiveLetter } from "@/lib/tache/oi-perspectives/perspectives-types";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import {
   PERSP_BLOC5_INTRUS_LABEL,
   PERSP_BLOC5_DIFFERENCE_LABEL,

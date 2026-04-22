@@ -6,7 +6,7 @@ function voteLevelToNumber(v: string): number {
 }
 
 export type DashboardStats = {
-  taePublished: number;
+  tachePublished: number;
   evaluationsCount: number;
   unreadNotifications: number;
   favoritesCount: number;
@@ -31,7 +31,7 @@ export async function getUnreadNotificationCount(userId: string): Promise<number
 export async function getDashboardStats(userId: string): Promise<DashboardStats> {
   const supabase = await createClient();
 
-  const [taePub, evals, notifs, favs, taeIdsRes, unpublishedDocsRes] = await Promise.all([
+  const [tachePub, evals, notifs, favs, tacheIdsRes, unpublishedDocsRes] = await Promise.all([
     supabase
       .from("tae")
       .select("id", { count: "exact", head: true })
@@ -62,15 +62,15 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       .eq("is_published", false),
   ]);
 
-  const taeIds = (taeIdsRes.data ?? []).map((r) => r.id);
+  const tacheIds = (tacheIdsRes.data ?? []).map((r) => r.id);
   let averageConfidence: number | null = null;
   let votesCount = 0;
 
-  if (taeIds.length > 0) {
+  if (tacheIds.length > 0) {
     const { data: voteRows } = await supabase
       .from("votes")
       .select("rigueur_historique, clarte_consigne, alignement_ministeriel")
-      .in("tae_id", taeIds);
+      .in("tae_id", tacheIds);
 
     if (voteRows?.length) {
       votesCount = voteRows.length;
@@ -90,7 +90,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
   }
 
   return {
-    taePublished: taePub.count ?? 0,
+    tachePublished: tachePub.count ?? 0,
     evaluationsCount: evals.count ?? 0,
     unreadNotifications: notifs.count ?? 0,
     favoritesCount: favs.count ?? 0,

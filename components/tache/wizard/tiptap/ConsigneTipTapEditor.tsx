@@ -12,7 +12,7 @@ import { RichTextEditorShell } from "@/components/ui/RichTextEditorShell";
 import { getMissingDocLetters } from "@/lib/tache/consigne-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 
-const AUTOSAVE_KEY = "eduqcia-tae-consigne-new";
+const AUTOSAVE_KEY = "eduqcia-tache-consigne-new";
 
 function slotIdToLetter(slotId: DocumentSlotId): "A" | "B" | "C" | "D" {
   if (slotId === "doc_A") return "A";

@@ -3,8 +3,8 @@ import { DocumentBankCompletionCard } from "@/components/documents/DocumentBankC
 import { DocumentVueDetaillee } from "@/components/document/vue-detaillee";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
 import { createClient } from "@/lib/supabase/server";
-import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
-import { copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
+import { countPublishedTacheUsagesForDocument } from "@/lib/queries/document-read";
+import { copyDocumentPublishedTacheUsageCount } from "@/lib/ui/ui-copy";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -37,7 +37,7 @@ export default async function DocumentReadPage({ params }: PageProps) {
   const connIds = doc.connaissances_ids ?? [];
 
   const [usageCount, niveauRows, discRows, connRows, profileRow] = await Promise.all([
-    countPublishedTaeUsagesForDocument(supabase, id),
+    countPublishedTacheUsagesForDocument(supabase, id),
     niveauIds.length
       ? supabase.from("niveaux").select("label").in("id", niveauIds)
       : Promise.resolve({ data: [] as { label: string }[] }),
@@ -97,7 +97,7 @@ export default async function DocumentReadPage({ params }: PageProps) {
           connLabels,
           authorName,
           created,
-          usageCaption: copyDocumentPublishedTaeUsageCount(usageCount),
+          usageCaption: copyDocumentPublishedTacheUsageCount(usageCount),
           isPublished: doc.is_published ?? false,
         }}
         estAuteur={estAuteur}

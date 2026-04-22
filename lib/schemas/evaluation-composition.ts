@@ -17,7 +17,7 @@ export const evaluationCompositionBodySchema = z.object({
     .union([z.null(), z.literal(""), uuidString, z.undefined()])
     .transform((v) => (v === "" || v === null || v === undefined ? null : v)),
   titre: evaluationTitreSchema,
-  taeIds: z.array(uuidString),
+  tacheIds: z.array(uuidString),
 });
 
 export type EvaluationCompositionBody = z.infer<typeof evaluationCompositionBodySchema>;
@@ -31,11 +31,11 @@ export function parseEvaluationCompositionBody(
     const first = parsed.error.issues[0];
     return { ok: false, code: first?.message ?? "validation" };
   }
-  if (publish && parsed.data.taeIds.length < 1) {
+  if (publish && parsed.data.tacheIds.length < 1) {
     return { ok: false, code: "publication_sans_tache" };
   }
   const seen = new Set<string>();
-  for (const id of parsed.data.taeIds) {
+  for (const id of parsed.data.tacheIds) {
     if (seen.has(id)) return { ok: false, code: "doublon" };
     seen.add(id);
   }

@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { isCdStepGateOk } from "@/lib/tache/cd-step-guards";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
-import { initialTaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
+import { initialTacheFormState } from "@/lib/tache/tache-form-state-types";
 
-function minimalRedactionStateForCdGate(over: Partial<TaeFormState> = {}): TaeFormState {
-  const s: TaeFormState = structuredClone(initialTaeFormState);
+function minimalRedactionStateForCdGate(over: Partial<TacheFormState> = {}): TacheFormState {
+  const s: TacheFormState = structuredClone(initialTacheFormState);
   s.bloc2 = {
     ...s.bloc2,
     niveau: "sec3",

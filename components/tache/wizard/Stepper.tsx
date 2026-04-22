@@ -1,7 +1,7 @@
 "use client";
 
-import { TAE_FORM_STEPS } from "@/components/tache/wizard/step-meta";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { TACHE_FORM_STEPS } from "@/components/tache/wizard/step-meta";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { WizardStepper, type WizardStepDefinition } from "@/components/wizard/WizardStepper";
 
 type StepperProps = {
@@ -9,7 +9,7 @@ type StepperProps = {
   className?: string;
 };
 
-const TAE_STEPS_FOR_STEPPER: readonly WizardStepDefinition[] = TAE_FORM_STEPS.map((s) => ({
+const TACHE_STEPS_FOR_STEPPER: readonly WizardStepDefinition[] = TACHE_FORM_STEPS.map((s) => ({
   id: s.id,
   number: s.number,
   stepperLine: s.stepperLine,
@@ -20,11 +20,11 @@ const TAE_STEPS_FOR_STEPPER: readonly WizardStepDefinition[] = TAE_FORM_STEPS.ma
  * Barre d’étapes du wizard TAÉ — délègue à `WizardStepper` (même rendu que les autres wizards).
  */
 export function Stepper({ className }: StepperProps) {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   return (
     <WizardStepper
       className={className}
-      steps={TAE_STEPS_FOR_STEPPER}
+      steps={TACHE_STEPS_FOR_STEPPER}
       currentStep={state.currentStep}
       highestReachedStep={state.highestReachedStep}
       onCompletedStepClick={(index) => dispatch({ type: "SET_STEP", step: index })}

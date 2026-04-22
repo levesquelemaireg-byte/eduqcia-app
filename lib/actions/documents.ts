@@ -9,24 +9,24 @@ import {
   IMAGE_UPLOAD_MAX_BYTES,
 } from "@/lib/images/image-upload-constants";
 import { ResizeImageError, resizeImage } from "@/lib/images/resize-image";
-import type { UploadTaeDocumentImageResult } from "@/lib/types/upload-tae-document-image";
+import type { UploadTacheDocumentImageResult } from "@/lib/types/upload-tache-document-image";
 import { createClient } from "@/lib/supabase/server";
 
 export type {
-  UploadTaeDocumentImageResult,
-  UploadTaeDocumentImageValidationReason,
-} from "@/lib/types/upload-tae-document-image";
+  UploadTacheDocumentImageResult,
+  UploadTacheDocumentImageValidationReason,
+} from "@/lib/types/upload-tache-document-image";
 
 /** Bucket public — Bloc 4 TAÉ et wizard document autonome. */
-const BUCKET = "tae-document-images";
+const BUCKET = "tache-document-images";
 
 /**
- * Envoie une image de document TAÉ vers Supabase Storage (bucket public `tae-document-images`).
+ * Envoie une image de document TAÉ vers Supabase Storage (bucket public `tache-document-images`).
  * Chemin : `{user_id}/{uuid}.(jpg|png|webp)` — voir `supabase/schema.sql` § Storage.
  */
-export async function uploadTaeDocumentImageAction(
+export async function uploadTacheDocumentImageAction(
   formData: FormData,
-): Promise<UploadTaeDocumentImageResult> {
+): Promise<UploadTacheDocumentImageResult> {
   const supabase = await createClient();
   const {
     data: { user },
@@ -77,7 +77,7 @@ export async function uploadTaeDocumentImageAction(
   });
 
   if (error) {
-    console.error("uploadTaeDocumentImageAction:", error.message);
+    console.error("uploadTacheDocumentImageAction:", error.message);
     return { ok: false, code: "storage" };
   }
 

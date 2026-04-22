@@ -32,8 +32,8 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Lot 2 — Quick wins (< 1h chacun)
 
-- [x] **QW-1** Ajouter `revalidatePath` après `publishTaeAction` (C10)
-- [x] **QW-2** Ajouter `revalidatePath` sur les actions manquantes (`tae-draft`, actions document)
+- [x] **QW-1** Ajouter `revalidatePath` après `publishTacheAction` (C10)
+- [x] **QW-2** Ajouter `revalidatePath` sur les actions manquantes (`tache-draft`, actions document)
 - [x] **QW-3** `prefers-reduced-motion` dans `globals.css`
 - [x] **QW-4** Skip-to-content link
 - [x] **QW-5** Configurer `formats: ['image/avif']` dans `next.config.ts`
@@ -96,7 +96,7 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 
 ## Lot 10 — Tests d'intégration
 
-- [ ] **TEST-1** Tests intégration `publishTaeAction`
+- [ ] **TEST-1** Tests intégration `publishTacheAction`
 - [ ] **TEST-2** Tests intégration `saveWizardDraftAction`
 - [ ] **TEST-3** Tests intégration `publishEpreuveAction`
 

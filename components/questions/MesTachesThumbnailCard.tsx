@@ -6,11 +6,11 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { FicheThumbnail } from "@/components/tache/FicheThumbnail";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import { deleteWizardDraftAction } from "@/lib/actions/tae-draft";
-import { deleteTaeAction } from "@/lib/actions/tae-delete";
+import { deleteWizardDraftAction } from "@/lib/actions/tache-draft";
+import { deleteTacheAction } from "@/lib/actions/tache-delete";
 import { toThumbnailFicheData } from "@/lib/fiche/adapters/to-thumbnail-fiche-data";
-import type { MyTaeThumbnailRow } from "@/lib/queries/my-tae-thumbnails";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
+import type { MyTacheThumbnailRow } from "@/lib/queries/my-tache-thumbnails";
+import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
 import { cn } from "@/lib/utils/cn";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import {
@@ -28,7 +28,7 @@ import {
 } from "@/lib/ui/ui-copy";
 
 type Props = {
-  row: MyTaeThumbnailRow;
+  row: MyTacheThumbnailRow;
 };
 
 const MENU_LINK =
@@ -55,7 +55,7 @@ export function MesTachesThumbnailCard({ row }: Props) {
         setConfirmOpen(false);
         if (result.ok) {
           try {
-            sessionStorage.removeItem(TAE_DRAFT_STORAGE_KEY);
+            sessionStorage.removeItem(TACHE_DRAFT_STORAGE_KEY);
           } catch {
             /* ignore */
           }
@@ -67,7 +67,7 @@ export function MesTachesThumbnailCard({ row }: Props) {
         return;
       }
 
-      const result = await deleteTaeAction(row.id);
+      const result = await deleteTacheAction(row.id);
       setConfirmOpen(false);
       if (result.ok) {
         toast.success(TOAST_MES_QUESTIONS_DELETED);
@@ -146,14 +146,14 @@ export function MesTachesThumbnailCard({ row }: Props) {
   }
 
   /* ── TAÉ normale : FicheThumbnail + menu ⋮ ── */
-  const tae = toThumbnailFicheData(row);
+  const tache = toThumbnailFicheData(row);
 
   return (
     <article
       className="relative rounded-2xl border border-border bg-panel shadow-sm"
       data-fiche-menu-shell
     >
-      <FicheThumbnail tae={tae} />
+      <FicheThumbnail tache={tache} />
       {/* Badge + date sous la vignette */}
       <div className="flex items-center gap-2 px-4 pb-3 text-xs text-muted">
         <span

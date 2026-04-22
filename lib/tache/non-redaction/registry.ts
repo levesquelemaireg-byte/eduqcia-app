@@ -6,18 +6,18 @@
 import rawOi from "@/public/data/oi.json";
 import type { OiEntryJson } from "@/lib/types/oi";
 import {
-  isTaeNonRedactionVariantSlug,
-  type TaeNonRedactionVariantSlug,
+  isTacheNonRedactionVariantSlug,
+  type TacheNonRedactionVariantSlug,
 } from "@/lib/tache/non-redaction/variant-slugs";
 
 const oiList = rawOi as OiEntryJson[];
 
-const comportementIdToVariantSlug = new Map<string, TaeNonRedactionVariantSlug>();
+const comportementIdToVariantSlug = new Map<string, TacheNonRedactionVariantSlug>();
 
 for (const oi of oiList) {
   for (const c of oi.comportements_attendus) {
     const raw = c.variant_slug;
-    if (typeof raw === "string" && isTaeNonRedactionVariantSlug(raw)) {
+    if (typeof raw === "string" && isTacheNonRedactionVariantSlug(raw)) {
       comportementIdToVariantSlug.set(c.id, raw);
     }
   }
@@ -26,7 +26,7 @@ for (const oi of oiList) {
 /** Slug variante pour ce comportement, si déclaré et valide dans `oi.json`. */
 export function getVariantSlugForComportementId(
   comportementId: string,
-): TaeNonRedactionVariantSlug | null {
+): TacheNonRedactionVariantSlug | null {
   if (!comportementId) return null;
   return comportementIdToVariantSlug.get(comportementId) ?? null;
 }

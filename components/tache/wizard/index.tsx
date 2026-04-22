@@ -25,18 +25,18 @@ import {
   type PendingInjection,
 } from "@/components/tache/wizard/InjectDocumentController";
 import {
-  TaeFormProvider,
-  useTaeForm,
-  TAE_BLUEPRINT_STEP_INDEX,
-  TAE_DOCUMENTS_STEP_INDEX,
-  TAE_REDACTION_STEP_INDEX,
-  type TaeFormState,
+  TacheFormProvider,
+  useTacheForm,
+  TACHE_BLUEPRINT_STEP_INDEX,
+  TACHE_DOCUMENTS_STEP_INDEX,
+  TACHE_REDACTION_STEP_INDEX,
+  type TacheFormState,
 } from "@/components/tache/wizard/FormState";
-import { TAE_FORM_STEPS } from "@/components/tache/wizard/step-meta";
+import { TACHE_FORM_STEPS } from "@/components/tache/wizard/step-meta";
 import { resolveWizardBlocComponent } from "@/components/tache/wizard/wizardBlocResolver";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { WizardFichePreviewMeta } from "@/lib/tache/fiche-helpers";
-import type { TaeVersionSnapshot } from "@/lib/tache/publish-tae-types";
+import type { TacheVersionSnapshot } from "@/lib/tache/publish-tache-types";
 import {
   isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
@@ -56,7 +56,7 @@ import {
   PREVIEW_PANEL_PRINT_LABEL,
   PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL,
   PREVIEW_PANEL_SUMMARY_LABEL,
-  TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA,
+  TACHE_BLUEPRINT_STEP_INFO_BUTTON_ARIA,
 } from "@/lib/ui/ui-copy";
 
 const BLOC_COMPONENTS = [
@@ -69,9 +69,9 @@ const BLOC_COMPONENTS = [
   Bloc7AspectsConnaissances,
 ] as const satisfies readonly ComponentType[];
 
-type TaeFormInnerProps = {
+type TacheFormInnerProps = {
   pageHeader?: ReactNode;
-  savedServerDraft: TaeFormState | null;
+  savedServerDraft: TacheFormState | null;
   serverDraftObsolete: boolean;
   wizardPreviewMeta: WizardFichePreviewMeta;
   showDraftBanners: boolean;
@@ -79,7 +79,7 @@ type TaeFormInnerProps = {
   injectionError: "not_found" | null;
 };
 
-function TaeFormInner({
+function TacheFormInner({
   pageHeader,
   savedServerDraft,
   serverDraftObsolete,
@@ -87,23 +87,23 @@ function TaeFormInner({
   showDraftBanners,
   pendingInjection,
   injectionError,
-}: TaeFormInnerProps) {
-  const { state } = useTaeForm();
-  const stepBase = TAE_FORM_STEPS[state.currentStep];
+}: TacheFormInnerProps) {
+  const { state } = useTacheForm();
+  const stepBase = TACHE_FORM_STEPS[state.currentStep];
   const step =
-    isActiveOrdreChronologiqueVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+    isActiveOrdreChronologiqueVariant(state) && state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
       ? {
           ...stepBase,
           label: NR_ORDRE_STEP4_TITLE,
           description: NR_ORDRE_STEP4_DESCRIPTION,
         }
-      : isActiveLigneDuTempsVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+      : isActiveLigneDuTempsVariant(state) && state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
         ? {
             ...stepBase,
             label: NR_LIGNE_TEMPS_STEP4_TITLE,
             description: NR_LIGNE_TEMPS_STEP4_DESCRIPTION,
           }
-        : isActiveAvantApresVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+        : isActiveAvantApresVariant(state) && state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
           ? {
               ...stepBase,
               label: NR_AVANT_APRES_STEP4_TITLE,
@@ -111,10 +111,11 @@ function TaeFormInner({
             }
           : stepBase;
   const blocType: ComponentType =
-    state.currentStep === TAE_REDACTION_STEP_INDEX || state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+    state.currentStep === TACHE_REDACTION_STEP_INDEX ||
+    state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
       ? (resolveWizardBlocComponent(state.currentStep, state) ?? BLOC_COMPONENTS[state.currentStep])
       : BLOC_COMPONENTS[state.currentStep];
-  const TAE_PREVIEW_MODES: PreviewMode[] = [
+  const TACHE_PREVIEW_MODES: PreviewMode[] = [
     { id: "sommaire", label: PREVIEW_PANEL_SUMMARY_LABEL, icon: "topic" },
     {
       id: "impression",
@@ -151,9 +152,9 @@ function TaeFormInner({
         pendingInjection={pendingInjection}
         injectionError={injectionError}
       />
-      <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
+      <div className="tache-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
         {/* Colonne édition — fond blanc (token panel), pas de carte ; scroll interne sur xl */}
-        <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
+        <div className="tache-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
           {pageHeader ? (
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">{pageHeader}</div>
@@ -171,26 +172,26 @@ function TaeFormInner({
           </div>
 
           <div className="pt-6 md:pt-8">
-            {state.currentStep === TAE_BLUEPRINT_STEP_INDEX ? (
+            {state.currentStep === TACHE_BLUEPRINT_STEP_INDEX ? (
               <div className="flex flex-wrap items-center gap-2">
                 <h2
-                  id="tae-step-heading"
+                  id="tache-step-heading"
                   className="text-xl font-semibold tracking-tight text-deep"
-                  aria-describedby="tae-blueprint-step-longdesc"
+                  aria-describedby="tache-blueprint-step-longdesc"
                 >
                   {step.label}
                 </h2>
                 <button
                   type="button"
                   className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-accent hover:bg-panel-alt"
-                  aria-label={TAE_BLUEPRINT_STEP_INFO_BUTTON_ARIA}
+                  aria-label={TACHE_BLUEPRINT_STEP_INFO_BUTTON_ARIA}
                   title={step.description}
                 >
                   <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
                     info
                   </span>
                 </button>
-                <p id="tae-blueprint-step-longdesc" className="sr-only">
+                <p id="tache-blueprint-step-longdesc" className="sr-only">
                   {step.description}
                 </p>
               </div>
@@ -210,9 +211,9 @@ function TaeFormInner({
         </div>
 
         {/* Colonne aperçu */}
-        <div className="tae-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
+        <div className="tache-wizard-preview-canvas relative flex min-h-[min(70vh,36rem)] min-w-0 flex-1 flex-col xl:min-h-0 xl:overflow-hidden">
           <PreviewPanel
-            modes={TAE_PREVIEW_MODES}
+            modes={TACHE_PREVIEW_MODES}
             defaultModeId="sommaire"
             topBarClassName="sticky top-0 z-10"
             className="relative min-h-0 flex-1"
@@ -230,7 +231,7 @@ function TaeFormInner({
 
               return (
                 <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
-                  <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
+                  <aside className="min-w-0 w-full max-w-(--tache-print-sheet-width)">
                     {isImpressionMode ? (
                       <PrintableFichePreview
                         previewMeta={wizardPreviewMeta}
@@ -252,17 +253,17 @@ function TaeFormInner({
   );
 }
 
-type TaeFormProps = {
+type TacheFormProps = {
   /** Brouillon serveur — reprise via bannière (`docs/DECISIONS.md` § brouillons). */
-  savedServerDraft?: TaeFormState | null;
+  savedServerDraft?: TacheFormState | null;
   /** Brouillon illisible (format antérieur sans `bloc1`) — toast erreur, pas de reprise. */
   serverDraftObsolete?: boolean;
   /** Hydratation serveur pour `/questions/[id]/edit` (exclusif du flux « Créer » vide). */
-  serverInitialState?: TaeFormState | null;
+  serverInitialState?: TacheFormState | null;
   /** Si défini, enregistrement via `update_tae_transaction`. */
-  editingTaeId?: string | null;
+  editingTacheId?: string | null;
   /** Snapshot des champs majeurs — détection version avant soumission (`/questions/[id]/edit`). */
-  versionSnapshot?: TaeVersionSnapshot | null;
+  versionSnapshot?: TacheVersionSnapshot | null;
   /** `auth.users.id` — recherche collaborateurs Bloc 1. */
   currentUserId?: string | null;
   /** En-tête page (titre, intro) — rendu en tête de colonne édition. */
@@ -275,35 +276,35 @@ type TaeFormProps = {
   injectionError?: "not_found" | null;
 };
 
-export function TaeForm({
+export function TacheForm({
   savedServerDraft = null,
   serverDraftObsolete = false,
   serverInitialState = null,
-  editingTaeId = null,
+  editingTacheId = null,
   versionSnapshot = null,
   currentUserId = null,
   children,
   wizardPreviewMeta,
   pendingInjection = null,
   injectionError = null,
-}: TaeFormProps) {
-  const persistSessionDraft = !editingTaeId;
+}: TacheFormProps) {
+  const persistSessionDraft = !editingTacheId;
   const showDraftBanners = persistSessionDraft;
 
   return (
     <WizardSessionProvider
       value={{
-        editingTaeId: editingTaeId ?? null,
+        editingTacheId: editingTacheId ?? null,
         persistSessionDraft,
         currentUserId: currentUserId ?? null,
         versionSnapshot: versionSnapshot ?? null,
       }}
     >
-      <TaeFormProvider
+      <TacheFormProvider
         serverInitialState={serverInitialState}
         persistSessionDraft={persistSessionDraft}
       >
-        <TaeFormInner
+        <TacheFormInner
           pageHeader={children}
           savedServerDraft={savedServerDraft}
           serverDraftObsolete={serverDraftObsolete}
@@ -312,7 +313,7 @@ export function TaeForm({
           pendingInjection={pendingInjection}
           injectionError={injectionError}
         />
-      </TaeFormProvider>
+      </TacheFormProvider>
     </WizardSessionProvider>
   );
 }

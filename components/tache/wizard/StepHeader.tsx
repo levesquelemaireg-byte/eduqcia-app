@@ -19,7 +19,7 @@ export function StepHeader({ stepLabel, stepIndex, comportementId, defaultDescri
 
   return (
     <>
-      <h2 id="tae-step-heading" className="text-xl font-semibold tracking-tight text-deep">
+      <h2 id="tache-step-heading" className="text-xl font-semibold tracking-tight text-deep">
         {stepLabel}
       </h2>
       {description ? (

@@ -5,15 +5,15 @@ import { FicheThumbnail } from "@/components/tache/FicheThumbnail";
 import { BankAddToEvaluationLauncher } from "@/components/bank/BankAddToEvaluationLauncher";
 import { toThumbnailFicheData } from "@/lib/fiche/adapters/to-thumbnail-fiche-data";
 import { canonicalOiIcone } from "@/lib/tache/oi-canonical";
-import type { BankTaeRow } from "@/lib/queries/bank-tasks";
+import type { BankTacheRow } from "@/lib/queries/bank-tasks";
 import { BANK_TASK_BY, BANK_TASK_LINK_VOIR, BANK_TASK_PUBLISHED_ON } from "@/lib/ui/ui-copy";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 
 type Props = {
-  row: BankTaeRow;
+  row: BankTacheRow;
 };
 
-function bankRowToThumbnailInput(row: BankTaeRow) {
+function bankRowToThumbnailInput(row: BankTacheRow) {
   const icone = canonicalOiIcone(row.oi_id);
   return {
     id: row.id,
@@ -36,14 +36,14 @@ function bankRowToThumbnailInput(row: BankTaeRow) {
  * FicheThumbnail + métadonnées (auteur, date) + actions (Voir, Ajouter à épreuve).
  */
 export function BankThumbnailCard({ row }: Props) {
-  const tae = toThumbnailFicheData(bankRowToThumbnailInput(row));
+  const tache = toThumbnailFicheData(bankRowToThumbnailInput(row));
   const dateSource = row.created_at ?? row.updated_at;
   const dateLabel = formatDateFrCaMedium(dateSource);
   const author = row.auteur_nom?.trim() || "\u2014";
 
   return (
     <article className="relative flex flex-col rounded-2xl border border-border bg-panel shadow-sm">
-      <FicheThumbnail tae={tae} />
+      <FicheThumbnail tache={tache} />
       {/* Métadonnées sous la vignette */}
       <div className="flex flex-wrap items-center gap-2 px-4 pb-2 text-xs text-muted">
         <span>
@@ -56,7 +56,7 @@ export function BankThumbnailCard({ row }: Props) {
       </div>
       {/* Actions */}
       <div className="flex items-center gap-2 border-t border-border px-4 py-2.5">
-        <BankAddToEvaluationLauncher taeId={row.id} />
+        <BankAddToEvaluationLauncher tacheId={row.id} />
         <Link
           href={`/questions/${row.id}`}
           className="inline-flex min-h-9 items-center justify-center rounded-lg border border-border bg-panel px-3 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt"

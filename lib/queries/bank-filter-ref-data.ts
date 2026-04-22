@@ -11,7 +11,7 @@ export type BankComportementOption = { id: string; enonce: string };
 export type BankNiveauOption = { id: number; label: string };
 export type BankDisciplineOption = { id: number; label: string };
 
-export type BankTaeFilterRefs = {
+export type BankTacheFilterRefs = {
   niveaux: BankNiveauOption[];
   disciplines: BankDisciplineOption[];
   ois: BankOiOption[];
@@ -56,10 +56,10 @@ const getStaticFilterRefs = unstable_cache(
  * Niveaux, disciplines et OI sont cachés 1 h (quasi-immuables).
  * `comportements` : filtrés par `oiId`, requête légère par appel.
  */
-export async function getBankTaeFilterRefs(
+export async function getBankTacheFilterRefs(
   supabase: Client,
   oiId: string | null,
-): Promise<BankTaeFilterRefs> {
+): Promise<BankTacheFilterRefs> {
   const [staticRefs, compRes] = await Promise.all([
     getStaticFilterRefs(),
     oiId

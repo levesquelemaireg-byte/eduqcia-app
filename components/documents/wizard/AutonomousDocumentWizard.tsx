@@ -284,8 +284,8 @@ export function AutonomousDocumentWizard({
   return (
     <FormProvider {...form}>
       <ActiveFieldProvider>
-        <div className="tae-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
-          <div className="tae-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
+        <div className="tache-wizard-split-root flex min-h-0 w-full flex-col xl:h-[calc(100dvh-3rem)] xl:max-h-[calc(100dvh-3rem)] xl:flex-row xl:overflow-hidden">
+          <div className="tache-wizard-editor-column min-w-0 bg-(--color-panel) px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 xl:w-[42%] xl:max-w-none xl:shrink-0 xl:overflow-y-auto xl:overscroll-y-contain">
             <div>
               <header>
                 <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">
@@ -350,8 +350,8 @@ export function AutonomousDocumentWizard({
             >
               {(modeId, _subModeId, _subSubModeId) =>
                 modeId === "impression" ? (
-                  <div className="tae-wizard-preview-canvas flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
-                    <aside className="min-w-0 w-full max-w-(--tae-print-sheet-width)">
+                  <div className="tache-wizard-preview-canvas flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
+                    <aside className="min-w-0 w-full max-w-(--tache-print-sheet-width)">
                       <DocumentWizardPrintPreview />
                     </aside>
                   </div>

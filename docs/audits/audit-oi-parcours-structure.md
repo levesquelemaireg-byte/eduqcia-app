@@ -40,25 +40,25 @@ oi.json (référentiel)
                  │                Bloc5.tsx (Bloc 5)
                  │                index.tsx (step labels)
                  │
-                 ├─ Reducer ───► tae-form-reducer.ts (actions NR_PATCH_*)
-                 │                tae-form-state-types.ts (NonRedactionData union)
+                 ├─ Reducer ───► tache-form-reducer.ts (actions NR_PATCH_*)
+                 │                tache-form-state-types.ts (NonRedactionData union)
                  │
                  ├─ Builders ──► ordre-chronologique-payload.ts
                  │                ligne-du-temps-payload.ts
                  │                avant-apres-payload.ts
                  │                (chacun : build*ConsigneHtml, build*GuidageHtml, build*CorrigeHtml)
                  │
-                 ├─ Publish ───► publish-tae-payload.ts (cascade ternaire → builders)
+                 ├─ Publish ───► publish-tache-payload.ts (cascade ternaire → builders)
                  │                wizard-publish-guards.ts (validation avant publication)
                  │
                  ├─ Selectors ─► selectNRContent.ts (cascade if → builders)
                  │                selectConsigne/Guidage/Corrige.ts (consomment selectNRContent)
                  │
-                 ├─ Preview ───► formStateToTae() (cascade ternaire → builders)  [deprecated]
+                 ├─ Preview ───► formStateToTache() (cascade ternaire → builders)  [deprecated]
                  │                PrintableFichePreview.tsx (route vers *QuestionnaireCore)
                  │
                  └─ Hydrate ───► non-redaction-edit-hydrate.ts
-                                  tae-form-hydrate.ts (parseNonRedactionData)
+                                  tache-form-hydrate.ts (parseNonRedactionData)
 ```
 
 ---
@@ -78,16 +78,16 @@ oi.json (référentiel)
 
 | Fichier                           | Mécanisme                              | Commentaire                                                      |
 | --------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| `lib/tache/tae-form-state-types.ts` | Discriminated union `NonRedactionData` | 4 branches : placeholder, ordre, ligne, avant                    |
-| `lib/tache/tae-form-reducer.ts`     | 3 actions `NON_REDACTION_PATCH_*`      | Chacune garde sur `nr?.type !== "slug"`                          |
-| `lib/tache/tae-form-reducer.ts`     | `initialNonRedactionForSlug()`         | 3-way if cascade → payload initial par variant                   |
-| `lib/tache/tae-form-reducer.ts`     | `UPDATE_DOCUMENT_SLOT`                 | Cas spécial avant-après uniquement (reset options si doc change) |
+| `lib/tache/tache-form-state-types.ts` | Discriminated union `NonRedactionData` | 4 branches : placeholder, ordre, ligne, avant                    |
+| `lib/tache/tache-form-reducer.ts`     | 3 actions `NON_REDACTION_PATCH_*`      | Chacune garde sur `nr?.type !== "slug"`                          |
+| `lib/tache/tache-form-reducer.ts`     | `initialNonRedactionForSlug()`         | 3-way if cascade → payload initial par variant                   |
+| `lib/tache/tache-form-reducer.ts`     | `UPDATE_DOCUMENT_SLOT`                 | Cas spécial avant-après uniquement (reset options si doc change) |
 
 ### Couche 3 — UI wizard (composants)
 
 | Fichier                   | Mécanisme                                              | Variants                                               |
 | ------------------------- | ------------------------------------------------------ | ------------------------------------------------------ |
-| `wizardBlocResolver.tsx`  | Object registry `TAE_NON_REDACTION_WIZARD_BLOCS[slug]` | 3 paires {Bloc3, Bloc4} enregistrées                   |
+| `wizardBlocResolver.tsx`  | Object registry `TACHE_NON_REDACTION_WIZARD_BLOCS[slug]` | 3 paires {Bloc3, Bloc4} enregistrées                   |
 | `bloc5/Bloc5.tsx`         | Object registry `BLOC5_DYNAMIC_BY_SLUG[slug]`          | 4 entrées (redactionnel + 3 NR) + cas spécial `intrus` |
 | `index.tsx` (step labels) | Ternaire imbriqué 3 niveaux                            | `isActiveOrdre…` → `isActiveLigne…` → `isActiveAvant…` |
 
@@ -103,7 +103,7 @@ oi.json (référentiel)
 
 | Fichier                    | Mécanisme                                                          | Commentaire                            |
 | -------------------------- | ------------------------------------------------------------------ | -------------------------------------- |
-| `publish-tae-payload.ts`   | Cascade ternaire : normalize → isActive* → build*Html              | Duplique la logique de selectNRContent |
+| `publish-tache-payload.ts`   | Cascade ternaire : normalize → isActive* → build*Html              | Duplique la logique de selectNRContent |
 | `wizard-publish-guards.ts` | Cascade `isActive*Variant()` + fonctions de validation par variant | 3 branches parallèles                  |
 
 ### Couche 6 — Selectors fiche (sommaire / lecture)
@@ -117,14 +117,14 @@ oi.json (référentiel)
 
 | Fichier                               | Mécanisme                                             | Commentaire                                                       |
 | ------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------- |
-| `formStateToTae()` (fiche-helpers.ts) | Cascade ternaire identique à publish-tae-payload      | **Marquée deprecated**, encore utilisée par PrintableFichePreview |
+| `formStateToTache()` (fiche-helpers.ts) | Cascade ternaire identique à publish-tache-payload      | **Marquée deprecated**, encore utilisée par PrintableFichePreview |
 | `PrintableFichePreview.tsx`           | `parse*ConsigneForStudentPrint()` → routing composant | 3 parsers + 3 composants `*PrintableQuestionnaireCore`            |
 
 ### Couche 8 — Hydratation (édition)
 
 | Fichier                         | Mécanisme                                                  | Commentaire                     |
 | ------------------------------- | ---------------------------------------------------------- | ------------------------------- |
-| `tae-form-hydrate.ts`           | if cascade sur `type` discriminant + `normalize*Payload()` | 4 branches (placeholder + 3 NR) |
+| `tache-form-hydrate.ts`           | if cascade sur `type` discriminant + `normalize*Payload()` | 4 branches (placeholder + 3 NR) |
 | `non-redaction-edit-hydrate.ts` | Cas spécial avant-après (init si manquant)                 | 21 lignes                       |
 
 ---
@@ -147,7 +147,7 @@ La même logique `normalize → isActive* → build*Html` est copiée dans **4 f
 
 ```
 selectNRContent.ts        — selectors fiche
-publish-tae-payload.ts    — publication
+publish-tache-payload.ts    — publication
 fiche-helpers.ts          — preview (deprecated)
 wizard-publish-guards.ts  — validation (partiel)
 ```
@@ -168,11 +168,11 @@ Si on ajoute un 4e variant, il faut toucher ces 4 fichiers de la même façon.
 
 ```typescript
 const step =
-  isActiveOrdreChronologiqueVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+  isActiveOrdreChronologiqueVariant(state) && state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
     ? { ...stepBase, label: NR_ORDRE_STEP4_TITLE, description: NR_ORDRE_STEP4_DESCRIPTION }
-    : isActiveLigneDuTempsVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+    : isActiveLigneDuTempsVariant(state) && state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
       ? { ...stepBase, label: NR_LIGNE_TEMPS_STEP4_TITLE, ... }
-      : isActiveAvantApresVariant(state) && state.currentStep === TAE_DOCUMENTS_STEP_INDEX
+      : isActiveAvantApresVariant(state) && state.currentStep === TACHE_DOCUMENTS_STEP_INDEX
         ? { ...stepBase, label: NR_AVANT_APRES_STEP4_TITLE, ... }
         : stepBase;
 ```
@@ -196,19 +196,19 @@ Un 4e variant ajouterait un 4e niveau de ternaire.
 | Déclarer le slug                       | 1 (`variant-slugs.ts`) — le registry se met à jour seul |
 | Ajouter `isActive*()`                  | 1 (`wizard-variant.ts`)                                 |
 | Ajouter au `comportement-slug.ts`      | 1                                                       |
-| Type `NonRedactionData`                | 1 (`tae-form-state-types.ts`)                           |
-| Action reducer                         | 1 (`tae-form-reducer.ts`)                               |
+| Type `NonRedactionData`                | 1 (`tache-form-state-types.ts`)                           |
+| Action reducer                         | 1 (`tache-form-reducer.ts`)                               |
 | `initialNonRedactionForSlug()`         | 1 (dans le reducer)                                     |
 | Payload + builders                     | 1 nouveau fichier (~2000+ lignes)                       |
 | Composants Bloc 3, 4, 5                | 3 nouveaux fichiers                                     |
 | Enregistrer dans wizardBlocResolver    | 1                                                       |
 | Enregistrer dans BLOC5_DYNAMIC_BY_SLUG | 1                                                       |
-| **Cascade publish**                    | 1 (`publish-tae-payload.ts`)                            |
+| **Cascade publish**                    | 1 (`publish-tache-payload.ts`)                            |
 | **Cascade selectors**                  | 1 (`selectNRContent.ts`)                                |
-| **Cascade formStateToTae**             | 1 (`fiche-helpers.ts`)                                  |
+| **Cascade formStateToTache**             | 1 (`fiche-helpers.ts`)                                  |
 | **Cascade guards**                     | 1 (`wizard-publish-guards.ts`)                          |
 | Composant print questionnaire          | 1 nouveau fichier                                       |
-| Hydratation                            | 1 (`tae-form-hydrate.ts`)                               |
+| Hydratation                            | 1 (`tache-form-hydrate.ts`)                               |
 | Step labels                            | 1 (`index.tsx`)                                         |
 | Tests                                  | ~3-6 fichiers                                           |
 | **Total**                              | **~16 fichiers coordonnés, dont 4 cascades identiques** |
@@ -295,7 +295,7 @@ Points à considérer :
 
 - Les builders (`build*Html`) font 14 000–22 000 lignes chacun — ce ne sont pas des fonctions triviales
 - Le reducer utilise des discriminated unions (pattern solide à préserver)
-- `formStateToTae()` est deprecated mais encore consommée par le preview
+- `formStateToTache()` est deprecated mais encore consommée par le preview
 - Les tests existants (~17 000 lignes) sont concentrés sur les payloads, pas sur le routing
 
 ---

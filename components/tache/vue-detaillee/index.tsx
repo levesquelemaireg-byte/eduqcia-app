@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
+import type { TacheFicheData, PeerVoteTally } from "@/lib/types/fiche";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import { StatusBadge } from "@/lib/fiche/primitives/MetaRow";
 import { useFicheModale } from "@/hooks/partagees/use-fiche-modale";
@@ -18,7 +18,7 @@ import { FicheModale } from "@/components/partagees/fiche-modale";
 import { DocumentPanneauDetail } from "@/components/document/panneau-detail";
 
 type Props = {
-  tae: TaeFicheData;
+  tache: TacheFicheData;
   /** Données structurées pour le pipeline d'impression. Fournies par le serveur. */
   donneesTache?: DonneesTache;
   votes: PeerVoteTally | null;
@@ -35,7 +35,7 @@ type Props = {
  * INV-R4 : même composant en page complète (sidebar) et en panneau (stacked).
  */
 export function TacheVueDetaillee({
-  tae,
+  tache,
   donneesTache,
   votes,
   peutVoter,
@@ -66,7 +66,7 @@ export function TacheVueDetaillee({
     [ouvrirFicheModale, layout],
   );
 
-  const contexte = [tae.niveau.label, tae.discipline.label].filter(Boolean).join(" · ");
+  const contexte = [tache.niveau.label, tache.discipline.label].filter(Boolean).join(" · ");
   const payloadImpression = useMemo(
     () => (donneesTache ? ({ type: "tache", donnees: donneesTache } as const) : null),
     [donneesTache],
@@ -82,7 +82,7 @@ export function TacheVueDetaillee({
             estEpinglee={false}
             entite="tache"
             retour={retour}
-            surModifier={() => router.push(`/questions/${tae.id}/edit`)}
+            surModifier={() => router.push(`/questions/${tache.id}/edit`)}
             surEpingler={() => {
               /* TODO */
             }}
@@ -102,8 +102,8 @@ export function TacheVueDetaillee({
         header={
           <div className="space-y-1.5">
             <StatusBadge
-              label={tae.is_published ? "Publiée" : "Brouillon"}
-              variant={tae.is_published ? "published" : "draft"}
+              label={tache.is_published ? "Publiée" : "Brouillon"}
+              variant={tache.is_published ? "published" : "draft"}
             />
             {contexte && <p className="text-sm text-steel">{contexte}</p>}
           </div>
@@ -112,7 +112,7 @@ export function TacheVueDetaillee({
         contenuPrincipal={
           ongletActif === "sommaire" ? (
             <FluxLecture
-              tae={tae}
+              tache={tache}
               votes={votes}
               peutVoter={peutVoter}
               surClicDocument={surClicDocument}
@@ -132,7 +132,7 @@ export function TacheVueDetaillee({
             </div>
           )
         }
-        rail={<TacheRail tae={tae} />}
+        rail={<TacheRail tache={tache} />}
       />
 
       {modaleOuverte && cibleModale?.kind === "document" ? (

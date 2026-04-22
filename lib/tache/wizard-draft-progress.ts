@@ -1,5 +1,8 @@
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
-import { getRedactionSliceForPreview, type TaeFormState } from "@/lib/tache/tae-form-state-types";
+import {
+  getRedactionSliceForPreview,
+  type TacheFormState,
+} from "@/lib/tache/tache-form-state-types";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 
 const SLOT_IDS: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
@@ -8,7 +11,7 @@ const SLOT_IDS: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
  * Indique si l’état du wizard a avancé au-delà d’un formulaire vierge.
  * Sert à proposer la reprise d’un brouillon local (sessionStorage) sans modal.
  */
-export function hasMeaningfulWizardProgress(s: TaeFormState): boolean {
+export function hasMeaningfulWizardProgress(s: TacheFormState): boolean {
   if (s.currentStep > 0) return true;
   if (s.bloc1.modeConception !== "") return true;
   if (

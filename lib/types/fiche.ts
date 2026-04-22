@@ -1,4 +1,4 @@
-/** FICHE-TACHE.md — données affichées par `FicheTache` et `TaeCard`. */
+/** FICHE-TACHE.md — données affichées par `FicheTache` et `TacheCard`. */
 
 import type { DocumentLegendPosition } from "@/lib/tache/document-helpers";
 import type { RendererDocument } from "@/lib/types/document-renderer";
@@ -47,7 +47,7 @@ export type ConnaissanceSelection = {
   enonce: string;
 };
 
-export type TaeFicheData = {
+export type TacheFicheData = {
   id: string;
   auteur_id: string;
   auteurs: { id: string; first_name: string; last_name: string }[];

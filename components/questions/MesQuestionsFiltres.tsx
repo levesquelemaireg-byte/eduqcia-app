@@ -1,15 +1,15 @@
 import Link from "next/link";
-import type { MyTaeListFiltre } from "@/lib/queries/user-content";
+import type { MyTacheListFiltre } from "@/lib/queries/user-content";
 import { cn } from "@/lib/utils/cn";
 
-const ITEMS: { filtre: MyTaeListFiltre; label: string; href: string }[] = [
+const ITEMS: { filtre: MyTacheListFiltre; label: string; href: string }[] = [
   { filtre: "toutes", label: "Toutes", href: "/questions" },
   { filtre: "brouillons", label: "Brouillons", href: "/questions?filtre=brouillons" },
   { filtre: "publiees", label: "Publiées", href: "/questions?filtre=publiees" },
 ];
 
 type Props = {
-  actif: MyTaeListFiltre;
+  actif: MyTacheListFiltre;
 };
 
 export function MesQuestionsFiltres({ actif }: Props) {

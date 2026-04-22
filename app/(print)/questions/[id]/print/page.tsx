@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TaeFichePrintView } from "@/components/tache/print/TaeFichePrintView";
+import { TacheFichePrintView } from "@/components/tache/print/TacheFichePrintView";
 import { createClient } from "@/lib/supabase/server";
-import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
+import { fetchTacheFicheBundle } from "@/lib/tache/server-fiche-map";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 export default async function QuestionPrintPage({ params }: PageProps) {
   const { id } = await params;
   const supabase = await createClient();
-  const bundle = await fetchTaeFicheBundle(supabase, id);
+  const bundle = await fetchTacheFicheBundle(supabase, id);
   if (!bundle) notFound();
 
-  return <TaeFichePrintView taeId={id} tae={bundle.fiche} />;
+  return <TacheFichePrintView tacheId={id} tache={bundle.fiche} />;
 }

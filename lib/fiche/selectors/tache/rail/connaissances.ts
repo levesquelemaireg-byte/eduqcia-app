@@ -1,4 +1,4 @@
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 import type { ConnaissanceSelection } from "@/lib/types/fiche";
 
 export type RailConnaissancesData = {
@@ -8,7 +8,7 @@ export type RailConnaissancesData = {
   connaissances: ConnaissanceSelection[];
 };
 
-export function selectRailConnaissances(state: TaeFicheData): RailConnaissancesData | null {
+export function selectRailConnaissances(state: TacheFicheData): RailConnaissancesData | null {
   if (state.connaissances.length === 0) return null;
 
   // Dernier énoncé = le plus spécifique de la dernière connaissance

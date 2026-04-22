@@ -148,7 +148,7 @@ Réécrire `construireDocuments` (actuellement lignes ~186-197) :
 ```typescript
 import type { RendererDocument } from "@/lib/types/document-renderer";
 
-function construireDocuments(state: TaeFormState): RendererDocument[] {
+function construireDocuments(state: TacheFormState): RendererDocument[] {
   return state.bloc2.documentSlots.map(({ slotId }) => {
     const slot = getSlotData(state.bloc4.documents, slotId);
 

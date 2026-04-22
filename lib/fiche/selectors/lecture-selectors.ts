@@ -1,5 +1,5 @@
 /**
- * Selectors for lecture/published mode — accept TaeFicheData (flat, pre-processed).
+ * Selectors for lecture/published mode — accept TacheFicheData (flat, pre-processed).
  * Much simpler than wizard selectors: data is already resolved, no NR cascade needed.
  */
 
@@ -18,11 +18,11 @@ import type {
   FooterData,
   SelectorRefs,
 } from "@/lib/fiche/types";
-import type { TaeFicheData } from "@/lib/types/fiche";
+import type { TacheFicheData } from "@/lib/types/fiche";
 
 /** Header — always ready, OI + pills from pre-processed data. */
 export function selectLectureHeader(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<HeaderData> {
   return ready({
@@ -38,7 +38,7 @@ export function selectLectureHeader(
 
 /** Consigne — resolve doc placeholders, sanitize. HTML TipTap contient déjà l'amorce. */
 export function selectLectureConsigne(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<ConsigneData> {
   if (!hasFicheContent(state.consigne)) return hidden();
@@ -51,7 +51,7 @@ export function selectLectureConsigne(
 
 /** Guidage — hidden if empty. */
 export function selectLectureGuidage(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<GuidageData> {
   if (!hasFicheContent(state.guidage)) return hidden();
@@ -61,7 +61,7 @@ export function selectLectureGuidage(
 
 /** Documents — always ready, data already in DocumentFiche format. */
 export function selectLectureDocuments(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<DocumentsData> {
   return ready({ documents: state.documents });
@@ -69,7 +69,7 @@ export function selectLectureDocuments(
 
 /** Corrigé — hidden if empty. */
 export function selectLectureCorrige(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<CorrigeData> {
   if (!hasFicheContent(state.corrige)) return hidden();
@@ -82,7 +82,7 @@ export function selectLectureCorrige(
 
 /** Grille — hidden if no evaluation tool. Resolve entry from refs. */
 export function selectLectureGrille(
-  state: TaeFicheData,
+  state: TacheFicheData,
   refs: SelectorRefs,
 ): SectionState<GrilleData> {
   if (!state.outilEvaluation) return hidden();
@@ -93,7 +93,7 @@ export function selectLectureGrille(
 
 /** Compétence disciplinaire — hidden if not set. */
 export function selectLectureCD(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<CompetenceData> {
   if (!state.cd) return hidden();
@@ -103,7 +103,7 @@ export function selectLectureCD(
 
 /** Connaissances — hidden if empty. */
 export function selectLectureConnaissances(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<ConnaissancesData> {
   if (state.connaissances.length === 0) return hidden();
@@ -113,7 +113,7 @@ export function selectLectureConnaissances(
 
 /** Footer — always ready, data pre-processed. */
 export function selectLectureFooter(
-  state: TaeFicheData,
+  state: TacheFicheData,
   _refs: SelectorRefs,
 ): SectionState<FooterData> {
   return ready({

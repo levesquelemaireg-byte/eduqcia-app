@@ -1,5 +1,5 @@
-import { TaeForm } from "@/components/tache/wizard";
-import { fetchTaeFormStateForEdit } from "@/lib/queries/tae-for-edit";
+import { TacheForm } from "@/components/tache/wizard";
+import { fetchTacheFormStateForEdit } from "@/lib/queries/tache-for-edit";
 import { createClient } from "@/lib/supabase/server";
 import { PAGE_MODIFIER_UNE_TACHE_SUBTITLE, PAGE_MODIFIER_UNE_TACHE_TITLE } from "@/lib/ui/ui-copy";
 import { notFound, redirect } from "next/navigation";
@@ -16,16 +16,16 @@ export default async function EditQuestionPage({ params }: PageProps) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: tae, error } = await supabase
+  const { data: tache, error } = await supabase
     .from("tae")
     .select("id, auteur_id")
     .eq("id", id)
     .maybeSingle();
 
-  if (error || !tae) notFound();
-  if (tae.auteur_id !== user.id) redirect(`/questions/${id}`);
+  if (error || !tache) notFound();
+  if (tache.auteur_id !== user.id) redirect(`/questions/${id}`);
 
-  const editResult = await fetchTaeFormStateForEdit(supabase, id, user.id);
+  const editResult = await fetchTacheFormStateForEdit(supabase, id, user.id);
   if (!editResult) notFound();
   const { state: initialState, snapshot: versionSnapshot } = editResult;
 
@@ -46,8 +46,8 @@ export default async function EditQuestionPage({ params }: PageProps) {
   };
 
   return (
-    <TaeForm
-      editingTaeId={id}
+    <TacheForm
+      editingTacheId={id}
       serverInitialState={initialState}
       versionSnapshot={versionSnapshot}
       savedServerDraft={null}
@@ -62,6 +62,6 @@ export default async function EditQuestionPage({ params }: PageProps) {
           {PAGE_MODIFIER_UNE_TACHE_SUBTITLE}
         </p>
       </header>
-    </TaeForm>
+    </TacheForm>
   );
 }

@@ -71,7 +71,7 @@ export function ProfileEvaluationsList({ profileId, isOwner, totalCount, initial
               <p className="font-medium text-deep">{evaluation.titre}</p>
               <div className="mt-1 flex items-center gap-2 text-sm text-muted">
                 <span>
-                  {evaluation.taeCount} {pluralize(evaluation.taeCount, "tâche", "tâches")}
+                  {evaluation.tacheCount} {pluralize(evaluation.tacheCount, "tâche", "tâches")}
                 </span>
                 <span>·</span>
                 <span>{new Date(evaluation.createdAt).toLocaleDateString("fr-CA")}</span>

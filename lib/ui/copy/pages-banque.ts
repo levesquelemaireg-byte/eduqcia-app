@@ -24,7 +24,7 @@ export const TOAST_TACHE_MAJ_SUCCES = "Modifications enregistrées avec succès"
 /**
  * Toast — mise à jour refusée (TAÉ dans une épreuve) (`docs/UI-COPY.md` — Toasts).
  */
-export const TOAST_PUBLICATION_TAE_LOCKED_EVALUATION =
+export const TOAST_PUBLICATION_TACHE_LOCKED_EVALUATION =
   "Impossible d'enregistrer les modifications : la tâche figure dans une ou plusieurs épreuves. Retirez-la des épreuves concernées, puis réessayez.";
 
 /** CTA footer wizard — création (`docs/UI-COPY.md` — Boutons wizard) */
@@ -163,7 +163,7 @@ export const PAGE_BANK_DOCUMENTS_CTA_INTRO =
 export const PAGE_BANK_DOCUMENTS_CTA_LINK = "Créer un document";
 
 /** Fiche document — aligné registre « Utilisé dans X tâches » (`docs/UI-COPY.md` — Module) ; compteur = TAÉ publiées uniquement (`docs/FEATURES.md` §5.4). */
-export function copyDocumentPublishedTaeUsageCount(count: number): string {
+export function copyDocumentPublishedTacheUsageCount(count: number): string {
   if (count === 0) return "Utilisé dans : aucune tâche publiée";
   if (count === 1) return "Utilisé dans : 1 tâche";
   return `Utilisé dans : ${count} tâches`;

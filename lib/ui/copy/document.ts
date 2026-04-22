@@ -29,7 +29,7 @@ export const ERROR_ANNEE_NORMALISEE_RANGE =
   "L'année normalisée doit être comprise entre -300 000 et l'année en cours.";
 
 /** Après publication d'une tâche avec création de documents en base (`is_published` faux jusqu'à complétion). */
-export const TOAST_TAE_PUBLISH_UNPUBLISHED_DOCS =
+export const TOAST_TACHE_PUBLISH_UNPUBLISHED_DOCS =
   "Des documents créés avec cette tâche ne sont pas encore visibles dans la banque collaborative. Complétez le repère temporel ou l'année normalisée depuis la fiche document pour les rendre visibles.";
 
 /** Tableau de bord — documents non publiés en banque (auteur). */
@@ -308,7 +308,7 @@ export const TOAST_DOCUMENT_IMAGE_INVALID =
 
 /** Bloc 4 — échec envoi Supabase Storage */
 export const TOAST_DOCUMENT_IMAGE_UPLOAD_FAILED =
-  "L'envoi de l'image a échoué. Réessayez ou vérifiez le bucket « tae-document-images » sur Supabase.";
+  "L'envoi de l'image a échoué. Réessayez ou vérifiez le bucket « tache-document-images » sur Supabase.";
 
 /** Bloc 4 — session requise pour l'upload */
 export const TOAST_DOCUMENT_IMAGE_UPLOAD_AUTH =

@@ -353,5 +353,5 @@ export const NR_AVANT_APRES_STEP4_DESCRIPTION =
 export const NR_AVANT_APRES_CONSIGNE_MINISTERIAL_BADGE = "Consigne structurée";
 export const NR_AVANT_APRES_CONSIGNE_INFO_MODAL_BODY =
   "Le thème, le libellé du repère et l'année du repère structurent la consigne publiée ; le tableau des options est généré à l'étape 5.";
-export const TOAST_TAE_NR_AVANT_APRES_HYDRATE_INVALID =
+export const TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID =
   "Les données structurées de cette tâche (avant / après) sont illisibles. Vous pouvez republier depuis le wizard.";

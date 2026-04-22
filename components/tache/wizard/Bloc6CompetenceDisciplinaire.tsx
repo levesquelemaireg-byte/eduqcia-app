@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
 import { MillerCdColumns } from "@/components/tache/wizard/bloc5/MillerCdColumns";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isCdStepGateOk } from "@/lib/tache/cd-step-guards";
 import {
   cdDataUrlForDiscipline,
@@ -19,7 +19,7 @@ import {
  * Étape 6 — Compétence disciplinaire — BLOC5-CD.md (`state.bloc6.cd`)
  */
 export function Bloc6CompetenceDisciplinaire() {
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const discipline = state.bloc2.discipline as DisciplineCode;
   const [rows, setRows] = useState<CdCompetenceNode[] | null>(null);
   const [loadError, setLoadError] = useState(false);

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { DocumentSlotPanel } from "@/components/tache/wizard/bloc4/DocumentSlotPanel";
 import { DocumentSlotsAccordionProvider } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionContext";
 import { DocumentSlotsAccordionSync } from "@/components/tache/wizard/bloc4/DocumentSlotsAccordionSync";
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import {
@@ -16,7 +16,7 @@ import { NR_ORDRE_BLOC4_INFO, NR_ORDRE_GATE_PRE_DOCS } from "@/lib/ui/ui-copy";
 import { nonRedactionOrdrePayload } from "@/lib/tache/wizard-state-nr";
 
 export function Bloc4OrdreChronologique() {
-  const { state } = useTaeForm();
+  const { state } = useTacheForm();
   const b = state.bloc2;
   const nb = b.nbDocuments;
   const slots = b.documentSlots;

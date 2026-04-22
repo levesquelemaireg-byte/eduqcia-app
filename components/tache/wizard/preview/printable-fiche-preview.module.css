@@ -1,4 +1,4 @@
-/* Letter US + marges feuille — `app/globals.css` : `--tae-print-sheet-*`, `--tae-print-document-figure-*` */
+/* Letter US + marges feuille — `app/globals.css` : `--tache-print-sheet-*`, `--tache-print-document-figure-*` */
 
 /*
  * Grille documents (auto-fit) — largeurs min. de colonne :
@@ -14,7 +14,7 @@
   flex-direction: column;
   align-items: center;
   gap: 1.25rem;
-  width: var(--tae-print-sheet-width);
+  width: var(--tache-print-sheet-width);
   max-width: 100%;
 }
 
@@ -24,10 +24,10 @@
 
 .paper {
   box-sizing: border-box;
-  width: var(--tae-print-sheet-width);
-  min-height: var(--tae-print-sheet-min-height);
+  width: var(--tache-print-sheet-width);
+  min-height: var(--tache-print-sheet-min-height);
   max-width: 100%;
-  padding: var(--tae-print-sheet-padding);
+  padding: var(--tache-print-sheet-padding);
   background: var(--color-panel);
   color: var(--color-deep);
   container-type: inline-size;
@@ -321,7 +321,7 @@
   width: auto;
   height: auto;
   max-height: calc(
-    var(--tae-print-document-figure-max-height) * var(--tae-doc-print-figure-scale, 1)
+    var(--tache-print-document-figure-max-height) * var(--tache-doc-print-figure-scale, 1)
   );
   object-fit: contain;
   object-position: center;
@@ -393,7 +393,7 @@
   }
 
   /*
-   * Géométrie feuille : variables `--tae-print-sheet-*` ; impression : `@page` marges + `#tae-wizard-printable-fiche` sans padding (`globals.css`).
+   * Géométrie feuille : variables `--tache-print-sheet-*` ; impression : `@page` marges + `#tache-wizard-printable-fiche` sans padding (`globals.css`).
    * `@page` : `lib/tache/print-page-css.ts`.
    * Typo feuille : 11pt / 1.5 via `globals.css` (spécificité id + contexte print).
    * Ne pas surcharger le padding de `.paper` ici (aligné sur les mêmes variables / globals).

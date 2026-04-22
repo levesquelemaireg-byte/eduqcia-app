@@ -2,9 +2,9 @@
  * Numérotation continue des documents (dossier documentaire) selon l’ordre des TAÉ.
  * Chaque TAÉ contribue `nbDocuments` entrées (Doc 1…n continus sur toute l’épreuve).
  */
-export function cumulativeDocRanges(nbDocsPerTae: number[]): { from: number; to: number }[] {
+export function cumulativeDocRanges(nbDocsPerTache: number[]): { from: number; to: number }[] {
   let acc = 0;
-  return nbDocsPerTae.map((n) => {
+  return nbDocsPerTache.map((n) => {
     const safe = Math.max(0, Math.floor(n));
     if (safe === 0) {
       return { from: 0, to: 0 };

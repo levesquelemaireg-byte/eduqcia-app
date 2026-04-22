@@ -18,7 +18,7 @@ import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { ImageUploadDropzone } from "@/components/ui/ImageUploadDropzone";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import { uploadTaeDocumentImageAction } from "@/lib/actions/documents";
+import { uploadTacheDocumentImageAction } from "@/lib/actions/documents";
 import { isDocumentPdfUrl } from "@/lib/documents/is-document-pdf-url";
 import { validateClientImageFile } from "@/lib/images/image-upload-constants";
 import {
@@ -190,7 +190,7 @@ export function DocumentElementFields({
       setImageUploading(true);
       const fd = new FormData();
       fd.set("file", file);
-      const r = await uploadTaeDocumentImageAction(fd);
+      const r = await uploadTacheDocumentImageAction(fd);
       setImageUploading(false);
       if (r.ok === false) {
         if (r.code === "auth") toast.error(TOAST_DOCUMENT_IMAGE_UPLOAD_AUTH);

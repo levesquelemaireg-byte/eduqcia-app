@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
-import type { Bloc5Props } from "@/lib/tache/tae-form-state-types";
+import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import { avantApresConfig } from "@/lib/tache/behaviours/avant-apres";
 import { ligneDuTempsConfig } from "@/lib/tache/behaviours/ligne-du-temps";
 import { ordreChronologiqueConfig } from "@/lib/tache/behaviours/ordre-chronologique";

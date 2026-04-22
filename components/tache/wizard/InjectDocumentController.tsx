@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { useTaeForm } from "@/components/tache/wizard/FormState";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import {
   InjectDocumentModal,
   type InjectAction,
@@ -54,7 +54,7 @@ function countFilledSlots(
 
 export function InjectDocumentController({ pendingInjection, injectionError }: Props) {
   const router = useRouter();
-  const { state, dispatch } = useTaeForm();
+  const { state, dispatch } = useTacheForm();
   const [modalOpen, setModalOpen] = useState(false);
   const processedRef = useRef(false);
 

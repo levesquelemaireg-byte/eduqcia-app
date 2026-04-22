@@ -2,8 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
-import { copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
-import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
+import { copyDocumentPublishedTacheUsageCount } from "@/lib/ui/ui-copy";
+import { countPublishedTacheUsagesForDocument } from "@/lib/queries/document-read";
 import type { DocFicheData } from "@/lib/fiche/types";
 
 type FetchResult = { ok: true; data: DocFicheData } | { ok: false; error: "auth" | "not_found" };
@@ -34,7 +34,7 @@ export async function fetchDocFicheDataAction(docId: string): Promise<FetchResul
   const connIds = doc.connaissances_ids ?? [];
 
   const [usageCount, niveauRows, discRows, connRows, profileRow] = await Promise.all([
-    countPublishedTaeUsagesForDocument(supabase, docId),
+    countPublishedTacheUsagesForDocument(supabase, docId),
     niveauIds.length
       ? supabase.from("niveaux").select("label").in("id", niveauIds)
       : Promise.resolve({ data: [] as { label: string }[] }),
@@ -80,7 +80,7 @@ export async function fetchDocFicheDataAction(docId: string): Promise<FetchResul
       connLabels,
       authorName,
       created,
-      usageCaption: copyDocumentPublishedTaeUsageCount(usageCount),
+      usageCaption: copyDocumentPublishedTacheUsageCount(usageCount),
       isPublished: doc.is_published ?? false,
     },
   };

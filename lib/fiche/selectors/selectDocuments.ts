@@ -1,6 +1,6 @@
 import { ready } from "@/lib/fiche/helpers";
 import type { SectionState, DocumentsData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { DocumentFiche } from "@/lib/types/fiche";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { getSlotData, slotLetter, type DocumentSlotData } from "@/lib/tache/document-helpers";
@@ -44,7 +44,7 @@ function documentSlotToFiche(slotId: DocumentSlotId, slot: DocumentSlotData): Do
  * Documents historiques — toujours `ready` (le composant affiche des placeholders vides).
  */
 export function selectDocuments(
-  state: TaeFormState,
+  state: TacheFormState,
   _refs: SelectorRefs,
 ): SectionState<DocumentsData> {
   const documents: DocumentFiche[] = state.bloc2.documentSlots.map(({ slotId }) =>

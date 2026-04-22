@@ -1,26 +1,26 @@
 import Link from "next/link";
 import { BankThumbnailCard } from "@/components/bank/BankThumbnailCard";
 import { BankTaskFilters } from "@/components/bank/BankTaskFilters";
-import { getBankTaeFilterRefs } from "@/lib/queries/bank-filter-ref-data";
+import { getBankTacheFilterRefs } from "@/lib/queries/bank-filter-ref-data";
 import {
   BANK_PAGE_SIZE,
-  getBankPublishedTaePage,
-  serializeBankTaeQueryForHref,
-  type BankTaeQuery,
+  getBankPublishedTachePage,
+  serializeBankTacheQueryForHref,
+  type BankTacheQuery,
 } from "@/lib/queries/bank-tasks";
 import { createClient } from "@/lib/supabase/server";
 import { BANK_TASK_LOAD_MORE, PAGE_BANK_EMPTY } from "@/lib/ui/ui-copy";
 import { cn } from "@/lib/utils/cn";
 
 type Props = {
-  query: BankTaeQuery;
+  query: BankTacheQuery;
 };
 
 export async function BankTasksPanel({ query }: Props) {
   const supabase = await createClient();
   const [refs, pageResult] = await Promise.all([
-    getBankTaeFilterRefs(supabase, query.filters.oiId ?? null),
-    getBankPublishedTaePage(supabase, query),
+    getBankTacheFilterRefs(supabase, query.filters.oiId ?? null),
+    getBankPublishedTachePage(supabase, query),
   ]);
   const { rows, total } = pageResult;
   const hasMore = (query.page + 1) * BANK_PAGE_SIZE < total;
@@ -43,7 +43,7 @@ export async function BankTasksPanel({ query }: Props) {
           {hasMore ? (
             <div className="flex justify-center">
               <Link
-                href={serializeBankTaeQueryForHref(query, { page: query.page + 1 })}
+                href={serializeBankTacheQueryForHref(query, { page: query.page + 1 })}
                 className={cn(
                   "inline-flex min-h-11 items-center justify-center rounded-lg border border-border bg-panel px-5 text-sm font-semibold text-deep shadow-sm",
                   "hover:bg-panel-alt",

@@ -211,9 +211,9 @@
 
 #### C6 — Wizard tâche 7 étapes ✅ Fait
 
-- **Route :** `app/(app)/questions/new/page.tsx` → `TaeForm`
+- **Route :** `app/(app)/questions/new/page.tsx` → `TacheForm`
 - **7 blocs :** Auteurs, Paramètres, Consigne+guidage, Documents, Corrigé, CD, Connaissances
-- **State :** reducer `lib/tache/tae-form-reducer.ts`, guards `lib/tache/wizard-publish-guards.ts`
+- **State :** reducer `lib/tache/tache-form-reducer.ts`, guards `lib/tache/wizard-publish-guards.ts`
 - **Stepper :** `components/tache/wizard/Stepper.tsx` + `StepperNavFooter.tsx`
 - **Effort restant :** 0
 
@@ -232,17 +232,17 @@
 
 #### C9 — Sauvegarder en brouillon (serveur) ✅ Fait
 
-- **Action :** `lib/actions/tae-draft.ts` → `saveWizardDraftAction()` — upsert dans `tae_wizard_drafts`
+- **Action :** `lib/actions/tache-draft.ts` → `saveWizardDraftAction()` — upsert dans `tae_wizard_drafts`
 - **Auto-save :** sur blur, debounced
-- **Reprise :** `lib/queries/tae-draft.ts` → `getWizardDraftForUser()` hydrate le wizard au retour
+- **Reprise :** `lib/queries/tache-draft.ts` → `getWizardDraftForUser()` hydrate le wizard au retour
 - **Bannières :** `WizardDraftBanners.tsx`, `WizardDraftObsoleteToast.tsx` (détection schema obsolète)
 - **Effort restant :** 0
 
 #### C10 — Publier une tâche ✅ Fait
 
-- **Action :** `lib/actions/tae-publish.ts` → `publishTaeAction()`
+- **Action :** `lib/actions/tache-publish.ts` → `publishTacheAction()`
 - **RPC :** `publish_tae_transaction(p_payload)` — transaction atomique (tae + documents + collaborateurs + CD + connaissances)
-- **Payload :** `lib/tache/publish-tae.ts` — construction complète du payload
+- **Payload :** `lib/tache/publish-tache.ts` — construction complète du payload
 - **Note :** ⚠️ `revalidatePath` absent après publication (cache stale possible) — à corriger
 - **Dépendances :** C6, C7/C8 (documents attachés)
 - **Effort restant :** 15 min (ajouter `revalidatePath`)
@@ -250,14 +250,14 @@
 #### C11 — Modifier une tâche publiée ✅ Fait
 
 - **Route :** `app/(app)/questions/[id]/edit/page.tsx`
-- **Hydratation :** `lib/tache/load-tae-for-edit.ts` → `fetchTaeFormStateForEdit()`
+- **Hydratation :** `lib/tache/load-tache-for-edit.ts` → `fetchTacheFormStateForEdit()`
 - **RPC :** `update_tae_transaction(tae_id, payload)` — gestion version major/minor
 - **Guard :** seul l'auteur peut éditer ; vérifie usage dans épreuves
 - **Effort restant :** 0
 
 #### C12 — Supprimer une tâche ✅ Fait
 
-- **Action :** `lib/actions/tae-delete.ts` → `deleteTaeAction()` — vérifie propriété + FK `evaluation_tae`
+- **Action :** `lib/actions/tache-delete.ts` → `deleteTacheAction()` — vérifie propriété + FK `evaluation_tae`
 - **UI :** menu ⋮ dans la fiche → « Supprimer » + `window.confirm`
 - **Guard :** retourne `code: "in_use"` si la tâche est dans une épreuve
 - **Effort restant :** 0
@@ -284,7 +284,7 @@
 
 - **Picker :** 2 onglets (banque collaborative, mes tâches), scroll infini, recherche textuelle
 - **Panier :** ajout, suppression, réordonnancement haut/bas, guard anti-doublon
-- **Query :** `lib/queries/evaluation-tae-picker.ts`
+- **Query :** `lib/queries/evaluation-tache-picker.ts`
 - **Effort restant :** 0
 
 #### C16 — Support 23+ tâches ✅ Fait
@@ -395,7 +395,7 @@
 ### D7 — Ajouter une tâche de la banque à une épreuve ✅ Fait
 
 - **Mécanisme :** picker embarqué dans `EvaluationCompositionEditor` (onglet « Banque »)
-- **Query :** `evaluation-tae-picker.ts` — toutes les TAÉ publiées éligibles
+- **Query :** `evaluation-tache-picker.ts` — toutes les TAÉ publiées éligibles
 - **Workflow :** parcourir → ajouter au panier → sauvegarder épreuve
 - **Effort restant :** 0
 
@@ -493,16 +493,16 @@
 | ------------- | --------------------------------------- | ----------------------------------------------------------------------------------------- |
 | `safeHtml()`  | ❌ inexistant                           | **20 `dangerouslySetInnerHTML` non sanitisés** dans les composants document, tâche, print |
 | CSP headers   | ❌ non configurés dans `next.config.ts` | Pas de réduction de surface d'attaque                                                     |
-| `select("*")` | ⚠️ 5 occurrences en production          | `autonomous-document-edit.ts`, `load-tae-for-edit.ts`, `server-fiche-map.ts` (×3)         |
+| `select("*")` | ⚠️ 5 occurrences en production          | `autonomous-document-edit.ts`, `load-tache-for-edit.ts`, `server-fiche-map.ts` (×3)       |
 
 **Effort :** 3–4 h (créer `safeHtml`, appliquer sur les 20 usages, ajouter CSP de base, corriger les 5 `select("*")`)
 
 ### Performance 🟡 Partiel
 
-| Item                             | État                                                                                                                       |
-| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| Images AVIF                      | ❌ `formats` non configuré dans `next.config.ts`                                                                           |
-| `revalidatePath` après mutations | ⚠️ présent sur 2/19 actions (`tae-delete`, `evaluation-save`). **Absent** sur `tae-publish`, `tae-draft`, actions document |
+| Item                             | État                                                                                                                             |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Images AVIF                      | ❌ `formats` non configuré dans `next.config.ts`                                                                                 |
+| `revalidatePath` après mutations | ⚠️ présent sur 2/19 actions (`tache-delete`, `evaluation-save`). **Absent** sur `tache-publish`, `tache-draft`, actions document |
 
 **Effort :** 1–2 h (config AVIF + ajouter `revalidatePath` dans les actions critiques)
 
@@ -510,7 +510,7 @@
 
 | Exigence MVP                              | État                                              |
 | ----------------------------------------- | ------------------------------------------------- |
-| Tests intégration `publishTaeAction`      | ❌ absent                                         |
+| Tests intégration `publishTacheAction`    | ❌ absent                                         |
 | Tests intégration `saveWizardDraftAction` | ❌ absent                                         |
 | Tests intégration `publishEpreuveAction`  | ❌ absent                                         |
 | Tests unitaires lib/                      | ✅ 43 fichiers Vitest                             |
