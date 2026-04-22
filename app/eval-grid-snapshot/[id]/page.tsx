@@ -1,8 +1,8 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import { notFound } from "next/navigation";
-import { GrilleEvalTable } from "@/components/tae/grilles/GrilleEvalTable";
-import type { GrilleEntry } from "@/components/tae/TaeForm/bloc2/types";
+import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
+import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
 
 async function loadGrilles(): Promise<GrilleEntry[]> {
   const file = path.join(process.cwd(), "public/data/grilles-evaluation.json");

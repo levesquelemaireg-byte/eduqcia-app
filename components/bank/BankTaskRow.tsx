@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { plainConsigneForMiniature } from "@/lib/tae/consigne-helpers";
+import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
 import type { BankTaeRow } from "@/lib/queries/bank-tasks";
 import {
   BANK_TASK_BY,

@@ -3,7 +3,7 @@ import {
   categorieTextuelleSchema,
   parseCategorieTextuelle,
 } from "@/lib/documents/categorie-textuelle";
-import { getAllCategoriesTextuelles } from "@/lib/tae/document-categories-helpers";
+import { getAllCategoriesTextuelles } from "@/lib/tache/document-categories-helpers";
 
 describe("categorieTextuelleSchema", () => {
   it("accepte les 8 valeurs canoniques", () => {

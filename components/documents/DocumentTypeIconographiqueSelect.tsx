@@ -1,7 +1,7 @@
 "use client";
 
 import { ListboxField, type ListboxOption } from "@/components/ui/ListboxField";
-import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
+import { getAllCategoriesIconographiques } from "@/lib/tache/document-categories-helpers";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import {
   DOCUMENT_TYPE_ICONO_CATEGORY_HELP,

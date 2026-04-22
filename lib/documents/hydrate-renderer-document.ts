@@ -13,7 +13,7 @@ import type {
 } from "@/lib/types/document-renderer";
 import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
-import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
+import { parseDocumentLegendPosition } from "@/lib/tache/document-helpers";
 
 /** Colonnes minimales requises pour hydrater un RendererDocument. */
 type DocumentHydrationInput = {

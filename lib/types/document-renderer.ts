@@ -13,7 +13,7 @@
  * - `DocumentCategorieIconographiqueId` (`lib/types/document-categories.ts`)
  */
 
-import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
+import type { DocumentLegendPosition } from "@/lib/tache/document-helpers";
 import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 

@@ -7,36 +7,36 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
+import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
 import {
   BLUEPRINT_INITIAL_NB_LIGNES,
   documentSlotsFromCount,
   type DisciplineCode,
   type DocumentSlotId,
   type NiveauCode,
-} from "@/lib/tae/blueprint-helpers";
+} from "@/lib/tache/blueprint-helpers";
 import {
   filterConnRowsByNiveau,
   parseConnJsonArray,
   type ConnaissanceSelectionWithIds,
-} from "@/lib/tae/connaissances-helpers";
+} from "@/lib/tache/connaissances-helpers";
 import {
   matchDbConnaissancesToJsonSelections,
   type DbConnaissanceRow,
-} from "@/lib/tae/connaissances-match-db-to-json";
-import { initialCdFormSlice, parseCdJsonArray, type CdFormSlice } from "@/lib/tae/cd-helpers";
-import { resolveCdSelectionIdsFromTree } from "@/lib/tae/cd-resolve-json-ids";
+} from "@/lib/tache/connaissances-match-db-to-json";
+import { initialCdFormSlice, parseCdJsonArray, type CdFormSlice } from "@/lib/tache/cd-helpers";
+import { resolveCdSelectionIdsFromTree } from "@/lib/tache/cd-resolve-json-ids";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
-import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tae/document-helpers";
+import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import {
   initialAspects,
   type AspectSocieteKey,
   type RedactionSlice,
-} from "@/lib/tae/redaction-helpers";
-import { nonRedactionFromDbColumn } from "@/lib/tae/non-redaction/non-redaction-edit-hydrate";
-import { TAE_FORM_STEP_COUNT, type TaeFormState } from "@/lib/tae/tae-form-state-types";
-import type { TaeVersionSnapshot } from "@/lib/tae/publish-tae-types";
-import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
+} from "@/lib/tache/redaction-helpers";
+import { nonRedactionFromDbColumn } from "@/lib/tache/non-redaction/non-redaction-edit-hydrate";
+import { TAE_FORM_STEP_COUNT, type TaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TaeVersionSnapshot } from "@/lib/tache/publish-tae-types";
+import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 
 type TaeEditRow = {
   id: string;

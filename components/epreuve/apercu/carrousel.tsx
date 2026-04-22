@@ -6,7 +6,7 @@ import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
 import {
   CARROUSEL_APERCU_COPY,
   EVAL_PRINT_SECTION_COPY,
-} from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+} from "@/components/tache/wizard/preview/wizard-print-preview-copy";
 import { cn } from "@/lib/utils/cn";
 
 /* -------------------------------------------------------------------------- */

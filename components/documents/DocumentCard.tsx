@@ -1,6 +1,6 @@
 import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
 import type { RendererDocument } from "@/lib/types/document-renderer";
-import styles from "@/components/tae/TaeForm/preview/printable-fiche-preview.module.css";
+import styles from "@/components/tache/wizard/preview/printable-fiche-preview.module.css";
 
 type Props = {
   document: RendererDocument;

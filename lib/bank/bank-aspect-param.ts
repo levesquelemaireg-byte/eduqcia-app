@@ -1,5 +1,5 @@
 import type { Database } from "@/lib/types/database";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 
 type AspectDb = Database["public"]["Enums"]["aspect_societe"];
 

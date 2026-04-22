@@ -7,45 +7,45 @@
  * D0 partiel : coexiste avec l'ancien code — aucun consommateur n'est modifié.
  */
 
-import { DISCIPLINE_LABEL, NIVEAUX } from "@/components/tae/TaeForm/bloc2/constants";
-import { getSlotData } from "@/lib/tae/document-helpers";
-import type { NiveauCode, DisciplineCode } from "@/lib/tae/blueprint-helpers";
-import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
-import { getRedactionSliceForPreview, type TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { cdSelectionToFicheSlice } from "@/lib/tae/cd-helpers";
-import { connaissancesToFicheSlice } from "@/lib/tae/connaissances-selection";
-import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tae/auteur-display-sort";
+import { DISCIPLINE_LABEL, NIVEAUX } from "@/components/tache/wizard/bloc2/constants";
+import { getSlotData } from "@/lib/tache/document-helpers";
+import type { NiveauCode, DisciplineCode } from "@/lib/tache/blueprint-helpers";
+import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
+import { getRedactionSliceForPreview, type TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { cdSelectionToFicheSlice } from "@/lib/tache/cd-helpers";
+import { connaissancesToFicheSlice } from "@/lib/tache/connaissances-selection";
+import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tache/auteur-display-sort";
 import type { OiEntryJson } from "@/lib/types/oi";
 import {
   isActiveAvantApresVariant,
   isActiveLigneDuTempsVariant,
   isActiveNonRedactionVariant,
   isActiveOrdreChronologiqueVariant,
-} from "@/lib/tae/non-redaction/wizard-variant";
+} from "@/lib/tache/non-redaction/wizard-variant";
 import {
   nonRedactionAvantApresPayload,
   nonRedactionLignePayload,
   nonRedactionOrdrePayload,
-} from "@/lib/tae/wizard-state-nr";
+} from "@/lib/tache/wizard-state-nr";
 import {
   buildAvantApresConsigneHtml,
   buildAvantApresCorrigeHtml,
   buildAvantApresGuidageHtml,
   normalizeAvantApresPayload,
-} from "@/lib/tae/non-redaction/avant-apres-payload";
+} from "@/lib/tache/non-redaction/avant-apres-payload";
 import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
   buildLigneDuTempsGuidageHtml,
   normalizeLigneDuTempsPayload,
-} from "@/lib/tae/non-redaction/ligne-du-temps-payload";
+} from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import {
   buildOrdreChronologiqueConsigneHtml,
   buildOrdreChronologiqueCorrigeHtml,
   buildOrdreChronologiqueGuidageHtml,
   normalizeOrdreChronologiquePayload,
-} from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+} from "@/lib/tache/non-redaction/ordre-chronologique-payload";
 
 import type { RendererDocument, DocumentElement } from "@/lib/types/document-renderer";
 

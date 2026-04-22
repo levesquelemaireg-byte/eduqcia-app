@@ -2,9 +2,9 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
-import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tae/TaeForm/bloc7";
+import { MillerConnaissancesHec, MillerConnaissancesHqc } from "@/components/tache/wizard/bloc7";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
-import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
+import type { DisciplineCode, NiveauCode } from "@/lib/tache/blueprint-helpers";
 import {
   connDataUrlForDiscipline,
   filterConnRowsByNiveau,
@@ -13,7 +13,7 @@ import {
   type ConnaissanceSelectionWithIds,
   type HecConnRow,
   type HqcConnRow,
-} from "@/lib/tae/connaissances-helpers";
+} from "@/lib/tache/connaissances-helpers";
 import {
   WIZARD_CONNAISSANCES_EMPTY_FILTER,
   WIZARD_REFERENTIEL_CONN_INDISPO,

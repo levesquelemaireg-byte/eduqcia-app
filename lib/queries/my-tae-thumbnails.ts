@@ -5,9 +5,9 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import { canonicalOiIcone } from "@/lib/tae/oi-canonical";
-import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tae/tae-form-hydrate";
-import { plainConsigneForMiniature } from "@/lib/tae/consigne-helpers";
+import { canonicalOiIcone } from "@/lib/tache/oi-canonical";
+import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tache/tae-form-hydrate";
+import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
 import { truncateText } from "@/lib/utils/stripHtml";
 import { MY_QUESTIONS_WIZARD_PREVIEW_FALLBACK } from "@/lib/ui/ui-copy";
 import type { MyTaeListFiltre } from "@/lib/queries/user-content";

@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { deleteWizardDraftAction } from "@/lib/actions/tae-draft";
 import { deleteTaeAction } from "@/lib/actions/tae-delete";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tae/tae-draft-storage-key";
+import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
 import { cn } from "@/lib/utils/cn";
 import {
   MY_QUESTIONS_DELETE_BLOCKED_IN_EVALUATION,

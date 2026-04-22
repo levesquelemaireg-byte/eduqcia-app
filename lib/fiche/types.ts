@@ -6,7 +6,7 @@
 
 import type { ComponentType, ReactNode } from "react";
 import type { OiEntryJson } from "@/lib/types/oi";
-import type { GrilleEntry } from "@/components/tae/TaeForm/bloc2/types";
+import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
 import type { DocumentFiche, CdSelection, ConnaissanceSelection } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 

@@ -1,6 +1,6 @@
 import { ready, hidden } from "@/lib/fiche/helpers";
 import type { SectionState, GrilleData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 
 /**
  * Grille d'évaluation — visible seulement si un outil d'évaluation est sélectionné.

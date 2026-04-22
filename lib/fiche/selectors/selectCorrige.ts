@@ -1,8 +1,8 @@
 import { ready, skeleton, sanitize } from "@/lib/fiche/helpers";
 import type { SectionState, CorrigeData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 import { selectNRContent } from "@/lib/fiche/selectors/selectNRContent";
-import { hasFicheContent } from "@/lib/tae/fiche-helpers";
+import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 
 /**
  * Corrigé de la tâche — HTML sanitisé + notes correcteur optionnelles.

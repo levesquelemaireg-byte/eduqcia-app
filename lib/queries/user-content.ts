@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
-import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tae/tae-form-hydrate";
+import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tache/tae-form-hydrate";
 import { MY_QUESTIONS_WIZARD_PREVIEW_FALLBACK } from "@/lib/ui/ui-copy";
-import { plainConsigneForMiniature } from "@/lib/tae/consigne-helpers";
+import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
 import { truncateText } from "@/lib/utils/stripHtml";
 
 /** Valeurs d’URL `?filtre=` — alignées sur `docs/DECISIONS.md` (page Mes tâches). */

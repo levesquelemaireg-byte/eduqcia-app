@@ -5,7 +5,7 @@ import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import { getDocumentTypeSource } from "@/lib/tae/document-categories-helpers";
+import { getDocumentTypeSource } from "@/lib/tache/document-categories-helpers";
 import {
   DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_BODY,
   DOCUMENT_MODULE_MODAL_SOURCE_PRIMAIRE_TITLE,

@@ -1,5 +1,5 @@
 import type { TaeFicheData } from "@/lib/types/fiche";
-import { lookupPeriode } from "@/lib/tae/periode-lookup";
+import { lookupPeriode } from "@/lib/tache/periode-lookup";
 
 /** Retourne le parent racine des connaissances (réalité sociale du premier élément) et sa période. */
 export function selectRailChapitreConnaissances(

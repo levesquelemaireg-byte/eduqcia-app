@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { TaeFichePrintView } from "@/components/tae/print/TaeFichePrintView";
+import { TaeFichePrintView } from "@/components/tache/print/TaeFichePrintView";
 import { createClient } from "@/lib/supabase/server";
-import { fetchTaeFicheBundle } from "@/lib/tae/server-fiche-map";
+import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
 
 type PageProps = {
   params: Promise<{ id: string }>;

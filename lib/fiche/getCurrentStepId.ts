@@ -1,5 +1,5 @@
 import type { StepId } from "@/lib/fiche/types";
-import { TAE_FORM_STEPS } from "@/components/tae/TaeForm/step-meta";
+import { TAE_FORM_STEPS } from "@/components/tache/wizard/step-meta";
 
 /**
  * Convertit l'index numérique `currentStep` du wizard en `StepId` typé.

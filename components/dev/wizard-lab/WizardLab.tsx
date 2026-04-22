@@ -8,7 +8,7 @@ import { useCallback, useState } from "react";
 import { LabControls } from "@/components/dev/wizard-lab/LabControls";
 import { LabMatrix } from "@/components/dev/wizard-lab/LabMatrix";
 import { LabBlocViewer } from "@/components/dev/wizard-lab/LabBlocViewer";
-import { useOiData } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
+import { useOiData } from "@/components/tache/wizard/bloc2/useBloc2Data";
 import type { OiEntryJson } from "@/lib/types/oi";
 
 export function WizardLab() {

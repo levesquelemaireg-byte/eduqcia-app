@@ -9,7 +9,7 @@
 
 import type { TaeFicheData } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
-import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import { resoudreOutilEvaluation, type GrilleEvaluationEntree } from "./etat-wizard-vers-tache";
 import type { DonneesTache, EspaceProduction, Guidage } from "./donnees";

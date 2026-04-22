@@ -5,7 +5,7 @@ import path from "path";
 import { kv } from "@vercel/kv";
 import { createClient } from "@/lib/supabase/server";
 import { requireActiveAppUser } from "@/lib/auth/require-active-app-user";
-import { fetchTaeFicheBundle } from "@/lib/tae/server-fiche-map";
+import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
 import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
 import { signerTokenDraft } from "@/lib/epreuve/impression/token-draft";
 import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";

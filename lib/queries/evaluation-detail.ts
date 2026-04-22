@@ -3,7 +3,7 @@ import "server-only";
 import fs from "fs";
 import path from "path";
 import { createClient } from "@/lib/supabase/server";
-import { fetchTaeFicheBundle } from "@/lib/tae/server-fiche-map";
+import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
 import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
 import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";

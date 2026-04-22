@@ -26,7 +26,7 @@ import {
   FILTER_LABEL_ALL_NIVEAUX,
   FILTER_LABEL_ALL_OIS,
 } from "@/lib/ui/ui-copy";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import { cn } from "@/lib/utils/cn";
 import Link from "next/link";
 

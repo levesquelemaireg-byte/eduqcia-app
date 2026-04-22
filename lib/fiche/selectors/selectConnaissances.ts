@@ -1,7 +1,7 @@
 import { ready, skeleton } from "@/lib/fiche/helpers";
 import type { SectionState, ConnaissancesData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { connaissancesToFicheSlice } from "@/lib/tae/connaissances-helpers";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { connaissancesToFicheSlice } from "@/lib/tache/connaissances-helpers";
 
 /**
  * Connaissances relatives — arbre hiérarchique groupé.

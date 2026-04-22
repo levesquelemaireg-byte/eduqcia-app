@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { autonomousDocumentUpdateFormSchema } from "@/lib/schemas/autonomous-document";
-import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
-import type { DisciplineCode } from "@/lib/tae/blueprint-helpers";
-import { resolveConnaissanceSelectionsToIds } from "@/lib/tae/publish-tae-lookups";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
+import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
+import { resolveConnaissanceSelectionsToIds } from "@/lib/tache/publish-tae-lookups";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import { DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR } from "@/lib/ui/ui-copy";
 import { createClient } from "@/lib/supabase/server";
 import { buildElementsJsonb } from "@/lib/documents/build-elements-jsonb";

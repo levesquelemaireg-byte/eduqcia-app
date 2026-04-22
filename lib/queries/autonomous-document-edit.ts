@@ -6,15 +6,15 @@ import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
-import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
+import type { DisciplineCode, NiveauCode } from "@/lib/tache/blueprint-helpers";
 import {
   connDataUrlForDiscipline,
   filterConnRowsByNiveau,
   parseConnJsonArray,
   rowToSelectionWithIds,
   type ConnRawRow,
-} from "@/lib/tae/connaissances-helpers";
-import { initialAspects, type AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+} from "@/lib/tache/connaissances-helpers";
+import { initialAspects, type AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import type { Database } from "@/lib/types/database";
 
 const ASPECT_DB_TO_KEY: Record<string, AspectSocieteKey> = {

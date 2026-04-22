@@ -2,9 +2,9 @@
 
 import type { FooterData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
-import { formatFicheDate } from "@/lib/tae/fiche-helpers";
+import { formatFicheDate } from "@/lib/tache/fiche-helpers";
 import { getDisplayName } from "@/lib/utils/profile-display";
-import { SkeletonFooterNbLignes } from "@/components/tae/fiche/FicheSkeletons";
+import { SkeletonFooterNbLignes } from "@/components/tache/fiche/FicheSkeletons";
 import { MetaRow } from "@/lib/fiche/primitives/MetaRow";
 import type { MetaRowItem } from "@/lib/fiche/primitives/MetaRow";
 

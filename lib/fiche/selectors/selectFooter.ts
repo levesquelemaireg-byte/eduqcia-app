@@ -1,9 +1,9 @@
 import { ready } from "@/lib/fiche/helpers";
 import type { SectionState, FooterData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tae/auteur-display-sort";
-import { isActiveNonRedactionVariant } from "@/lib/tae/non-redaction/wizard-variant";
-import { BLUEPRINT_INITIAL_NB_LIGNES } from "@/lib/tae/blueprint-helpers";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tache/auteur-display-sort";
+import { isActiveNonRedactionVariant } from "@/lib/tache/non-redaction/wizard-variant";
+import { BLUEPRINT_INITIAL_NB_LIGNES } from "@/lib/tache/blueprint-helpers";
 
 /**
  * Pied de fiche : auteurs, date, lignes, statut publication.

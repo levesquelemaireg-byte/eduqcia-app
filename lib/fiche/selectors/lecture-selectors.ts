@@ -4,7 +4,7 @@
  */
 
 import { ready, hidden, sanitize, resolveDocPlaceholders } from "@/lib/fiche/helpers";
-import { hasFicheContent } from "@/lib/tae/fiche-helpers";
+import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 import type {
   SectionState,
   HeaderData,

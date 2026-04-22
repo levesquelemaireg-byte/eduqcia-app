@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { useApercuPng } from "@/hooks/epreuve/use-apercu-png";
 import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
-import { CARROUSEL_APERCU_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+import { CARROUSEL_APERCU_COPY } from "@/components/tache/wizard/preview/wizard-print-preview-copy";
 import { Button } from "@/components/ui/Button";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 

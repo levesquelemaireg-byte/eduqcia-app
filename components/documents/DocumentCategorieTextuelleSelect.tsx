@@ -2,7 +2,7 @@
 
 import { ListboxField, type ListboxOption } from "@/components/ui/ListboxField";
 import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
-import { getAllCategoriesTextuelles } from "@/lib/tae/document-categories-helpers";
+import { getAllCategoriesTextuelles } from "@/lib/tache/document-categories-helpers";
 import {
   DOCUMENT_TYPE_TEXTUEL_CATEGORY_HELP,
   DOCUMENT_TYPE_TEXTUEL_CATEGORY_LABEL,

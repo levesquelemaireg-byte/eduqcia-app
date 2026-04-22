@@ -7,26 +7,26 @@
 
 import { createSelector } from "@/lib/fiche/helpers";
 import type { NonRedactionContent } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import {
   buildAvantApresConsigneHtml,
   buildAvantApresCorrigeHtml,
   buildAvantApresGuidageHtml,
   normalizeAvantApresPayload,
-} from "@/lib/tae/non-redaction/avant-apres-payload";
+} from "@/lib/tache/non-redaction/avant-apres-payload";
 import {
   buildOrdreChronologiqueConsigneHtml,
   buildOrdreChronologiqueCorrigeHtml,
   buildOrdreChronologiqueGuidageHtml,
   normalizeOrdreChronologiquePayload,
-} from "@/lib/tae/non-redaction/ordre-chronologique-payload";
+} from "@/lib/tache/non-redaction/ordre-chronologique-payload";
 import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
   buildLigneDuTempsGuidageHtml,
   normalizeLigneDuTempsPayload,
-} from "@/lib/tae/non-redaction/ligne-du-temps-payload";
+} from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 
 export const selectNRContent = createSelector(
   [

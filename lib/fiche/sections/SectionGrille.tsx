@@ -3,7 +3,7 @@
 import type { GrilleData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
-import { GrilleEvalTable } from "@/components/tae/grilles/GrilleEvalTable";
+import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
 
 type Props = { data: GrilleData; mode: FicheMode };

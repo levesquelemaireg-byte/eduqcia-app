@@ -9,7 +9,7 @@ import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
 import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { DocumentElementFields } from "@/components/documents/wizard/steps/DocumentElementFields";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import { cn } from "@/lib/utils/cn";
 import {
   ANCRAGE_TEMPOREL_LABEL,

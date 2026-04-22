@@ -1,4 +1,4 @@
-import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
+import type { DocumentLegendPosition } from "@/lib/tache/document-helpers";
 import { cn } from "@/lib/utils/cn";
 import styles from "@/components/documents/document-image-legend-overlay.module.css";
 

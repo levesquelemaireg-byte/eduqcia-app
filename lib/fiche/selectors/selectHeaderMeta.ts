@@ -1,10 +1,10 @@
 import { ready } from "@/lib/fiche/helpers";
 import type { SectionState, HeaderData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
-import { NIVEAUX, DISCIPLINE_LABEL } from "@/components/tae/TaeForm/bloc2/constants";
-import type { NiveauCode, DisciplineCode } from "@/lib/tae/blueprint-helpers";
-import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+import { NIVEAUX, DISCIPLINE_LABEL } from "@/components/tache/wizard/bloc2/constants";
+import type { NiveauCode, DisciplineCode } from "@/lib/tache/blueprint-helpers";
+import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 
 /**
  * Header fiche : icône OI, pastilles métadonnées.

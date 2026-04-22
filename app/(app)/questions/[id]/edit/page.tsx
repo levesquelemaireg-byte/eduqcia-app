@@ -1,4 +1,4 @@
-import { TaeForm } from "@/components/tae/TaeForm";
+import { TaeForm } from "@/components/tache/wizard";
 import { fetchTaeFormStateForEdit } from "@/lib/queries/tae-for-edit";
 import { createClient } from "@/lib/supabase/server";
 import { PAGE_MODIFIER_UNE_TACHE_SUBTITLE, PAGE_MODIFIER_UNE_TACHE_TITLE } from "@/lib/ui/ui-copy";

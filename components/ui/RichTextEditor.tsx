@@ -4,7 +4,7 @@ import type { Editor, Extensions } from "@tiptap/core";
 import type { ReactNode } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useEffect, useId, useRef } from "react";
-import { simpleRichExtensions } from "@/components/tae/TaeForm/tiptap/baseExtensions";
+import { simpleRichExtensions } from "@/components/tache/wizard/tiptap/baseExtensions";
 import { RichTextEditorShell } from "@/components/ui/RichTextEditorShell";
 
 const PROSE_MARKS =

@@ -11,8 +11,8 @@ import { refIdsEqual } from "@/lib/documents/ref-id";
 import {
   getDocumentCategorieIconographique,
   getDocumentCategorieTextuelle,
-} from "@/lib/tae/document-categories-helpers";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+} from "@/lib/tache/document-categories-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DisciplineOption, NiveauOption } from "@/lib/queries/document-ref-data";
 import type {

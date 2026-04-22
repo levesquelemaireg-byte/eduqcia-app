@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
-import { emptyDocumentSlot } from "@/lib/tae/document-helpers";
-import { initialTaeFormState } from "@/lib/tae/tae-form-state-types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { emptyDocumentSlot } from "@/lib/tache/document-helpers";
+import { initialTaeFormState } from "@/lib/tache/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 import type { OiEntryJson } from "@/lib/types/oi";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import {

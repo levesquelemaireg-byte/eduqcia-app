@@ -35,8 +35,8 @@ import {
   type AutonomousDocumentFormValues,
 } from "@/lib/schemas/autonomous-document";
 import { createEmptyElement } from "@/lib/documents/document-element-defaults";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
-import { initialAspects } from "@/lib/tae/redaction-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { initialAspects } from "@/lib/tache/redaction-helpers";
 import {
   DOCUMENT_MODULE_PAGE_TITLE,
   DOCUMENT_MODULE_PAGE_TITLE_EDIT,

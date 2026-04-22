@@ -2,7 +2,7 @@ import Link from "next/link";
 import { AvatarInitials } from "@/components/ui/AvatarInitials";
 import { RoleBadge } from "@/components/ui/RoleBadge";
 import { CopyButton } from "@/components/ui/CopyButton";
-import { MetaPill } from "@/components/tae/fiche/MetaPill";
+import { MetaPill } from "@/components/tache/fiche/MetaPill";
 import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 import { pluralize } from "@/lib/utils/pluralize";
 import { NIVEAU_LABELS, DISCIPLINE_LABELS } from "@/lib/utils/profile-labels";

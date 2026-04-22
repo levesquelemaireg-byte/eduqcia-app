@@ -6,7 +6,7 @@ import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-docu
 import type { DocumentElement, RendererDocument } from "@/lib/types/document-renderer";
 import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
-import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
+import { parseDocumentLegendPosition } from "@/lib/tache/document-helpers";
 
 /**
  * Aperçu impression live dans le wizard document — lit le formulaire via

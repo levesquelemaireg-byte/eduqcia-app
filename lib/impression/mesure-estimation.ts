@@ -1,5 +1,5 @@
 import type { Bloc } from "@/lib/epreuve/pagination/types";
-import { htmlHasMeaningfulText, stripHtml } from "@/lib/tae/consigne-helpers";
+import { htmlHasMeaningfulText, stripHtml } from "@/lib/tache/consigne-helpers";
 import type { RendererDocument, DocumentElement } from "@/lib/types/document-renderer";
 
 const MAX_IMAGE_HEIGHT_PX = 416;

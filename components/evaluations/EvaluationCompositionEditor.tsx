@@ -52,7 +52,7 @@ import {
   TOAST_EVAL_TAE_INELIGIBLE,
   TOAST_EVAL_TITRE_REQUIS,
 } from "@/lib/ui/ui-copy";
-import { plainConsigneForMiniature } from "@/lib/tae/consigne-helpers";
+import { plainConsigneForMiniature } from "@/lib/tache/consigne-helpers";
 import { truncateText } from "@/lib/utils/stripHtml";
 import { cn } from "@/lib/utils/cn";
 import { Field } from "@/components/ui/Field";

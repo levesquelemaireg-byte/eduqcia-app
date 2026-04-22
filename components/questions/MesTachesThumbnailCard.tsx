@@ -4,13 +4,13 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { FicheThumbnail } from "@/components/tae/FicheThumbnail";
+import { FicheThumbnail } from "@/components/tache/FicheThumbnail";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { deleteWizardDraftAction } from "@/lib/actions/tae-draft";
 import { deleteTaeAction } from "@/lib/actions/tae-delete";
 import { toThumbnailFicheData } from "@/lib/fiche/adapters/to-thumbnail-fiche-data";
 import type { MyTaeThumbnailRow } from "@/lib/queries/my-tae-thumbnails";
-import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tae/tae-draft-storage-key";
+import { TAE_DRAFT_STORAGE_KEY } from "@/lib/tache/tae-draft-storage-key";
 import { cn } from "@/lib/utils/cn";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";
 import {

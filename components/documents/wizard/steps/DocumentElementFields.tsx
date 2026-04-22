@@ -13,7 +13,7 @@ import editorStyles from "@/components/documents/tiptap/document-content-editor.
 import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
-import { documentContentExtensions } from "@/components/tae/TaeForm/tiptap/baseExtensions";
+import { documentContentExtensions } from "@/components/tache/wizard/tiptap/baseExtensions";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { ImageUploadDropzone } from "@/components/ui/ImageUploadDropzone";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
@@ -28,8 +28,8 @@ import {
 } from "@/lib/schemas/autonomous-document";
 import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
-import { isPublicHttpUrl } from "@/lib/tae/document-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { isPublicHttpUrl } from "@/lib/tache/document-helpers";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import { messageForUploadValidationReason } from "@/lib/ui/upload-image-validation-toast";
 import {
@@ -65,7 +65,10 @@ import {
   TOAST_DOCUMENT_IMAGE_UPLOAD_AUTH,
   TOAST_DOCUMENT_IMAGE_UPLOAD_FAILED,
 } from "@/lib/ui/ui-copy";
-import { getDocumentTypeIcon, getDocumentTypeSource } from "@/lib/tae/document-categories-helpers";
+import {
+  getDocumentTypeIcon,
+  getDocumentTypeSource,
+} from "@/lib/tache/document-categories-helpers";
 import { cn } from "@/lib/utils/cn";
 import stepStyles from "./step-document.module.css";
 

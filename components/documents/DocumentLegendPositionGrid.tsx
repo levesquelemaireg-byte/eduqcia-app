@@ -4,7 +4,7 @@ import { useId, useState, type KeyboardEvent } from "react";
 import { LEGEND_POSITION_GRID } from "@/components/documents/document-legend-ui";
 import { FieldHelpModalButton } from "@/components/ui/FieldHelpModalButton";
 import { SimpleModal } from "@/components/ui/SimpleModal";
-import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
+import type { DocumentLegendPosition } from "@/lib/tache/document-helpers";
 import {
   DOCUMENT_MODULE_LEGEND_POSITION_ERROR,
   DOCUMENT_MODULE_LEGEND_POSITION_HELP_MODAL_BODY,

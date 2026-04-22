@@ -2,9 +2,9 @@
 
 import { useCallback } from "react";
 import { defineSection } from "@/lib/fiche/defineSection";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 import type { ConnaissancesData, FicheMode } from "@/lib/fiche/types";
-import { useTaeForm } from "@/components/tae/TaeForm/FormState";
+import { useTaeForm } from "@/components/tache/wizard/FormState";
 
 /* ─── Selectors ────────────────────────────────────────────────── */
 
@@ -38,7 +38,7 @@ import {
   SkeletonGuidageBlock,
   SkeletonCDTree,
   SkeletonConnaissancesTree,
-} from "@/components/tae/fiche/FicheSkeletons";
+} from "@/components/tache/fiche/FicheSkeletons";
 
 /* ─── Wrapper connaissances (wizard) ───────────────────────────── */
 

@@ -4,7 +4,7 @@ import {
   disciplinesForNiveau,
   type DisciplineCode,
   type NiveauCode,
-} from "@/lib/tae/blueprint-helpers";
+} from "@/lib/tache/blueprint-helpers";
 
 /**
  * Filtre les disciplines DB selon le niveau — même règle que le Bloc 2 TAÉ (`disciplinesForNiveau`).

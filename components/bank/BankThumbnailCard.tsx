@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { FicheThumbnail } from "@/components/tae/FicheThumbnail";
+import { FicheThumbnail } from "@/components/tache/FicheThumbnail";
 import { BankAddToEvaluationLauncher } from "@/components/bank/BankAddToEvaluationLauncher";
 import { toThumbnailFicheData } from "@/lib/fiche/adapters/to-thumbnail-fiche-data";
-import { canonicalOiIcone } from "@/lib/tae/oi-canonical";
+import { canonicalOiIcone } from "@/lib/tache/oi-canonical";
 import type { BankTaeRow } from "@/lib/queries/bank-tasks";
 import { BANK_TASK_BY, BANK_TASK_LINK_VOIR, BANK_TASK_PUBLISHED_ON } from "@/lib/ui/ui-copy";
 import { formatDateFrCaMedium } from "@/lib/utils/format-date-fr-ca";

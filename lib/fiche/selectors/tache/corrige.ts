@@ -5,7 +5,7 @@
  */
 
 import { sanitize } from "@/lib/fiche/helpers";
-import { hasFicheContent } from "@/lib/tae/fiche-helpers";
+import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 import type { TaeFicheData } from "@/lib/types/fiche";
 
 export type CorrigeData = {

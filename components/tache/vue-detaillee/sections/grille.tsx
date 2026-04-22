@@ -3,8 +3,8 @@
 import { useMemo, useRef, useState, useEffect } from "react";
 import type { GrilleData } from "@/lib/fiche/selectors/tache/grille";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
-import { GrilleEvalTable } from "@/components/tae/grilles/GrilleEvalTable";
-import { useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
+import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
+import { useGrilles } from "@/components/tache/wizard/bloc2/useBloc2Data";
 import { FICHE_SECTION_TITLE_GRILLE } from "@/lib/ui/ui-copy";
 
 /** Largeur fixe du tableau de grille (définie dans eval-grid.module.css). */

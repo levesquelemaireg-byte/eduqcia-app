@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { fetchTaeFicheBundle } from "@/lib/tae/server-fiche-map";
+import { fetchTaeFicheBundle } from "@/lib/tache/server-fiche-map";
 import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
 
 type FetchResult =

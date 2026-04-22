@@ -1,6 +1,6 @@
 /** FICHE-TACHE.md — données affichées par `FicheTache` et `TaeCard`. */
 
-import type { DocumentLegendPosition } from "@/lib/tae/document-helpers";
+import type { DocumentLegendPosition } from "@/lib/tache/document-helpers";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 
 export type AspectSociete = "economique" | "politique" | "social" | "culturel" | "territorial";

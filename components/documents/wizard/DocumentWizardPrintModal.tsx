@@ -2,10 +2,10 @@
 
 import type { ReactNode } from "react";
 import { useEffect, useId } from "react";
-import { WIZARD_PRINT_PREVIEW_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+import { WIZARD_PRINT_PREVIEW_COPY } from "@/components/tache/wizard/preview/wizard-print-preview-copy";
 import { Button } from "@/components/ui/Button";
-import { TAE_PRINT_PAGE_CSS, TAE_PRINT_PAGE_STYLE_ATTR } from "@/lib/tae/print-page-css";
-import { useClearDocumentTitleForPrint } from "@/lib/tae/use-clear-document-title-for-print";
+import { TAE_PRINT_PAGE_CSS, TAE_PRINT_PAGE_STYLE_ATTR } from "@/lib/tache/print-page-css";
+import { useClearDocumentTitleForPrint } from "@/lib/tache/use-clear-document-title-for-print";
 
 const PRINT_PREVIEW_MODAL_HTML_CLASS = "tae-print-preview-modal-open";
 

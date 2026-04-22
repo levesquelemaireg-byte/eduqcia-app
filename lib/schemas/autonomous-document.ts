@@ -4,7 +4,7 @@ import { categorieTextuelleSchema } from "@/lib/documents/categorie-textuelle";
 import { typeIconographiqueSchema } from "@/lib/documents/type-iconographique";
 import { documentLegendPositionSchema, documentSourceTypeSchema } from "@/lib/schemas/document";
 import { documentStructureSchema } from "@/lib/schemas/document-renderer";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import {
   DOCUMENT_MODULE_LEGEND_POSITION_ERROR,
   DOCUMENT_MODULE_LEGEND_WORDS_ERROR,

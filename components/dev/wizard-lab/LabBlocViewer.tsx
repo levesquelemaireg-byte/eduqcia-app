@@ -5,36 +5,36 @@
  * Même logique que index.tsx — resolveWizardBlocComponent + fallback BLOC_COMPONENTS.
  */
 import { type ComponentType, useMemo } from "react";
-import { TaeFormProvider } from "@/components/tae/TaeForm/FormState";
-import { Bloc3ConsigneProduction } from "@/components/tae/TaeForm/bloc3/Bloc3ConsigneProduction";
-import Bloc3ModeleSouple from "@/components/tae/TaeForm/bloc3/templates/Bloc3ModeleSouple";
-import Bloc3TemplateStructure from "@/components/tae/TaeForm/bloc3/templates/Bloc3TemplateStructure";
-import Bloc3TemplatePur from "@/components/tae/TaeForm/bloc3/templates/Bloc3TemplatePur";
-import { Bloc4DocumentsHistoriques } from "@/components/tae/TaeForm/Bloc4DocumentsHistoriques";
-import Bloc4Perspectives from "@/components/tae/TaeForm/bloc4/Bloc4Perspectives";
-import Bloc4Moments from "@/components/tae/TaeForm/bloc4/Bloc4Moments";
-import { Bloc5 } from "@/components/tae/TaeForm/bloc5/Bloc5";
-import { FicheSommaireColumn } from "@/components/tae/TaeForm/sommaire";
-import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
-import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import { TaeFormProvider } from "@/components/tache/wizard/FormState";
+import { Bloc3ConsigneProduction } from "@/components/tache/wizard/bloc3/Bloc3ConsigneProduction";
+import Bloc3ModeleSouple from "@/components/tache/wizard/bloc3/templates/Bloc3ModeleSouple";
+import Bloc3TemplateStructure from "@/components/tache/wizard/bloc3/templates/Bloc3TemplateStructure";
+import Bloc3TemplatePur from "@/components/tache/wizard/bloc3/templates/Bloc3TemplatePur";
+import { Bloc4DocumentsHistoriques } from "@/components/tache/wizard/Bloc4DocumentsHistoriques";
+import Bloc4Perspectives from "@/components/tache/wizard/bloc4/Bloc4Perspectives";
+import Bloc4Moments from "@/components/tache/wizard/bloc4/Bloc4Moments";
+import { Bloc5 } from "@/components/tache/wizard/bloc5/Bloc5";
+import { FicheSommaireColumn } from "@/components/tache/wizard/sommaire";
+import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
+import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import {
   initialTaeFormState,
   TAE_REDACTION_STEP_INDEX,
   TAE_DOCUMENTS_STEP_INDEX,
   TAE_BLOC5_STEP_INDEX,
   type TaeFormState,
-} from "@/lib/tae/tae-form-state-types";
-import { documentSlotsFromCount } from "@/lib/tae/blueprint-helpers";
-import { emptyPerspectives, emptyMoments } from "@/lib/tae/oi-perspectives/perspectives-helpers";
+} from "@/lib/tache/tae-form-state-types";
+import { documentSlotsFromCount } from "@/lib/tache/blueprint-helpers";
+import { emptyPerspectives, emptyMoments } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import type { OiEntryJson } from "@/lib/types/oi";
 
 // NR Bloc3/Bloc4 — imports statiques (même composants que wizardBlocResolver)
-import { Bloc3OrdreChronologique } from "@/components/tae/non-redaction/ordre-chronologique/Bloc3OrdreChronologique";
-import { Bloc4OrdreChronologique } from "@/components/tae/non-redaction/ordre-chronologique/Bloc4OrdreChronologique";
-import { Bloc3LigneDuTemps } from "@/components/tae/non-redaction/ligne-du-temps/Bloc3LigneDuTemps";
-import { Bloc4LigneDuTemps } from "@/components/tae/non-redaction/ligne-du-temps/Bloc4LigneDuTemps";
-import { Bloc3AvantApres } from "@/components/tae/non-redaction/avant-apres/Bloc3AvantApres";
-import { Bloc4AvantApres } from "@/components/tae/non-redaction/avant-apres/Bloc4AvantApres";
+import { Bloc3OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc3OrdreChronologique";
+import { Bloc4OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc4OrdreChronologique";
+import { Bloc3LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-temps/Bloc3LigneDuTemps";
+import { Bloc4LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-temps/Bloc4LigneDuTemps";
+import { Bloc3AvantApres } from "@/components/tache/non-redaction/avant-apres/Bloc3AvantApres";
+import { Bloc4AvantApres } from "@/components/tache/non-redaction/avant-apres/Bloc4AvantApres";
 
 // ---------------------------------------------------------------------------
 // Résolution du composant — même logique que wizardBlocResolver mais statique

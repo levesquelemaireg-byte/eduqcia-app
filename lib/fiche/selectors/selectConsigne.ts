@@ -1,9 +1,9 @@
 import { ready, skeleton, hidden, sanitize, resolveDocPlaceholders } from "@/lib/fiche/helpers";
 import type { SectionState, ConsigneData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 import { selectNRContent } from "@/lib/fiche/selectors/selectNRContent";
-import { hasFicheContent } from "@/lib/tae/fiche-helpers";
-import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tae/non-redaction/ligne-du-temps-payload";
+import { hasFicheContent } from "@/lib/tache/fiche-helpers";
+import { prepareNonRedactionConsigneForTeacherDisplay } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 
 /**
  * Consigne de la tâche — HTML résolu et sanitisé.

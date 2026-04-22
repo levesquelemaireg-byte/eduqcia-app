@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
-import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tae/tae-form-hydrate";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import { isWizardDraftObsoletePayload, sanitizeHydratedState } from "@/lib/tache/tae-form-hydrate";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 
 export type WizardDraftLoadResult =
   | { status: "none" }

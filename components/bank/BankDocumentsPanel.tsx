@@ -8,7 +8,7 @@ import {
 } from "@/lib/queries/bank-documents";
 import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
 import { documentsRepository } from "@/lib/repositories/documents-repository";
-import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
+import { getAllCategoriesIconographiques } from "@/lib/tache/document-categories-helpers";
 import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
 import {
   BANK_DOCUMENT_FILTER_RESET,

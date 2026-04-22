@@ -1,0 +1,46 @@
+import { isDocumentsStepComplete } from "@/lib/tache/document-helpers";
+import type { ComportementConfig } from "@/lib/tache/behaviours/types";
+import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
+import {
+  isAvantApresBloc5CompleteForNext,
+  isAvantApresRedactionStepCompleteForNext,
+} from "@/lib/tache/non-redaction/avant-apres-payload";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
+
+function isBloc6Complete(state: TaeFormState): boolean {
+  const disc = state.bloc2.discipline as DisciplineCode;
+  if (disc === "geo") return true;
+  const sel = state.bloc6.cd.selection;
+  if (!sel) return false;
+  return [sel.competence, sel.composante, sel.critere].every((s) => s.trim().length > 0);
+}
+
+function isBloc7Complete(state: TaeFormState): boolean {
+  const disc = state.bloc2.discipline as DisciplineCode;
+  if (!Object.values(state.bloc7.aspects).some(Boolean)) return false;
+  if (disc === "geo") return true;
+  return state.bloc7.connaissances.length >= 1;
+}
+
+export const avantApresConfig: ComportementConfig = {
+  slug: "avant-apres",
+  label: "Avant / après",
+  isRedactionnel: false,
+  bloc3: { hasGuidage: true },
+  bloc4: { documentCount: 4, requiresRepereTemporel: true },
+  completionCriteria: {
+    bloc3: (state) => {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "avant-apres") return false;
+      return isAvantApresRedactionStepCompleteForNext(nr.payload);
+    },
+    bloc4: (state) => isDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents),
+    bloc5: (state) => {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "avant-apres") return false;
+      return isAvantApresBloc5CompleteForNext(nr.payload);
+    },
+    bloc6: (state) => isBloc6Complete(state),
+    bloc7: (state) => isBloc7Complete(state),
+  },
+};

@@ -1,13 +1,13 @@
 import { ready } from "@/lib/fiche/helpers";
 import type { SectionState, DocumentsData, SelectorRefs } from "@/lib/fiche/types";
-import type { TaeFormState } from "@/lib/tae/tae-form-state-types";
+import type { TaeFormState } from "@/lib/tache/tae-form-state-types";
 import type { DocumentFiche } from "@/lib/types/fiche";
-import type { DocumentSlotId } from "@/lib/tae/blueprint-helpers";
-import { getSlotData, slotLetter, type DocumentSlotData } from "@/lib/tae/document-helpers";
+import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
+import { getSlotData, slotLetter, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import {
   getDocumentCategorieTextuelle,
   documentCategorieIconographiqueLabel,
-} from "@/lib/tae/document-categories-helpers";
+} from "@/lib/tache/document-categories-helpers";
 
 /** Convertit un slot du wizard en DocumentFiche pour affichage. */
 function documentSlotToFiche(slotId: DocumentSlotId, slot: DocumentSlotData): DocumentFiche {

@@ -3,7 +3,7 @@
 import type { ConnaissancesData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import type { ConnaissanceSelection } from "@/lib/types/fiche";
-import { ConnaissanceRemoveButton } from "@/components/tae/fiche/ConnaissanceRemoveButton";
+import { ConnaissanceRemoveButton } from "@/components/tache/fiche/ConnaissanceRemoveButton";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
 

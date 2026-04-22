@@ -11,9 +11,9 @@ import { SimpleModal } from "@/components/ui/SimpleModal";
 import { refIdsEqual } from "@/lib/documents/ref-id";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DisciplineOption, NiveauOption } from "@/lib/queries/document-ref-data";
-import { ASPECT_LABEL } from "@/lib/tae/aspect-labels";
-import type { DisciplineCode, NiveauCode } from "@/lib/tae/blueprint-helpers";
-import type { AspectSocieteKey } from "@/lib/tae/redaction-helpers";
+import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
+import type { DisciplineCode, NiveauCode } from "@/lib/tache/blueprint-helpers";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import {
   DOCUMENT_MODULE_ASPECTS_LABEL,
   DOCUMENT_MODULE_INDEX_CONNAISSANCES,

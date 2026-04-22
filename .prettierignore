@@ -11,3 +11,5 @@ next-env.d.ts
 public/data
 maquette/grilles-etalon-lab/dist
 test-results
+AUDIT-*.md
+tmp-audit-*.txt

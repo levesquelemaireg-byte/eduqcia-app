@@ -1,9 +1,9 @@
-import { TaeForm } from "@/components/tae/TaeForm";
-import type { PendingInjection } from "@/components/tae/TaeForm/InjectDocumentController";
+import { TaeForm } from "@/components/tache/wizard";
+import type { PendingInjection } from "@/components/tache/wizard/InjectDocumentController";
 import { getWizardDraftForUser } from "@/lib/queries/tae-draft";
 import { documentsRepository } from "@/lib/repositories/documents-repository";
 import { createClient } from "@/lib/supabase/server";
-import { injectDocumentIntoSlot } from "@/lib/tae/inject-document-into-slot";
+import { injectDocumentIntoSlot } from "@/lib/tache/inject-document-into-slot";
 import { CTA_CREER_UNE_TACHE, PAGE_CREER_UNE_TACHE_SUBTITLE } from "@/lib/ui/ui-copy";
 import { redirect } from "next/navigation";
 

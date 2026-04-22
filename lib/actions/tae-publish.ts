@@ -2,12 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { sanitizeHydratedState } from "@/lib/tae/tae-form-hydrate";
+import { sanitizeHydratedState } from "@/lib/tache/tae-form-hydrate";
 import {
   publishTaeFromFormState,
   updateTaeFromFormState,
   type PublishTaeFailureCode,
-} from "@/lib/tae/publish-tae";
+} from "@/lib/tache/publish-tae";
 
 export type PublishTaeActionResult =
   | { ok: true; taeId: string; unpublishedDocumentsCreated?: boolean; wasMajorBump?: boolean }

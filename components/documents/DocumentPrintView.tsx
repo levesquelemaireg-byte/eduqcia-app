@@ -4,7 +4,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
 import { Button } from "@/components/ui/Button";
-import { WIZARD_PRINT_PREVIEW_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+import { WIZARD_PRINT_PREVIEW_COPY } from "@/components/tache/wizard/preview/wizard-print-preview-copy";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 
 type Props = {

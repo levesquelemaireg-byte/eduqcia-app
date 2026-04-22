@@ -1,4 +1,4 @@
-import { MetaPill } from "@/components/tae/fiche/MetaPill";
+import { MetaPill } from "@/components/tache/fiche/MetaPill";
 
 export type ExperienceLevel = "nouveau" | "neutre" | "actif" | "experimente";
 

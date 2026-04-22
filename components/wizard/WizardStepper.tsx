@@ -1,6 +1,6 @@
 "use client";
 
-import { materialIconTooltip } from "@/lib/tae/icon-justifications";
+import { materialIconTooltip } from "@/lib/tache/icon-justifications";
 import { cn } from "@/lib/utils/cn";
 
 export type WizardStepDefinition = {

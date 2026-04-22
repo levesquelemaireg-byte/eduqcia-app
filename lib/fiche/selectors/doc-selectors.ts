@@ -4,7 +4,7 @@
  */
 
 import { ready, sanitize } from "@/lib/fiche/helpers";
-import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import {
   DOCUMENT_MODULE_TYPE_TEXT,

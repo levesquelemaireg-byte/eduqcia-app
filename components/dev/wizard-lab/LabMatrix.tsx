@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { OiEntryJson } from "@/lib/types/oi";
-import { getWizardBlocConfig } from "@/lib/tae/wizard-bloc-config";
-import { getVariantSlugForComportementId } from "@/lib/tae/non-redaction/registry";
+import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
+import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 
 const STORAGE_KEY = "wizard-lab-matrix";
 

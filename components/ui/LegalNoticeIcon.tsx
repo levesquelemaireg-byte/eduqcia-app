@@ -1,4 +1,4 @@
-import { LEGAL_NOTICE_MATERIAL_ICON, materialIconTooltip } from "@/lib/tae/icon-justifications";
+import { LEGAL_NOTICE_MATERIAL_ICON, materialIconTooltip } from "@/lib/tache/icon-justifications";
 import { cn } from "@/lib/utils/cn";
 
 type Props = {
