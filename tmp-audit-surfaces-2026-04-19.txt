@@ -1,0 +1,243 @@
+﻿
+FILE: app/(app)/documents/new/page.tsx
+app/(app)/documents/new/page.tsx:1:import { AutonomousDocumentForm } from "@/components/documents/AutonomousDocumentForm";
+app/(app)/documents/new/page.tsx:2:import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
+app/(app)/documents/new/page.tsx:8:      <AutonomousDocumentForm niveaux={niveaux} disciplines={disciplines} />
+
+FILE: app/(app)/questions/new/page.tsx
+app/(app)/questions/new/page.tsx:1:import { TaeForm } from "@/components/tae/TaeForm";
+app/(app)/questions/new/page.tsx:2:import type { PendingInjection } from "@/components/tae/TaeForm/InjectDocumentController";
+app/(app)/questions/new/page.tsx:3:import { getWizardDraftForUser } from "@/lib/queries/tae-draft";
+app/(app)/questions/new/page.tsx:4:import { documentsRepository } from "@/lib/repositories/documents-repository";
+app/(app)/questions/new/page.tsx:5:import { createClient } from "@/lib/supabase/server";
+app/(app)/questions/new/page.tsx:6:import { injectDocumentIntoSlot } from "@/lib/tae/inject-document-into-slot";
+app/(app)/questions/new/page.tsx:7:import { CTA_CREER_UNE_TACHE, PAGE_CREER_UNE_TACHE_SUBTITLE } from "@/lib/ui/ui-copy";
+app/(app)/questions/new/page.tsx:8:import { redirect } from "next/navigation";
+
+FILE: app/(app)/evaluations/new/page.tsx
+app/(app)/evaluations/new/page.tsx:1:import { redirect } from "next/navigation";
+app/(app)/evaluations/new/page.tsx:2:import { EvaluationCompositionEditor } from "@/components/evaluations/EvaluationCompositionEditor";
+app/(app)/evaluations/new/page.tsx:3:import { createClient } from "@/lib/supabase/server";
+app/(app)/evaluations/new/page.tsx:4:import {
+
+FILE: app/(app)/bank/page.tsx
+app/(app)/bank/page.tsx:1:import { Suspense } from "react";
+app/(app)/bank/page.tsx:2:import { redirect } from "next/navigation";
+app/(app)/bank/page.tsx:6:import { BankDocumentsPanel } from "@/components/bank/BankDocumentsPanel";
+app/(app)/bank/page.tsx:7:import { BankEvaluationsPanel } from "@/components/bank/BankEvaluationsPanel";
+app/(app)/bank/page.tsx:8:import { BankOnglets } from "@/components/bank/BankOnglets";
+app/(app)/bank/page.tsx:9:import { BankTasksPanel } from "@/components/bank/BankTasksPanel";
+app/(app)/bank/page.tsx:10:import { CardGridSkeleton } from "@/components/ui/CardGridSkeleton";
+app/(app)/bank/page.tsx:11:import {
+app/(app)/bank/page.tsx:15:import {
+app/(app)/bank/page.tsx:20:import { createClient } from "@/lib/supabase/server";
+app/(app)/bank/page.tsx:21:import {
+
+FILE: components/bank/BankDocumentsPanel.tsx
+components/bank/BankDocumentsPanel.tsx:1:import Link from "next/link";
+components/bank/BankDocumentsPanel.tsx:3:import { DocumentMiniature, DocumentMiniatureList } from "@/components/document/miniature";
+components/bank/BankDocumentsPanel.tsx:4:import { BANK_PAGE_SIZE } from "@/lib/queries/bank-tasks";
+components/bank/BankDocumentsPanel.tsx:5:import {
+components/bank/BankDocumentsPanel.tsx:9:import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
+components/bank/BankDocumentsPanel.tsx:10:import { documentsRepository } from "@/lib/repositories/documents-repository";
+components/bank/BankDocumentsPanel.tsx:11:import { getAllCategoriesIconographiques } from "@/lib/tae/document-categories-helpers";
+components/bank/BankDocumentsPanel.tsx:12:import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
+components/bank/BankDocumentsPanel.tsx:13:import {
+components/bank/BankDocumentsPanel.tsx:32:import { cn } from "@/lib/utils/cn";
+components/bank/BankDocumentsPanel.tsx:228:          <DocumentMiniatureList>
+components/bank/BankDocumentsPanel.tsx:230:              <DocumentMiniature
+
+FILE: app/(app)/documents/page.tsx
+app/(app)/documents/page.tsx:1:import Link from "next/link";
+app/(app)/documents/page.tsx:2:import { redirect } from "next/navigation";
+app/(app)/documents/page.tsx:4:import { DocumentMiniatureList } from "@/components/document/miniature";
+app/(app)/documents/page.tsx:5:import { OwnerDocumentMiniatureEntry } from "@/components/document/miniature/owner-entry";
+app/(app)/documents/page.tsx:6:import { documentsRepository } from "@/lib/repositories/documents-repository";
+app/(app)/documents/page.tsx:7:import { createClient } from "@/lib/supabase/server";
+app/(app)/documents/page.tsx:8:import {
+app/(app)/documents/page.tsx:14:import { cn } from "@/lib/utils/cn";
+app/(app)/documents/page.tsx:57:          <DocumentMiniatureList>
+
+FILE: components/document/miniature/owner-entry.tsx
+components/document/miniature/owner-entry.tsx:3:import { useRouter } from "next/navigation";
+components/document/miniature/owner-entry.tsx:4:import { useState, useTransition } from "react";
+components/document/miniature/owner-entry.tsx:5:import { toast } from "sonner";
+components/document/miniature/owner-entry.tsx:7:import { DocumentMiniature } from "@/components/document/miniature";
+components/document/miniature/owner-entry.tsx:8:import { SimpleModal } from "@/components/ui/SimpleModal";
+components/document/miniature/owner-entry.tsx:9:import { deleteDocumentAction } from "@/lib/actions/document-delete";
+components/document/miniature/owner-entry.tsx:10:import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
+components/document/miniature/owner-entry.tsx:11:import {
+components/document/miniature/owner-entry.tsx:48:      <DocumentMiniature
+
+FILE: components/profile/ProfileContributions.tsx
+components/profile/ProfileContributions.tsx:3:import { useState } from "react";
+components/profile/ProfileContributions.tsx:4:import { cn } from "@/lib/utils/cn";
+components/profile/ProfileContributions.tsx:5:import { pluralize } from "@/lib/utils/pluralize";
+components/profile/ProfileContributions.tsx:6:import { ProfileDocumentsList } from "@/components/profile/ProfileDocumentsList";
+components/profile/ProfileContributions.tsx:7:import { ProfileTasksList } from "@/components/profile/ProfileTasksList";
+components/profile/ProfileContributions.tsx:8:import { ProfileEvaluationsList } from "@/components/profile/ProfileEvaluationsList";
+components/profile/ProfileContributions.tsx:9:import type { ProfileTask, ProfileEvaluation } from "@/lib/queries/profile-contributions";
+components/profile/ProfileContributions.tsx:10:import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
+
+FILE: components/profile/ProfileDocumentsList.tsx
+components/profile/ProfileDocumentsList.tsx:3:import { useState, useRef } from "react";
+components/profile/ProfileDocumentsList.tsx:4:import Link from "next/link";
+components/profile/ProfileDocumentsList.tsx:5:import { toast } from "sonner";
+components/profile/ProfileDocumentsList.tsx:7:import { DocumentMiniature, DocumentMiniatureList } from "@/components/document/miniature";
+components/profile/ProfileDocumentsList.tsx:8:import { EmptyState } from "@/components/ui/EmptyState";
+components/profile/ProfileDocumentsList.tsx:9:import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
+components/profile/ProfileDocumentsList.tsx:10:import { loadMoreProfileDocumentsAction } from "@/lib/actions/load-more-profile-documents";
+components/profile/ProfileDocumentsList.tsx:11:import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
+components/profile/ProfileDocumentsList.tsx:66:      <DocumentMiniatureList>
+components/profile/ProfileDocumentsList.tsx:68:          <DocumentMiniature
+
+FILE: components/document/vue-detaillee/index.tsx
+components/document/vue-detaillee/index.tsx:3:import { useState } from "react";
+components/document/vue-detaillee/index.tsx:4:import { useRouter } from "next/navigation";
+components/document/vue-detaillee/index.tsx:5:import { VueDetailleeLayout } from "@/components/partagees/vue-detaillee/layout";
+components/document/vue-detaillee/index.tsx:6:import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions";
+components/document/vue-detaillee/index.tsx:7:import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
+components/document/vue-detaillee/index.tsx:8:import { SectionHero } from "@/components/document/vue-detaillee/sections/hero";
+components/document/vue-detaillee/index.tsx:9:import { SectionContenu } from "@/components/document/vue-detaillee/sections/contenu";
+components/document/vue-detaillee/index.tsx:10:import { DocumentRail } from "@/components/document/vue-detaillee/rail";
+components/document/vue-detaillee/index.tsx:11:import { DocumentCard } from "@/components/documents/DocumentCard";
+components/document/vue-detaillee/index.tsx:12:import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
+components/document/vue-detaillee/index.tsx:13:import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
+components/document/vue-detaillee/index.tsx:14:import type { DocFicheData } from "@/lib/fiche/types";
+components/document/vue-detaillee/index.tsx:102:                <DocumentCard document={data.document} numero={1} />
+
+FILE: components/document/vue-detaillee/sections/contenu.tsx
+components/document/vue-detaillee/sections/contenu.tsx:3:import type { RendererDocument } from "@/lib/types/document-renderer";
+components/document/vue-detaillee/sections/contenu.tsx:4:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+components/document/vue-detaillee/sections/contenu.tsx:5:import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
+components/document/vue-detaillee/sections/contenu.tsx:48:                  <DocumentElementRenderer element={el} showAuteur={false} />
+components/document/vue-detaillee/sections/contenu.tsx:59:                    <DocumentElementRenderer
+
+FILE: components/tache/vue-detaillee/index.tsx
+components/tache/vue-detaillee/index.tsx:3:import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+components/tache/vue-detaillee/index.tsx:4:import { useRouter } from "next/navigation";
+components/tache/vue-detaillee/index.tsx:5:import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
+components/tache/vue-detaillee/index.tsx:6:import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+components/tache/vue-detaillee/index.tsx:7:import { StatusBadge } from "@/lib/fiche/primitives/MetaRow";
+components/tache/vue-detaillee/index.tsx:8:import { useFicheModale } from "@/hooks/partagees/use-fiche-modale";
+components/tache/vue-detaillee/index.tsx:9:import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
+components/tache/vue-detaillee/index.tsx:10:import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
+components/tache/vue-detaillee/index.tsx:11:import { VueDetailleeLayout } from "@/components/partagees/vue-detaillee/layout";
+components/tache/vue-detaillee/index.tsx:12:import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions";
+components/tache/vue-detaillee/index.tsx:13:import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
+components/tache/vue-detaillee/index.tsx:14:import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
+components/tache/vue-detaillee/index.tsx:15:import { FluxLecture } from "@/components/tache/vue-detaillee/flux-lecture";
+components/tache/vue-detaillee/index.tsx:16:import { TacheRail } from "@/components/tache/vue-detaillee/rail";
+components/tache/vue-detaillee/index.tsx:17:import { FicheModale } from "@/components/partagees/fiche-modale";
+components/tache/vue-detaillee/index.tsx:18:import { DocumentPanneauDetail } from "@/components/document/panneau-detail";
+components/tache/vue-detaillee/index.tsx:122:            <ApercuImprimeInline payload={payloadImpression} />
+
+FILE: components/tache/vue-detaillee/flux-lecture.tsx
+components/tache/vue-detaillee/flux-lecture.tsx:3:import { useMemo } from "react";
+components/tache/vue-detaillee/flux-lecture.tsx:4:import type { TaeFicheData, PeerVoteTally } from "@/lib/types/fiche";
+components/tache/vue-detaillee/flux-lecture.tsx:5:import { selectHero } from "@/lib/fiche/selectors/tache/hero";
+components/tache/vue-detaillee/flux-lecture.tsx:6:import { selectDocuments } from "@/lib/fiche/selectors/tache/documents";
+components/tache/vue-detaillee/flux-lecture.tsx:7:import { selectGuidage } from "@/lib/fiche/selectors/tache/guidage";
+components/tache/vue-detaillee/flux-lecture.tsx:8:import { selectCorrige } from "@/lib/fiche/selectors/tache/corrige";
+components/tache/vue-detaillee/flux-lecture.tsx:9:import { selectGrille } from "@/lib/fiche/selectors/tache/grille";
+components/tache/vue-detaillee/flux-lecture.tsx:10:import { SectionHero } from "@/components/tache/vue-detaillee/sections/hero";
+components/tache/vue-detaillee/flux-lecture.tsx:11:import { SectionDocuments } from "@/components/tache/vue-detaillee/sections/documents";
+components/tache/vue-detaillee/flux-lecture.tsx:12:import { SectionGuidage } from "@/components/tache/vue-detaillee/sections/guidage";
+components/tache/vue-detaillee/flux-lecture.tsx:13:import { SectionCorrige } from "@/components/tache/vue-detaillee/sections/corrige";
+components/tache/vue-detaillee/flux-lecture.tsx:14:import { SectionGrille } from "@/components/tache/vue-detaillee/sections/grille";
+components/tache/vue-detaillee/flux-lecture.tsx:50:      {documents ? <SectionDocuments data={documents} surClicDocument={surClicDocument} /> : null}
+
+FILE: components/partagees/vue-detaillee/apercu-imprime.tsx
+components/partagees/vue-detaillee/apercu-imprime.tsx:3:import { useEffect } from "react";
+components/partagees/vue-detaillee/apercu-imprime.tsx:4:import { useApercuPng } from "@/hooks/epreuve/use-apercu-png";
+components/partagees/vue-detaillee/apercu-imprime.tsx:5:import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
+components/partagees/vue-detaillee/apercu-imprime.tsx:6:import { CARROUSEL_APERCU_COPY } from "@/components/tae/TaeForm/preview/wizard-print-preview-copy";
+components/partagees/vue-detaillee/apercu-imprime.tsx:7:import { Button } from "@/components/ui/Button";
+components/partagees/vue-detaillee/apercu-imprime.tsx:8:import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+
+FILE: components/evaluations/EvaluationCompositionEditor.tsx
+components/evaluations/EvaluationCompositionEditor.tsx:3:import { useRouter } from "next/navigation";
+components/evaluations/EvaluationCompositionEditor.tsx:4:import { useCallback, useMemo, useState, useTransition } from "react";
+components/evaluations/EvaluationCompositionEditor.tsx:5:import { toast } from "sonner";
+components/evaluations/EvaluationCompositionEditor.tsx:6:import { fetchEvaluationPickerPageAction } from "@/lib/actions/evaluation-picker";
+components/evaluations/EvaluationCompositionEditor.tsx:7:import {
+components/evaluations/EvaluationCompositionEditor.tsx:12:import { genererTokenApercuEpreuve } from "@/lib/actions/evaluation-apercu";
+components/evaluations/EvaluationCompositionEditor.tsx:13:import {
+components/evaluations/EvaluationCompositionEditor.tsx:18:import type { EvaluationCartItem } from "@/lib/queries/evaluation-composition";
+components/evaluations/EvaluationCompositionEditor.tsx:19:import type {
+components/evaluations/EvaluationCompositionEditor.tsx:24:import {
+components/evaluations/EvaluationCompositionEditor.tsx:55:import { plainConsigneForMiniature } from "@/lib/tae/consigne-helpers";
+components/evaluations/EvaluationCompositionEditor.tsx:56:import { truncateText } from "@/lib/utils/stripHtml";
+components/evaluations/EvaluationCompositionEditor.tsx:57:import { cn } from "@/lib/utils/cn";
+components/evaluations/EvaluationCompositionEditor.tsx:58:import { Field } from "@/components/ui/Field";
+components/evaluations/EvaluationCompositionEditor.tsx:59:import { Button } from "@/components/ui/Button";
+components/evaluations/EvaluationCompositionEditor.tsx:173:      window.open(
+components/evaluations/EvaluationCompositionEditor.tsx:174:        `/apercu/${encodeURIComponent(tokenResult.token)}`,
+
+FILE: components/documents/wizard/AutonomousDocumentWizard.tsx
+components/documents/wizard/AutonomousDocumentWizard.tsx:3:import { zodResolver } from "@hookform/resolvers/zod";
+components/documents/wizard/AutonomousDocumentWizard.tsx:4:import { useRouter } from "next/navigation";
+components/documents/wizard/AutonomousDocumentWizard.tsx:5:import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+components/documents/wizard/AutonomousDocumentWizard.tsx:6:import { FormProvider, useForm, type Resolver } from "react-hook-form";
+components/documents/wizard/AutonomousDocumentWizard.tsx:7:import { toast } from "sonner";
+components/documents/wizard/AutonomousDocumentWizard.tsx:8:import { createAutonomousDocumentAction } from "@/lib/actions/create-autonomous-document";
+components/documents/wizard/AutonomousDocumentWizard.tsx:9:import { updateAutonomousDocumentAction } from "@/lib/actions/update-autonomous-document";
+components/documents/wizard/AutonomousDocumentWizard.tsx:10:import {
+components/documents/wizard/AutonomousDocumentWizard.tsx:16:import { ActiveFieldProvider } from "@/components/documents/wizard/active-field-context";
+components/documents/wizard/AutonomousDocumentWizard.tsx:17:import { DocumentWizardNavFooter } from "@/components/documents/wizard/DocumentWizardNavFooter";
+components/documents/wizard/AutonomousDocumentWizard.tsx:18:import { DocumentWizardPreview } from "@/components/documents/wizard/DocumentWizardPreview";
+components/documents/wizard/AutonomousDocumentWizard.tsx:19:import { DocumentWizardPrintPreview } from "@/components/documents/wizard/DocumentWizardPrintPreview";
+components/documents/wizard/AutonomousDocumentWizard.tsx:20:import { PreviewPanel } from "@/components/preview/PreviewPanel";
+components/documents/wizard/AutonomousDocumentWizard.tsx:21:import type { PreviewMode } from "@/components/preview/types";
+components/documents/wizard/AutonomousDocumentWizard.tsx:22:import { StepClassification } from "@/components/documents/wizard/steps/StepClassification";
+components/documents/wizard/AutonomousDocumentWizard.tsx:23:import { StepConfirmation } from "@/components/documents/wizard/steps/StepConfirmation";
+components/documents/wizard/AutonomousDocumentWizard.tsx:24:import { StepDocument } from "@/components/documents/wizard/steps/StepDocument";
+components/documents/wizard/AutonomousDocumentWizard.tsx:25:import { StepStructure } from "@/components/documents/wizard/steps/StepStructure";
+components/documents/wizard/AutonomousDocumentWizard.tsx:26:import { filterDisciplinesForDocumentNiveau } from "@/lib/documents/filter-disciplines-by-niveau";
+components/documents/wizard/AutonomousDocumentWizard.tsx:27:import { refIdsEqual } from "@/lib/documents/ref-id";
+components/documents/wizard/AutonomousDocumentWizard.tsx:28:import {
+components/documents/wizard/AutonomousDocumentWizard.tsx:32:import type { DisciplineOption, NiveauOption } from "@/lib/queries/document-ref-data";
+components/documents/wizard/AutonomousDocumentWizard.tsx:33:import {
+components/documents/wizard/AutonomousDocumentWizard.tsx:37:import { createEmptyElement } from "@/lib/documents/document-element-defaults";
+components/documents/wizard/AutonomousDocumentWizard.tsx:38:import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+components/documents/wizard/AutonomousDocumentWizard.tsx:39:import { initialAspects } from "@/lib/tae/redaction-helpers";
+components/documents/wizard/AutonomousDocumentWizard.tsx:40:import {
+components/documents/wizard/AutonomousDocumentWizard.tsx:54:import { WizardStepper } from "@/components/wizard/WizardStepper";
+components/documents/wizard/AutonomousDocumentWizard.tsx:94:  const form = useForm<AutonomousDocumentFormValues>({
+components/documents/wizard/AutonomousDocumentWizard.tsx:95:    resolver: zodResolver(autonomousDocumentFormSchema) as Resolver<AutonomousDocumentFormValues>,
+components/documents/wizard/AutonomousDocumentWizard.tsx:134:      const partial = rawDraft as unknown as Partial<AutonomousDocumentFormValues>;
+components/documents/wizard/AutonomousDocumentWizard.tsx:355:                      <DocumentWizardPrintPreview />
+components/documents/wizard/AutonomousDocumentWizard.tsx:360:                    <DocumentWizardPreview
+
+FILE: components/documents/wizard/DocumentWizardPrintPreview.tsx
+components/documents/wizard/DocumentWizardPrintPreview.tsx:3:import { useFormContext, useWatch } from "react-hook-form";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:4:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:5:import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:6:import type { DocumentElement, RendererDocument } from "@/lib/types/document-renderer";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:7:import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:8:import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:9:import { parseDocumentLegendPosition } from "@/lib/tae/document-helpers";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:17:  const { control } = useFormContext<AutonomousDocumentFormValues>();
+components/documents/wizard/DocumentWizardPrintPreview.tsx:60:  return <DocumentCardPrint document={rendererDoc} numero={1} />;
+
+FILE: components/documents/wizard/DocumentWizardPreview.tsx
+components/documents/wizard/DocumentWizardPreview.tsx:3:import { useFormContext } from "react-hook-form";
+components/documents/wizard/DocumentWizardPreview.tsx:4:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+components/documents/wizard/DocumentWizardPreview.tsx:5:import { PeriodeIcon } from "@/components/ui/PeriodeIcon";
+components/documents/wizard/DocumentWizardPreview.tsx:6:import { SkeletonLine, SkeletonRect } from "@/components/ui/SkeletonLine";
+components/documents/wizard/DocumentWizardPreview.tsx:7:import { useIsFieldActive } from "@/components/documents/wizard/active-field-context";
+components/documents/wizard/DocumentWizardPreview.tsx:8:import { StatusBadge } from "@/lib/fiche/primitives/MetaRow";
+components/documents/wizard/DocumentWizardPreview.tsx:9:import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
+components/documents/wizard/DocumentWizardPreview.tsx:10:import { refIdsEqual } from "@/lib/documents/ref-id";
+components/documents/wizard/DocumentWizardPreview.tsx:11:import {
+components/documents/wizard/DocumentWizardPreview.tsx:15:import { htmlHasMeaningfulText } from "@/lib/tae/consigne-helpers";
+components/documents/wizard/DocumentWizardPreview.tsx:16:import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
+components/documents/wizard/DocumentWizardPreview.tsx:17:import type { DisciplineOption, NiveauOption } from "@/lib/queries/document-ref-data";
+components/documents/wizard/DocumentWizardPreview.tsx:18:import type {
+components/documents/wizard/DocumentWizardPreview.tsx:24:import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
+components/documents/wizard/DocumentWizardPreview.tsx:25:import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
+components/documents/wizard/DocumentWizardPreview.tsx:26:import {
+components/documents/wizard/DocumentWizardPreview.tsx:40:import { cn } from "@/lib/utils/cn";
+components/documents/wizard/DocumentWizardPreview.tsx:55:  const { watch } = useFormContext<AutonomousDocumentFormValues>();
+components/documents/wizard/DocumentWizardPreview.tsx:430:    return <DocumentElementRenderer element={rendererFirstEl} hideSource />;
+

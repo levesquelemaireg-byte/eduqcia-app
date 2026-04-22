@@ -1,0 +1,25 @@
+﻿
+FILE: app/(app)/questions/[id]/edit/page.tsx
+app/(app)/questions/[id]/edit/page.tsx:1:import { TaeForm } from "@/components/tae/TaeForm";
+app/(app)/questions/[id]/edit/page.tsx:2:import { fetchTaeFormStateForEdit } from "@/lib/queries/tae-for-edit";
+app/(app)/questions/[id]/edit/page.tsx:3:import { createClient } from "@/lib/supabase/server";
+app/(app)/questions/[id]/edit/page.tsx:4:import { PAGE_MODIFIER_UNE_TACHE_SUBTITLE, PAGE_MODIFIER_UNE_TACHE_TITLE } from "@/lib/ui/ui-copy";
+app/(app)/questions/[id]/edit/page.tsx:5:import { notFound, redirect } from "next/navigation";
+app/(app)/questions/[id]/edit/page.tsx:49:    <TaeForm
+
+FILE: app/(app)/documents/[id]/edit/page.tsx
+app/(app)/documents/[id]/edit/page.tsx:1:import { notFound, redirect } from "next/navigation";
+app/(app)/documents/[id]/edit/page.tsx:2:import { AutonomousDocumentForm } from "@/components/documents/AutonomousDocumentForm";
+app/(app)/documents/[id]/edit/page.tsx:3:import { loadAutonomousDocumentForEditForm } from "@/lib/queries/autonomous-document-edit";
+app/(app)/documents/[id]/edit/page.tsx:4:import { getDocumentFormRefOptions } from "@/lib/queries/document-ref-data";
+app/(app)/documents/[id]/edit/page.tsx:5:import { createClient } from "@/lib/supabase/server";
+app/(app)/documents/[id]/edit/page.tsx:26:      <AutonomousDocumentForm
+
+FILE: app/(app)/evaluations/[id]/edit/page.tsx
+app/(app)/evaluations/[id]/edit/page.tsx:1:import { notFound, redirect } from "next/navigation";
+app/(app)/evaluations/[id]/edit/page.tsx:2:import { EvaluationCompositionEditor } from "@/components/evaluations/EvaluationCompositionEditor";
+app/(app)/evaluations/[id]/edit/page.tsx:3:import { createClient } from "@/lib/supabase/server";
+app/(app)/evaluations/[id]/edit/page.tsx:4:import {
+app/(app)/evaluations/[id]/edit/page.tsx:8:import {
+app/(app)/evaluations/[id]/edit/page.tsx:51:    <EvaluationCompositionEditor
+

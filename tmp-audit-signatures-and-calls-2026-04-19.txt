@@ -1,0 +1,191 @@
+﻿
+FILE: components/documents/DocumentCard.tsx
+components/documents/DocumentCard.tsx:1:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+components/documents/DocumentCard.tsx:5:type Props = {
+components/documents/DocumentCard.tsx:21:export function DocumentCard({ document: doc, numero }: Props) {
+components/documents/DocumentCard.tsx:48:function SimpleLayout({ element }: { element: RendererDocument["elements"][number] }) {
+components/documents/DocumentCard.tsx:52:      <DocumentElementRenderer element={element} showAuteur={Boolean(element.auteur)} />
+components/documents/DocumentCard.tsx:57:function ColumnsLayout({
+components/documents/DocumentCard.tsx:80:          <DocumentElementRenderer
+
+FILE: components/documents/DocumentCardPrint.tsx
+components/documents/DocumentCardPrint.tsx:1:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+components/documents/DocumentCardPrint.tsx:8:type Props = {
+components/documents/DocumentCardPrint.tsx:22:export function DocumentCardPrint({ document: doc, numero }: Props) {
+components/documents/DocumentCardPrint.tsx:46:              <DocumentElementRenderer
+components/documents/DocumentCardPrint.tsx:67:                <DocumentElementRenderer
+components/documents/DocumentCardPrint.tsx:98:function PrintSource({ source }: { source: string }) {
+
+FILE: components/documents/DocumentElementRenderer.tsx
+components/documents/DocumentElementRenderer.tsx:20:type Props = {
+components/documents/DocumentElementRenderer.tsx:29:export function DocumentElementRenderer({
+components/documents/DocumentElementRenderer.tsx:90:function FootnoteDefinitions({ html }: { html: string }) {
+
+FILE: components/documents/DocumentCardReader.tsx
+components/documents/DocumentCardReader.tsx:1:import { DocumentCard } from "@/components/documents/DocumentCard";
+components/documents/DocumentCardReader.tsx:37:export type DocumentCardReaderProps = {
+components/documents/DocumentCardReader.tsx:55:function MetaRow({ label, value }: { label: string; value: string }) {
+components/documents/DocumentCardReader.tsx:73:export function DocumentCardReader({ document: doc, meta }: DocumentCardReaderProps) {
+components/documents/DocumentCardReader.tsx:141:                <DocumentCard document={doc} />
+
+FILE: components/documents/DocumentFicheLecture.tsx
+components/documents/DocumentFicheLecture.tsx:8:type Props = { data: DocFicheData };
+components/documents/DocumentFicheLecture.tsx:17:export function DocumentFicheLecture({ data }: Props) {
+
+FILE: components/documents/DocumentPrintView.tsx
+components/documents/DocumentPrintView.tsx:5:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+components/documents/DocumentPrintView.tsx:10:type Props = {
+components/documents/DocumentPrintView.tsx:22:export function DocumentPrintView({ documentId, document: doc, numero }: Props) {
+components/documents/DocumentPrintView.tsx:66:        <DocumentCardPrint document={doc} numero={numero} />
+
+FILE: components/documents/wizard/DocumentWizardPreview.tsx
+components/documents/wizard/DocumentWizardPreview.tsx:4:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+components/documents/wizard/DocumentWizardPreview.tsx:42:type Props = {
+components/documents/wizard/DocumentWizardPreview.tsx:54:export function DocumentWizardPreview({ niveaux, disciplines, authorName }: Props) {
+components/documents/wizard/DocumentWizardPreview.tsx:192:function DocTitle({ value }: { value: string }) {
+components/documents/wizard/DocumentWizardPreview.tsx:209:function TypeChip({ docType }: { docType: "textuel" | "iconographique" | null }) {
+components/documents/wizard/DocumentWizardPreview.tsx:221:function StructureChip({ structure }: { structure: AutonomousDocumentFormValues["structure"] }) {
+components/documents/wizard/DocumentWizardPreview.tsx:235:function PeriodeChip({ label }: { label: string }) {
+components/documents/wizard/DocumentWizardPreview.tsx:252:function Chip({
+components/documents/wizard/DocumentWizardPreview.tsx:282:function MetaBadge({
+components/documents/wizard/DocumentWizardPreview.tsx:298:function AspectsBadge({ aspects }: { aspects: string[] }) {
+components/documents/wizard/DocumentWizardPreview.tsx:327:function SourceTypeBadge({ value }: { value: "primaire" | "secondaire" | null }) {
+components/documents/wizard/DocumentWizardPreview.tsx:350:function CategorieBadge({
+components/documents/wizard/DocumentWizardPreview.tsx:370:function AuteurBadge({ name }: { name: string }) {
+components/documents/wizard/DocumentWizardPreview.tsx:390:function DateCreationBadge() {
+components/documents/wizard/DocumentWizardPreview.tsx:405:function SectionLabel({ icon, label }: { icon: string | null; label: string }) {
+components/documents/wizard/DocumentWizardPreview.tsx:418:function DocContenuCard({
+components/documents/wizard/DocumentWizardPreview.tsx:430:    return <DocumentElementRenderer element={rendererFirstEl} hideSource />;
+components/documents/wizard/DocumentWizardPreview.tsx:451:function DocSourceFooter({ hasSource, sourceHtml }: { hasSource: boolean; sourceHtml: string }) {
+components/documents/wizard/DocumentWizardPreview.tsx:470:function ConnaissancesTree({
+components/documents/wizard/DocumentWizardPreview.tsx:501:function aspectsList(aspects: AutonomousDocumentFormValues["aspects"]): string[] {
+components/documents/wizard/DocumentWizardPreview.tsx:511:function getCategorieInfoFromForm(
+components/documents/wizard/DocumentWizardPreview.tsx:525:function buildRendererDocument(values: AutonomousDocumentFormValues): RendererDocument | null {
+components/documents/wizard/DocumentWizardPreview.tsx:539:function toRendererElement(
+components/documents/wizard/DocumentWizardPreview.tsx:571:function formatDateCreationFr(d: Date): string {
+
+FILE: components/documents/wizard/DocumentWizardPrintPreview.tsx
+components/documents/wizard/DocumentWizardPrintPreview.tsx:4:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+components/documents/wizard/DocumentWizardPrintPreview.tsx:16:export function DocumentWizardPrintPreview() {
+components/documents/wizard/DocumentWizardPrintPreview.tsx:60:  return <DocumentCardPrint document={rendererDoc} numero={1} />;
+
+FILE: components/documents/DocumentImageLegendOverlay.tsx
+components/documents/DocumentImageLegendOverlay.tsx:12:type Props = {
+components/documents/DocumentImageLegendOverlay.tsx:21:export function DocumentImageLegendOverlay({ text, position, className, compact }: Props) {
+
+FILE: components/epreuve/impression/sections/document.tsx
+components/epreuve/impression/sections/document.tsx:7:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+components/epreuve/impression/sections/document.tsx:15:export type SectionDocumentProps = {
+components/epreuve/impression/sections/document.tsx:19:export function SectionDocument({ contenu }: SectionDocumentProps) {
+components/epreuve/impression/sections/document.tsx:20:  return <DocumentCardPrint document={contenu.document} numero={contenu.numeroGlobal} />;
+
+FILE: components/epreuve/impression/index.tsx
+components/epreuve/impression/index.tsx:24:export type ApercuImpressionProps = {
+components/epreuve/impression/index.tsx:29:function estContenuCorrige(content: unknown): content is ContenuCorrige {
+components/epreuve/impression/index.tsx:39:function estContenuQuadruplet(content: unknown): content is ContenuQuadruplet {
+components/epreuve/impression/index.tsx:44:function RenduBloc({ bloc }: { bloc: BlocMesure }) {
+components/epreuve/impression/index.tsx:47:      return <SectionDocument contenu={bloc.content as ContenuDocument} />;
+components/epreuve/impression/index.tsx:66:export function ApercuImpression({ rendu }: ApercuImpressionProps) {
+
+FILE: components/tache/vue-detaillee/sections/documents.tsx
+components/tache/vue-detaillee/sections/documents.tsx:5:import { DocumentCard } from "@/components/documents/DocumentCard";
+components/tache/vue-detaillee/sections/documents.tsx:7:type Props = {
+components/tache/vue-detaillee/sections/documents.tsx:17:export function SectionDocuments({ data, surClicDocument }: Props) {
+components/tache/vue-detaillee/sections/documents.tsx:25:            <DocumentCard key={card.docId} document={card.document} numero={card.numero} />
+
+FILE: components/tae/fiche/SectionDocuments.tsx
+components/tae/fiche/SectionDocuments.tsx:1:import { DocumentCard } from "@/components/documents/DocumentCard";
+components/tae/fiche/SectionDocuments.tsx:7:type Props = {
+components/tae/fiche/SectionDocuments.tsx:11:export function SectionDocuments({ documents }: Props) {
+components/tae/fiche/SectionDocuments.tsx:34:              <DocumentCard document={documentFicheVersRenderer(doc)} />
+components/tae/fiche/SectionDocuments.tsx:44:function DocumentPlaceholder({ type }: { type: "textuel" | "iconographique" }) {
+
+FILE: components/tae/TaeForm/preview/PrintableFichePreview.tsx
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:13:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:37:type WizardProps = {
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:48:export function PrintableHtml({
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:74:export function PrintableGrilleSection({
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:98:type FromTaeProps = {
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:107:function PrintableFicheDocumentsSection({ tae }: { tae: TaeFicheData }) {
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:117:          <DocumentCardPrint key={doc.letter} document={documentFicheVersRenderer(doc)} />
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:124:function PrintableFicheQuestionnaireSection({ tae }: { tae: TaeFicheData }) {
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:205:function PrintableFicheCorrigeSection({ tae }: { tae: TaeFicheData }) {
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:226:export function PrintableFicheFromTaeData({
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:301:export function PrintableFichePreview({
+components/tae/TaeForm/preview/PrintableFichePreview.tsx:323:    const donnees = etatWizardVersTache(state, oiList, grillesEntrees, previewMeta);
+
+FILE: components/tae/print/TaeFichePrintView.tsx
+components/tae/print/TaeFichePrintView.tsx:4:import { PrintableFicheFromTaeData } from "@/components/tae/TaeForm/preview/PrintableFichePreview";
+components/tae/print/TaeFichePrintView.tsx:9:type Props = {
+components/tae/print/TaeFichePrintView.tsx:17:export function TaeFichePrintView({ taeId, tae }: Props) {
+
+FILE: components/tae/TaeForm/sommaire/FicheSommaireColumn.tsx
+components/tae/TaeForm/sommaire/FicheSommaireColumn.tsx:11:type Props = {
+components/tae/TaeForm/sommaire/FicheSommaireColumn.tsx:19:export function FicheSommaireColumn({ previewMeta }: Props) {
+
+FILE: lib/fiche/sections/SectionDocuments.tsx
+lib/fiche/sections/SectionDocuments.tsx:6:import { DocumentCard } from "@/components/documents/DocumentCard";
+lib/fiche/sections/SectionDocuments.tsx:11:type Props = { data: DocumentsData; mode: FicheMode };
+lib/fiche/sections/SectionDocuments.tsx:14:export function SectionDocuments({ data, mode: _mode }: Props) {
+lib/fiche/sections/SectionDocuments.tsx:24:            <DocumentCard document={documentFicheVersRenderer(doc)} />
+
+FILE: lib/fiche/sections/SectionDocContent.tsx
+lib/fiche/sections/SectionDocContent.tsx:5:import { DocumentCard } from "@/components/documents/DocumentCard";
+lib/fiche/sections/SectionDocContent.tsx:10:type Props = { data: DocContentData; mode: FicheMode };
+lib/fiche/sections/SectionDocContent.tsx:16:export function SectionDocContent({ data, mode: _mode }: Props) {
+lib/fiche/sections/SectionDocContent.tsx:22:          <DocumentCard document={data.document} />
+
+FILE: lib/fiche/sections/DocFicheHeader.tsx
+lib/fiche/sections/DocFicheHeader.tsx:12:type Props = { data: DocHeaderData; mode: FicheMode };
+lib/fiche/sections/DocFicheHeader.tsx:18:export function DocFicheHeader({ data, mode }: Props) {
+
+FILE: lib/fiche/sections/SectionDocIndexation.tsx
+lib/fiche/sections/SectionDocIndexation.tsx:18:type Props = { data: DocIndexationData; mode: FicheMode };
+lib/fiche/sections/SectionDocIndexation.tsx:20:function MetaRow({ label, value }: { label: string; value: string }) {
+lib/fiche/sections/SectionDocIndexation.tsx:34:export function SectionDocIndexation({ data, mode: _mode }: Props) {
+
+FILE: app/(app)/documents/new/page.tsx
+
+FILE: app/(app)/questions/new/page.tsx
+app/(app)/questions/new/page.tsx:10:type PageProps = {
+app/(app)/questions/new/page.tsx:14:function firstParam(value: string | string[] | undefined): string | null {
+
+FILE: app/(app)/evaluations/new/page.tsx
+
+FILE: app/(app)/documents/page.tsx
+app/(app)/documents/page.tsx:4:import { DocumentMiniatureList } from "@/components/document/miniature";
+
+FILE: components/profile/ProfileDocumentsList.tsx
+components/profile/ProfileDocumentsList.tsx:7:import { DocumentMiniature, DocumentMiniatureList } from "@/components/document/miniature";
+components/profile/ProfileDocumentsList.tsx:13:type Props = {
+components/profile/ProfileDocumentsList.tsx:20:export function ProfileDocumentsList({ profileId, isOwner, totalCount, initialItems }: Props) {
+
+FILE: app/api/impression/token-draft/route.ts
+app/api/impression/token-draft/route.ts:100:  await kv.set(`draft:${payloadId}`, kvValue, { ex: KV_TTL_SECONDS });
+
+FILE: app/api/impression/apercu-png/route.ts
+app/api/impression/apercu-png/route.ts:56:function extraireDonneesKv(raw: unknown): DraftKvTyped {
+app/api/impression/apercu-png/route.ts:89:function construireRendu(data: DraftKvTyped): RenduImprimable {
+app/api/impression/apercu-png/route.ts:144:  const verification = verifierTokenDraft(token);
+app/api/impression/apercu-png/route.ts:149:  const raw = await kv.get<string>(`draft:${verification.payloadId}`);
+
+FILE: app/api/impression/pdf/route.ts
+app/api/impression/pdf/route.ts:60:  const verification = verifierTokenDraft(token);
+
+FILE: lib/tache/contrats/etat-wizard-vers-tache.ts
+lib/tache/contrats/etat-wizard-vers-tache.ts:79:function supprimerAncres(html: string): string {
+lib/tache/contrats/etat-wizard-vers-tache.ts:84:export function resoudreOutilEvaluation(
+lib/tache/contrats/etat-wizard-vers-tache.ts:111:function deduireEspaceProduction(state: TaeFormState): EspaceProduction {
+lib/tache/contrats/etat-wizard-vers-tache.ts:122:function construireGuidage(state: TaeFormState): Guidage {
+lib/tache/contrats/etat-wizard-vers-tache.ts:147:function construireConsigne(state: TaeFormState): string {
+lib/tache/contrats/etat-wizard-vers-tache.ts:164:function construireCorrige(state: TaeFormState): string {
+lib/tache/contrats/etat-wizard-vers-tache.ts:181:function construireDocuments(state: TaeFormState): RendererDocument[] {
+lib/tache/contrats/etat-wizard-vers-tache.ts:234:function construireAuteurs(
+lib/tache/contrats/etat-wizard-vers-tache.ts:267:export function etatWizardVersTache(
+
+FILE: hooks/epreuve/use-apercu-png.ts
+hooks/epreuve/use-apercu-png.ts:47:function extrairePagesParFeuillet(
+hooks/epreuve/use-apercu-png.ts:62:function calculerRendu(
+hooks/epreuve/use-apercu-png.ts:76:function construireBodyTokenDraft(
+hooks/epreuve/use-apercu-png.ts:99:export function useApercuPng(
+

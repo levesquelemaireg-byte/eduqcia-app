@@ -1,0 +1,59 @@
+﻿
+lib/tache/contrats/etat-wizard-vers-tache.ts:267:export function etatWizardVersTache(
+lib/tache/contrats/etat-wizard-vers-tache.ts:268:  etat: TaeFormState,
+lib/tache/contrats/etat-wizard-vers-tache.ts:269:  oiList: OiEntryJson[],
+lib/tache/contrats/etat-wizard-vers-tache.ts:270:  grilles: GrilleEvaluationEntree[],
+lib/tache/contrats/etat-wizard-vers-tache.ts:271:  meta?: MetaApercu | null,
+lib/tache/contrats/etat-wizard-vers-tache.ts:272:): DonneesTache {
+lib/tache/contrats/etat-wizard-vers-tache.ts:273:  const oiEntry = oiList.find((o) => o.id === etat.bloc2.oiId);
+lib/tache/contrats/etat-wizard-vers-tache.ts:274:  const comportement = oiEntry?.comportements_attendus.find(
+lib/tache/contrats/etat-wizard-vers-tache.ts:275:    (c) => c.id === etat.bloc2.comportementId,
+lib/tache/contrats/etat-wizard-vers-tache.ts:276:  );
+lib/tache/contrats/etat-wizard-vers-tache.ts:277:
+lib/tache/contrats/etat-wizard-vers-tache.ts:278:  const redaction = getRedactionSliceForPreview(etat);
+lib/tache/contrats/etat-wizard-vers-tache.ts:279:  const aspectsSociete = (Object.entries(redaction.aspects) as [AspectSocieteKey, boolean][])
+lib/tache/contrats/etat-wizard-vers-tache.ts:280:    .filter(([, v]) => v)
+lib/tache/contrats/etat-wizard-vers-tache.ts:281:    .map(([k]) => ASPECT_LABEL[k]);
+lib/tache/contrats/etat-wizard-vers-tache.ts:282:
+lib/tache/contrats/etat-wizard-vers-tache.ts:283:  const niveauLabel =
+lib/tache/contrats/etat-wizard-vers-tache.ts:284:    NIVEAUX.find((n) => n.value === (etat.bloc2.niveau as NiveauCode))?.label ?? "";
+lib/tache/contrats/etat-wizard-vers-tache.ts:285:  const disc = etat.bloc2.discipline;
+lib/tache/contrats/etat-wizard-vers-tache.ts:286:  const disciplineLabel =
+lib/tache/contrats/etat-wizard-vers-tache.ts:287:    disc && disc in DISCIPLINE_LABEL ? DISCIPLINE_LABEL[disc as DisciplineCode] : "";
+lib/tache/contrats/etat-wizard-vers-tache.ts:288:
+lib/tache/contrats/etat-wizard-vers-tache.ts:289:  return {
+lib/tache/contrats/etat-wizard-vers-tache.ts:290:    id: "draft",
+lib/tache/contrats/etat-wizard-vers-tache.ts:291:    auteur_id: "draft-local",
+lib/tache/contrats/etat-wizard-vers-tache.ts:292:    auteurs: construireAuteurs(etat, meta),
+lib/tache/contrats/etat-wizard-vers-tache.ts:293:
+lib/tache/contrats/etat-wizard-vers-tache.ts:294:    titre: comportement?.enonce ?? "",
+lib/tache/contrats/etat-wizard-vers-tache.ts:295:    consigne: construireConsigne(etat),
+lib/tache/contrats/etat-wizard-vers-tache.ts:296:    guidage: construireGuidage(etat),
+lib/tache/contrats/etat-wizard-vers-tache.ts:297:    documents: construireDocuments(etat),
+lib/tache/contrats/etat-wizard-vers-tache.ts:298:    espaceProduction: deduireEspaceProduction(etat),
+lib/tache/contrats/etat-wizard-vers-tache.ts:299:    outilEvaluation: resoudreOutilEvaluation(etat.bloc2.outilEvaluation, grilles),
+lib/tache/contrats/etat-wizard-vers-tache.ts:300:    corrige: construireCorrige(etat),
+lib/tache/contrats/etat-wizard-vers-tache.ts:301:
+lib/tache/contrats/etat-wizard-vers-tache.ts:302:    aspects_societe: aspectsSociete,
+lib/tache/contrats/etat-wizard-vers-tache.ts:303:    nb_lignes: etat.bloc2.nbLignes ?? 5,
+lib/tache/contrats/etat-wizard-vers-tache.ts:304:    niveau: { label: niveauLabel },
+lib/tache/contrats/etat-wizard-vers-tache.ts:305:    discipline: { label: disciplineLabel },
+lib/tache/contrats/etat-wizard-vers-tache.ts:306:    oi: {
+lib/tache/contrats/etat-wizard-vers-tache.ts:307:      id: etat.bloc2.oiId,
+lib/tache/contrats/etat-wizard-vers-tache.ts:308:      titre: oiEntry?.titre ?? "",
+lib/tache/contrats/etat-wizard-vers-tache.ts:309:      icone: oiEntry?.icone ?? "cognition",
+lib/tache/contrats/etat-wizard-vers-tache.ts:310:    },
+lib/tache/contrats/etat-wizard-vers-tache.ts:311:    comportement: {
+lib/tache/contrats/etat-wizard-vers-tache.ts:312:      id: etat.bloc2.comportementId,
+lib/tache/contrats/etat-wizard-vers-tache.ts:313:      enonce: comportement?.enonce ?? "",
+lib/tache/contrats/etat-wizard-vers-tache.ts:314:    },
+lib/tache/contrats/etat-wizard-vers-tache.ts:315:    cd: cdSelectionToFicheSlice(etat.bloc6.cd.selection),
+lib/tache/contrats/etat-wizard-vers-tache.ts:316:    connaissances: connaissancesToFicheSlice(etat.bloc7.connaissances),
+lib/tache/contrats/etat-wizard-vers-tache.ts:317:
+lib/tache/contrats/etat-wizard-vers-tache.ts:318:    version: 1,
+lib/tache/contrats/etat-wizard-vers-tache.ts:319:    version_updated_at: null,
+lib/tache/contrats/etat-wizard-vers-tache.ts:320:    is_published: false,
+lib/tache/contrats/etat-wizard-vers-tache.ts:321:    created_at: meta?.draftStartedAtIso ?? "",
+lib/tache/contrats/etat-wizard-vers-tache.ts:322:    updated_at: meta?.draftStartedAtIso ?? "",
+lib/tache/contrats/etat-wizard-vers-tache.ts:323:  };
+lib/tache/contrats/etat-wizard-vers-tache.ts:324:}

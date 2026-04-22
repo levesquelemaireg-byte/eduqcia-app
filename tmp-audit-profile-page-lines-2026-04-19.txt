@@ -1,0 +1,8 @@
+﻿
+app/(app)/profile/[id]/page.tsx:1:import { notFound } from "next/navigation";
+app/(app)/profile/[id]/page.tsx:2:import { createClient } from "@/lib/supabase/server";
+app/(app)/profile/[id]/page.tsx:3:import { fetchProfileOverview } from "@/lib/queries/profile-overview";
+app/(app)/profile/[id]/page.tsx:4:import { fetchProfileTasks, fetchProfileEvaluations } from "@/lib/queries/profile-contributions";
+app/(app)/profile/[id]/page.tsx:5:import { documentsRepository } from "@/lib/repositories/documents-repository";
+app/(app)/profile/[id]/page.tsx:6:import { ProfilePageClient } from "@/components/profile/ProfilePageClient";
+app/(app)/profile/[id]/page.tsx:68:    <ProfilePageClient

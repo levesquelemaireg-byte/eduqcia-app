@@ -1,0 +1,46 @@
+﻿
+FILE: app/api/impression/token-draft/route.ts
+app/api/impression/token-draft/route.ts:1:import "server-only";
+app/api/impression/token-draft/route.ts:3:import { NextResponse } from "next/server";
+app/api/impression/token-draft/route.ts:4:import { z } from "zod";
+app/api/impression/token-draft/route.ts:5:import { kv } from "@vercel/kv";
+app/api/impression/token-draft/route.ts:6:import { createClient } from "@/lib/supabase/server";
+app/api/impression/token-draft/route.ts:7:import { signerTokenDraft } from "@/lib/epreuve/impression/token-draft";
+app/api/impression/token-draft/route.ts:8:import { checkRateLimit } from "@/lib/server/rate-limit";
+app/api/impression/token-draft/route.ts:100:  await kv.set(`draft:${payloadId}`, kvValue, { ex: KV_TTL_SECONDS });
+
+FILE: app/api/impression/apercu-png/route.ts
+app/api/impression/apercu-png/route.ts:1:import "server-only";
+app/api/impression/apercu-png/route.ts:3:import { NextResponse } from "next/server";
+app/api/impression/apercu-png/route.ts:4:import { z } from "zod";
+app/api/impression/apercu-png/route.ts:5:import { kv } from "@vercel/kv";
+app/api/impression/apercu-png/route.ts:6:import { createClient } from "@/lib/supabase/server";
+app/api/impression/apercu-png/route.ts:7:import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
+app/api/impression/apercu-png/route.ts:8:import { checkRateLimit } from "@/lib/server/rate-limit";
+app/api/impression/apercu-png/route.ts:9:import { genererPngPages } from "@/lib/epreuve/impression/puppeteer";
+app/api/impression/apercu-png/route.ts:10:import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+app/api/impression/apercu-png/route.ts:11:import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
+app/api/impression/apercu-png/route.ts:12:import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
+app/api/impression/apercu-png/route.ts:13:import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+app/api/impression/apercu-png/route.ts:14:import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+app/api/impression/apercu-png/route.ts:15:import type { RendererDocument } from "@/lib/types/document-renderer";
+app/api/impression/apercu-png/route.ts:16:import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+app/api/impression/apercu-png/route.ts:17:import type { RenduImprimable } from "@/lib/impression/types";
+app/api/impression/apercu-png/route.ts:18:import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
+app/api/impression/apercu-png/route.ts:144:  const verification = verifierTokenDraft(token);
+app/api/impression/apercu-png/route.ts:149:  const raw = await kv.get<string>(`draft:${verification.payloadId}`);
+app/api/impression/apercu-png/route.ts:169:  const url = `${baseUrl}/apercu/${encodeURIComponent(token)}`;
+app/api/impression/apercu-png/route.ts:173:      genererPngPages(url),
+
+FILE: app/api/impression/pdf/route.ts
+app/api/impression/pdf/route.ts:1:import "server-only";
+app/api/impression/pdf/route.ts:3:import { NextResponse } from "next/server";
+app/api/impression/pdf/route.ts:4:import { z } from "zod";
+app/api/impression/pdf/route.ts:5:import { createClient } from "@/lib/supabase/server";
+app/api/impression/pdf/route.ts:6:import { genererPdf } from "@/lib/epreuve/impression/puppeteer";
+app/api/impression/pdf/route.ts:7:import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
+app/api/impression/pdf/route.ts:8:import { checkRateLimit } from "@/lib/server/rate-limit";
+app/api/impression/pdf/route.ts:60:  const verification = verifierTokenDraft(token);
+app/api/impression/pdf/route.ts:67:  const url = `${baseUrl}/apercu/${encodeURIComponent(token)}`;
+app/api/impression/pdf/route.ts:72:      genererPdf(url),
+

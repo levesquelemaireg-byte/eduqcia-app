@@ -1,0 +1,19 @@
+﻿
+hooks/epreuve/use-apercu-png.ts:248:      }
+hooks/epreuve/use-apercu-png.ts:249:
+hooks/epreuve/use-apercu-png.ts:250:      const res = await fetch("/api/impression/pdf", {
+hooks/epreuve/use-apercu-png.ts:251:        method: "POST",
+hooks/epreuve/use-apercu-png.ts:252:        headers: { "Content-Type": "application/json" },
+hooks/epreuve/use-apercu-png.ts:253:        body: JSON.stringify({ token }),
+hooks/epreuve/use-apercu-png.ts:254:        signal: controller.signal,
+hooks/epreuve/use-apercu-png.ts:255:      });
+hooks/epreuve/use-apercu-png.ts:256:
+hooks/epreuve/use-apercu-png.ts:257:      if (!res.ok) {
+hooks/epreuve/use-apercu-png.ts:258:        const data = await res.json().catch(() => ({}));
+hooks/epreuve/use-apercu-png.ts:259:        throw new Error((data as { error?: string }).error ?? `Erreur ${res.status}`);
+hooks/epreuve/use-apercu-png.ts:260:      }
+hooks/epreuve/use-apercu-png.ts:261:
+hooks/epreuve/use-apercu-png.ts:262:      const blob = await res.blob();
+hooks/epreuve/use-apercu-png.ts:263:      const url = URL.createObjectURL(blob);
+hooks/epreuve/use-apercu-png.ts:264:      const a = document.createElement("a");
+hooks/epreuve/use-apercu-png.ts:265:      a.href = url;

@@ -1,0 +1,55 @@
+﻿
+FILE: app/(app)/documents/[id]/page.tsx
+app/(app)/documents/[id]/page.tsx:1:import { notFound } from "next/navigation";
+app/(app)/documents/[id]/page.tsx:2:import { DocumentBankCompletionCard } from "@/components/documents/DocumentBankCompletionCard";
+app/(app)/documents/[id]/page.tsx:3:import { DocumentVueDetaillee } from "@/components/document/vue-detaillee";
+app/(app)/documents/[id]/page.tsx:4:import { hydrateRendererDocument } from "@/lib/documents/hydrate-renderer-document";
+app/(app)/documents/[id]/page.tsx:5:import { createClient } from "@/lib/supabase/server";
+app/(app)/documents/[id]/page.tsx:6:import { countPublishedTaeUsagesForDocument } from "@/lib/queries/document-read";
+app/(app)/documents/[id]/page.tsx:7:import { copyDocumentPublishedTaeUsageCount } from "@/lib/ui/ui-copy";
+app/(app)/documents/[id]/page.tsx:74:  return (
+app/(app)/documents/[id]/page.tsx:89:      <DocumentVueDetaillee
+
+FILE: app/(app)/questions/[id]/page.tsx
+app/(app)/questions/[id]/page.tsx:1:import fs from "fs";
+app/(app)/questions/[id]/page.tsx:2:import path from "path";
+app/(app)/questions/[id]/page.tsx:3:import { notFound } from "next/navigation";
+app/(app)/questions/[id]/page.tsx:4:import { TacheVueDetaillee } from "@/components/tache/vue-detaillee";
+app/(app)/questions/[id]/page.tsx:5:import { createClient } from "@/lib/supabase/server";
+app/(app)/questions/[id]/page.tsx:6:import { fetchTaeFicheBundle } from "@/lib/tae/server-fiche-map";
+app/(app)/questions/[id]/page.tsx:7:import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
+app/(app)/questions/[id]/page.tsx:8:import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";
+app/(app)/questions/[id]/page.tsx:39:  return (
+app/(app)/questions/[id]/page.tsx:40:    <TacheVueDetaillee
+
+FILE: app/(app)/evaluations/[id]/page.tsx
+app/(app)/evaluations/[id]/page.tsx:1:import { notFound } from "next/navigation";
+app/(app)/evaluations/[id]/page.tsx:2:import { EpreuveVueDetaillee } from "@/components/epreuve/vue-detaillee";
+app/(app)/evaluations/[id]/page.tsx:3:import { getEvaluationDetailBundle } from "@/lib/queries/evaluation-detail";
+app/(app)/evaluations/[id]/page.tsx:14:  return (
+app/(app)/evaluations/[id]/page.tsx:15:    <EpreuveVueDetaillee
+
+FILE: app/(apercu)/apercu/[token]/page.tsx
+app/(apercu)/apercu/[token]/page.tsx:1:import { notFound } from "next/navigation";
+app/(apercu)/apercu/[token]/page.tsx:2:import { kv } from "@vercel/kv";
+app/(apercu)/apercu/[token]/page.tsx:3:import { verifierTokenDraft } from "@/lib/epreuve/impression/token-draft";
+app/(apercu)/apercu/[token]/page.tsx:4:import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+app/(apercu)/apercu/[token]/page.tsx:5:import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
+app/(apercu)/apercu/[token]/page.tsx:6:import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
+app/(apercu)/apercu/[token]/page.tsx:7:import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+app/(apercu)/apercu/[token]/page.tsx:8:import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+app/(apercu)/apercu/[token]/page.tsx:9:import type { RendererDocument } from "@/lib/types/document-renderer";
+app/(apercu)/apercu/[token]/page.tsx:10:import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+app/(apercu)/apercu/[token]/page.tsx:11:import type { RenduImprimable } from "@/lib/impression/types";
+app/(apercu)/apercu/[token]/page.tsx:12:import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
+app/(apercu)/apercu/[token]/page.tsx:13:import { ApercuImpression } from "@/components/epreuve/impression";
+app/(apercu)/apercu/[token]/page.tsx:20: * rend `ApercuImpression`.
+app/(apercu)/apercu/[token]/page.tsx:40:function construireRendu(data: DraftKvTyped): RenduImprimable {
+app/(apercu)/apercu/[token]/page.tsx:65:function extraireDonneesKv(raw: unknown): DraftKvTyped {
+app/(apercu)/apercu/[token]/page.tsx:101:  const verification = verifierTokenDraft(token);
+app/(apercu)/apercu/[token]/page.tsx:106:  const raw = await kv.get<string>(`draft:${verification.payloadId}`);
+app/(apercu)/apercu/[token]/page.tsx:111:  const data = extraireDonneesKv(raw);
+app/(apercu)/apercu/[token]/page.tsx:112:  const rendu = construireRendu(data);
+app/(apercu)/apercu/[token]/page.tsx:115:    return (
+app/(apercu)/apercu/[token]/page.tsx:123:  return <ApercuImpression rendu={rendu} />;
+

@@ -1,0 +1,132 @@
+﻿
+PATTERN: DocumentReference
+COMMAND: grep -rn "DocumentReference" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 0
+(no matches)
+
+PATTERN: DocCard
+COMMAND: grep -rn "DocCard" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 2
+C:\Users\leves\eduqcia-app\lib\fiche\selectors\tache\documents.ts:11:export type DocCardData = {
+C:\Users\leves\eduqcia-app\lib\fiche\selectors\tache\documents.ts:20:  cards: DocCardData[];
+
+PATTERN: DocumentCardCompact
+COMMAND: grep -rn "DocumentCardCompact" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 0
+(no matches)
+
+PATTERN: PrintableDocumentCell
+COMMAND: grep -rn "PrintableDocumentCell" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 0
+(no matches)
+
+PATTERN: DocumentFicheRead
+COMMAND: grep -rn "DocumentFicheRead" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 0
+(no matches)
+
+PATTERN: EvaluationPrintableBody
+COMMAND: grep -rn "EvaluationPrintableBody" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 0
+(no matches)
+
+PATTERN: EvaluationFichePrintView
+COMMAND: grep -rn "EvaluationFichePrintView" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 0
+(no matches)
+
+PATTERN: SectionDocument
+COMMAND: grep -rn "SectionDocument" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 16
+C:\Users\leves\eduqcia-app\lib\fiche\configs\tae-fiche-sections.tsx:26:import { SectionDocuments } from "@/lib/fiche/sections/SectionDocuments";
+C:\Users\leves\eduqcia-app\lib\fiche\configs\tae-fiche-sections.tsx:96:    component: SectionDocuments,
+C:\Users\leves\eduqcia-app\lib\fiche\configs\tae-lecture-sections.ts:40:import { SectionDocuments } from "@/lib/fiche/sections/SectionDocuments";
+C:\Users\leves\eduqcia-app\lib\fiche\configs\tae-lecture-sections.ts:80:    component: SectionDocuments,
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocuments.tsx:14:export function SectionDocuments({ data, mode: _mode }: Props) {
+C:\Users\leves\eduqcia-app\lib\impression\builders\blocs-document.ts:17:/** Contenu structuré d'un bloc document (consommé par SectionDocument). */
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:2: * SectionDocument — délègue au renderer canonique DocumentCardPrint.
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:4: * Invariant #5 du print-engine : ApercuImpression → SectionDocument → DocumentCardPrint.
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:15:export type SectionDocumentProps = {
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:19:export function SectionDocument({ contenu }: SectionDocumentProps) {
+C:\Users\leves\eduqcia-app\components\epreuve\impression\index.tsx:19:import { SectionDocument } from "./sections/document";
+C:\Users\leves\eduqcia-app\components\epreuve\impression\index.tsx:47:      return <SectionDocument contenu={bloc.content as ContenuDocument} />;
+C:\Users\leves\eduqcia-app\components\tache\vue-detaillee\sections\documents.tsx:17:export function SectionDocuments({ data, surClicDocument }: Props) {
+C:\Users\leves\eduqcia-app\components\tache\vue-detaillee\flux-lecture.tsx:11:import { SectionDocuments } from "@/components/tache/vue-detaillee/sections/documents";
+C:\Users\leves\eduqcia-app\components\tache\vue-detaillee\flux-lecture.tsx:50:      {documents ? <SectionDocuments data={documents} surClicDocument={surClicDocument} /> : null}
+C:\Users\leves\eduqcia-app\components\tae\fiche\SectionDocuments.tsx:11:export function SectionDocuments({ documents }: Props) {
+
+PATTERN: DocumentCard
+COMMAND: grep -rn "DocumentCard" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 39
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocContent.tsx:5:import { DocumentCard } from "@/components/documents/DocumentCard";
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocContent.tsx:13: * Contenu du document — DocumentCard (simple/perspectives/deux_temps).
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocContent.tsx:14: * Le composant DocumentCard gère les 3 variantes en interne.
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocContent.tsx:22:          <DocumentCard document={data.document} />
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocIndexation.tsx:32: * Reproduit le panneau droit de DocumentCardReader en tant que section linéaire.
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocuments.tsx:6:import { DocumentCard } from "@/components/documents/DocumentCard";
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocuments.tsx:13:/** Documents historiques — rendus via le composant canonique DocumentCard. */
+C:\Users\leves\eduqcia-app\lib\fiche\sections\SectionDocuments.tsx:24:            <DocumentCard document={documentFicheVersRenderer(doc)} />
+C:\Users\leves\eduqcia-app\lib\fiche\selectors\tache\documents.ts:3: * Retourne un array de RendererDocument numérotés prêts pour DocumentCard.
+C:\Users\leves\eduqcia-app\components\document\vue-detaillee\index.tsx:11:import { DocumentCard } from "@/components/documents/DocumentCard";
+C:\Users\leves\eduqcia-app\components\document\vue-detaillee\index.tsx:99:            {/* Aperçu imprimé — rendu canonique via DocumentCard mode print */}
+C:\Users\leves\eduqcia-app\components\document\vue-detaillee\index.tsx:102:                <DocumentCard document={data.document} numero={1} />
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPrintPreview.tsx:4:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPrintPreview.tsx:14: * `RendererDocument` pour `DocumentCardPrint`.
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPrintPreview.tsx:60:  return <DocumentCardPrint document={rendererDoc} numero={1} />;
+C:\Users\leves\eduqcia-app\components\documents\DocumentCard.tsx:21:export function DocumentCard({ document: doc, numero }: Props) {
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardPrint.tsx:22:export function DocumentCardPrint({ document: doc, numero }: Props) {
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardReader.tsx:1:import { DocumentCard } from "@/components/documents/DocumentCard";
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardReader.tsx:37:export type DocumentCardReaderProps = {
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardReader.tsx:66: * Fiche lecture d'un document — wrapper autour de `DocumentCard`.
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardReader.tsx:69: * via `DocumentCard`, entouré de métadonnées d'indexation.
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardReader.tsx:73:export function DocumentCardReader({ document: doc, meta }: DocumentCardReaderProps) {
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardReader.tsx:141:                <DocumentCard document={doc} />
+C:\Users\leves\eduqcia-app\components\documents\DocumentImageLegendOverlay.tsx:16:  /** Vignette sommaire (DocumentCard) — bandeau plus petit. */
+C:\Users\leves\eduqcia-app\components\documents\DocumentPrintView.tsx:5:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\documents\DocumentPrintView.tsx:66:        <DocumentCardPrint document={doc} numero={numero} />
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:2: * SectionDocument — délègue au renderer canonique DocumentCardPrint.
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:4: * Invariant #5 du print-engine : ApercuImpression → SectionDocument → DocumentCardPrint.
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:7:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:20:  return <DocumentCardPrint document={contenu.document} numero={contenu.numeroGlobal} />;
+C:\Users\leves\eduqcia-app\components\tache\vue-detaillee\sections\documents.tsx:5:import { DocumentCard } from "@/components/documents/DocumentCard";
+C:\Users\leves\eduqcia-app\components\tache\vue-detaillee\sections\documents.tsx:15: * Liste verticale de DocumentCards numérotées via le renderer canonique.
+C:\Users\leves\eduqcia-app\components\tache\vue-detaillee\sections\documents.tsx:25:            <DocumentCard key={card.docId} document={card.document} numero={card.numero} />
+C:\Users\leves\eduqcia-app\components\tae\fiche\FicheSkeletons.tsx:55:export function SkeletonDocumentCard() {
+C:\Users\leves\eduqcia-app\components\tae\fiche\FicheSkeletons.tsx:69:      <SkeletonDocumentCard />
+C:\Users\leves\eduqcia-app\components\tae\fiche\SectionDocuments.tsx:1:import { DocumentCard } from "@/components/documents/DocumentCard";
+C:\Users\leves\eduqcia-app\components\tae\fiche\SectionDocuments.tsx:34:              <DocumentCard document={documentFicheVersRenderer(doc)} />
+C:\Users\leves\eduqcia-app\components\tae\TaeForm\preview\PrintableFichePreview.tsx:13:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\tae\TaeForm\preview\PrintableFichePreview.tsx:117:          <DocumentCardPrint key={doc.letter} document={documentFicheVersRenderer(doc)} />
+
+PATTERN: DocumentCardPrint
+COMMAND: grep -rn "DocumentCardPrint" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 12
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPrintPreview.tsx:4:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPrintPreview.tsx:14: * `RendererDocument` pour `DocumentCardPrint`.
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPrintPreview.tsx:60:  return <DocumentCardPrint document={rendererDoc} numero={1} />;
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardPrint.tsx:22:export function DocumentCardPrint({ document: doc, numero }: Props) {
+C:\Users\leves\eduqcia-app\components\documents\DocumentPrintView.tsx:5:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\documents\DocumentPrintView.tsx:66:        <DocumentCardPrint document={doc} numero={numero} />
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:2: * SectionDocument — délègue au renderer canonique DocumentCardPrint.
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:4: * Invariant #5 du print-engine : ApercuImpression → SectionDocument → DocumentCardPrint.
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:7:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\epreuve\impression\sections\document.tsx:20:  return <DocumentCardPrint document={contenu.document} numero={contenu.numeroGlobal} />;
+C:\Users\leves\eduqcia-app\components\tae\TaeForm\preview\PrintableFichePreview.tsx:13:import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+C:\Users\leves\eduqcia-app\components\tae\TaeForm\preview\PrintableFichePreview.tsx:117:          <DocumentCardPrint key={doc.letter} document={documentFicheVersRenderer(doc)} />
+
+PATTERN: DocumentElementRenderer
+COMMAND: grep -rn "DocumentElementRenderer" lib/ components/ app/ --include="*.ts" --include="*.tsx"
+TOTAL: 12
+C:\Users\leves\eduqcia-app\components\document\vue-detaillee\sections\contenu.tsx:4:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+C:\Users\leves\eduqcia-app\components\document\vue-detaillee\sections\contenu.tsx:48:                  <DocumentElementRenderer element={el} showAuteur={false} />
+C:\Users\leves\eduqcia-app\components\document\vue-detaillee\sections\contenu.tsx:59:                    <DocumentElementRenderer
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPreview.tsx:4:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+C:\Users\leves\eduqcia-app\components\documents\wizard\DocumentWizardPreview.tsx:430:    return <DocumentElementRenderer element={rendererFirstEl} hideSource />;
+C:\Users\leves\eduqcia-app\components\documents\DocumentCard.tsx:1:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+C:\Users\leves\eduqcia-app\components\documents\DocumentCard.tsx:52:      <DocumentElementRenderer element={element} showAuteur={Boolean(element.auteur)} />
+C:\Users\leves\eduqcia-app\components\documents\DocumentCard.tsx:80:          <DocumentElementRenderer
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardPrint.tsx:1:import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardPrint.tsx:46:              <DocumentElementRenderer
+C:\Users\leves\eduqcia-app\components\documents\DocumentCardPrint.tsx:67:                <DocumentElementRenderer
+C:\Users\leves\eduqcia-app\components\documents\DocumentElementRenderer.tsx:29:export function DocumentElementRenderer({
+

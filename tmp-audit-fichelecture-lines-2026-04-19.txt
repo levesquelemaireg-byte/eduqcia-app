@@ -1,0 +1,10 @@
+﻿
+components/tae/FicheLecture.tsx:3:import { useMemo } from "react";
+components/tae/FicheLecture.tsx:4:import { FicheRenderer } from "@/lib/fiche/FicheRenderer";
+components/tae/FicheLecture.tsx:5:import { TAE_LECTURE_SECTIONS } from "@/lib/fiche/configs/tae-lecture-sections";
+components/tae/FicheLecture.tsx:6:import { TaeCardMenu } from "@/components/tae/fiche/TaeCardMenu";
+components/tae/FicheLecture.tsx:7:import { useGrilles } from "@/components/tae/TaeForm/bloc2/useBloc2Data";
+components/tae/FicheLecture.tsx:8:import type { TaeFicheData } from "@/lib/types/fiche";
+components/tae/FicheLecture.tsx:9:import type { SelectorRefs } from "@/lib/fiche/types";
+components/tae/FicheLecture.tsx:11:type Props = {
+components/tae/FicheLecture.tsx:24:export function FicheLecture({ tae, userId }: Props) {

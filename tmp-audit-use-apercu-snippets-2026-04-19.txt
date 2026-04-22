@@ -1,0 +1,75 @@
+﻿
+hooks/epreuve/use-apercu-png.ts:72:  }
+hooks/epreuve/use-apercu-png.ts:73:}
+hooks/epreuve/use-apercu-png.ts:74:
+hooks/epreuve/use-apercu-png.ts:75:/** Construit le body pour POST /api/impression/token-draft. */
+hooks/epreuve/use-apercu-png.ts:76:function construireBodyTokenDraft(
+hooks/epreuve/use-apercu-png.ts:77:  payload: PayloadImpression,
+hooks/epreuve/use-apercu-png.ts:78:  mode: ModeImpression,
+hooks/epreuve/use-apercu-png.ts:79:  estCorrige: boolean,
+hooks/epreuve/use-apercu-png.ts:80:): unknown {
+hooks/epreuve/use-apercu-png.ts:81:  switch (payload.type) {
+hooks/epreuve/use-apercu-png.ts:82:    case "tache":
+hooks/epreuve/use-apercu-png.ts:83:      return { type: "tache", payload: payload.donnees, mode, estCorrige };
+hooks/epreuve/use-apercu-png.ts:84:    case "epreuve":
+hooks/epreuve/use-apercu-png.ts:85:      return { type: "epreuve", payload: payload.donnees, mode, estCorrige };
+hooks/epreuve/use-apercu-png.ts:86:  }
+hooks/epreuve/use-apercu-png.ts:87:}
+hooks/epreuve/use-apercu-png.ts:88:
+hooks/epreuve/use-apercu-png.ts:89:/* -------------------------------------------------------------------------- */
+hooks/epreuve/use-apercu-png.ts:90:/*  Hook                                                                      */
+
+hooks/epreuve/use-apercu-png.ts:138:  obtenirTokenRef.current = async (signal?: AbortSignal) => {
+hooks/epreuve/use-apercu-png.ts:139:    const res = await fetch("/api/impression/token-draft", {
+hooks/epreuve/use-apercu-png.ts:140:      method: "POST",
+hooks/epreuve/use-apercu-png.ts:141:      headers: { "Content-Type": "application/json" },
+hooks/epreuve/use-apercu-png.ts:142:      body: JSON.stringify(construireBodyTokenDraft(payload, mode, estCorrige)),
+hooks/epreuve/use-apercu-png.ts:143:      signal,
+hooks/epreuve/use-apercu-png.ts:144:    });
+hooks/epreuve/use-apercu-png.ts:145:    if (!res.ok) {
+hooks/epreuve/use-apercu-png.ts:146:      const data = await res.json().catch(() => ({}));
+hooks/epreuve/use-apercu-png.ts:147:      throw new Error((data as { error?: string }).error ?? `Erreur ${res.status}`);
+hooks/epreuve/use-apercu-png.ts:148:    }
+hooks/epreuve/use-apercu-png.ts:149:    const data = (await res.json()) as { token: string };
+hooks/epreuve/use-apercu-png.ts:150:    return data.token;
+hooks/epreuve/use-apercu-png.ts:151:  };
+hooks/epreuve/use-apercu-png.ts:152:
+hooks/epreuve/use-apercu-png.ts:153:  const generer = useCallback(
+hooks/epreuve/use-apercu-png.ts:154:    async (tentative = 1) => {
+hooks/epreuve/use-apercu-png.ts:155:      // Correctif 6 â€” Guard anti double-clic
+
+hooks/epreuve/use-apercu-png.ts:176:        const res = await fetch("/api/impression/apercu-png", {
+hooks/epreuve/use-apercu-png.ts:177:          method: "POST",
+hooks/epreuve/use-apercu-png.ts:178:          headers: { "Content-Type": "application/json" },
+hooks/epreuve/use-apercu-png.ts:179:          body: JSON.stringify({ token }),
+hooks/epreuve/use-apercu-png.ts:180:          signal: controller.signal,
+hooks/epreuve/use-apercu-png.ts:181:        });
+hooks/epreuve/use-apercu-png.ts:182:
+hooks/epreuve/use-apercu-png.ts:183:        // Correctif 3 â€” Retry sur token expirÃ© (410)
+hooks/epreuve/use-apercu-png.ts:184:        if (res.status === 410 && tentative < 2) {
+hooks/epreuve/use-apercu-png.ts:185:          tokenRef.current = null;
+hooks/epreuve/use-apercu-png.ts:186:          estEnCoursRef.current = false;
+hooks/epreuve/use-apercu-png.ts:187:          return generer(tentative + 1);
+hooks/epreuve/use-apercu-png.ts:188:        }
+hooks/epreuve/use-apercu-png.ts:189:
+hooks/epreuve/use-apercu-png.ts:190:        if (!res.ok) {
+
+hooks/epreuve/use-apercu-png.ts:230:        estEnCoursRef.current = false;
+hooks/epreuve/use-apercu-png.ts:231:      }
+hooks/epreuve/use-apercu-png.ts:232:    },
+hooks/epreuve/use-apercu-png.ts:233:    [rendu],
+hooks/epreuve/use-apercu-png.ts:234:  );
+hooks/epreuve/use-apercu-png.ts:235:
+hooks/epreuve/use-apercu-png.ts:236:  const telechargerPdf = useCallback(async () => {
+hooks/epreuve/use-apercu-png.ts:237:    setPdfEnCours(true);
+hooks/epreuve/use-apercu-png.ts:238:
+hooks/epreuve/use-apercu-png.ts:239:    // Correctif 2 â€” Timeout PDF 30s
+hooks/epreuve/use-apercu-png.ts:240:    const controller = new AbortController();
+hooks/epreuve/use-apercu-png.ts:241:    const timeout = setTimeout(() => controller.abort(), 30_000);
+hooks/epreuve/use-apercu-png.ts:242:
+hooks/epreuve/use-apercu-png.ts:243:    try {
+hooks/epreuve/use-apercu-png.ts:244:      let token = tokenRef.current;
+hooks/epreuve/use-apercu-png.ts:245:      if (!token) {
+hooks/epreuve/use-apercu-png.ts:246:        token = await obtenirTokenRef.current(controller.signal);
+hooks/epreuve/use-apercu-png.ts:247:        tokenRef.current = token;
+

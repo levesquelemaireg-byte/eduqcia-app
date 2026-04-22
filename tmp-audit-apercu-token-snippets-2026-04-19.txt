@@ -1,0 +1,98 @@
+﻿
+app/(apercu)/apercu/[token]/page.tsx:27:/** Format KV â€” discriminÃ© par `type`. */
+app/(apercu)/apercu/[token]/page.tsx:28:type DraftKvTyped =
+app/(apercu)/apercu/[token]/page.tsx:29:  | { type: "document"; payload: RendererDocument }
+app/(apercu)/apercu/[token]/page.tsx:30:  | { type: "tache"; payload: DonneesTache; mode: ModeImpression; estCorrige: boolean }
+app/(apercu)/apercu/[token]/page.tsx:31:  | { type: "epreuve"; payload: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
+app/(apercu)/apercu/[token]/page.tsx:32:
+app/(apercu)/apercu/[token]/page.tsx:33:/** Format KV legacy (pre-discriminatedUnion). */
+app/(apercu)/apercu/[token]/page.tsx:34:type DraftKvLegacy = {
+app/(apercu)/apercu/[token]/page.tsx:35:  payload: DonneesEpreuve;
+app/(apercu)/apercu/[token]/page.tsx:36:  mode: ModeImpression;
+app/(apercu)/apercu/[token]/page.tsx:37:  estCorrige: boolean;
+app/(apercu)/apercu/[token]/page.tsx:38:};
+
+app/(apercu)/apercu/[token]/page.tsx:40:function construireRendu(data: DraftKvTyped): RenduImprimable {
+app/(apercu)/apercu/[token]/page.tsx:41:  switch (data.type) {
+app/(apercu)/apercu/[token]/page.tsx:42:    case "document":
+app/(apercu)/apercu/[token]/page.tsx:43:      return documentVersImprimable(data.payload, mesurerBlocImpression);
+app/(apercu)/apercu/[token]/page.tsx:44:
+app/(apercu)/apercu/[token]/page.tsx:45:    case "tache":
+app/(apercu)/apercu/[token]/page.tsx:46:      return tacheVersImprimable(
+app/(apercu)/apercu/[token]/page.tsx:47:        data.payload,
+app/(apercu)/apercu/[token]/page.tsx:48:        { mode: data.mode, estCorrige: data.estCorrige },
+app/(apercu)/apercu/[token]/page.tsx:49:        mesurerBlocImpression,
+app/(apercu)/apercu/[token]/page.tsx:50:      );
+app/(apercu)/apercu/[token]/page.tsx:51:
+app/(apercu)/apercu/[token]/page.tsx:52:    case "epreuve":
+app/(apercu)/apercu/[token]/page.tsx:53:      return epreuveVersImprimable(
+app/(apercu)/apercu/[token]/page.tsx:54:        data.payload,
+app/(apercu)/apercu/[token]/page.tsx:55:        { mode: data.mode, estCorrige: data.estCorrige },
+app/(apercu)/apercu/[token]/page.tsx:56:        mesurerBlocImpression,
+app/(apercu)/apercu/[token]/page.tsx:57:      );
+app/(apercu)/apercu/[token]/page.tsx:58:  }
+app/(apercu)/apercu/[token]/page.tsx:59:}
+app/(apercu)/apercu/[token]/page.tsx:60:
+app/(apercu)/apercu/[token]/page.tsx:61:/**
+app/(apercu)/apercu/[token]/page.tsx:62: * Extrait les donnÃ©es depuis la valeur KV.
+
+app/(apercu)/apercu/[token]/page.tsx:65:function extraireDonneesKv(raw: unknown): DraftKvTyped {
+app/(apercu)/apercu/[token]/page.tsx:66:  const parsed: unknown = typeof raw === "string" ? JSON.parse(raw) : raw;
+app/(apercu)/apercu/[token]/page.tsx:67:
+app/(apercu)/apercu/[token]/page.tsx:68:  if (parsed && typeof parsed === "object" && "type" in parsed) {
+app/(apercu)/apercu/[token]/page.tsx:69:    return parsed as DraftKvTyped;
+app/(apercu)/apercu/[token]/page.tsx:70:  }
+app/(apercu)/apercu/[token]/page.tsx:71:
+app/(apercu)/apercu/[token]/page.tsx:72:  // RÃ©trocompatibilitÃ© : ancien format Ã©preuve (sans discriminant `type`)
+app/(apercu)/apercu/[token]/page.tsx:73:  if (
+app/(apercu)/apercu/[token]/page.tsx:74:    parsed &&
+app/(apercu)/apercu/[token]/page.tsx:75:    typeof parsed === "object" &&
+app/(apercu)/apercu/[token]/page.tsx:76:    "payload" in parsed &&
+app/(apercu)/apercu/[token]/page.tsx:77:    "mode" in parsed &&
+app/(apercu)/apercu/[token]/page.tsx:78:    "estCorrige" in parsed
+app/(apercu)/apercu/[token]/page.tsx:79:  ) {
+app/(apercu)/apercu/[token]/page.tsx:80:    const legacy = parsed as DraftKvLegacy;
+app/(apercu)/apercu/[token]/page.tsx:81:    return {
+app/(apercu)/apercu/[token]/page.tsx:82:      type: "epreuve",
+app/(apercu)/apercu/[token]/page.tsx:83:      payload: legacy.payload,
+app/(apercu)/apercu/[token]/page.tsx:84:      mode: legacy.mode,
+app/(apercu)/apercu/[token]/page.tsx:85:      estCorrige: legacy.estCorrige,
+app/(apercu)/apercu/[token]/page.tsx:86:    };
+app/(apercu)/apercu/[token]/page.tsx:87:  }
+app/(apercu)/apercu/[token]/page.tsx:88:
+app/(apercu)/apercu/[token]/page.tsx:89:  // Dernier fallback : payload brut = Ã©preuve
+app/(apercu)/apercu/[token]/page.tsx:90:  return {
+app/(apercu)/apercu/[token]/page.tsx:91:    type: "epreuve",
+app/(apercu)/apercu/[token]/page.tsx:92:    payload: parsed as DonneesEpreuve,
+app/(apercu)/apercu/[token]/page.tsx:93:    mode: "formatif",
+app/(apercu)/apercu/[token]/page.tsx:94:    estCorrige: false,
+app/(apercu)/apercu/[token]/page.tsx:95:  };
+app/(apercu)/apercu/[token]/page.tsx:96:}
+app/(apercu)/apercu/[token]/page.tsx:97:
+app/(apercu)/apercu/[token]/page.tsx:98:export default async function ApercuPage({ params }: PageProps) {
+
+app/(apercu)/apercu/[token]/page.tsx:100:
+app/(apercu)/apercu/[token]/page.tsx:101:  const verification = verifierTokenDraft(token);
+app/(apercu)/apercu/[token]/page.tsx:102:  if (!verification.valide || !verification.payloadId) {
+app/(apercu)/apercu/[token]/page.tsx:103:    notFound();
+app/(apercu)/apercu/[token]/page.tsx:104:  }
+app/(apercu)/apercu/[token]/page.tsx:105:
+app/(apercu)/apercu/[token]/page.tsx:106:  const raw = await kv.get<string>(`draft:${verification.payloadId}`);
+app/(apercu)/apercu/[token]/page.tsx:107:  if (!raw) {
+app/(apercu)/apercu/[token]/page.tsx:108:    notFound();
+app/(apercu)/apercu/[token]/page.tsx:109:  }
+app/(apercu)/apercu/[token]/page.tsx:110:
+app/(apercu)/apercu/[token]/page.tsx:111:  const data = extraireDonneesKv(raw);
+app/(apercu)/apercu/[token]/page.tsx:112:  const rendu = construireRendu(data);
+app/(apercu)/apercu/[token]/page.tsx:113:
+app/(apercu)/apercu/[token]/page.tsx:114:  if (!rendu.ok) {
+app/(apercu)/apercu/[token]/page.tsx:115:    return (
+app/(apercu)/apercu/[token]/page.tsx:116:      <div style={{ padding: "2rem", fontFamily: "Arial, sans-serif", color: "#c00" }}>
+app/(apercu)/apercu/[token]/page.tsx:117:        <h1>Erreur de pagination</h1>
+app/(apercu)/apercu/[token]/page.tsx:118:        <p>{rendu.erreur.suggestion}</p>
+app/(apercu)/apercu/[token]/page.tsx:119:      </div>
+app/(apercu)/apercu/[token]/page.tsx:120:    );
+app/(apercu)/apercu/[token]/page.tsx:121:  }
+app/(apercu)/apercu/[token]/page.tsx:122:
+app/(apercu)/apercu/[token]/page.tsx:123:  return <ApercuImpression rendu={rendu} />;
+

@@ -15,6 +15,7 @@ import {
 } from "react";
 
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
+import { IconLabel } from "@/lib/fiche/primitives/IconLabel";
 import {
   DOC_MINIATURE_ACTION_MODIFIER,
   DOC_MINIATURE_ACTION_OUVRIR,
@@ -370,9 +371,17 @@ export function DocumentMiniature({
 
       <div className="flex min-w-0 flex-col gap-1.5">
         {niveauxLabel || disciplinesLabel ? (
-          <div className="flex flex-wrap items-center gap-1.5">
-            {niveauxLabel ? <MetaChip icon="school" label={niveauxLabel} /> : null}
-            {disciplinesLabel ? <MetaChip icon="menu_book" label={disciplinesLabel} /> : null}
+          <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold">
+            {niveauxLabel ? (
+              <IconLabel icon="school" className="text-accent">
+                <span className="text-deep">{niveauxLabel}</span>
+              </IconLabel>
+            ) : null}
+            {disciplinesLabel ? (
+              <IconLabel icon="menu_book" className="text-accent">
+                <span className="text-deep">{disciplinesLabel}</span>
+              </IconLabel>
+            ) : null}
           </div>
         ) : null}
 
@@ -418,37 +427,22 @@ export function DocumentMiniature({
               <Link
                 data-miniature-action
                 href={authorHref}
-                className="inline-flex items-center gap-1 hover:text-deep hover:underline"
+                className="hover:text-deep hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
-                <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                  person
-                </span>
-                {DOC_MINIATURE_AUTEUR_PREFIX} {auteurNom}
+                <IconLabel icon="person" label={`${DOC_MINIATURE_AUTEUR_PREFIX} ${auteurNom}`} />
               </Link>
             ) : (
-              <span className="inline-flex items-center gap-1">
-                <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                  person
-                </span>
-                {DOC_MINIATURE_AUTEUR_PREFIX} {auteurNom}
-              </span>
+              <IconLabel icon="person" label={`${DOC_MINIATURE_AUTEUR_PREFIX} ${auteurNom}`} />
             )
           ) : null}
           {showUsage ? (
-            <span className="inline-flex items-center gap-1">
-              <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-                link
-              </span>
-              {formatUsageLabel(document.nb_utilisations)}
-            </span>
+            <IconLabel icon="link" label={formatUsageLabel(document.nb_utilisations)} />
           ) : null}
-          <span className="inline-flex items-center gap-1">
-            <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-              history
-            </span>
-            {DOC_MINIATURE_UPDATED_PREFIX} {formatDate(document.updated_at)}
-          </span>
+          <IconLabel
+            icon="history"
+            label={`${DOC_MINIATURE_UPDATED_PREFIX} ${formatDate(document.updated_at)}`}
+          />
         </div>
       </div>
 
