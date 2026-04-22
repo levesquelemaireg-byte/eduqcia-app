@@ -4,7 +4,7 @@ import { createContext, useContext, type ReactNode } from "react";
 import type { TacheVersionSnapshot } from "@/lib/tache/publish-tache-types";
 
 export type WizardSessionValue = {
-  /** Si défini, publication appelle `update_tae_transaction` pour cette TAÉ. */
+  /** Si défini, publication appelle `update_tache_transaction` pour cette TAÉ. */
   editingTacheId: string | null;
   /** Faux en édition : évite d’écraser `sessionStorage` du parcours « Créer une tâche ». */
   persistSessionDraft: boolean;

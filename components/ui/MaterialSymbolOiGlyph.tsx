@@ -2,7 +2,7 @@ import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils/cn";
 
 type Props = Omit<ComponentPropsWithoutRef<"span">, "children"> & {
-  /** Nom du glyphe Material (ex. `oi.json` → `icone`, `tae.oi.icone`). */
+  /** Nom du glyphe Material (ex. `oi.json` → `icone`, `tache.oi.icone`). */
   glyph: string;
 };
 

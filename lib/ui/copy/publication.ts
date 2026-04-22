@@ -39,9 +39,9 @@ export const TOAST_PUBLICATION_RPC_FOREIGN_KEY =
 export const TOAST_PUBLICATION_RPC_ENUM =
   "La base a refusé une valeur (souvent un aspect de société). Réessayez ou vérifiez les enums PostgreSQL.";
 
-/** RPC `update_tae_transaction` absente sur Supabase — voir `docs/ARCHITECTURE.md` § RPC mise à jour TAÉ */
+/** RPC `update_tache_transaction` absente sur Supabase — voir `docs/ARCHITECTURE.md` § RPC mise à jour TAÉ */
 export const TOAST_PUBLICATION_RPC_FUNCTION_MISSING =
-  "Mise à jour impossible : la fonction SQL update_tae_transaction est absente sur Supabase. Exécutez la migration supabase/migrations/20250325180000_update_tae_transaction.sql (SQL Editor ou supabase db push), puis réessayez.";
+  "Mise à jour impossible : la fonction SQL update_tache_transaction est absente sur Supabase. Exécutez la migration supabase/migrations/20250325180000_update_tae_transaction.sql (SQL Editor ou supabase db push), puis réessayez.";
 
 /** Bouton Publier — infobulle quand les docs sont « complets » mais bloqués (image locale) */
 export const PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE = TOAST_PUBLICATION_DOCUMENT_IMAGE;

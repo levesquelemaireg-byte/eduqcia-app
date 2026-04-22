@@ -2,7 +2,7 @@ import { findComportement, findOi } from "@/lib/tache/blueprint-helpers";
 import type { OiEntryJson } from "@/lib/types/oi";
 
 /**
- * Comportements dont `tae.non_redaction_data` est requis (JSON structuré NR).
+ * Comportements dont `tache.non_redaction_data` est requis (JSON structuré NR).
  * Faire évoluer ce set quand de nouveaux parcours NR partagent ce schéma.
  */
 export const COMPORTEMENT_IDS_REQUISANT_NON_REDACTION_STRUCT = new Set<string>(["1.3"]);
@@ -40,22 +40,22 @@ function isSingletonNumberArrayMatching(ids: unknown, expected: number): boolean
 export function validateTacheImportVsOi(
   oiList: OiEntryJson[],
   snapshot: {
-    tae: TacheImportSnapshotForOiValidation;
+    tache: TacheImportSnapshotForOiValidation;
     documents_new: readonly DocumentImportSnapshot[];
     slots: readonly SlotImportSnapshot[];
     collaborateurs_user_ids: readonly unknown[];
   },
 ): ValidateTacheImportVsOiResult {
   const issues: string[] = [];
-  const { tae } = snapshot;
-  const oi = findOi(oiList, tae.oi_id);
+  const { tache } = snapshot;
+  const oi = findOi(oiList, tache.oi_id);
   if (!oi) {
-    issues.push(`OI inconnue : ${tae.oi_id}.`);
+    issues.push(`OI inconnue : ${tache.oi_id}.`);
     return { ok: false, issues };
   }
-  const comp = findComportement(oi, tae.comportement_id);
+  const comp = findComportement(oi, tache.comportement_id);
   if (!comp) {
-    issues.push(`Comportement ${tae.comportement_id} introuvable pour ${tae.oi_id}.`);
+    issues.push(`Comportement ${tache.comportement_id} introuvable pour ${tache.oi_id}.`);
     return { ok: false, issues };
   }
 
@@ -64,42 +64,42 @@ export function validateTacheImportVsOi(
     snapshot.documents_new.length !== comp.nb_documents
   ) {
     issues.push(
-      `Nombre de documents : attendu ${comp.nb_documents} pour ${tae.oi_id} / ${tae.comportement_id}, reçu ${snapshot.documents_new.length}.`,
+      `Nombre de documents : attendu ${comp.nb_documents} pour ${tache.oi_id} / ${tache.comportement_id}, reçu ${snapshot.documents_new.length}.`,
     );
   }
 
-  if (comp.nb_lignes !== undefined && tae.nb_lignes !== comp.nb_lignes) {
+  if (comp.nb_lignes !== undefined && tache.nb_lignes !== comp.nb_lignes) {
     issues.push(
-      `nb_lignes : attendu ${comp.nb_lignes} pour ${tae.oi_id} / ${tae.comportement_id}, reçu ${String(tae.nb_lignes)}.`,
+      `nb_lignes : attendu ${comp.nb_lignes} pour ${tache.oi_id} / ${tache.comportement_id}, reçu ${String(tache.nb_lignes)}.`,
     );
   }
 
-  const nrRequired = COMPORTEMENT_IDS_REQUISANT_NON_REDACTION_STRUCT.has(tae.comportement_id);
+  const nrRequired = COMPORTEMENT_IDS_REQUISANT_NON_REDACTION_STRUCT.has(tache.comportement_id);
   const hasNr =
-    "non_redaction_data" in tae &&
-    tae.non_redaction_data !== null &&
-    typeof tae.non_redaction_data === "object";
+    "non_redaction_data" in tache &&
+    tache.non_redaction_data !== null &&
+    typeof tache.non_redaction_data === "object";
 
   if (nrRequired && !hasNr) {
     issues.push(
-      `non_redaction_data requis pour le comportement ${tae.comportement_id} (${tae.oi_id}).`,
+      `non_redaction_data requis pour le comportement ${tache.comportement_id} (${tache.oi_id}).`,
     );
   }
   if (!nrRequired && hasNr) {
     issues.push(
-      `non_redaction_data ne doit pas être présent pour ${tae.oi_id} / ${tae.comportement_id}.`,
+      `non_redaction_data ne doit pas être présent pour ${tache.oi_id} / ${tache.comportement_id}.`,
     );
   }
 
   snapshot.documents_new.forEach((d, i) => {
-    if (!isSingletonNumberArrayMatching(d.niveaux_ids, tae.niveau_id)) {
+    if (!isSingletonNumberArrayMatching(d.niveaux_ids, tache.niveau_id)) {
       issues.push(
-        `Document ${i} : niveaux_ids doit être [${tae.niveau_id}] (singleton identique à tae.niveau_id).`,
+        `Document ${i} : niveaux_ids doit être [${tache.niveau_id}] (singleton identique à tache.niveau_id).`,
       );
     }
-    if (!isSingletonNumberArrayMatching(d.disciplines_ids, tae.discipline_id)) {
+    if (!isSingletonNumberArrayMatching(d.disciplines_ids, tache.discipline_id)) {
       issues.push(
-        `Document ${i} : disciplines_ids doit être [${tae.discipline_id}] (singleton identique à tae.discipline_id).`,
+        `Document ${i} : disciplines_ids doit être [${tache.discipline_id}] (singleton identique à tache.discipline_id).`,
       );
     }
   });
@@ -118,7 +118,7 @@ export function validateTacheImportVsOi(
     }
   });
 
-  if (tae.conception_mode === "seul" && snapshot.collaborateurs_user_ids.length > 0) {
+  if (tache.conception_mode === "seul" && snapshot.collaborateurs_user_ids.length > 0) {
     issues.push("conception_mode « seul » : collaborateurs_user_ids doit être [].");
   }
 

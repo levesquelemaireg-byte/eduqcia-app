@@ -20,7 +20,7 @@ describe("classifyPublishRpcError", () => {
     );
   });
 
-  it("défaut → tae_insert", () => {
-    expect(classifyPublishRpcError({ message: "something else" })).toBe("tae_insert");
+  it("défaut → tache_insert", () => {
+    expect(classifyPublishRpcError({ message: "something else" })).toBe("tache_insert");
   });
 });

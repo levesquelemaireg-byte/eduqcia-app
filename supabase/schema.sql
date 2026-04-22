@@ -80,7 +80,7 @@ CREATE TYPE document_categorie_textuelle AS ENUM (
 CREATE TYPE vote_niveau AS ENUM ('1', '2', '3');
 
 CREATE TYPE favori_type AS ENUM (
-  'tae',
+  'tache',
   'document',
   'evaluation'
 );
@@ -268,11 +268,11 @@ CREATE TABLE connaissances (
 );
 
 -- ============================================================
--- TABLE : tae
+-- TABLE : tache
 -- Pas de colonne titre — on utilise consigne directement
 -- ============================================================
 
-CREATE TABLE tae (
+CREATE TABLE tache (
   id                 UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   auteur_id          UUID NOT NULL REFERENCES profiles(id) ON DELETE RESTRICT,
   conception_mode    conception_mode NOT NULL DEFAULT 'seul',
@@ -321,8 +321,8 @@ CREATE TABLE tae (
 
 -- Collaborateurs d'une TAÉ (DOMAIN §11.4 — co-conception)
 -- Collaborateur peut modifier, PAS supprimer
-CREATE TABLE tae_collaborateurs (
-  tae_id   UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+CREATE TABLE tache_collaborateurs (
+  tae_id   UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   user_id  UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   added_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   added_by UUID REFERENCES profiles(id) ON DELETE SET NULL,
@@ -330,8 +330,8 @@ CREATE TABLE tae_collaborateurs (
 );
 
 -- Brouillon wizard « Créer une TAÉ » — snapshot JSON du FormState (une ligne par utilisateur).
--- La ligne `tae` normalisée est réservée au flux publication / banque (SCHEMA.md).
-CREATE TABLE tae_wizard_drafts (
+-- La ligne `tache` normalisée est réservée au flux publication / banque (SCHEMA.md).
+CREATE TABLE tache_wizard_drafts (
   id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id    UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   payload    JSONB NOT NULL,
@@ -339,12 +339,12 @@ CREATE TABLE tae_wizard_drafts (
   UNIQUE (user_id)
 );
 
-CREATE INDEX idx_tae_wizard_drafts_user ON tae_wizard_drafts (user_id);
+CREATE INDEX idx_tache_wizard_drafts_user ON tache_wizard_drafts (user_id);
 
 -- Archive des versions majeures (DOMAIN §9.2)
-CREATE TABLE tae_versions (
+CREATE TABLE tache_versions (
   id                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tae_id            UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+  tae_id            UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   version           INT NOT NULL,
   oi_id             TEXT,
   comportement_id   TEXT,
@@ -401,9 +401,9 @@ COMMENT ON COLUMN documents.annee_normalisee IS
   'Année normalisée (entier, peut être négatif). Comparaisons parcours non rédactionnels OI1.';
 
 -- Liaison TAÉ ↔ Documents avec slots doc_A–D (DOMAIN §4.2 ; D = parcours non rédactionnel)
-CREATE TABLE tae_documents (
+CREATE TABLE tache_documents (
   id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tae_id      UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+  tae_id      UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   document_id UUID NOT NULL REFERENCES documents(id) ON DELETE RESTRICT,
   slot        TEXT NOT NULL CHECK (slot IN ('doc_A', 'doc_B', 'doc_C', 'doc_D')),
   ordre       INT NOT NULL DEFAULT 0,
@@ -417,7 +417,7 @@ CREATE TABLE tae_documents (
 
 CREATE TABLE votes (
   id                     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tae_id                 UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+  tae_id                 UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   tae_version            INT NOT NULL,
   votant_id              UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   rigueur_historique     vote_niveau NOT NULL,
@@ -432,7 +432,7 @@ CREATE TABLE votes (
 CREATE TABLE votes_archives (
   id                     UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   original_vote_id       UUID NOT NULL,
-  tae_id                 UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+  tae_id                 UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   tae_version            INT NOT NULL,
   votant_id              UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   rigueur_historique     vote_niveau NOT NULL,
@@ -443,9 +443,9 @@ CREATE TABLE votes_archives (
 );
 
 -- Tracking des usages — déverrouille le droit de vote (DOMAIN §8.3 + §8.6)
-CREATE TABLE tae_usages (
+CREATE TABLE tache_usages (
   id             UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tae_id         UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+  tae_id         UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   user_id        UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
   pdf_downloaded BOOLEAN NOT NULL DEFAULT FALSE,
   added_to_eval  BOOLEAN NOT NULL DEFAULT FALSE,
@@ -461,7 +461,7 @@ CREATE TABLE tae_usages (
 
 CREATE TABLE commentaires (
   id         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tae_id     UUID NOT NULL REFERENCES tae(id) ON DELETE CASCADE,
+  tae_id     UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   auteur_id  UUID NOT NULL REFERENCES profiles(id) ON DELETE RESTRICT,
   contenu    TEXT NOT NULL,
   is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
@@ -486,10 +486,10 @@ CREATE TABLE evaluations (
 );
 
 -- TAÉ dans une évaluation — ordre drag-and-drop (DOMAIN §10.2)
-CREATE TABLE evaluation_tae (
+CREATE TABLE evaluation_tache (
   id            UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   evaluation_id UUID NOT NULL REFERENCES evaluations(id) ON DELETE CASCADE,
-  tae_id        UUID NOT NULL REFERENCES tae(id) ON DELETE RESTRICT,
+  tae_id        UUID NOT NULL REFERENCES tache(id) ON DELETE RESTRICT,
   ordre         INT NOT NULL DEFAULT 0,
   UNIQUE(evaluation_id, tae_id)
 );
@@ -573,24 +573,24 @@ INSERT INTO comportements (id, oi_id, enonce, nb_documents, outil_evaluation, st
 -- ============================================================
 
 -- Recherche textuelle (banque — DOMAIN §8.2, §8.7)
--- tae : consigne uniquement (pas de titre)
-CREATE INDEX idx_tae_consigne_search_trgm ON tae USING GIN (consigne_search_plain gin_trgm_ops);
+-- tache : consigne uniquement (pas de titre)
+CREATE INDEX idx_tache_consigne_search_trgm ON tache USING GIN (consigne_search_plain gin_trgm_ops);
 CREATE INDEX idx_doc_titre_trgm       ON documents USING GIN (titre gin_trgm_ops);
 CREATE INDEX idx_doc_contenu_trgm     ON documents USING GIN (contenu gin_trgm_ops);
 CREATE INDEX idx_doc_source_trgm      ON documents USING GIN (source_citation gin_trgm_ops);
 CREATE INDEX idx_comm_contenu_trgm    ON commentaires USING GIN (contenu gin_trgm_ops);
 
 -- Filtres banque TAÉ (DOMAIN §8.2)
-CREATE INDEX idx_tae_oi               ON tae (oi_id);
-CREATE INDEX idx_tae_comportement     ON tae (comportement_id);
-CREATE INDEX idx_tae_niveau           ON tae (niveau_id);
-CREATE INDEX idx_tae_discipline       ON tae (discipline_id);
-CREATE INDEX idx_tae_aspects          ON tae USING GIN (aspects_societe);
-CREATE INDEX idx_tae_connaissances    ON tae USING GIN (connaissances_ids);
-CREATE INDEX idx_tae_auteur           ON tae (auteur_id);
-CREATE INDEX idx_tae_published        ON tae (is_published) WHERE is_published = TRUE;
-CREATE INDEX idx_tae_active           ON tae (is_archived)  WHERE is_archived  = FALSE;
-CREATE INDEX idx_tae_version          ON tae (id, version);
+CREATE INDEX idx_tache_oi               ON tache (oi_id);
+CREATE INDEX idx_tache_comportement     ON tache (comportement_id);
+CREATE INDEX idx_tache_niveau           ON tache (niveau_id);
+CREATE INDEX idx_tache_discipline       ON tache (discipline_id);
+CREATE INDEX idx_tache_aspects          ON tache USING GIN (aspects_societe);
+CREATE INDEX idx_tache_connaissances    ON tache USING GIN (connaissances_ids);
+CREATE INDEX idx_tache_auteur           ON tache (auteur_id);
+CREATE INDEX idx_tache_published        ON tache (is_published) WHERE is_published = TRUE;
+CREATE INDEX idx_tache_active           ON tache (is_archived)  WHERE is_archived  = FALSE;
+CREATE INDEX idx_tache_version          ON tache (id, version);
 
 -- Filtres banque documents (DOMAIN §8.7)
 CREATE INDEX idx_doc_type             ON documents (type);
@@ -608,26 +608,26 @@ CREATE INDEX idx_doc_published        ON documents (is_published) WHERE is_publi
 CREATE INDEX idx_doc_source_type      ON documents (source_type);
 
 -- Votes
-CREATE INDEX idx_votes_tae            ON votes (tae_id);
+CREATE INDEX idx_votes_tache            ON votes (tae_id);
 CREATE INDEX idx_votes_votant         ON votes (votant_id);
-CREATE INDEX idx_votes_tae_version    ON votes (tae_id, tae_version);
-CREATE INDEX idx_votes_arch_tae       ON votes_archives (tae_id);
+CREATE INDEX idx_votes_tache_version    ON votes (tae_id, tae_version);
+CREATE INDEX idx_votes_arch_tache       ON votes_archives (tae_id);
 
 -- Usages
-CREATE INDEX idx_usages_tae_user      ON tae_usages (tae_id, user_id);
-CREATE INDEX idx_usages_user          ON tae_usages (user_id);
+CREATE INDEX idx_usages_tache_user      ON tache_usages (tae_id, user_id);
+CREATE INDEX idx_usages_user          ON tache_usages (user_id);
 
 -- Évaluations
 CREATE INDEX idx_eval_auteur          ON evaluations (auteur_id);
-CREATE INDEX idx_eval_tae_ordre       ON evaluation_tae (evaluation_id, ordre);
-CREATE INDEX idx_eval_tae_ref         ON evaluation_tae (tae_id);
+CREATE INDEX idx_eval_tache_ordre       ON evaluation_tache (evaluation_id, ordre);
+CREATE INDEX idx_eval_tache_ref         ON evaluation_tache (tae_id);
 
 -- Favoris
 CREATE INDEX idx_favoris_user         ON favoris (user_id);
 CREATE INDEX idx_favoris_item         ON favoris (type, item_id);
 
 -- Profil : contributions et pivot tables
-CREATE INDEX idx_tae_auteur_published       ON tae (auteur_id, is_published, created_at DESC);
+CREATE INDEX idx_tache_auteur_published       ON tache (auteur_id, is_published, created_at DESC);
 CREATE INDEX idx_documents_auteur_published ON documents (auteur_id, is_published, created_at DESC);
 CREATE INDEX idx_evaluations_auteur_published ON evaluations (auteur_id, is_published, created_at DESC);
 CREATE INDEX idx_profile_disciplines_profile ON profile_disciplines (profile_id);
@@ -638,8 +638,8 @@ CREATE INDEX idx_notif_user_unread    ON notifications (user_id, is_read) WHERE 
 CREATE INDEX idx_notif_created        ON notifications (created_at DESC);
 
 -- Collaborateurs
-CREATE INDEX idx_collab_user          ON tae_collaborateurs (user_id);
-CREATE INDEX idx_collab_tae           ON tae_collaborateurs (tae_id);
+CREATE INDEX idx_collab_user          ON tache_collaborateurs (user_id);
+CREATE INDEX idx_collab_tache           ON tache_collaborateurs (tae_id);
 
 -- Profils
 CREATE INDEX idx_profiles_token       ON profiles (activation_token) WHERE activation_token IS NOT NULL;
@@ -649,12 +649,12 @@ CREATE INDEX idx_profiles_school_id   ON profiles (school_id);
 CREATE INDEX idx_profiles_last_name   ON profiles (last_name);
 
 -- Commentaires
-CREATE INDEX idx_comm_tae             ON commentaires (tae_id, created_at DESC);
+CREATE INDEX idx_comm_tache             ON commentaires (tae_id, created_at DESC);
 CREATE INDEX idx_comm_auteur          ON commentaires (auteur_id);
 
--- tae_documents
-CREATE INDEX idx_tae_docs_tae         ON tae_documents (tae_id, ordre);
-CREATE INDEX idx_tae_docs_document    ON tae_documents (document_id);
+-- tache_documents
+CREATE INDEX idx_tache_docs_tache         ON tache_documents (tae_id, ordre);
+CREATE INDEX idx_tache_docs_document    ON tache_documents (document_id);
 
 -- CD et connaissances
 CREATE INDEX idx_cd_discipline        ON cd (discipline_id);
@@ -673,18 +673,18 @@ ALTER TABLE oi                      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comportements           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE cd                      ENABLE ROW LEVEL SECURITY;
 ALTER TABLE connaissances           ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tae                     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tae_wizard_drafts       ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tae_collaborateurs      ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tae_versions            ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tae_documents           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tache                     ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tache_wizard_drafts       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tache_collaborateurs      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tache_versions            ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tache_documents           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE documents               ENABLE ROW LEVEL SECURITY;
 ALTER TABLE votes                   ENABLE ROW LEVEL SECURITY;
 ALTER TABLE votes_archives          ENABLE ROW LEVEL SECURITY;
-ALTER TABLE tae_usages              ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tache_usages              ENABLE ROW LEVEL SECURITY;
 ALTER TABLE commentaires            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE evaluations             ENABLE ROW LEVEL SECURITY;
-ALTER TABLE evaluation_tae          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE evaluation_tache          ENABLE ROW LEVEL SECURITY;
 ALTER TABLE favoris                 ENABLE ROW LEVEL SECURITY;
 ALTER TABLE notifications           ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profile_disciplines     ENABLE ROW LEVEL SECURITY;
@@ -704,37 +704,37 @@ RETURNS BOOLEAN LANGUAGE sql SECURITY DEFINER STABLE AS $$
   SELECT EXISTS(SELECT 1 FROM profiles WHERE id = auth.uid() AND status = 'active');
 $$;
 
--- Évite la récursion RLS (tae ↔ tae_collaborateurs ↔ tae) lors des sous-requêtes dans les politiques.
-CREATE OR REPLACE FUNCTION auth_can_edit_tae(p_tae_id UUID)
+-- Évite la récursion RLS (tache ↔ tache_collaborateurs ↔ tache) lors des sous-requêtes dans les politiques.
+CREATE OR REPLACE FUNCTION auth_can_edit_tache(p_tae_id UUID)
 RETURNS BOOLEAN LANGUAGE plpgsql SECURITY DEFINER STABLE
 SET search_path = public
 AS $$
 BEGIN
   PERFORM set_config('row_security', 'off', true);
   RETURN EXISTS (
-    SELECT 1 FROM tae WHERE id = p_tae_id AND auteur_id = auth.uid()
+    SELECT 1 FROM tache WHERE id = p_tae_id AND auteur_id = auth.uid()
     UNION ALL
-    SELECT 1 FROM tae_collaborateurs WHERE tae_id = p_tae_id AND user_id = auth.uid()
+    SELECT 1 FROM tache_collaborateurs WHERE tae_id = p_tae_id AND user_id = auth.uid()
   );
 END;
 $$;
 
--- Même principe : lecture des liaisons tae_documents sans réentrer dans tae_select / collab_manage en boucle.
-CREATE OR REPLACE FUNCTION tae_user_can_access_for_document_link(p_tae_id UUID)
+-- Même principe : lecture des liaisons tache_documents sans réentrer dans tache_select / collab_manage en boucle.
+CREATE OR REPLACE FUNCTION tache_user_can_access_for_document_link(p_tae_id UUID)
 RETURNS BOOLEAN LANGUAGE plpgsql SECURITY DEFINER STABLE
 SET search_path = public
 AS $$
 BEGIN
   PERFORM set_config('row_security', 'off', true);
   RETURN EXISTS (
-    SELECT 1 FROM tae t
+    SELECT 1 FROM tache t
     WHERE t.id = p_tae_id
       AND (
         t.is_published
         OR t.auteur_id = auth.uid()
         OR auth_role() IN ('admin', 'conseiller_pedagogique')
         OR EXISTS (
-          SELECT 1 FROM tae_collaborateurs tc
+          SELECT 1 FROM tache_collaborateurs tc
           WHERE tc.tae_id = p_tae_id AND tc.user_id = auth.uid()
         )
       )
@@ -750,13 +750,13 @@ BEGIN
   PERFORM set_config('row_security', 'off', true);
   RETURN (
     EXISTS (
-      SELECT 1 FROM tae_usages
+      SELECT 1 FROM tache_usages
       WHERE tae_id = p_tae_id
         AND user_id = auth.uid()
         AND (pdf_downloaded OR added_to_eval OR favorited)
     )
     AND NOT EXISTS (
-      SELECT 1 FROM tae WHERE id = p_tae_id AND auteur_id = auth.uid()
+      SELECT 1 FROM tache WHERE id = p_tae_id AND auteur_id = auth.uid()
     )
   );
 END;
@@ -804,15 +804,15 @@ CREATE POLICY "ref_admin"  ON connaissances           FOR ALL USING (auth_role()
 CREATE POLICY "ref_admin"  ON email_domains_whitelist FOR ALL USING (auth_role() = 'admin');
 
 -- -------------------------------------------------------
--- RLS : tae
+-- RLS : tache
 -- -------------------------------------------------------
 
--- Lecture sans auth_can_edit_tae() : un SELECT sur tae dans une fonction STABLE
--- invoquée depuis USING peut réactiver tae_select → 42P17 récursion infinie.
-DROP POLICY IF EXISTS "tae_select" ON tae;
+-- Lecture sans auth_can_edit_tache() : un SELECT sur tache dans une fonction STABLE
+-- invoquée depuis USING peut réactiver tache_select → 42P17 récursion infinie.
+DROP POLICY IF EXISTS "tache_select" ON tache;
 
-CREATE POLICY "tae_select"
-  ON tae FOR SELECT
+CREATE POLICY "tache_select"
+  ON tache FOR SELECT
   USING (
     auth_is_active()
     AND (
@@ -820,123 +820,123 @@ CREATE POLICY "tae_select"
       OR auteur_id = auth.uid()
       OR auth_role() IN ('admin', 'conseiller_pedagogique')
       OR EXISTS (
-        SELECT 1 FROM tae_collaborateurs tc
-        WHERE tc.tae_id = tae.id
+        SELECT 1 FROM tache_collaborateurs tc
+        WHERE tc.tae_id = tache.id
           AND tc.user_id = auth.uid()
       )
     )
   );
 
-CREATE POLICY "tae_insert"
-  ON tae FOR INSERT
+CREATE POLICY "tache_insert"
+  ON tache FOR INSERT
   WITH CHECK (auth_is_active() AND auteur_id = auth.uid());
 
-CREATE POLICY "tae_update"
-  ON tae FOR UPDATE
-  USING (auth_can_edit_tae(id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
+CREATE POLICY "tache_update"
+  ON tache FOR UPDATE
+  USING (auth_can_edit_tache(id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
 
 -- Auteur seulement peut supprimer (DOMAIN §11.4 — collaborateur interdit)
-CREATE POLICY "tae_delete"
-  ON tae FOR DELETE
+CREATE POLICY "tache_delete"
+  ON tache FOR DELETE
   USING (auteur_id = auth.uid() OR auth_role() = 'admin');
 
 -- -------------------------------------------------------
--- RLS : tae_wizard_drafts (brouillon création — utilisateur connecté uniquement)
+-- RLS : tache_wizard_drafts (brouillon création — utilisateur connecté uniquement)
 -- -------------------------------------------------------
 
-CREATE POLICY "tae_wizard_drafts_select_own"
-  ON tae_wizard_drafts FOR SELECT
+CREATE POLICY "tache_wizard_drafts_select_own"
+  ON tache_wizard_drafts FOR SELECT
   USING (auth_is_active() AND user_id = auth.uid());
 
-CREATE POLICY "tae_wizard_drafts_insert_own"
-  ON tae_wizard_drafts FOR INSERT
+CREATE POLICY "tache_wizard_drafts_insert_own"
+  ON tache_wizard_drafts FOR INSERT
   WITH CHECK (auth_is_active() AND user_id = auth.uid());
 
-CREATE POLICY "tae_wizard_drafts_update_own"
-  ON tae_wizard_drafts FOR UPDATE
+CREATE POLICY "tache_wizard_drafts_update_own"
+  ON tache_wizard_drafts FOR UPDATE
   USING (auth_is_active() AND user_id = auth.uid())
   WITH CHECK (auth_is_active() AND user_id = auth.uid());
 
-CREATE POLICY "tae_wizard_drafts_delete_own"
-  ON tae_wizard_drafts FOR DELETE
+CREATE POLICY "tache_wizard_drafts_delete_own"
+  ON tache_wizard_drafts FOR DELETE
   USING (auth_is_active() AND user_id = auth.uid());
 
 -- -------------------------------------------------------
--- RLS : tae_collaborateurs
+-- RLS : tache_collaborateurs
 -- -------------------------------------------------------
 
 CREATE POLICY "collab_select"
-  ON tae_collaborateurs FOR SELECT
+  ON tache_collaborateurs FOR SELECT
   USING (auth_is_active());
 
--- FOR ALL + SELECT réévaluait EXISTS (… FROM tae …) pendant le sous-SELECT sur
--- tae_collaborateurs dans tae_select → 42P17. Réservé aux écritures.
-DROP POLICY IF EXISTS "collab_manage" ON tae_collaborateurs;
+-- FOR ALL + SELECT réévaluait EXISTS (… FROM tache …) pendant le sous-SELECT sur
+-- tache_collaborateurs dans tache_select → 42P17. Réservé aux écritures.
+DROP POLICY IF EXISTS "collab_manage" ON tache_collaborateurs;
 
 CREATE POLICY "collab_manage_insert"
-  ON tae_collaborateurs FOR INSERT
+  ON tache_collaborateurs FOR INSERT
   WITH CHECK (
-    EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
     OR auth_role() = 'admin'
   );
 
 CREATE POLICY "collab_manage_update"
-  ON tae_collaborateurs FOR UPDATE
+  ON tache_collaborateurs FOR UPDATE
   USING (
-    EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
     OR auth_role() = 'admin'
   )
   WITH CHECK (
-    EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
     OR auth_role() = 'admin'
   );
 
 CREATE POLICY "collab_manage_delete"
-  ON tae_collaborateurs FOR DELETE
+  ON tache_collaborateurs FOR DELETE
   USING (
-    EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
     OR auth_role() = 'admin'
   );
 
 -- -------------------------------------------------------
--- RLS : tae_versions
+-- RLS : tache_versions
 -- -------------------------------------------------------
 
-CREATE POLICY "tae_versions_select"
-  ON tae_versions FOR SELECT
+CREATE POLICY "tache_versions_select"
+  ON tache_versions FOR SELECT
   USING (
     auth_is_active()
     AND (
-      EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+      EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
       OR auth_role() IN ('admin', 'conseiller_pedagogique')
     )
   );
 
 -- -------------------------------------------------------
--- RLS : tae_documents
+-- RLS : tache_documents
 -- -------------------------------------------------------
 
-DROP POLICY IF EXISTS "tae_docs_select" ON tae_documents;
-CREATE POLICY "tae_docs_select"
-  ON tae_documents FOR SELECT
+DROP POLICY IF EXISTS "tache_docs_select" ON tache_documents;
+CREATE POLICY "tache_docs_select"
+  ON tache_documents FOR SELECT
   USING (
     auth_is_active()
-    AND tae_user_can_access_for_document_link(tae_id)
+    AND tache_user_can_access_for_document_link(tae_id)
   );
 
-CREATE POLICY "tae_docs_insert"
-  ON tae_documents FOR INSERT
-  WITH CHECK (auth_can_edit_tae(tae_id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
+CREATE POLICY "tache_docs_insert"
+  ON tache_documents FOR INSERT
+  WITH CHECK (auth_can_edit_tache(tae_id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
 
-CREATE POLICY "tae_docs_update"
-  ON tae_documents FOR UPDATE
-  USING (auth_can_edit_tae(tae_id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
+CREATE POLICY "tache_docs_update"
+  ON tache_documents FOR UPDATE
+  USING (auth_can_edit_tache(tae_id) OR auth_role() IN ('admin', 'conseiller_pedagogique'));
 
 -- DELETE : auteur uniquement — DOMAIN §11.4 (collaborateur interdit)
-CREATE POLICY "tae_docs_delete"
-  ON tae_documents FOR DELETE
+CREATE POLICY "tache_docs_delete"
+  ON tache_documents FOR DELETE
   USING (
-    EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
     OR auth_role() = 'admin'
   );
 
@@ -1003,19 +1003,19 @@ CREATE POLICY "votes_arch_select"
   USING (
     votant_id = auth.uid()
     OR auth_role() IN ('admin', 'conseiller_pedagogique')
-    OR EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND auteur_id = auth.uid())
+    OR EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND auteur_id = auth.uid())
   );
 
 -- -------------------------------------------------------
--- RLS : tae_usages
+-- RLS : tache_usages
 -- -------------------------------------------------------
 
 CREATE POLICY "usages_select"
-  ON tae_usages FOR SELECT
+  ON tache_usages FOR SELECT
   USING (user_id = auth.uid() OR auth_role() IN ('admin', 'conseiller_pedagogique'));
 
 CREATE POLICY "usages_write"
-  ON tae_usages FOR ALL
+  ON tache_usages FOR ALL
   USING  (user_id = auth.uid() OR auth_role() = 'admin')
   WITH CHECK (user_id = auth.uid() OR auth_role() = 'admin');
 
@@ -1028,7 +1028,7 @@ CREATE POLICY "comm_select"
   USING (
     auth_is_active()
     AND is_deleted = FALSE
-    AND EXISTS (SELECT 1 FROM tae WHERE id = tae_id AND is_published = TRUE)
+    AND EXISTS (SELECT 1 FROM tache WHERE id = tae_id AND is_published = TRUE)
   );
 
 CREATE POLICY "comm_insert"
@@ -1067,11 +1067,11 @@ CREATE POLICY "eval_delete"
   USING (auteur_id = auth.uid() OR auth_role() = 'admin');
 
 -- -------------------------------------------------------
--- RLS : evaluation_tae
+-- RLS : evaluation_tache
 -- -------------------------------------------------------
 
-CREATE POLICY "eval_tae_select"
-  ON evaluation_tae FOR SELECT
+CREATE POLICY "eval_tache_select"
+  ON evaluation_tache FOR SELECT
   USING (
     auth_is_active()
     AND EXISTS (
@@ -1081,8 +1081,8 @@ CREATE POLICY "eval_tae_select"
     )
   );
 
-CREATE POLICY "eval_tae_write"
-  ON evaluation_tae FOR ALL
+CREATE POLICY "eval_tache_write"
+  ON evaluation_tache FOR ALL
   USING (
     EXISTS (
       SELECT 1 FROM evaluations e
@@ -1144,22 +1144,22 @@ CREATE POLICY "profile_niveaux_modify_own"
 -- ============================================================
 
 -- -----------------------------------------------------------
--- bump_tae_version (DOMAIN §9.2)
+-- bump_tache_version (DOMAIN §9.2)
 -- À appeler côté serveur AVANT d'écrire les nouveaux champs majeurs
 -- -----------------------------------------------------------
-CREATE OR REPLACE FUNCTION bump_tae_version(
+CREATE OR REPLACE FUNCTION bump_tache_version(
   p_tae_id        UUID,
   p_trigger_field TEXT
 )
 RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
-  t tae%ROWTYPE;
+  t tache%ROWTYPE;
 BEGIN
-  SELECT * INTO t FROM tae WHERE id = p_tae_id FOR UPDATE;
+  SELECT * INTO t FROM tache WHERE id = p_tae_id FOR UPDATE;
   IF NOT FOUND THEN RAISE EXCEPTION 'TAÉ introuvable : %', p_tae_id; END IF;
 
   -- 1. Archiver la version courante
-  INSERT INTO tae_versions (
+  INSERT INTO tache_versions (
     tae_id, version,
     oi_id, comportement_id, cd_id, connaissances_ids,
     consigne, guidage, archived_by
@@ -1183,7 +1183,7 @@ BEGIN
   DELETE FROM votes WHERE tae_id = p_tae_id;
 
   -- 4. Incrément de version
-  UPDATE tae SET
+  UPDATE tache SET
     version             = version + 1,
     version_updated_at  = NOW(),
     last_major_trigger  = p_trigger_field,
@@ -1203,14 +1203,14 @@ CREATE OR REPLACE FUNCTION inherit_metadata_to_source_doc(
 )
 RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
-  t tae%ROWTYPE;
+  t tache%ROWTYPE;
 BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM documents
     WHERE id = p_document_id AND source_document_id IS NULL
   ) THEN RETURN; END IF;
 
-  SELECT * INTO t FROM tae WHERE id = p_tae_id;
+  SELECT * INTO t FROM tache WHERE id = p_tae_id;
 
   UPDATE documents SET
     niveaux_ids       = ARRAY(
@@ -1231,10 +1231,10 @@ END;
 $$;
 
 -- -----------------------------------------------------------
--- record_tae_usage (DOMAIN §8.3 + §8.6)
+-- record_tache_usage (DOMAIN §8.3 + §8.6)
 -- Déverrouille le droit de vote (OR cumulatif — jamais de régression)
 -- -----------------------------------------------------------
-CREATE OR REPLACE FUNCTION record_tae_usage(
+CREATE OR REPLACE FUNCTION record_tache_usage(
   p_tae_id         UUID,
   p_pdf_downloaded BOOLEAN DEFAULT FALSE,
   p_added_to_eval  BOOLEAN DEFAULT FALSE,
@@ -1242,12 +1242,12 @@ CREATE OR REPLACE FUNCTION record_tae_usage(
 )
 RETURNS VOID LANGUAGE plpgsql SECURITY DEFINER AS $$
 BEGIN
-  INSERT INTO tae_usages (tae_id, user_id, pdf_downloaded, added_to_eval, favorited)
+  INSERT INTO tache_usages (tae_id, user_id, pdf_downloaded, added_to_eval, favorited)
   VALUES (p_tae_id, auth.uid(), p_pdf_downloaded, p_added_to_eval, p_favorited)
   ON CONFLICT (tae_id, user_id) DO UPDATE SET
-    pdf_downloaded = tae_usages.pdf_downloaded OR EXCLUDED.pdf_downloaded,
-    added_to_eval  = tae_usages.added_to_eval  OR EXCLUDED.added_to_eval,
-    favorited      = tae_usages.favorited      OR EXCLUDED.favorited,
+    pdf_downloaded = tache_usages.pdf_downloaded OR EXCLUDED.pdf_downloaded,
+    added_to_eval  = tache_usages.added_to_eval  OR EXCLUDED.added_to_eval,
+    favorited      = tache_usages.favorited      OR EXCLUDED.favorited,
     updated_at     = NOW();
 END;
 $$;
@@ -1277,19 +1277,19 @@ BEGIN NEW.updated_at = NOW(); RETURN NEW; END;
 $$;
 
 CREATE TRIGGER trg_profiles_updated_at     BEFORE UPDATE ON profiles     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-CREATE TRIGGER trg_tae_updated_at          BEFORE UPDATE ON tae          FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER trg_tache_updated_at          BEFORE UPDATE ON tache          FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TRIGGER trg_documents_updated_at    BEFORE UPDATE ON documents    FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TRIGGER trg_votes_updated_at        BEFORE UPDATE ON votes        FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TRIGGER trg_evaluations_updated_at  BEFORE UPDATE ON evaluations  FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TRIGGER trg_commentaires_updated_at BEFORE UPDATE ON commentaires FOR EACH ROW EXECUTE FUNCTION set_updated_at();
-CREATE TRIGGER trg_tae_usages_updated_at   BEFORE UPDATE ON tae_usages   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+CREATE TRIGGER trg_tache_usages_updated_at   BEFORE UPDATE ON tache_usages   FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 
 -- Favori TAÉ = usage → déverrouille le vote (DOMAIN §8.6)
 CREATE OR REPLACE FUNCTION sync_usage_on_favori()
 RETURNS TRIGGER LANGUAGE plpgsql SECURITY DEFINER AS $$
 BEGIN
-  IF NEW.type = 'tae' THEN
-    PERFORM record_tae_usage(NEW.item_id, FALSE, FALSE, TRUE);
+  IF NEW.type = 'tache' THEN
+    PERFORM record_tache_usage(NEW.item_id, FALSE, FALSE, TRUE);
   END IF;
   RETURN NEW;
 END;
@@ -1309,7 +1309,7 @@ BEGIN
     RAISE EXCEPTION 'Non autorisé';
   END IF;
 
-  DELETE FROM tae WHERE auteur_id = p_user_id AND is_published = false;
+  DELETE FROM tache WHERE auteur_id = p_user_id AND is_published = false;
   DELETE FROM documents WHERE auteur_id = p_user_id AND is_published = false;
   DELETE FROM evaluations WHERE auteur_id = p_user_id AND is_published = false;
 
@@ -1372,13 +1372,13 @@ SELECT
   ROUND(AVG(v.alignement_ministeriel::TEXT::INT), 2) AS alignement_avg,
   COUNT(*) AS total_votants
 FROM votes v
-JOIN tae t ON t.id = v.tae_id
+JOIN tache t ON t.id = v.tae_id
 GROUP BY v.tae_id, v.tae_version, t.auteur_id;
 
 -- Banque TAÉ publiées
--- apercu = consigne tronquée à 80 caractères (pas de colonne titre sur tae)
+-- apercu = consigne tronquée à 80 caractères (pas de colonne titre sur tache)
 -- security_invoker (PG15+) : RLS / droits du **requérant**, pas du propriétaire de la vue (évite l’alerte Supabase « SECURITY DEFINER » sur les vues).
-CREATE OR REPLACE VIEW banque_tae
+CREATE OR REPLACE VIEW banque_tache
 WITH (security_invoker = true)
 AS
 SELECT
@@ -1393,7 +1393,7 @@ SELECT
   (
     COALESCE(vc.total_votants, 0)
     + COALESCE(
-      (SELECT COUNT(*)::int FROM evaluation_tae et WHERE et.tae_id = t.id),
+      (SELECT COUNT(*)::int FROM evaluation_tache et WHERE et.tae_id = t.id),
       0
     )
   )::int                            AS bank_popularity_score,
@@ -1419,7 +1419,7 @@ SELECT
   vc.rigueur_n1,    vc.rigueur_n2,    vc.rigueur_n3,
   vc.clarte_n1,     vc.clarte_n2,     vc.clarte_n3,
   vc.alignement_n1, vc.alignement_n2, vc.alignement_n3
-FROM tae t
+FROM tache t
 JOIN profiles p           ON p.id  = t.auteur_id
 LEFT JOIN schools s       ON s.id  = p.school_id
 LEFT JOIN css cs          ON cs.id = s.css_id
@@ -1436,7 +1436,7 @@ WHERE t.is_published = TRUE
 -- Appelée depuis les RPC publish / update (SECURITY DEFINER, RLS off dans le parent).
 -- ============================================================
 
-CREATE OR REPLACE FUNCTION apply_tae_collaborateurs_from_payload(
+CREATE OR REPLACE FUNCTION apply_tache_collaborateurs_from_payload(
   p_tae_id uuid,
   p_auteur uuid,
   p_payload jsonb,
@@ -1454,10 +1454,10 @@ DECLARE
   v_text text;
 BEGIN
   IF p_delete_existing THEN
-    DELETE FROM tae_collaborateurs WHERE tae_id = p_tae_id;
+    DELETE FROM tache_collaborateurs WHERE tae_id = p_tae_id;
   END IF;
 
-  IF (p_payload->'tae'->>'conception_mode') IS DISTINCT FROM 'equipe' THEN
+  IF (p_payload->'tache'->>'conception_mode') IS DISTINCT FROM 'equipe' THEN
     RETURN;
   END IF;
 
@@ -1482,7 +1482,7 @@ BEGIN
       CONTINUE;
     END IF;
     IF EXISTS (SELECT 1 FROM profiles WHERE id = v_uid AND status = 'active') THEN
-      INSERT INTO tae_collaborateurs (tae_id, user_id, added_by)
+      INSERT INTO tache_collaborateurs (tae_id, user_id, added_by)
       VALUES (p_tae_id, v_uid, p_auteur)
       ON CONFLICT (tae_id, user_id) DO NOTHING;
     END IF;
@@ -1492,15 +1492,15 @@ $$;
 
 -- ============================================================
 -- RPC : publication TAÉ (transaction atomique)
--- Appelée depuis Next.js : supabase.rpc('publish_tae_transaction', { p_payload: <objet> })
--- Voir docs/SCHEMA.md — « Fonction RPC : publish_tae_transaction ».
+-- Appelée depuis Next.js : supabase.rpc('publish_tache_transaction', { p_payload: <objet> })
+-- Voir docs/SCHEMA.md — « Fonction RPC : publish_tache_transaction ».
 -- ============================================================
 
-CREATE OR REPLACE FUNCTION publish_tae_transaction(p_payload jsonb)
+CREATE OR REPLACE FUNCTION publish_tache_transaction(p_payload jsonb)
 RETURNS uuid
 LANGUAGE plpgsql
 -- SECURITY DEFINER + désactivation RLS dans le corps : évite la récursion infinie entre
--- tae_docs_write → auth_can_edit_tae() → SELECT sur tae → tae_select / collaborateurs.
+-- tache_docs_write → auth_can_edit_tache() → SELECT sur tache → tache_select / collaborateurs.
 -- L’auteur est forcé à auth.uid() avant toute écriture.
 SECURITY DEFINER
 SET search_path = public
@@ -1522,11 +1522,11 @@ DECLARE
 BEGIN
   v_auteur := (p_payload->>'auteur_id')::uuid;
   IF v_auteur IS NULL OR v_auteur <> auth.uid() THEN
-    RAISE EXCEPTION 'publish_tae_transaction: auteur_id invalide';
+    RAISE EXCEPTION 'publish_tache_transaction: auteur_id invalide';
   END IF;
 
-  IF NOT (p_payload ? 'tae' AND p_payload ? 'documents_new' AND p_payload ? 'slots') THEN
-    RAISE EXCEPTION 'publish_tae_transaction: payload incomplet';
+  IF NOT (p_payload ? 'tache' AND p_payload ? 'documents_new' AND p_payload ? 'slots') THEN
+    RAISE EXCEPTION 'publish_tache_transaction: payload incomplet';
   END IF;
 
   -- Réservé au rôle propriétaire de la fonction (postgres) : contourne RLS pour cette transaction locale uniquement.
@@ -1534,15 +1534,15 @@ BEGIN
 
   SELECT COALESCE(
     (SELECT array_agg((value #>> '{}')::aspect_societe)
-     FROM jsonb_array_elements(p_payload->'tae'->'aspects_societe') AS t(value)),
+     FROM jsonb_array_elements(p_payload->'tache'->'aspects_societe') AS t(value)),
     ARRAY[]::aspect_societe[]
   )
   INTO v_aspects;
 
   v_cd_id := CASE
-    WHEN NOT (p_payload->'tae' ? 'cd_id') THEN NULL
-    WHEN jsonb_typeof(p_payload->'tae'->'cd_id') = 'null' THEN NULL
-    ELSE (p_payload->'tae'->'cd_id')::text::int
+    WHEN NOT (p_payload->'tache' ? 'cd_id') THEN NULL
+    WHEN jsonb_typeof(p_payload->'tache'->'cd_id') = 'null' THEN NULL
+    ELSE (p_payload->'tache'->'cd_id')::text::int
   END;
 
   v_len := COALESCE(jsonb_array_length(p_payload->'documents_new'), 0);
@@ -1611,7 +1611,7 @@ BEGIN
     v_new_ids := array_append(v_new_ids, v_doc_id);
   END LOOP;
 
-  INSERT INTO tae (
+  INSERT INTO tache (
     auteur_id,
     conception_mode,
     oi_id,
@@ -1630,29 +1630,29 @@ BEGIN
     updated_at
   ) VALUES (
     v_auteur,
-    (p_payload->'tae'->>'conception_mode')::conception_mode,
-    p_payload->'tae'->>'oi_id',
-    p_payload->'tae'->>'comportement_id',
+    (p_payload->'tache'->>'conception_mode')::conception_mode,
+    p_payload->'tache'->>'oi_id',
+    p_payload->'tache'->>'comportement_id',
     v_cd_id,
     COALESCE(
-      ARRAY(SELECT (jsonb_array_elements(p_payload->'tae'->'connaissances_ids'))::text::int),
+      ARRAY(SELECT (jsonb_array_elements(p_payload->'tache'->'connaissances_ids'))::text::int),
       ARRAY[]::int[]
     ),
-    p_payload->'tae'->>'consigne',
-    NULLIF(p_payload->'tae'->>'guidage', ''),
-    NULLIF(p_payload->'tae'->>'corrige', ''),
+    p_payload->'tache'->>'consigne',
+    NULLIF(p_payload->'tache'->>'guidage', ''),
+    NULLIF(p_payload->'tache'->>'corrige', ''),
     CASE
-      WHEN NOT (p_payload->'tae' ? 'nb_lignes') THEN NULL
-      WHEN jsonb_typeof(p_payload->'tae'->'nb_lignes') = 'null' THEN NULL
-      ELSE (p_payload->'tae'->'nb_lignes')::text::int
+      WHEN NOT (p_payload->'tache' ? 'nb_lignes') THEN NULL
+      WHEN jsonb_typeof(p_payload->'tache'->'nb_lignes') = 'null' THEN NULL
+      ELSE (p_payload->'tache'->'nb_lignes')::text::int
     END,
     CASE
-      WHEN NOT (p_payload->'tae' ? 'non_redaction_data') THEN NULL
-      WHEN jsonb_typeof(p_payload->'tae'->'non_redaction_data') = 'null' THEN NULL
-      ELSE (p_payload->'tae'->'non_redaction_data')::jsonb
+      WHEN NOT (p_payload->'tache' ? 'non_redaction_data') THEN NULL
+      WHEN jsonb_typeof(p_payload->'tache'->'non_redaction_data') = 'null' THEN NULL
+      ELSE (p_payload->'tache'->'non_redaction_data')::jsonb
     END,
-    (p_payload->'tae'->>'niveau_id')::int,
-    (p_payload->'tae'->>'discipline_id')::int,
+    (p_payload->'tache'->>'niveau_id')::int,
+    (p_payload->'tache'->>'discipline_id')::int,
     v_aspects,
     TRUE,
     NOW()
@@ -1661,7 +1661,7 @@ BEGIN
 
   v_nb := jsonb_array_length(p_payload->'slots');
   IF v_nb IS NULL OR v_nb < 1 THEN
-    RAISE EXCEPTION 'publish_tae_transaction: slots requis';
+    RAISE EXCEPTION 'publish_tache_transaction: slots requis';
   END IF;
 
   FOR j IN 0..(v_nb - 1) LOOP
@@ -1671,10 +1671,10 @@ BEGIN
     ELSIF (v_slot->>'mode') = 'create' THEN
       v_doc_ref := v_new_ids[(v_slot->>'newIndex')::int + 1];
     ELSE
-      RAISE EXCEPTION 'publish_tae_transaction: mode de slot invalide';
+      RAISE EXCEPTION 'publish_tache_transaction: mode de slot invalide';
     END IF;
 
-    INSERT INTO tae_documents (tae_id, document_id, slot, ordre)
+    INSERT INTO tache_documents (tae_id, document_id, slot, ordre)
     VALUES (
       v_tae_id,
       v_doc_ref,
@@ -1683,10 +1683,10 @@ BEGIN
     );
   END LOOP;
 
-  PERFORM apply_tae_collaborateurs_from_payload(v_tae_id, v_auteur, p_payload, FALSE);
-  IF (p_payload->'tae'->>'conception_mode') = 'equipe' THEN
-    IF NOT EXISTS (SELECT 1 FROM tae_collaborateurs WHERE tae_id = v_tae_id) THEN
-      RAISE EXCEPTION 'publish_tae_transaction: collaborateur actif requis (mode équipe)';
+  PERFORM apply_tache_collaborateurs_from_payload(v_tae_id, v_auteur, p_payload, FALSE);
+  IF (p_payload->'tache'->>'conception_mode') = 'equipe' THEN
+    IF NOT EXISTS (SELECT 1 FROM tache_collaborateurs WHERE tae_id = v_tae_id) THEN
+      RAISE EXCEPTION 'publish_tache_transaction: collaborateur actif requis (mode équipe)';
     END IF;
   END IF;
 
@@ -1695,23 +1695,23 @@ BEGIN
     SELECT 1
     FROM information_schema.tables
     WHERE table_schema = 'public'
-      AND table_name = 'tae_wizard_drafts'
+      AND table_name = 'tache_wizard_drafts'
   ) THEN
-    DELETE FROM tae_wizard_drafts WHERE user_id = v_auteur;
+    DELETE FROM tache_wizard_drafts WHERE user_id = v_auteur;
   END IF;
 
   RETURN v_tae_id;
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION publish_tae_transaction(jsonb) TO authenticated;
-GRANT EXECUTE ON FUNCTION publish_tae_transaction(jsonb) TO service_role;
+GRANT EXECUTE ON FUNCTION publish_tache_transaction(jsonb) TO authenticated;
+GRANT EXECUTE ON FUNCTION publish_tache_transaction(jsonb) TO service_role;
 
 -- ============================================================
--- RPC : mise à jour TAÉ (même forme de payload que publish_tae_transaction)
+-- RPC : mise à jour TAÉ (même forme de payload que publish_tache_transaction)
 -- ============================================================
 
-CREATE OR REPLACE FUNCTION update_tae_transaction(p_tae_id uuid, p_payload jsonb)
+CREATE OR REPLACE FUNCTION update_tache_transaction(p_tae_id uuid, p_payload jsonb)
 RETURNS uuid
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -1743,34 +1743,34 @@ DECLARE
 BEGIN
   v_auteur := (p_payload->>'auteur_id')::uuid;
   IF v_auteur IS NULL OR v_auteur <> auth.uid() THEN
-    RAISE EXCEPTION 'update_tae_transaction: auteur_id invalide';
+    RAISE EXCEPTION 'update_tache_transaction: auteur_id invalide';
   END IF;
 
-  IF NOT (p_payload ? 'tae' AND p_payload ? 'documents_new' AND p_payload ? 'slots') THEN
-    RAISE EXCEPTION 'update_tae_transaction: payload incomplet';
+  IF NOT (p_payload ? 'tache' AND p_payload ? 'documents_new' AND p_payload ? 'slots') THEN
+    RAISE EXCEPTION 'update_tache_transaction: payload incomplet';
   END IF;
 
-  IF NOT EXISTS (SELECT 1 FROM tae WHERE id = p_tae_id AND auteur_id = v_auteur) THEN
-    RAISE EXCEPTION 'update_tae_transaction: tae introuvable ou interdit';
+  IF NOT EXISTS (SELECT 1 FROM tache WHERE id = p_tae_id AND auteur_id = v_auteur) THEN
+    RAISE EXCEPTION 'update_tache_transaction: tache introuvable ou interdit';
   END IF;
 
-  IF EXISTS (SELECT 1 FROM evaluation_tae WHERE tae_id = p_tae_id) THEN
-    RAISE EXCEPTION 'update_tae_transaction: tae utilisée dans une épreuve';
+  IF EXISTS (SELECT 1 FROM evaluation_tache WHERE tae_id = p_tae_id) THEN
+    RAISE EXCEPTION 'update_tache_transaction: tache utilisée dans une épreuve';
   END IF;
 
   PERFORM set_config('row_security', 'off', true);
 
   SELECT COALESCE(
     (SELECT array_agg((value #>> '{}')::aspect_societe)
-     FROM jsonb_array_elements(p_payload->'tae'->'aspects_societe') AS t(value)),
+     FROM jsonb_array_elements(p_payload->'tache'->'aspects_societe') AS t(value)),
     ARRAY[]::aspect_societe[]
   )
   INTO v_aspects;
 
   v_cd_id := CASE
-    WHEN NOT (p_payload->'tae' ? 'cd_id') THEN NULL
-    WHEN jsonb_typeof(p_payload->'tae'->'cd_id') = 'null' THEN NULL
-    ELSE (p_payload->'tae'->'cd_id')::text::int
+    WHEN NOT (p_payload->'tache' ? 'cd_id') THEN NULL
+    WHEN jsonb_typeof(p_payload->'tache'->'cd_id') = 'null' THEN NULL
+    ELSE (p_payload->'tache'->'cd_id')::text::int
   END;
 
   -- --------------------------------------------------------
@@ -1780,23 +1780,23 @@ BEGIN
   -- --------------------------------------------------------
   SELECT oi_id, comportement_id, cd_id, connaissances_ids, niveau_id, discipline_id
   INTO v_cur_oi, v_cur_comp, v_cur_cd, v_cur_conn, v_cur_niveau, v_cur_disc
-  FROM tae WHERE id = p_tae_id;
+  FROM tache WHERE id = p_tae_id;
 
-  IF v_cur_oi IS DISTINCT FROM (p_payload->'tae'->>'oi_id') THEN
+  IF v_cur_oi IS DISTINCT FROM (p_payload->'tache'->>'oi_id') THEN
     v_major_trigger := 'oi_id';
-  ELSIF v_cur_comp IS DISTINCT FROM (p_payload->'tae'->>'comportement_id') THEN
+  ELSIF v_cur_comp IS DISTINCT FROM (p_payload->'tache'->>'comportement_id') THEN
     v_major_trigger := 'comportement_id';
   ELSIF v_cur_cd IS DISTINCT FROM v_cd_id THEN
     v_major_trigger := 'cd_id';
-  ELSIF v_cur_niveau IS DISTINCT FROM (p_payload->'tae'->>'niveau_id')::int THEN
+  ELSIF v_cur_niveau IS DISTINCT FROM (p_payload->'tache'->>'niveau_id')::int THEN
     v_major_trigger := 'niveau_id';
-  ELSIF v_cur_disc IS DISTINCT FROM (p_payload->'tae'->>'discipline_id')::int THEN
+  ELSIF v_cur_disc IS DISTINCT FROM (p_payload->'tache'->>'discipline_id')::int THEN
     v_major_trigger := 'discipline_id';
   ELSIF
     ARRAY(SELECT unnest(v_cur_conn) ORDER BY 1)
     IS DISTINCT FROM
     ARRAY(
-      SELECT (jsonb_array_elements(p_payload->'tae'->'connaissances_ids'))::text::int
+      SELECT (jsonb_array_elements(p_payload->'tache'->'connaissances_ids'))::text::int
       ORDER BY 1
     )
   THEN
@@ -1812,7 +1812,7 @@ BEGIN
       v_major_trigger := 'documents';
     ELSE
       v_cur_doc_ids := ARRAY(
-        SELECT document_id FROM tae_documents WHERE tae_id = p_tae_id ORDER BY document_id
+        SELECT document_id FROM tache_documents WHERE tae_id = p_tae_id ORDER BY document_id
       );
       v_new_doc_ids := ARRAY(
         SELECT (s->>'document_id')::uuid
@@ -1827,7 +1827,7 @@ BEGIN
   END IF;
 
   IF v_major_trigger IS NOT NULL THEN
-    PERFORM bump_tae_version(p_tae_id, v_major_trigger);
+    PERFORM bump_tache_version(p_tae_id, v_major_trigger);
   END IF;
 
   v_len := COALESCE(jsonb_array_length(p_payload->'documents_new'), 0);
@@ -1896,39 +1896,39 @@ BEGIN
     v_new_ids := array_append(v_new_ids, v_doc_id);
   END LOOP;
 
-  UPDATE tae SET
-    conception_mode = (p_payload->'tae'->>'conception_mode')::conception_mode,
-    oi_id = p_payload->'tae'->>'oi_id',
-    comportement_id = p_payload->'tae'->>'comportement_id',
+  UPDATE tache SET
+    conception_mode = (p_payload->'tache'->>'conception_mode')::conception_mode,
+    oi_id = p_payload->'tache'->>'oi_id',
+    comportement_id = p_payload->'tache'->>'comportement_id',
     cd_id = v_cd_id,
     connaissances_ids = COALESCE(
-      ARRAY(SELECT (jsonb_array_elements(p_payload->'tae'->'connaissances_ids'))::text::int),
+      ARRAY(SELECT (jsonb_array_elements(p_payload->'tache'->'connaissances_ids'))::text::int),
       ARRAY[]::int[]
     ),
-    consigne = p_payload->'tae'->>'consigne',
-    guidage = NULLIF(p_payload->'tae'->>'guidage', ''),
-    corrige = NULLIF(p_payload->'tae'->>'corrige', ''),
+    consigne = p_payload->'tache'->>'consigne',
+    guidage = NULLIF(p_payload->'tache'->>'guidage', ''),
+    corrige = NULLIF(p_payload->'tache'->>'corrige', ''),
     nb_lignes = CASE
-      WHEN NOT (p_payload->'tae' ? 'nb_lignes') THEN NULL
-      WHEN jsonb_typeof(p_payload->'tae'->'nb_lignes') = 'null' THEN NULL
-      ELSE (p_payload->'tae'->'nb_lignes')::text::int
+      WHEN NOT (p_payload->'tache' ? 'nb_lignes') THEN NULL
+      WHEN jsonb_typeof(p_payload->'tache'->'nb_lignes') = 'null' THEN NULL
+      ELSE (p_payload->'tache'->'nb_lignes')::text::int
     END,
     non_redaction_data = CASE
-      WHEN p_payload->'tae' ? 'non_redaction_data'
-      THEN (p_payload->'tae'->'non_redaction_data')::jsonb
-      ELSE tae.non_redaction_data
+      WHEN p_payload->'tache' ? 'non_redaction_data'
+      THEN (p_payload->'tache'->'non_redaction_data')::jsonb
+      ELSE tache.non_redaction_data
     END,
-    niveau_id = (p_payload->'tae'->>'niveau_id')::int,
-    discipline_id = (p_payload->'tae'->>'discipline_id')::int,
+    niveau_id = (p_payload->'tache'->>'niveau_id')::int,
+    discipline_id = (p_payload->'tache'->>'discipline_id')::int,
     aspects_societe = v_aspects,
     updated_at = NOW()
   WHERE id = p_tae_id;
 
-  DELETE FROM tae_documents WHERE tae_id = p_tae_id;
+  DELETE FROM tache_documents WHERE tae_id = p_tae_id;
 
   v_nb := jsonb_array_length(p_payload->'slots');
   IF v_nb IS NULL OR v_nb < 1 THEN
-    RAISE EXCEPTION 'update_tae_transaction: slots requis';
+    RAISE EXCEPTION 'update_tache_transaction: slots requis';
   END IF;
 
   FOR j IN 0..(v_nb - 1) LOOP
@@ -1938,10 +1938,10 @@ BEGIN
     ELSIF (v_slot->>'mode') = 'create' THEN
       v_doc_ref := v_new_ids[(v_slot->>'newIndex')::int + 1];
     ELSE
-      RAISE EXCEPTION 'update_tae_transaction: mode de slot invalide';
+      RAISE EXCEPTION 'update_tache_transaction: mode de slot invalide';
     END IF;
 
-    INSERT INTO tae_documents (tae_id, document_id, slot, ordre)
+    INSERT INTO tache_documents (tae_id, document_id, slot, ordre)
     VALUES (
       p_tae_id,
       v_doc_ref,
@@ -1950,10 +1950,10 @@ BEGIN
     );
   END LOOP;
 
-  PERFORM apply_tae_collaborateurs_from_payload(p_tae_id, v_auteur, p_payload, TRUE);
-  IF (p_payload->'tae'->>'conception_mode') = 'equipe' THEN
-    IF NOT EXISTS (SELECT 1 FROM tae_collaborateurs WHERE tae_id = p_tae_id) THEN
-      RAISE EXCEPTION 'update_tae_transaction: collaborateur actif requis (mode équipe)';
+  PERFORM apply_tache_collaborateurs_from_payload(p_tae_id, v_auteur, p_payload, TRUE);
+  IF (p_payload->'tache'->>'conception_mode') = 'equipe' THEN
+    IF NOT EXISTS (SELECT 1 FROM tache_collaborateurs WHERE tae_id = p_tae_id) THEN
+      RAISE EXCEPTION 'update_tache_transaction: collaborateur actif requis (mode équipe)';
     END IF;
   END IF;
 
@@ -1961,8 +1961,8 @@ BEGIN
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION update_tae_transaction(uuid, jsonb) TO authenticated;
-GRANT EXECUTE ON FUNCTION update_tae_transaction(uuid, jsonb) TO service_role;
+GRANT EXECUTE ON FUNCTION update_tache_transaction(uuid, jsonb) TO authenticated;
+GRANT EXECUTE ON FUNCTION update_tache_transaction(uuid, jsonb) TO service_role;
 
 -- ============================================================
 -- RPC : composition d’épreuve (brouillon / publication) — table `evaluations`
@@ -2030,14 +2030,14 @@ BEGIN
 
   FOREACH v_tae IN ARRAY p_tae_ids LOOP
     IF NOT EXISTS (
-      SELECT 1 FROM tae t
+      SELECT 1 FROM tache t
       WHERE t.id = v_tae
         AND t.is_archived = FALSE
         AND (
           t.is_published = TRUE
           OR t.auteur_id = v_uid
           OR EXISTS (
-            SELECT 1 FROM tae_collaborateurs tc
+            SELECT 1 FROM tache_collaborateurs tc
             WHERE tc.tae_id = t.id AND tc.user_id = v_uid
           )
         )
@@ -2046,11 +2046,11 @@ BEGIN
     END IF;
   END LOOP;
 
-  DELETE FROM evaluation_tae WHERE evaluation_id = v_eval_id;
+  DELETE FROM evaluation_tache WHERE evaluation_id = v_eval_id;
 
   v_ordre := 0;
   FOREACH v_tae IN ARRAY p_tae_ids LOOP
-    INSERT INTO evaluation_tae (evaluation_id, tae_id, ordre)
+    INSERT INTO evaluation_tache (evaluation_id, tae_id, ordre)
     VALUES (v_eval_id, v_tae, v_ordre);
     v_ordre := v_ordre + 1;
   END LOOP;
@@ -2069,8 +2069,8 @@ $$;
 GRANT EXECUTE ON FUNCTION save_evaluation_composition(uuid, text, uuid[], boolean) TO authenticated;
 GRANT EXECUTE ON FUNCTION save_evaluation_composition(uuid, text, uuid[], boolean) TO service_role;
 
-GRANT EXECUTE ON FUNCTION tae_user_can_access_for_document_link(UUID) TO authenticated;
-GRANT EXECUTE ON FUNCTION tae_user_can_access_for_document_link(UUID) TO service_role;
+GRANT EXECUTE ON FUNCTION tache_user_can_access_for_document_link(UUID) TO authenticated;
+GRANT EXECUTE ON FUNCTION tache_user_can_access_for_document_link(UUID) TO service_role;
 
 -- ============================================================
 -- STORAGE : images des documents iconographiques (wizard → publication)
@@ -2091,21 +2091,21 @@ ON CONFLICT (id) DO UPDATE SET
   file_size_limit = EXCLUDED.file_size_limit,
   allowed_mime_types = EXCLUDED.allowed_mime_types;
 
-DROP POLICY IF EXISTS "tae_doc_img_insert_own" ON storage.objects;
-CREATE POLICY "tae_doc_img_insert_own"
+DROP POLICY IF EXISTS "tache_doc_img_insert_own" ON storage.objects;
+CREATE POLICY "tache_doc_img_insert_own"
   ON storage.objects FOR INSERT TO authenticated
   WITH CHECK (
     bucket_id = 'tae-document-images'
     AND name LIKE (auth.uid()::text || '/%')
   );
 
-DROP POLICY IF EXISTS "tae_doc_img_select_public" ON storage.objects;
-CREATE POLICY "tae_doc_img_select_public"
+DROP POLICY IF EXISTS "tache_doc_img_select_public" ON storage.objects;
+CREATE POLICY "tache_doc_img_select_public"
   ON storage.objects FOR SELECT TO public
   USING (bucket_id = 'tae-document-images');
 
-DROP POLICY IF EXISTS "tae_doc_img_delete_own" ON storage.objects;
-CREATE POLICY "tae_doc_img_delete_own"
+DROP POLICY IF EXISTS "tache_doc_img_delete_own" ON storage.objects;
+CREATE POLICY "tache_doc_img_delete_own"
   ON storage.objects FOR DELETE TO authenticated
   USING (
     bucket_id = 'tae-document-images'
@@ -2258,8 +2258,8 @@ BEGIN
     COALESCE(
       (
         SELECT COUNT(DISTINCT td.tae_id)::INT
-        FROM tae_documents td
-        JOIN tae t ON t.id = td.tae_id
+        FROM tache_documents td
+        JOIN tache t ON t.id = td.tae_id
         WHERE td.document_id = d.id
           AND t.is_published = TRUE
       ),

@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
     { data: allDisciplines },
     { data: allNiveaux },
   ] = await Promise.all([
-    supabase.from("tae").select("auteur_id").in("auteur_id", userIds).eq("is_published", true),
+    supabase.from("tache").select("auteur_id").in("auteur_id", userIds).eq("is_published", true),
     supabase
       .from("documents")
       .select("auteur_id")

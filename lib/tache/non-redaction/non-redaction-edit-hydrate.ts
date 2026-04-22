@@ -1,5 +1,5 @@
 /**
- * Réhydratation `bloc5.nonRedaction` depuis `tae.non_redaction_data` à l’édition.
+ * Réhydratation `bloc5.nonRedaction` depuis `tache.non_redaction_data` à l’édition.
  */
 
 import { initialAvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";

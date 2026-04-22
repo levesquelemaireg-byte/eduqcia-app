@@ -18,10 +18,10 @@ export type {
 } from "@/lib/types/upload-tache-document-image";
 
 /** Bucket public — Bloc 4 TAÉ et wizard document autonome. */
-const BUCKET = "tache-document-images";
+const BUCKET = "tae-document-images";
 
 /**
- * Envoie une image de document TAÉ vers Supabase Storage (bucket public `tache-document-images`).
+ * Envoie une image de document TAÉ vers Supabase Storage (bucket public `tae-document-images`).
  * Chemin : `{user_id}/{uuid}.(jpg|png|webp)` — voir `supabase/schema.sql` § Storage.
  */
 export async function uploadTacheDocumentImageAction(

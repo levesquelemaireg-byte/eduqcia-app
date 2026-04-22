@@ -230,10 +230,10 @@ export async function countPublishedUsagesByDocumentIds(
   const map = new Map<string, number>();
   if (documentIds.length === 0) return map;
   const { data, error } = await supabase
-    .from("tae_documents")
-    .select("document_id, tae_id, tae!inner(is_published)")
+    .from("tache_documents")
+    .select("document_id, tae_id, tache!inner(is_published)")
     .in("document_id", documentIds)
-    .eq("tae.is_published", true);
+    .eq("tache.is_published", true);
   if (error || !data) return map;
   const byDoc = new Map<string, Set<string>>();
   for (const row of data as { document_id: string; tae_id: string }[]) {

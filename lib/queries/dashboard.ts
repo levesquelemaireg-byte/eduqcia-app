@@ -33,7 +33,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
 
   const [tachePub, evals, notifs, favs, tacheIdsRes, unpublishedDocsRes] = await Promise.all([
     supabase
-      .from("tae")
+      .from("tache")
       .select("id", { count: "exact", head: true })
       .eq("auteur_id", userId)
       .eq("is_published", true)
@@ -50,7 +50,7 @@ export async function getDashboardStats(userId: string): Promise<DashboardStats>
       .eq("is_read", false),
     supabase.from("favoris").select("id", { count: "exact", head: true }).eq("user_id", userId),
     supabase
-      .from("tae")
+      .from("tache")
       .select("id")
       .eq("auteur_id", userId)
       .eq("is_published", true)

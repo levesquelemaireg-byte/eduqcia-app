@@ -260,7 +260,7 @@ type TacheFormProps = {
   serverDraftObsolete?: boolean;
   /** Hydratation serveur pour `/questions/[id]/edit` (exclusif du flux « Créer » vide). */
   serverInitialState?: TacheFormState | null;
-  /** Si défini, enregistrement via `update_tae_transaction`. */
+  /** Si défini, enregistrement via `update_tache_transaction`. */
   editingTacheId?: string | null;
   /** Snapshot des champs majeurs — détection version avant soumission (`/questions/[id]/edit`). */
   versionSnapshot?: TacheVersionSnapshot | null;

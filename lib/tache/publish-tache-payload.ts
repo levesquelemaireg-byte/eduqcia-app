@@ -1,5 +1,5 @@
 /**
- * Payload `publish_tae_transaction` — lecture `TacheFormState` via `bloc1`…`bloc7` uniquement
+ * Payload `publish_tache_transaction` — lecture `TacheFormState` via `bloc1`…`bloc7` uniquement
  * (contrat RPC inchangé : `consigne`, `guidage`, `corrige`, `aspects_societe`, documents, etc.).
  */
 import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
@@ -206,7 +206,7 @@ export function buildPublishPayload(
 
   return {
     auteur_id: auteurId,
-    tae: {
+    tache: {
       conception_mode: state.bloc1.modeConception === "equipe" ? "equipe" : "seul",
       oi_id: state.bloc2.oiId,
       comportement_id: state.bloc2.comportementId,

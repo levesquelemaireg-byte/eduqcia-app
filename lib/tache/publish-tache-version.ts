@@ -1,7 +1,7 @@
 /**
  * Détection client-side d'une modification majeure (DOMAIN §9.1/9.2).
  * Fonction pure — aucune dépendance Supabase, testable isolément.
- * La RPC `update_tae_transaction` effectue la même détection côté SQL
+ * La RPC `update_tache_transaction` effectue la même détection côté SQL
  * (filet de sécurité atomique) ; cette fonction sert à :
  *   1. Informer le résultat (`wasMajorBump`) sans SELECT supplémentaire post-RPC.
  *   2. Permettre au wizard d'afficher l'avertissement AVANT soumission (couche 4).
@@ -26,17 +26,17 @@ export function detectVersionTrigger(
   snapshot: TacheVersionSnapshot,
   payload: PublishTacheRpcPayload,
 ): "minor_patch" | "major_bump" {
-  const { tae, slots } = payload;
+  const { tache, slots } = payload;
 
-  if (snapshot.oi_id !== tae.oi_id) return "major_bump";
-  if (snapshot.comportement_id !== tae.comportement_id) return "major_bump";
-  if (snapshot.cd_id !== tae.cd_id) return "major_bump";
-  if (snapshot.niveau_id !== tae.niveau_id) return "major_bump";
-  if (snapshot.discipline_id !== tae.discipline_id) return "major_bump";
+  if (snapshot.oi_id !== tache.oi_id) return "major_bump";
+  if (snapshot.comportement_id !== tache.comportement_id) return "major_bump";
+  if (snapshot.cd_id !== tache.cd_id) return "major_bump";
+  if (snapshot.niveau_id !== tache.niveau_id) return "major_bump";
+  if (snapshot.discipline_id !== tache.discipline_id) return "major_bump";
 
   // connaissances_ids : comparaison ensembles triés
   const sortedCurrent = [...(snapshot.connaissances_ids ?? [])].sort((a, b) => a - b);
-  const sortedNew = [...tae.connaissances_ids].sort((a, b) => a - b);
+  const sortedNew = [...tache.connaissances_ids].sort((a, b) => a - b);
   if (sortedCurrent.length !== sortedNew.length || sortedCurrent.some((v, i) => v !== sortedNew[i]))
     return "major_bump";
 

@@ -3,7 +3,7 @@
  * Utilise la clé service role (comme scripts/seed-test-user.ts).
  *
  * Modes :
- * - Par défaut : refus si la table `tae` contient des lignes (réensemencement destructif cd/connaissances).
+ * - Par défaut : refus si la table `tache` contient des lignes (réensemencement destructif cd/connaissances).
  * - `--fill-empty` : upsert niveaux/disciplines ; insère cd/connaissances **uniquement** si vides pour HEC/HQC
  *   (sans DELETE) — utile quand des TAÉ existent déjà mais les référentiels n’ont jamais été chargés.
  *
@@ -177,16 +177,16 @@ async function main(): Promise<void> {
 
   if (!fillEmpty) {
     const { count: tacheCount, error: tacheErr } = await supabase
-      .from("tae")
+      .from("tache")
       .select("*", { count: "exact", head: true });
     if (tacheErr) {
-      console.error("Erreur lecture tae:", tacheErr);
+      console.error("Erreur lecture tache:", tacheErr);
       process.exitCode = 1;
       return;
     }
     if ((tacheCount ?? 0) > 0) {
       console.error(
-        "Refus : la table `tae` contient déjà des lignes. Le réensemencement destructif des cd / connaissances pourrait invalider les références.",
+        "Refus : la table `tache` contient déjà des lignes. Le réensemencement destructif des cd / connaissances pourrait invalider les références.",
       );
       console.error(
         "Si les tables cd / connaissances sont encore vides, relancez : npm run seed:ref:fill",

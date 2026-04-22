@@ -30,7 +30,7 @@ export async function fetchProfileTasks(
   offset: number = 0,
 ): Promise<ProfileTask[]> {
   const { data, error } = await supabase
-    .from("tae")
+    .from("tache")
     .select(
       "id, consigne, created_at, oi:oi_id(titre), comportement:comportement_id(enonce), niveau:niveau_id(label), discipline:discipline_id(label)",
     )
@@ -44,7 +44,7 @@ export async function fetchProfileTasks(
   // Charger les usage_count pour les IDs retournés
   const tacheIds = data.map((t) => t.id);
   const { data: usages } = await supabase
-    .from("tae_usages")
+    .from("tache_usages")
     .select("tae_id")
     .in("tae_id", tacheIds);
 
@@ -84,7 +84,7 @@ export async function fetchProfileEvaluations(
 ): Promise<ProfileEvaluation[]> {
   const { data, error } = await supabase
     .from("evaluations")
-    .select("id, titre, created_at, evaluation_tae(count)")
+    .select("id, titre, created_at, evaluation_tache(count)")
     .eq("auteur_id", auteurId)
     .eq("is_published", true)
     .order("created_at", { ascending: false })
@@ -96,13 +96,13 @@ export async function fetchProfileEvaluations(
     id: string;
     titre: string;
     created_at: string;
-    evaluation_tae: { count: number }[];
+    evaluation_tache: { count: number }[];
   };
 
   return (data as unknown as EvalRow[]).map((e) => ({
     id: e.id,
     titre: e.titre,
-    tacheCount: e.evaluation_tae?.[0]?.count ?? 0,
+    tacheCount: e.evaluation_tache?.[0]?.count ?? 0,
     createdAt: e.created_at,
   }));
 }

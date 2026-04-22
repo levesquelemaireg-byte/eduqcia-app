@@ -6,7 +6,7 @@ L'application permet à des enseignants d'Histoire du Québec et du Canada (3e e
 
 ### Règle transversale — Téléversement (documents et cartes)
 
-**Tous les fichiers téléversés pour les documents iconographiques et les cartes sont des images uniquement (JPG, PNG ou WebP). Aucun PDF n'est accepté.** Taille maximale : **10 Mo** ; redimensionnement automatique côté serveur si l’image dépasse **660 × 400 px** (voir `lib/images/resize-image.ts`). Cette règle s'applique à la création de TAÉ, au module documents historiques et au stockage associé (`tache-document-images`).
+**Tous les fichiers téléversés pour les documents iconographiques et les cartes sont des images uniquement (JPG, PNG ou WebP). Aucun PDF n'est accepté.** Taille maximale : **10 Mo** ; redimensionnement automatique côté serveur si l’image dépasse **660 × 400 px** (voir `lib/images/resize-image.ts`). Cette règle s'applique à la création de TAÉ, au module documents historiques et au stockage associé (`tae-document-images`).
 
 ### Avertissement — Données structurées et saisie (tous les parcours non rédactionnels)
 

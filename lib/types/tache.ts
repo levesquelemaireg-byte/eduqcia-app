@@ -2,7 +2,7 @@ import type { Database } from "./database";
 
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-/** TAÉ — à compléter quand les types générés incluent `tae`. */
+/** TAÉ — à compléter quand les types générés incluent `tache`. */
 export type TacheRow = {
   id: string;
   auteur_id: string;

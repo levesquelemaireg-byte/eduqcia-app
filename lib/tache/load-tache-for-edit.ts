@@ -89,7 +89,7 @@ export async function loadTacheFormStateForEdit(
   userId: string,
 ): Promise<TacheFormState | null> {
   const { data: t, error } = await supabase
-    .from("tae")
+    .from("tache")
     .select(
       "id, auteur_id, consigne, guidage, corrige, nb_lignes, oi_id, comportement_id, niveau_id, discipline_id, cd_id, connaissances_ids, aspects_societe, version, is_published, non_redaction_data, conception_mode",
     )
@@ -113,8 +113,8 @@ export async function loadTacheFormStateForEdit(
           .eq("id", String(row.comportement_id))
           .maybeSingle()
       : Promise.resolve({ data: null }),
-    supabase.from("tae_documents").select("slot, document_id, ordre").eq("tae_id", tacheId),
-    supabase.from("tae_collaborateurs").select("user_id").eq("tae_id", tacheId),
+    supabase.from("tache_documents").select("slot, document_id, ordre").eq("tae_id", tacheId),
+    supabase.from("tache_collaborateurs").select("user_id").eq("tae_id", tacheId),
   ]);
   const nRow = nRes.data;
   const dRow = dRes.data;

@@ -65,7 +65,7 @@ export async function fetchTacheFicheBundle(
   id: string,
 ): Promise<{ fiche: TacheFicheData; votes: PeerVoteTally | null } | null> {
   const { data: raw, error } = await supabase
-    .from("tae")
+    .from("tache")
     .select(
       "id, auteur_id, consigne, guidage, corrige, nb_lignes, oi_id, comportement_id, niveau_id, discipline_id, cd_id, connaissances_ids, aspects_societe, version, version_updated_at, is_published, created_at, updated_at",
     )
@@ -101,8 +101,8 @@ export async function fetchTacheFicheBundle(
             .eq("id", t.cd_id)
             .maybeSingle()
         : Promise.resolve({ data: null }),
-      supabase.from("tae_collaborateurs").select("user_id").eq("tae_id", id),
-      supabase.from("tae_documents").select("slot, document_id").eq("tae_id", id),
+      supabase.from("tache_collaborateurs").select("user_id").eq("tae_id", id),
+      supabase.from("tache_documents").select("slot, document_id").eq("tae_id", id),
       supabase
         .from("vote_counts")
         .select(

@@ -35,7 +35,7 @@ export async function getEvaluationEditBundle(
   if (evErr || !ev || ev.is_archived) return null;
 
   const { data: links, error: linkErr } = await supabase
-    .from("evaluation_tae")
+    .from("evaluation_tache")
     .select("ordre, tae_id")
     .eq("evaluation_id", evaluationId)
     .order("ordre", { ascending: true });
@@ -53,7 +53,7 @@ export async function getEvaluationEditBundle(
   }
 
   const { data: taes, error: tErr } = await supabase
-    .from("tae")
+    .from("tache")
     .select(
       `
       id,
@@ -114,7 +114,7 @@ export async function getTacheMetaForEvaluationCart(
   if (!user) return null;
 
   const { data, error } = await supabase
-    .from("tae")
+    .from("tache")
     .select(
       `
       id,
@@ -145,7 +145,7 @@ export async function getTacheMetaForEvaluationCart(
   let collaborator = false;
   if (!row.is_published && row.auteur_id !== user.id) {
     const { data: collab } = await supabase
-      .from("tae_collaborateurs")
+      .from("tache_collaborateurs")
       .select("tae_id")
       .eq("tae_id", tacheId)
       .eq("user_id", user.id)

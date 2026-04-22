@@ -1,5 +1,5 @@
 /**
- * Publication TAÉ : préparation du payload + RPC `publish_tae_transaction` (transaction Postgres).
+ * Publication TAÉ : préparation du payload + RPC `publish_tache_transaction` (transaction Postgres).
  * Découpage : `publish-tache-lookups`, `publish-tache-payload`, `publish-tache-rpc-errors`, `publish-tache-types`.
  * Voir `docs/ARCHITECTURE.md` (schéma, RPC) et `supabase/schema.sql`.
  */
@@ -63,17 +63,17 @@ export async function publishTacheFromFormState(
 
   const payload = built;
 
-  const { data: tacheId, error: rpcErr } = await supabase.rpc("publish_tae_transaction", {
+  const { data: tacheId, error: rpcErr } = await supabase.rpc("publish_tache_transaction", {
     p_payload: payload as unknown as Json,
   });
 
   if (rpcErr) {
-    console.error("publish_tae_transaction:", rpcErr.message ?? rpcErr, rpcErr);
+    console.error("publish_tache_transaction:", rpcErr.message ?? rpcErr, rpcErr);
     return { ok: false, code: classifyPublishRpcError(rpcErr) };
   }
 
   if (typeof tacheId !== "string") {
-    return { ok: false, code: "tae_insert" };
+    return { ok: false, code: "tache_insert" };
   }
 
   return {
@@ -85,7 +85,7 @@ export async function publishTacheFromFormState(
 }
 
 /**
- * Met à jour une TAÉ existante (même payload que `publish_tae_transaction`, RPC `update_tae_transaction`).
+ * Met à jour une TAÉ existante (même payload que `publish_tache_transaction`, RPC `update_tache_transaction`).
  * Appeler uniquement après `isWizardPublishReady`.
  */
 export async function updateTacheFromFormState(
@@ -123,12 +123,12 @@ export async function updateTacheFromFormState(
   // Snapshot des champs majeurs avant mise à jour — pour calculer wasMajorBump
   let snapshot: TacheVersionSnapshot | null = null;
   const { data: tacheRow } = await supabase
-    .from("tae")
+    .from("tache")
     .select("oi_id, comportement_id, cd_id, connaissances_ids, niveau_id, discipline_id")
     .eq("id", tacheId)
     .single();
   const { data: docRows } = await supabase
-    .from("tae_documents")
+    .from("tache_documents")
     .select("document_id")
     .eq("tae_id", tacheId);
   if (tacheRow) {
@@ -148,18 +148,18 @@ export async function updateTacheFromFormState(
     };
   }
 
-  const { data: outId, error: rpcErr } = await supabase.rpc("update_tae_transaction", {
+  const { data: outId, error: rpcErr } = await supabase.rpc("update_tache_transaction", {
     p_tae_id: tacheId,
     p_payload: payload as unknown as Json,
   });
 
   if (rpcErr) {
-    console.error("update_tae_transaction:", rpcErr.message ?? rpcErr, rpcErr);
+    console.error("update_tache_transaction:", rpcErr.message ?? rpcErr, rpcErr);
     return { ok: false, code: classifyPublishRpcError(rpcErr) };
   }
 
   if (typeof outId !== "string") {
-    return { ok: false, code: "tae_insert" };
+    return { ok: false, code: "tache_insert" };
   }
 
   const wasMajorBump =

@@ -147,12 +147,12 @@ const PUBLISH_FAILURE_TOAST: Record<PublishTacheFailureCode, string> = {
   lookup_connaissance: TOAST_PUBLICATION_LOOKUP_CONNAISSANCE,
   document_image: TOAST_PUBLICATION_DOCUMENT_IMAGE,
   document_insert: TOAST_PUBLICATION_FAILED,
-  tae_insert: TOAST_PUBLICATION_FAILED,
-  tae_documents_insert: TOAST_PUBLICATION_FAILED,
+  tache_insert: TOAST_PUBLICATION_FAILED,
+  tache_documents_insert: TOAST_PUBLICATION_FAILED,
   rpc_foreign_key: TOAST_PUBLICATION_RPC_FOREIGN_KEY,
   rpc_invalid_enum: TOAST_PUBLICATION_RPC_ENUM,
   rpc_function_missing: TOAST_PUBLICATION_RPC_FUNCTION_MISSING,
-  tae_locked_evaluation: TOAST_PUBLICATION_TACHE_LOCKED_EVALUATION,
+  tache_locked_evaluation: TOAST_PUBLICATION_TACHE_LOCKED_EVALUATION,
 };
 
 export function StepperNavFooter() {

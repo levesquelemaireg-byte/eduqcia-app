@@ -51,12 +51,12 @@ describe("buildPublishPayload", () => {
     expect(r.documents_new).toEqual([]);
     expect(r.slots).toEqual([]);
     expect(r.auteur_id).toBe("auteur-uuid");
-    expect(r.tae.niveau_id).toBe(10);
-    expect(r.tae.discipline_id).toBe(20);
-    expect(r.tae.cd_id).toBe(30);
-    expect(r.tae.connaissances_ids).toEqual([100, 101]);
+    expect(r.tache.niveau_id).toBe(10);
+    expect(r.tache.discipline_id).toBe(20);
+    expect(r.tache.cd_id).toBe(30);
+    expect(r.tache.connaissances_ids).toEqual([100, 101]);
     expect(r.collaborateurs_user_ids).toEqual([]);
-    expect(r.tae).not.toHaveProperty("non_redaction_data");
+    expect(r.tache).not.toHaveProperty("non_redaction_data");
   });
 
   it("slot idle → validation", () => {
@@ -128,9 +128,9 @@ describe("buildPublishPayload", () => {
     };
     const r = buildPublishPayload(auteurId, state, ctx);
     assertPayload(r);
-    expect(r.tae.conception_mode).toBe("equipe");
+    expect(r.tache.conception_mode).toBe("equipe");
     expect(r.collaborateurs_user_ids).toEqual([collabId]);
-    expect(r.tae.aspects_societe).toEqual(["Économique"]);
+    expect(r.tache.aspects_societe).toEqual(["Économique"]);
     expect(r.documents_new[0]).toMatchObject({
       titre: "Titre",
       type: "textuel",
@@ -256,7 +256,7 @@ describe("buildPublishPayload", () => {
     };
     const r = buildPublishPayload("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", state, ctx);
     assertPayload(r);
-    expect(r.tae.non_redaction_data).toBeNull();
+    expect(r.tache.non_redaction_data).toBeNull();
   });
 
   it("avant-après complet : non_redaction_data union typée", () => {
@@ -300,7 +300,7 @@ describe("buildPublishPayload", () => {
 
     const r = buildPublishPayload("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa", state, ctx);
     assertPayload(r);
-    expect(r.tae.non_redaction_data).toEqual(
+    expect(r.tache.non_redaction_data).toEqual(
       expect.objectContaining({
         type: "avant-apres",
         payload: expect.objectContaining({

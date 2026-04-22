@@ -14,7 +14,7 @@ export type PublishTacheActionResult =
   | { ok: false; code: "auth" | "validation" }
   | { ok: false; code: "publish"; failure: PublishTacheFailureCode };
 
-/** Identifiant `tae.id` (UUID) — forme permissive (toutes versions), pas seulement UUID v4. */
+/** Identifiant `tache.id` (UUID) — forme permissive (toutes versions), pas seulement UUID v4. */
 const TACHE_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
@@ -44,7 +44,7 @@ export async function publishTacheAction(
 
     if (editId) {
       const { data: owned, error: ownErr } = await supabase
-        .from("tae")
+        .from("tache")
         .select("id")
         .eq("id", editId)
         .eq("auteur_id", user.id)
@@ -66,7 +66,7 @@ export async function publishTacheAction(
     const result = await publishTacheFromFormState(supabase, user.id, state);
     if (!result.ok) return { ok: false, code: "publish", failure: result.code };
 
-    // Suppression brouillon : assurée par la RPC publish_tae_transaction (atomique).
+    // Suppression brouillon : assurée par la RPC publish_tache_transaction (atomique).
     revalidatePath("/questions");
     revalidatePath("/dashboard");
 
@@ -83,6 +83,6 @@ export async function publishTacheAction(
       details: e?.details,
       hint: e?.hint,
     });
-    return { ok: false, code: "publish", failure: "tae_insert" };
+    return { ok: false, code: "publish", failure: "tache_insert" };
   }
 }

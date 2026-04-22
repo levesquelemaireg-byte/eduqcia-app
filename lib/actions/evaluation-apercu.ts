@@ -52,7 +52,7 @@ export async function genererTokenApercuEpreuve(evaluationId: string): Promise<G
 
   // 2. Fetch tâches liées (ordonnées)
   const { data: links, error: linkErr } = await supabase
-    .from("evaluation_tae")
+    .from("evaluation_tache")
     .select("tae_id")
     .eq("evaluation_id", evaluationId)
     .order("ordre", { ascending: true });

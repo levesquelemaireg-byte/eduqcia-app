@@ -347,8 +347,8 @@ export function buildOrdreChronologiqueIntroHtml(themeTrimmed: string): string {
 }
 
 /**
- * HTML stocké en `tae.consigne` — intro, grille 2×2 (A–D), zone « Réponse : ».
- * Le texte de guidage élève est dans `tae.guidage` (`buildOrdreChronologiqueGuidageHtml`) ; l’impression compose l’ordre intro → guidage → options.
+ * HTML stocké en `tache.consigne` — intro, grille 2×2 (A–D), zone « Réponse : ».
+ * Le texte de guidage élève est dans `tache.guidage` (`buildOrdreChronologiqueGuidageHtml`) ; l’impression compose l’ordre intro → guidage → options.
  */
 export function buildOrdreChronologiqueConsigneHtml(p: OrdreChronologiquePayload): string {
   const intro = buildOrdreChronologiqueIntroHtml(p.consigneTheme.trim());
@@ -357,12 +357,12 @@ export function buildOrdreChronologiqueConsigneHtml(p: OrdreChronologiquePayload
   return `<div data-ordre-chrono-student="true" class="ordre-chrono-student-root">${intro}${grid}${reponse}</div>`;
 }
 
-/** Texte enseignant — `tae.corrige`. */
+/** Texte enseignant — `tache.corrige`. */
 export function buildOrdreChronologiqueCorrigeText(p: OrdreChronologiquePayload): string {
   return `Réponse attendue : ${p.correctLetter}.`;
 }
 
-/** HTML sommaire / RPC — `tae.corrige`. */
+/** HTML sommaire / RPC — `tache.corrige`. */
 export function buildOrdreChronologiqueCorrigeHtml(p: OrdreChronologiquePayload): string {
   if (
     p.correctLetter !== "A" &&
@@ -378,7 +378,7 @@ export function buildOrdreChronologiqueCorrigeHtml(p: OrdreChronologiquePayload)
   return `${lead}<p class="ordre-chrono-corrige-justification">${escapeHtml(j)}</p>`;
 }
 
-/** HTML — `tae.guidage` : guidage **élève**, fixe (non modifiable par l’enseignant). */
+/** HTML — `tache.guidage` : guidage **élève**, fixe (non modifiable par l’enseignant). */
 export function buildOrdreChronologiqueGuidageHtml(): string {
   return `<p>${escapeHtml(NR_ORDRE_STUDENT_GUIDAGE)}</p>`;
 }

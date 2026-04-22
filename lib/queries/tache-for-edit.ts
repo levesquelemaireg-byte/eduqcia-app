@@ -1,5 +1,5 @@
 /**
- * Réhydratation `TacheFormState` depuis une ligne `tae` publiée ou brouillon en base.
+ * Réhydratation `TacheFormState` depuis une ligne `tache` publiée ou brouillon en base.
  * Sortie alignée sur `bloc1`…`bloc7` (`TacheFormState`).
  * Serveur uniquement — voir `docs/WORKFLOWS.md` (Mes tâches et édition).
  */
@@ -138,7 +138,7 @@ export async function fetchTacheFormStateForEdit(
   userId: string,
 ): Promise<TacheEditResult | null> {
   const { data: rawTache, error: tacheErr } = await supabase
-    .from("tae")
+    .from("tache")
     .select(
       [
         "id",
@@ -184,9 +184,9 @@ export async function fetchTacheFormStateForEdit(
             .eq("id", t.cd_id)
             .maybeSingle()
         : Promise.resolve({ data: null }),
-      supabase.from("tae_collaborateurs").select("user_id").eq("tae_id", tacheId),
+      supabase.from("tache_collaborateurs").select("user_id").eq("tae_id", tacheId),
       supabase
-        .from("tae_documents")
+        .from("tache_documents")
         .select("slot, document_id, ordre")
         .eq("tae_id", tacheId)
         .order("ordre", {

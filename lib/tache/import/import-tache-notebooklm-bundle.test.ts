@@ -17,9 +17,9 @@ const oiList = JSON.parse(readFileSync(oiPath, "utf8")) as OiEntryJson[];
 describe("import-tache-notebooklm-bundle.json — gabarits et pipeline import", () => {
   it("reference OI 1.3 : non_redaction_data normalisable et valide", () => {
     const bundle = JSON.parse(readFileSync(bundlePath, "utf8")) as {
-      reference_payload_oi13_importable_cap_rouge: { tae: { non_redaction_data: unknown } };
+      reference_payload_oi13_importable_cap_rouge: { tache: { non_redaction_data: unknown } };
     };
-    const nr = bundle.reference_payload_oi13_importable_cap_rouge.tae.non_redaction_data;
+    const nr = bundle.reference_payload_oi13_importable_cap_rouge.tache.non_redaction_data;
     const p = normalizeAvantApresPayload(nr);
     expect(p).not.toBeNull();
     if (p) expect(validateAvantApresPayloadInvariants(p)).toBe(true);
@@ -28,7 +28,7 @@ describe("import-tache-notebooklm-bundle.json — gabarits et pipeline import", 
   it("reference OI 1.3 : validateTacheImportVsOi ok", () => {
     const bundle = JSON.parse(readFileSync(bundlePath, "utf8")) as {
       reference_payload_oi13_importable_cap_rouge: {
-        tae: {
+        tache: {
           conception_mode: string;
           oi_id: string;
           comportement_id: string;
@@ -44,14 +44,14 @@ describe("import-tache-notebooklm-bundle.json — gabarits et pipeline import", 
     };
     const ref = bundle.reference_payload_oi13_importable_cap_rouge;
     const v = validateTacheImportVsOi(oiList, {
-      tae: {
-        conception_mode: ref.tae.conception_mode,
-        oi_id: ref.tae.oi_id,
-        comportement_id: ref.tae.comportement_id,
-        nb_lignes: ref.tae.nb_lignes,
-        niveau_id: ref.tae.niveau_id,
-        discipline_id: ref.tae.discipline_id,
-        non_redaction_data: ref.tae.non_redaction_data,
+      tache: {
+        conception_mode: ref.tache.conception_mode,
+        oi_id: ref.tache.oi_id,
+        comportement_id: ref.tache.comportement_id,
+        nb_lignes: ref.tache.nb_lignes,
+        niveau_id: ref.tache.niveau_id,
+        discipline_id: ref.tache.discipline_id,
+        non_redaction_data: ref.tache.non_redaction_data,
       },
       documents_new: ref.documents_new,
       slots: ref.slots,
@@ -63,7 +63,7 @@ describe("import-tache-notebooklm-bundle.json — gabarits et pipeline import", 
   it("reference OI 7.1 : ids alignés et validateTacheImportVsOi ok", () => {
     const bundle = JSON.parse(readFileSync(bundlePath, "utf8")) as {
       reference_payload_oi7_71_importable: {
-        tae: {
+        tache: {
           conception_mode: string;
           oi_id: string;
           comportement_id: string;
@@ -78,20 +78,20 @@ describe("import-tache-notebooklm-bundle.json — gabarits et pipeline import", 
       };
     };
     const ref = bundle.reference_payload_oi7_71_importable;
-    expect(ref.tae.non_redaction_data).toBeUndefined();
-    const { niveau_id, discipline_id } = ref.tae;
+    expect(ref.tache.non_redaction_data).toBeUndefined();
+    const { niveau_id, discipline_id } = ref.tache;
     for (const d of ref.documents_new) {
       expect(d.niveaux_ids).toEqual([niveau_id]);
       expect(d.disciplines_ids).toEqual([discipline_id]);
     }
     const v = validateTacheImportVsOi(oiList, {
-      tae: {
-        conception_mode: ref.tae.conception_mode,
-        oi_id: ref.tae.oi_id,
-        comportement_id: ref.tae.comportement_id,
-        nb_lignes: ref.tae.nb_lignes,
-        niveau_id: ref.tae.niveau_id,
-        discipline_id: ref.tae.discipline_id,
+      tache: {
+        conception_mode: ref.tache.conception_mode,
+        oi_id: ref.tache.oi_id,
+        comportement_id: ref.tache.comportement_id,
+        nb_lignes: ref.tache.nb_lignes,
+        niveau_id: ref.tache.niveau_id,
+        discipline_id: ref.tache.discipline_id,
       },
       documents_new: ref.documents_new,
       slots: ref.slots,

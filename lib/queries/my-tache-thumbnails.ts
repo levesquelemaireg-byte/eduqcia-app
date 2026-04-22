@@ -41,7 +41,7 @@ export async function getMyTacheThumbnailList(
   if (!user) return [];
 
   let query = supabase
-    .from("tae")
+    .from("tache")
     .select(
       "id, consigne, is_published, updated_at, auteur_id, oi_id, comportement_id, niveau_id, discipline_id",
     )
@@ -139,7 +139,7 @@ export async function getMyTacheThumbnailList(
 
   // Handle wizard server draft
   const { data: draftRow, error: draftErr } = await supabase
-    .from("tae_wizard_drafts")
+    .from("tache_wizard_drafts")
     .select("payload, updated_at")
     .eq("user_id", user.id)
     .maybeSingle();

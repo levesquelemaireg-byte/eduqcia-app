@@ -7,7 +7,7 @@ export type DeleteTacheActionResult =
   | { ok: true }
   | { ok: false; code: "auth" | "forbidden" | "in_use" | "not_found" | "db" };
 
-/** Supprime une TAÉ dont l’utilisateur est l’auteur (`tae_delete` RLS). Bloqué si la tâche est référencée dans `evaluation_tae`. */
+/** Supprime une TAÉ dont l’utilisateur est l’auteur (`tae_delete` RLS). Bloqué si la tâche est référencée dans `evaluation_tache`. */
 export async function deleteTacheAction(tacheId: string): Promise<DeleteTacheActionResult> {
   const supabase = await createClient();
   const {
@@ -16,7 +16,7 @@ export async function deleteTacheAction(tacheId: string): Promise<DeleteTacheAct
   if (!user) return { ok: false, code: "auth" };
 
   const { data: row, error: fetchErr } = await supabase
-    .from("tae")
+    .from("tache")
     .select("id, auteur_id")
     .eq("id", tacheId)
     .maybeSingle();
@@ -26,14 +26,14 @@ export async function deleteTacheAction(tacheId: string): Promise<DeleteTacheAct
   if (row.auteur_id !== user.id) return { ok: false, code: "forbidden" };
 
   const { count, error: countErr } = await supabase
-    .from("evaluation_tae")
+    .from("evaluation_tache")
     .select("id", { count: "exact", head: true })
     .eq("tae_id", tacheId);
 
   if (countErr) return { ok: false, code: "db" };
   if ((count ?? 0) > 0) return { ok: false, code: "in_use" };
 
-  const { error: delErr } = await supabase.from("tae").delete().eq("id", tacheId);
+  const { error: delErr } = await supabase.from("tache").delete().eq("id", tacheId);
   if (delErr) return { ok: false, code: "db" };
 
   revalidatePath("/questions");

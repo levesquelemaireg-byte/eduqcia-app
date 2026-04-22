@@ -44,7 +44,7 @@ function hqcRowMatchesDb(r: HqcConnRow, db: DbConnaissanceRow): boolean {
 
 /**
  * @param filteredJsonRows — déjà filtré par niveau (`filterConnRowsByNiveau`), comme côté client.
- * @param dbRowsInOrder — ordre `tae.connaissances_ids`.
+ * @param dbRowsInOrder — ordre `tache.connaissances_ids`.
  */
 export function matchDbConnaissancesToJsonSelections(
   discipline: DisciplineCode,

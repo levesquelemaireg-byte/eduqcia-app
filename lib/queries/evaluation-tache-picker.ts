@@ -94,7 +94,7 @@ export async function getEvaluationPickerBankPage(page: number): Promise<Evaluat
   const to = from + EVALUATION_PICKER_PAGE_SIZE - 1;
 
   const { data, error, count } = await supabase
-    .from("tae")
+    .from("tache")
     .select(tacheSelect, { count: "exact" })
     .eq("is_published", true)
     .eq("is_archived", false)
@@ -129,7 +129,7 @@ export async function getEvaluationPickerMinePage(page: number): Promise<Evaluat
   const to = from + EVALUATION_PICKER_PAGE_SIZE - 1;
 
   const { data, error, count } = await supabase
-    .from("tae")
+    .from("tache")
     .select(tacheSelect, { count: "exact" })
     .eq("auteur_id", user.id)
     .eq("is_archived", false)

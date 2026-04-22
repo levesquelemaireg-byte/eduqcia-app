@@ -35,7 +35,7 @@ async function countTasksByEvaluationIds(
   const map = new Map<string, number>();
   if (evaluationIds.length === 0) return map;
   const { data, error } = await supabase
-    .from("evaluation_tae")
+    .from("evaluation_tache")
     .select("evaluation_id")
     .in("evaluation_id", evaluationIds);
   if (error || !data) return map;

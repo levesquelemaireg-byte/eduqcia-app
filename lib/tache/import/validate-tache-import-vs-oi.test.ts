@@ -9,9 +9,9 @@ const oiList = JSON.parse(
 ) as OiEntryJson[];
 
 describe("validateTacheImportVsOi", () => {
-  it("accepte OI3 / 3.5 avec 3 documents alignés sur tae", () => {
+  it("accepte OI3 / 3.5 avec 3 documents alignés sur tache", () => {
     const r = validateTacheImportVsOi(oiList, {
-      tae: {
+      tache: {
         conception_mode: "seul",
         oi_id: "OI3",
         comportement_id: "3.5",
@@ -32,7 +32,7 @@ describe("validateTacheImportVsOi", () => {
 
   it("refuse un désalignement niveau/discipline", () => {
     const r = validateTacheImportVsOi(oiList, {
-      tae: {
+      tache: {
         conception_mode: "seul",
         oi_id: "OI3",
         comportement_id: "3.5",
@@ -52,7 +52,7 @@ describe("validateTacheImportVsOi", () => {
 
   it("refuse nb_lignes incohérent avec oi.json", () => {
     const r = validateTacheImportVsOi(oiList, {
-      tae: {
+      tache: {
         conception_mode: "seul",
         oi_id: "OI3",
         comportement_id: "3.5",
@@ -73,7 +73,7 @@ describe("validateTacheImportVsOi", () => {
 
   it("exige non_redaction_data pour 1.3", () => {
     const r = validateTacheImportVsOi(oiList, {
-      tae: {
+      tache: {
         conception_mode: "seul",
         oi_id: "OI1",
         comportement_id: "1.3",
@@ -98,7 +98,7 @@ describe("validateTacheImportVsOi", () => {
 
   it("interdit non_redaction_data pour 7.1", () => {
     const r = validateTacheImportVsOi(oiList, {
-      tae: {
+      tache: {
         conception_mode: "seul",
         oi_id: "OI7",
         comportement_id: "7.1",

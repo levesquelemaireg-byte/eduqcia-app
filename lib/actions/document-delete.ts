@@ -29,7 +29,7 @@ export async function deleteDocumentAction(
 
   // Guard FK : tae_documents.document_id ON DELETE RESTRICT
   const { count, error: countErr } = await supabase
-    .from("tae_documents")
+    .from("tache_documents")
     .select("id", { count: "exact", head: true })
     .eq("document_id", documentId);
 

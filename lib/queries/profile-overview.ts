@@ -68,7 +68,7 @@ export async function fetchProfileOverview(
       .eq("auteur_id", profileId)
       .eq("is_published", true),
     supabase
-      .from("tae")
+      .from("tache")
       .select("id", { count: "exact", head: true })
       .eq("auteur_id", profileId)
       .eq("is_published", true),

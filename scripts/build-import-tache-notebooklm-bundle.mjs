@@ -19,7 +19,7 @@ const outPath = join(root, "public", "data", "import-tache-notebooklm-bundle.jso
 
 const operations_intellectuelles = JSON.parse(readFileSync(oiPath, "utf8"));
 
-/** Gabarit OI1 / 1.3 — 4 documents textuels ; tous niveaux_ids = [tae.niveau_id], disciplines_ids = [tae.discipline_id]. */
+/** Gabarit OI1 / 1.3 — 4 documents textuels ; tous niveaux_ids = [tache.niveau_id], disciplines_ids = [tache.discipline_id]. */
 const referencePayloadOi13ImportableCapRouge = {
   auteur_id: null,
   connaissances_hors_rpc: [
@@ -30,7 +30,7 @@ const referencePayloadOi13ImportableCapRouge = {
       enonce: "Colonie de peuplement sur le cap Rouge (1541-1543)",
     },
   ],
-  tae: {
+  tache: {
     conception_mode: "seul",
     oi_id: "OI1",
     comportement_id: "1.3",
@@ -147,7 +147,7 @@ const referencePayloadOi13ImportableCapRouge = {
   collaborateurs_user_ids: [],
 };
 
-/** Gabarit OI7 / 7.1 — 3 documents, rédactionnel, sans non_redaction_data ; COPIE [3],[3] partout comme tae. */
+/** Gabarit OI7 / 7.1 — 3 documents, rédactionnel, sans non_redaction_data ; COPIE [3],[3] partout comme tache. */
 const referencePayloadOi71Importable = {
   auteur_id: null,
   connaissances_hors_rpc: [
@@ -158,7 +158,7 @@ const referencePayloadOi71Importable = {
       enonce: "Loyalistes",
     },
   ],
-  tae: {
+  tache: {
     conception_mode: "seul",
     oi_id: "OI7",
     comportement_id: "7.1",
@@ -231,7 +231,7 @@ const bundle = {
     principe_fichier_autonome_fr:
       "Toutes les instructions utiles à la génération d'un JSON d'import sont DANS ce fichier. Ne pas compter sur un prompt externe : le modèle doit suivre strategie_double_ceinture_bretelles_fr, protocole_sortie_notebooklm_fr, regles_non_negociables_fr, passe_verification_obligatoire_avant_sortie_fr, checklist_json_importable_fr et les gabarits reference_payload_*.",
     description:
-      "Bundle pour outils externes (NotebookLM, etc.) : référentiels OI + règles + gabarits de payload `publish_tae_transaction`. Une seule TAÉ par JSON ; pas une épreuve.",
+      "Bundle pour outils externes (NotebookLM, etc.) : référentiels OI + règles + gabarits de payload `publish_tache_transaction`. Une seule TAÉ par JSON ; pas une épreuve.",
     scope: "PublishTacheRpcPayload — `lib/tache/publish-tache-types.ts`",
     auteur_id_a_limport:
       "`auteur_id` peut être `null` dans le JSON généré ; l'application injecte l'UUID de l'enseignant connecté avant la RPC.",
@@ -245,7 +245,7 @@ const bundle = {
       "4) Choisir oi_id / comportement_id dans operations_intellectuelles ; noter nb_documents (peut être null), nb_lignes.",
       "5) Rédiger un brouillon JSON en tête ; exécuter passe_verification_obligatoire_avant_sortie_fr ; corriger jusqu'à ce que TOUS les points soient OK.",
       "6) Si comportement 1.3 : non_redaction_avant_apres + reference_payload_oi13_importable_cap_rouge.",
-      "7) Si rédactionnel (ex. 7.1, 5.2) : reference_payload_oi7_71_importable comme structure — pas de tae.non_redaction_data.",
+      "7) Si rédactionnel (ex. 7.1, 5.2) : reference_payload_oi7_71_importable comme structure — pas de tache.non_redaction_data.",
       "8) Émettre UNE SEULE réponse : l'objet JSON final (après passe OK) — voir instruction_sortie_modele_fr.",
     ],
   },
@@ -270,7 +270,7 @@ const bundle = {
     obligation_fr:
       "Interdiction d'émettre le moindre caractère de la réponse utilisateur tant que la passe_verification_obligatoire_avant_sortie_fr n'a pas été exécutée sur le brouillon COMPLET et que chaque point n'est pas validé. La réponse visible ne contient que le JSON importable (pas de section « vérification », pas de markdown). La vérification est INTERNE (brouillon mental ou brouillon non montré), puis correction du brouillon si échec, puis une seule sortie JSON.",
     phases_fr: [
-      "Phase A — Construire un brouillon complet de l'objet racine (toutes les clés, tous les documents, tous les slots). Fixer en premier tae.niveau_id et tae.discipline_id ; noter CONST_N = tae.niveau_id et CONST_D = tae.discipline_id (voir constantes_a_propager_fr).",
+      "Phase A — Construire un brouillon complet de l'objet racine (toutes les clés, tous les documents, tous les slots). Fixer en premier tache.niveau_id et tache.discipline_id ; noter CONST_N = tache.niveau_id et CONST_D = tache.discipline_id (voir constantes_a_propager_fr).",
       "Phase B — OBLIGATOIRE : parcourir passe_verification_obligatoire_avant_sortie_fr dans l'ordre, point par point. Si un point échoue : corriger le brouillon, recommencer Phase B depuis le début. Répéter jusqu'à succès intégral.",
       "Phase C — Copier le brouillon validé vers la réponse finale : un seul objet JSON, UTF-8, guillemets doubles, sans texte avant ni après.",
     ],
@@ -279,7 +279,7 @@ const bundle = {
   },
 
   constantes_a_propager_fr: [
-    "Après avoir choisi tae.niveau_id et tae.discipline_id, traiter CONST_N = tae.niveau_id et CONST_D = tae.discipline_id comme des constantes immuables pour CE payload.",
+    "Après avoir choisi tache.niveau_id et tache.discipline_id, traiter CONST_N = tache.niveau_id et CONST_D = tache.discipline_id comme des constantes immuables pour CE payload.",
     "Pour chaque index i de documents_new : forcer niveaux_ids à [CONST_N] et disciplines_ids à [CONST_D] — même si le PDF parle de « Secondaire 1 », « Chapitre 1 », « Source 5 », etc.",
     "Ne jamais remplacer CONST_N ou CONST_D par un chiffre tiré du titre du chapitre, du numéro de source ou d'une supposition pédagogique.",
   ],
@@ -287,23 +287,23 @@ const bundle = {
   alerte_ancrage_chiffres_manuel_fr: [
     "« Chapitre 1 », « Partie 2 », « Document 18 » : ce sont des repères éditoriaux du manuel — PAS des valeurs pour niveau_id ni discipline_id.",
     "« Source 5 » ou numéro de question : ne pas mapper ce chiffre vers niveaux_ids ou disciplines_ids.",
-    "Si le texte dit « Secondaire 1 » au sens programme mais la tâche est en Sec 3 HQC : niveau_id reste celui de la tâche (ex. 3), pas 1 — sauf si l'enseignant a explicitement choisi Sec 1 dans tae (alors tous les documents en [1]).",
+    "Si le texte dit « Secondaire 1 » au sens programme mais la tâche est en Sec 3 HQC : niveau_id reste celui de la tâche (ex. 3), pas 1 — sauf si l'enseignant a explicitement choisi Sec 1 dans tache (alors tous les documents en [1]).",
   ],
 
   regles_non_negociables_fr: [
-    "RÈGLE 1 (la plus violée par les LLM) : Pour CHAQUE entrée de documents_new, niveaux_ids doit être EXACTEMENT le tableau [tae.niveau_id] et disciplines_ids EXACTEMENT [tae.discipline_id]. Interdit : tae en 3/3 et un document en [1]/[1] ou tout autre mélange.",
-    "RÈGLE 2 : Choisir d'abord tae.niveau_id et tae.discipline_id (ids valides dans les tableaux niveaux et disciplines de ce bundle). Ensuite RECOPIER ces deux nombres dans chaque document — pas l'inverse.",
+    "RÈGLE 1 (la plus violée par les LLM) : Pour CHAQUE entrée de documents_new, niveaux_ids doit être EXACTEMENT le tableau [tache.niveau_id] et disciplines_ids EXACTEMENT [tache.discipline_id]. Interdit : tache en 3/3 et un document en [1]/[1] ou tout autre mélange.",
+    "RÈGLE 2 : Choisir d'abord tache.niveau_id et tache.discipline_id (ids valides dans les tableaux niveaux et disciplines de ce bundle). Ensuite RECOPIER ces deux nombres dans chaque document — pas l'inverse.",
     "RÈGLE 3 : oi_id et comportement_id existent ensemble dans operations_intellectuelles ; nb_lignes aligné sur l'entrée ; si nb_documents est un nombre, documents_new.length doit égaler ce nombre ; si nb_documents est null, la taille de documents_new doit correspondre à l'énoncé (ex. « quatre faits » → 4) et slots doit avoir autant d'entrées.",
     "RÈGLE 4 : Un slot doc_X par document, mode create, newIndex = index dans documents_new (0 à n-1), ordre recommandé 0 à n-1.",
     "RÈGLE 5 : Chaque document a repere_temporel et/ou annee_normalisee (entier) — obligatoire pour toute logique de dates ; le HTML seul ne suffit pas.",
     "RÈGLE 6 : type iconographique avec image_url null = l'enseignant téléversera l'image après import ; l'app détecte type + null pour afficher les zones d'upload.",
-    "RÈGLE 7 : Si tae.connaissances_ids est [] alors connaissances_hors_rpc doit contenir au moins un objet aux libellés verbatim du programme (pas d'id inventé).",
-    "RÈGLE 8 : Racine JSON = auteur_id, connaissances_hors_rpc (si connaissances_ids vide), tae, documents_new, slots, collaborateurs_user_ids — pas d'enveloppe publish_payload ; pas de clé import_notes_fr (retirée du contrat bundle).",
+    "RÈGLE 7 : Si tache.connaissances_ids est [] alors connaissances_hors_rpc doit contenir au moins un objet aux libellés verbatim du programme (pas d'id inventé).",
+    "RÈGLE 8 : Racine JSON = auteur_id, connaissances_hors_rpc (si connaissances_ids vide), tache, documents_new, slots, collaborateurs_user_ids — pas d'enveloppe publish_payload ; pas de clé import_notes_fr (retirée du contrat bundle).",
     "RÈGLE 9 : documents_new[i].type doit être exactement la chaîne française « textuel » ou « iconographique » (enum Postgres / app). INTERDIT : textual, iconographic, iconographical, image, etc. — glissement anglais fréquent des LLM malgré document_types_autorises.",
   ],
 
   erreurs_frequentes_notebooklm_fr: [
-    "Mélanger niveau/discipline : mettre tae.niveau_id 3 (Sec 3 HQC) mais documents_new[..].niveaux_ids [1] — FAUX. Toujours [tae.niveau_id] sur chaque document.",
+    "Mélanger niveau/discipline : mettre tache.niveau_id 3 (Sec 3 HQC) mais documents_new[..].niveaux_ids [1] — FAUX. Toujours [tache.niveau_id] sur chaque document.",
     "Confondre Chapitre 1 / Source 5 avec niveau_id 1 — voir alerte_ancrage_chiffres_manuel_fr.",
     "Utiliser « textual » ou « iconographic » (anglais) au lieu de « textuel » / « iconographique » — les tokens sont proches mais la RPC exige le français exact ; voir RÈGLE 9 et V12. L'app peut corriger en import, mais le modèle doit viser le canon français.",
     "Oublier non_redaction_data pour 1.3 ou l'inventer pour un comportement rédactionnel — voir taches_nr_vs_redactionnel_fr.",
@@ -314,14 +314,14 @@ const bundle = {
   /** Passe bloquante : ordre fixe ; tout point doit être OK avant Phase C (sortie). */
   passe_verification_obligatoire_avant_sortie_fr: [
     "V1 — J'ai lu alerte_ancrage_chiffres_manuel_fr : aucun niveau_id/discipline_id des documents ne provient d'un numéro de chapitre ou de source du PDF.",
-    "V2 — CONST_N et CONST_D : je confirme que pour tout i, documents_new[i].niveaux_ids est exactement [CONST_N] avec CONST_N === tae.niveau_id, et documents_new[i].disciplines_ids est exactement [CONST_D] avec CONST_D === tae.discipline_id (tableaux d'un seul élément, même ordre [x] pas x).",
+    "V2 — CONST_N et CONST_D : je confirme que pour tout i, documents_new[i].niveaux_ids est exactement [CONST_N] avec CONST_N === tache.niveau_id, et documents_new[i].disciplines_ids est exactement [CONST_D] avec CONST_D === tache.discipline_id (tableaux d'un seul élément, même ordre [x] pas x).",
     "V3 — Comptage : slots.length === documents_new.length ; chaque slot a mode create ; newIndex est 0..n-1 et chaque index 0..n-1 apparaît une fois.",
-    "V4 — OI : le couple (tae.oi_id, tae.comportement_id) existe dans operations_intellectuelles ; tae.nb_lignes égale nb_lignes de cette entrée.",
+    "V4 — OI : le couple (tache.oi_id, tache.comportement_id) existe dans operations_intellectuelles ; tache.nb_lignes égale nb_lignes de cette entrée.",
     "V5 — Documents : si nb_documents est un nombre dans cette entrée, documents_new.length === nb_documents. Si nb_documents est null, documents_new.length est cohérent avec l'énoncé (ex. quatre faits → 4) et avec le nombre de slots.",
     "V6 — Chaque document a repere_temporel non vide et/ou annee_normalisee (nombre) renseigné pour les besoins de dates.",
-    "V7 — Si comportement_id est 1.3 : tae.non_redaction_data est présent avec generated true, 4 optionRows, schéma conforme à non_redaction_avant_apres. Sinon : tae.non_redaction_data absent.",
-    "V8 — Si tae.connaissances_ids est [] : connaissances_hors_rpc a au moins un objet aux quatre champs PDA (verbatim).",
-    "V9 — aspects_societe (tae et documents) : uniquement des chaînes présentes dans aspects_societe_valeurs_autorisees (accents inclus).",
+    "V7 — Si comportement_id est 1.3 : tache.non_redaction_data est présent avec generated true, 4 optionRows, schéma conforme à non_redaction_avant_apres. Sinon : tache.non_redaction_data absent.",
+    "V8 — Si tache.connaissances_ids est [] : connaissances_hors_rpc a au moins un objet aux quatre champs PDA (verbatim).",
+    "V9 — aspects_societe (tache et documents) : uniquement des chaînes présentes dans aspects_societe_valeurs_autorisees (accents inclus).",
     "V10 — auteur_id est null ou une chaîne UUID ; conception_mode est seul ou equipe ; collaborateurs_user_ids est [] si seul.",
     "V11 — Racine : pas de clé publish_payload ni import_notes_fr (hors contrat) ; JSON syntaxiquement valide (pas de commentaire //, pas de trailing comma).",
     "V12 — Enum type document (français strict) : pour chaque i, documents_new[i].type est exactement « textuel » ou « iconographique » (orthographe exacte, voir document_types_autorises). Comparaison caractère par caractère — pas textual, iconographic, ni majuscules anglaises (Textual). Si doute, recopier la chaîne depuis les gabarits reference_payload_*.",
@@ -336,7 +336,7 @@ const bundle = {
     auteur_id: "null ou UUID string",
     connaissances_hors_rpc:
       "objet[] — PDA verbatim si connaissances_ids est [] ; retiré avant RPC après résolution",
-    tae: "objet tâche (consigne, guidage, corrige, niveau_id, discipline_id, …)",
+    tache: "objet tâche (consigne, guidage, corrige, niveau_id, discipline_id, …)",
     documents_new: "tableau des documents à créer",
     slots: "liaison doc_A… → create + newIndex",
     collaborateurs_user_ids: "UUID[] ; [] si conception_mode seul",
@@ -351,17 +351,17 @@ const bundle = {
     non_redaction_data:
       "Présent UNIQUEMENT pour les comportements non rédactionnels structurés (ex. OI1 — 1.3 avant/après). Voir non_redaction_avant_apres et reference_payload_oi13_importable_cap_rouge.",
     redactionnel:
-      "Pour OI7 — 7.1, OI5 — 5.2, OI0 — 0.1, etc. : pas de clé tae.non_redaction_data. consigne / guidage / corrige en HTML (ou texte) comme dans reference_payload_oi7_71_importable (structure rédactionnelle, sans bloc NR).",
+      "Pour OI7 — 7.1, OI5 — 5.2, OI0 — 0.1, etc. : pas de clé tache.non_redaction_data. consigne / guidage / corrige en HTML (ou texte) comme dans reference_payload_oi7_71_importable (structure rédactionnelle, sans bloc NR).",
   },
 
   checklist_json_importable_fr: [
     "Avant tout : protocole_sortie_notebooklm_fr (Phase B = passe_verification_obligatoire_avant_sortie_fr) entièrement OK.",
     "Ne pas inclure import_notes_fr (retiré du bundle ; évite les notes erronées type « règle vérifiée »).",
-    "COPIER tae.niveau_id et tae.discipline_id dans CHAQUE documents_new[..].niveaux_ids et .disciplines_ids (tableaux singletons) — jamais déduit du « Chapitre 1 » ou du numéro de source.",
+    "COPIER tache.niveau_id et tache.discipline_id dans CHAQUE documents_new[..].niveaux_ids et .disciplines_ids (tableaux singletons) — jamais déduit du « Chapitre 1 » ou du numéro de source.",
     "Un seul objet racine ; pas d'enveloppe publish_payload.",
     "auteur_id : null ou UUID string (jamais nombre).",
-    "tae.conception_mode : seul ou equipe ; collaborateurs_user_ids = [] si seul.",
-    "tae.oi_id + comportement_id dans operations_intellectuelles ; nb_lignes aligné ; documents + slots cohérents avec nb_documents ou énoncé si nb_documents null.",
+    "tache.conception_mode : seul ou equipe ; collaborateurs_user_ids = [] si seul.",
+    "tache.oi_id + comportement_id dans operations_intellectuelles ; nb_lignes aligné ; documents + slots cohérents avec nb_documents ou énoncé si nb_documents null.",
     "Aspects : uniquement aspects_societe_valeurs_autorisees (accents exacts).",
     "documents_new[..].type : uniquement textuel ou iconographique (français exact) — V12 ; pas textual / iconographic (l'app peut corriger, le modèle doit viser le canon).",
     "JSON UTF-8 valide, guillemets doubles, pas de commentaires //.",
@@ -458,7 +458,7 @@ const bundle = {
   publish_payload_example: {
     auteur_id: null,
     connaissances_hors_rpc: [],
-    tae: {
+    tache: {
       conception_mode: "seul",
       oi_id: "OI7",
       comportement_id: "7.1",

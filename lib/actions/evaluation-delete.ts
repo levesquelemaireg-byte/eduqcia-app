@@ -7,7 +7,7 @@ export type DeleteEvaluationActionResult =
   | { ok: true }
   | { ok: false; code: "auth" | "forbidden" | "not_found" | "db" };
 
-/** Supprime une épreuve dont l'utilisateur est l'auteur (`eval_delete` RLS). Les lignes `evaluation_tae` sont supprimées automatiquement (ON DELETE CASCADE). */
+/** Supprime une épreuve dont l'utilisateur est l'auteur (`eval_delete` RLS). Les lignes `evaluation_tache` sont supprimées automatiquement (ON DELETE CASCADE). */
 export async function deleteEvaluationAction(
   evaluationId: string,
 ): Promise<DeleteEvaluationActionResult> {

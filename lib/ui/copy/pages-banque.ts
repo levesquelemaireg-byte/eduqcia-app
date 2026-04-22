@@ -177,7 +177,7 @@ export const BANK_TASK_FILTER_COMPORTEMENT_HINT =
   "Disponible après la sélection de l'opération intellectuelle.";
 export const BANK_TASK_FILTER_NIVEAU = "Niveau scolaire";
 export const BANK_TASK_FILTER_DISCIPLINE = "Discipline";
-/** Filtre sur `tae.cd_id` (= clé d'une ligne du référentiel Miller, étape 5 du wizard). */
+/** Filtre sur `tache.cd_id` (= clé d'une ligne du référentiel Miller, étape 5 du wizard). */
 export const BANK_TASK_FILTER_CD = "Compétence disciplinaire";
 export const BANK_TASK_FILTER_CD_HINT =
   "Optionnel. Numéro technique du critère dans le référentiel (celui enregistré sur la tâche). Laissez vide si vous ne le connaissez pas — utilisez plutôt le niveau scolaire et la discipline.";
@@ -194,7 +194,7 @@ export const BANK_EVAL_SEARCH_LABEL = "Recherche par titre";
 /** Banque — épreuve publiée par un autre enseignant : pas d'édition depuis cet écran. */
 export const BANK_EVAL_NO_EDIT_OTHER = "Réservé à l'auteur";
 
-/** Banque — onglet Épreuves ; compteur `evaluation_tae` (forme longue, DECISIONS lexique). */
+/** Banque — onglet Épreuves ; compteur `evaluation_tache` (forme longue, DECISIONS lexique). */
 export function copyBankEvaluationTaskCount(count: number): string {
   if (count === 0) {
     return "Aucune tâche d'apprentissage et d'évaluation dans cette épreuve";

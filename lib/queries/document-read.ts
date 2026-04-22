@@ -10,10 +10,10 @@ export async function countPublishedTacheUsagesForDocument(
   documentId: string,
 ): Promise<number> {
   const { data, error } = await supabase
-    .from("tae_documents")
-    .select("tae_id, tae!inner(is_published)")
+    .from("tache_documents")
+    .select("tae_id, tache!inner(is_published)")
     .eq("document_id", documentId)
-    .eq("tae.is_published", true);
+    .eq("tache.is_published", true);
 
   if (error || !data?.length) return 0;
   return new Set(data.map((row) => row.tae_id)).size;

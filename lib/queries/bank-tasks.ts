@@ -145,8 +145,8 @@ export function serializeBankTacheQueryForHref(
   return `/bank?${u.toString()}`;
 }
 
-/** Colonnes présentes dans le `select` sur `banque_tae` — la vue dans `database.ts` peut être incomplète tant que les types ne sont pas régénérés. */
-type BanqueTacheJoinRow = Database["public"]["Views"]["banque_tae"]["Row"] & {
+/** Colonnes présentes dans le `select` sur `banque_tache` — la vue dans `database.ts` peut être incomplète tant que les types ne sont pas régénérés. */
+type BanqueTacheJoinRow = Database["public"]["Views"]["banque_tache"]["Row"] & {
   consigne?: string | null;
   consigne_search_plain?: string | null;
   bank_popularity_score?: number | null;
@@ -170,7 +170,7 @@ function mapBanqueRow(row: BanqueTacheJoinRow): BankTacheRow | null {
 }
 
 /**
- * Liste paginée des TAÉ publiées (vue `banque_tae`) — filtres + tri + recherche sur `consigne_search_plain`.
+ * Liste paginée des TAÉ publiées (vue `banque_tache`) — filtres + tri + recherche sur `consigne_search_plain`.
  */
 export async function getBankPublishedTachePage(
   supabase: Client,
@@ -180,7 +180,7 @@ export async function getBankPublishedTachePage(
   const from = page * BANK_PAGE_SIZE;
   const to = from + BANK_PAGE_SIZE - 1;
 
-  let q = supabase.from("banque_tae").select(
+  let q = supabase.from("banque_tache").select(
     `
       id,
       consigne,

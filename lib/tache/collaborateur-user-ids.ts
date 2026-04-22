@@ -5,7 +5,7 @@
 
 import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 
-/** UUID (forme Postgres / auth), insensible à la casse — aligné sur les garde-fous `tae.id`. */
+/** UUID (forme Postgres / auth), insensible à la casse — aligné sur les garde-fous `tache.id`. */
 const PROFILE_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function isProfileCollaborateurId(id: string): boolean {
@@ -13,7 +13,7 @@ export function isProfileCollaborateurId(id: string): boolean {
 }
 
 /**
- * UUIDs à envoyer à `publish_tae_transaction` / `update_tae_transaction`.
+ * UUIDs à envoyer à `publish_tache_transaction` / `update_tache_transaction`.
  * Mode équipe : au moins un id valide, distinct de l’auteur, sans doublon.
  */
 export function buildCollaborateursUserIdsForPayload(

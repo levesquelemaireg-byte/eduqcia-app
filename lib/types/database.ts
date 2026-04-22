@@ -83,14 +83,14 @@ export type Database = {
             foreignKeyName: "commentaires_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "commentaires_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
         ];
@@ -327,7 +327,7 @@ export type Database = {
         };
         Relationships: [];
       };
-      evaluation_tae: {
+      evaluation_tache: {
         Row: {
           evaluation_id: string;
           id: string;
@@ -358,14 +358,14 @@ export type Database = {
             foreignKeyName: "evaluation_tae_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "evaluation_tae_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
         ];
@@ -683,7 +683,7 @@ export type Database = {
           },
         ];
       };
-      tae: {
+      tache: {
         Row: {
           aspects_societe: Database["public"]["Enums"]["aspect_societe"][];
           auteur_id: string;
@@ -804,7 +804,7 @@ export type Database = {
           },
         ];
       };
-      tae_collaborateurs: {
+      tache_collaborateurs: {
         Row: {
           added_at: string;
           added_by: string | null;
@@ -835,14 +835,14 @@ export type Database = {
             foreignKeyName: "tae_collaborateurs_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "tae_collaborateurs_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
           {
@@ -854,7 +854,7 @@ export type Database = {
           },
         ];
       };
-      tae_documents: {
+      tache_documents: {
         Row: {
           document_id: string;
           id: string;
@@ -888,19 +888,19 @@ export type Database = {
             foreignKeyName: "tae_documents_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "tae_documents_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
         ];
       };
-      tae_usages: {
+      tache_usages: {
         Row: {
           added_to_eval: boolean;
           favorited: boolean;
@@ -936,14 +936,14 @@ export type Database = {
             foreignKeyName: "tae_usages_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "tae_usages_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
           {
@@ -955,7 +955,7 @@ export type Database = {
           },
         ];
       };
-      tae_versions: {
+      tache_versions: {
         Row: {
           archived_at: string;
           archived_by: string | null;
@@ -1007,19 +1007,19 @@ export type Database = {
             foreignKeyName: "tae_versions_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "tae_versions_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
         ];
       };
-      tae_wizard_drafts: {
+      tache_wizard_drafts: {
         Row: {
           id: string;
           payload: Json;
@@ -1087,14 +1087,14 @@ export type Database = {
             foreignKeyName: "votes_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "votes_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
           {
@@ -1148,14 +1148,14 @@ export type Database = {
             foreignKeyName: "votes_archives_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "votes_archives_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
           {
@@ -1169,7 +1169,7 @@ export type Database = {
       };
     };
     Views: {
-      banque_tae: {
+      banque_tache: {
         Row: {
           alignement_n1: number | null;
           alignement_n2: number | null;
@@ -1180,7 +1180,6 @@ export type Database = {
           auteur_ecole: string | null;
           auteur_id: string | null;
           auteur_nom: string | null;
-          auteur_prenom: string | null;
           bank_popularity_score: number | null;
           cd_id: number | null;
           clarte_n1: number | null;
@@ -1275,14 +1274,14 @@ export type Database = {
             foreignKeyName: "votes_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "votes_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
         ];
@@ -1318,21 +1317,21 @@ export type Database = {
             foreignKeyName: "votes_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "banque_tae";
+            referencedRelation: "banque_tache";
             referencedColumns: ["id"];
           },
           {
             foreignKeyName: "votes_tae_id_fkey";
             columns: ["tae_id"];
             isOneToOne: false;
-            referencedRelation: "tae";
+            referencedRelation: "tache";
             referencedColumns: ["id"];
           },
         ];
       };
     };
     Functions: {
-      apply_tae_collaborateurs_from_payload: {
+      apply_tache_collaborateurs_from_payload: {
         Args: {
           p_auteur: string;
           p_delete_existing: boolean;
@@ -1341,14 +1340,14 @@ export type Database = {
         };
         Returns: undefined;
       };
-      auth_can_edit_tae: { Args: { p_tae_id: string }; Returns: boolean };
+      auth_can_edit_tache: { Args: { p_tae_id: string }; Returns: boolean };
       auth_can_vote: { Args: { p_tae_id: string }; Returns: boolean };
       auth_is_active: { Args: never; Returns: boolean };
       auth_role: {
         Args: never;
         Returns: Database["public"]["Enums"]["user_role"];
       };
-      bump_tae_version: {
+      bump_tache_version: {
         Args: { p_tae_id: string; p_trigger_field: string };
         Returns: undefined;
       };
@@ -1393,8 +1392,8 @@ export type Database = {
         Args: { p_document_id: string; p_tae_id: string };
         Returns: undefined;
       };
-      publish_tae_transaction: { Args: { p_payload: Json }; Returns: string };
-      record_tae_usage: {
+      publish_tache_transaction: { Args: { p_payload: Json }; Returns: string };
+      record_tache_usage: {
         Args: {
           p_added_to_eval?: boolean;
           p_favorited?: boolean;
@@ -1414,12 +1413,12 @@ export type Database = {
       };
       show_limit: { Args: never; Returns: number };
       show_trgm: { Args: { "": string }; Returns: string[] };
-      tae_user_can_access_for_document_link: {
+      tache_user_can_access_for_document_link: {
         Args: { p_tae_id: string };
         Returns: boolean;
       };
       unaccent: { Args: { "": string }; Returns: string };
-      update_tae_transaction: {
+      update_tache_transaction: {
         Args: { p_payload: Json; p_tae_id: string };
         Returns: string;
       };
@@ -1442,7 +1441,7 @@ export type Database = {
       document_legend_position: "haut_gauche" | "haut_droite" | "bas_gauche" | "bas_droite";
       document_source_type: "primaire" | "secondaire";
       document_structure: "simple" | "perspectives" | "deux_temps";
-      favori_type: "tae" | "document" | "evaluation";
+      favori_type: "tache" | "document" | "evaluation";
       oi_status: "active" | "coming_soon";
       user_role: "enseignant" | "conseiller_pedagogique" | "admin";
       version_trigger: "minor_patch" | "major_bump";
@@ -1590,7 +1589,7 @@ export const Constants = {
       document_legend_position: ["haut_gauche", "haut_droite", "bas_gauche", "bas_droite"],
       document_source_type: ["primaire", "secondaire"],
       document_structure: ["simple", "perspectives", "deux_temps"],
-      favori_type: ["tae", "document", "evaluation"],
+      favori_type: ["tache", "document", "evaluation"],
       oi_status: ["active", "coming_soon"],
       user_role: ["enseignant", "conseiller_pedagogique", "admin"],
       version_trigger: ["minor_patch", "major_bump"],

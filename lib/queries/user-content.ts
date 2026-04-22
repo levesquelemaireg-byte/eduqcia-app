@@ -10,7 +10,7 @@ import { truncateText } from "@/lib/utils/stripHtml";
 /** Valeurs d’URL `?filtre=` — alignées sur `docs/DECISIONS.md` (page Mes tâches). */
 export type MyTacheListFiltre = "toutes" | "brouillons" | "publiees";
 
-/** Identifiant sentinelle pour la ligne « brouillon wizard » (pas d’UUID `tae`). */
+/** Identifiant sentinelle pour la ligne « brouillon wizard » (pas d’UUID `tache`). */
 export const MY_QUESTIONS_WIZARD_SERVER_DRAFT_ID = "wizard-server-draft" as const;
 
 export function parseMyTacheListFiltre(raw: string | string[] | undefined): MyTacheListFiltre {
@@ -43,7 +43,7 @@ export async function getMyTacheList(filtre: MyTacheListFiltre = "toutes"): Prom
   if (!user) return [];
 
   let query = supabase
-    .from("tae")
+    .from("tache")
     .select("id, consigne, is_published, updated_at")
     .eq("auteur_id", user.id)
     .eq("is_archived", false);
@@ -70,7 +70,7 @@ export async function getMyTacheList(filtre: MyTacheListFiltre = "toutes"): Prom
   }
 
   const { data: draftRow, error: draftErr } = await supabase
-    .from("tae_wizard_drafts")
+    .from("tache_wizard_drafts")
     .select("payload, updated_at")
     .eq("user_id", user.id)
     .maybeSingle();

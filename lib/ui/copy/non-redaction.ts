@@ -41,7 +41,7 @@ export const NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
 export const NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA =
   "Options de réponse : quatre suites de numéros de documents";
 /**
- * Guidage **élève** (feuille / sommaire / `tae.guidage` publié) — fixe pour l'OI ordre chronologique, non éditable.
+ * Guidage **élève** (feuille / sommaire / `tache.guidage` publié) — fixe pour l'OI ordre chronologique, non éditable.
  * Distinct de `NR_ORDRE_OPTIONS_HELP` (texte **enseignant** sur la génération des options A–D).
  */
 export const NR_ORDRE_STUDENT_GUIDAGE =
@@ -177,7 +177,7 @@ export function formatNrOrdreBloc4ReminderDigitDocLine(digit: number, slotLetter
  * Spec : `docs/wizard-oi-non-redactionnelle.md` (parcours 2). Branchement wizard à venir.
  */
 /**
- * Guidage **élève** (`tae.guidage`) — fixe pour ce parcours, non éditable par l'enseignant.
+ * Guidage **élève** (`tache.guidage`) — fixe pour ce parcours, non éditable par l'enseignant.
  * L'élève relie le **document cible** aux **segments** A, B, C (ou D) de la ligne du temps.
  */
 export const NR_LIGNE_TEMPS_STUDENT_GUIDAGE =

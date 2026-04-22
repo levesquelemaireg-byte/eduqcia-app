@@ -28,7 +28,7 @@ export async function saveWizardDraftAction(payload: unknown): Promise<SaveWizar
     updated_at: new Date().toISOString(),
   };
 
-  const { error } = await supabase.from("tae_wizard_drafts").upsert(row, {
+  const { error } = await supabase.from("tache_wizard_drafts").upsert(row, {
     onConflict: "user_id",
   });
 
@@ -47,7 +47,7 @@ export async function deleteWizardDraftAction(): Promise<DeleteWizardDraftResult
   } = await supabase.auth.getUser();
   if (!user) return { ok: false, error: "auth" };
 
-  const { error } = await supabase.from("tae_wizard_drafts").delete().eq("user_id", user.id);
+  const { error } = await supabase.from("tache_wizard_drafts").delete().eq("user_id", user.id);
 
   if (error) return { ok: false, error: "database" };
   revalidatePath("/dashboard");

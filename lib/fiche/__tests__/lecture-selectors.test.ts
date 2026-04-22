@@ -24,7 +24,7 @@ const EMPTY_REFS: SelectorRefs = {
 /** Minimal valid TacheFicheData for testing. */
 function makeFiche(overrides: Partial<TacheFicheData> = {}): TacheFicheData {
   return {
-    id: "tae-1",
+    id: "tache-1",
     auteur_id: "user-1",
     auteurs: [{ id: "user-1", first_name: "Jean", last_name: "Tremblay" }],
     consigne: "<p>Consigne test</p>",

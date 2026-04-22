@@ -17,7 +17,7 @@ export default async function EditQuestionPage({ params }: PageProps) {
   if (!user) redirect("/login");
 
   const { data: tache, error } = await supabase
-    .from("tae")
+    .from("tache")
     .select("id, auteur_id")
     .eq("id", id)
     .maybeSingle();

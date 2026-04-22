@@ -308,7 +308,7 @@ export const TOAST_DOCUMENT_IMAGE_INVALID =
 
 /** Bloc 4 — échec envoi Supabase Storage */
 export const TOAST_DOCUMENT_IMAGE_UPLOAD_FAILED =
-  "L'envoi de l'image a échoué. Réessayez ou vérifiez le bucket « tache-document-images » sur Supabase.";
+  "L'envoi de l'image a échoué. Réessayez ou vérifiez le bucket « tae-document-images » sur Supabase.";
 
 /** Bloc 4 — session requise pour l'upload */
 export const TOAST_DOCUMENT_IMAGE_UPLOAD_AUTH =

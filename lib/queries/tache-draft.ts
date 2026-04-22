@@ -19,7 +19,7 @@ export async function getWizardDraftForUser(): Promise<WizardDraftLoadResult> {
   if (!user) return { status: "none" };
 
   const { data, error } = await supabase
-    .from("tae_wizard_drafts")
+    .from("tache_wizard_drafts")
     .select("payload")
     .eq("user_id", user.id)
     .maybeSingle();
