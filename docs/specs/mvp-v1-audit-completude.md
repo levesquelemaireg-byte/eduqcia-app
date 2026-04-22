@@ -213,8 +213,8 @@
 
 - **Route :** `app/(app)/questions/new/page.tsx` → `TaeForm`
 - **7 blocs :** Auteurs, Paramètres, Consigne+guidage, Documents, Corrigé, CD, Connaissances
-- **State :** reducer `lib/tae/tae-form-reducer.ts`, guards `lib/tae/wizard-publish-guards.ts`
-- **Stepper :** `components/tae/TaeForm/Stepper.tsx` + `StepperNavFooter.tsx`
+- **State :** reducer `lib/tache/tae-form-reducer.ts`, guards `lib/tache/wizard-publish-guards.ts`
+- **Stepper :** `components/tache/wizard/Stepper.tsx` + `StepperNavFooter.tsx`
 - **Effort restant :** 0
 
 #### C7 — Référencer des documents de la banque ✅ Fait
@@ -242,7 +242,7 @@
 
 - **Action :** `lib/actions/tae-publish.ts` → `publishTaeAction()`
 - **RPC :** `publish_tae_transaction(p_payload)` — transaction atomique (tae + documents + collaborateurs + CD + connaissances)
-- **Payload :** `lib/tae/publish-tae.ts` — construction complète du payload
+- **Payload :** `lib/tache/publish-tae.ts` — construction complète du payload
 - **Note :** ⚠️ `revalidatePath` absent après publication (cache stale possible) — à corriger
 - **Dépendances :** C6, C7/C8 (documents attachés)
 - **Effort restant :** 15 min (ajouter `revalidatePath`)
@@ -250,7 +250,7 @@
 #### C11 — Modifier une tâche publiée ✅ Fait
 
 - **Route :** `app/(app)/questions/[id]/edit/page.tsx`
-- **Hydratation :** `lib/tae/load-tae-for-edit.ts` → `fetchTaeFormStateForEdit()`
+- **Hydratation :** `lib/tache/load-tae-for-edit.ts` → `fetchTaeFormStateForEdit()`
 - **RPC :** `update_tae_transaction(tae_id, payload)` — gestion version major/minor
 - **Guard :** seul l'auteur peut éditer ; vérifie usage dans épreuves
 - **Effort restant :** 0
@@ -265,9 +265,9 @@
 #### C13 — Toutes les OI et comportements ✅ Fait (couverture intentionnelle)
 
 - **OI actives (100 % implémentées) :** OI0.1, OI1.1, OI1.2, OI1.3, OI3.1–3.5, OI4.1, OI4.2, OI6.1–6.3, OI7.1
-- **OI non-rédactionnelles (OI1) :** 3 variantes complètes — ordre chronologique, ligne du temps, avant-après (`lib/tae/non-redaction/`)
+- **OI non-rédactionnelles (OI1) :** 3 variantes complètes — ordre chronologique, ligne du temps, avant-après (`lib/tache/non-redaction/`)
 - **OI marquées `coming_soon` dans `oi.json` :** OI2 (carte historique), OI4.3–4.4 (causes/conséquences avancées), OI5 (manifestations)
-- **Configurations :** `lib/tae/wizard-bloc-config.ts` — modèle souple, structure, pur, perspectives, intrus
+- **Configurations :** `lib/tache/wizard-bloc-config.ts` — modèle souple, structure, pur, perspectives, intrus
 - **Verdict :** toutes les OI **actives** sont supportées. Les OI `coming_soon` sont des choix de périmètre pédagogique, pas des lacunes techniques. Le wizard refuse proprement ces OI dans le sélecteur Bloc 2
 - **Effort restant :** 0 pour le MVP (les OI manquantes sont du contenu pédagogique futur, pas de la dette technique)
 
@@ -427,7 +427,7 @@
 - **Infrastructure existante :**
   - Routes print : `/questions/[id]/print`, `/evaluations/[id]/print`, `/documents/[id]/print`
   - Shell print : `app/(print)/layout.tsx` — shell minimal sans AppShell
-  - CSS print : `lib/tae/print-page-css.ts` — `@page { size: letter portrait; margin: 2cm; }`, police Arial 11pt
+  - CSS print : `lib/tache/print-page-css.ts` — `@page { size: letter portrait; margin: 2cm; }`, police Arial 11pt
   - Composants HTML : `PrintableFichePreview.tsx`, `EvaluationPrintableBody.tsx`
 - **Ce qui manque :**
   - **Puppeteer / Chromium headless** — non installé (`puppeteer-core` + `@sparticuz/chromium-min` pour Vercel)

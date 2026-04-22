@@ -718,7 +718,7 @@ Le composant `DocumentCardPrint` est rendu côté serveur par Puppeteer lors de 
 
 ### 7.4 Avec `document-categories.json`
 
-Tous les wrappers qui affichent une icône de catégorie consomment les helpers de `lib/tae/document-categories-helpers.ts` pour récupérer l'icône Material Symbols depuis le JSON. Aucun hardcoding.
+Tous les wrappers qui affichent une icône de catégorie consomment les helpers de `lib/tache/document-categories-helpers.ts` pour récupérer l'icône Material Symbols depuis le JSON. Aucun hardcoding.
 
 ### 7.5 Avec le pipeline images existant
 

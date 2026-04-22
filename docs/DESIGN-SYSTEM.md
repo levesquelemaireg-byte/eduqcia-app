@@ -8,7 +8,7 @@ Tokens visuels, composants, icônes, Tailwind, modales et **contrat formulaires*
 
 Base : `app/globals.css` — `html { font-size: 112.5%; }` (≈ 18px si navigateur à 16px) ; `body` interligne **`--app-leading-body` (1,375)** — ratio adapté au corps > 16px (pratique courante ~1,35–1,4). Les utilitaires Tailwind **`leading-*`** sont harmonisés dans `@theme inline` : **`leading-normal` 1,375**, **`leading-relaxed` 1,45** (texte secondaire / paragraphes), **`leading-snug` 1,32** (UI dense), **`leading-tight` 1,22**, **`leading-loose` 1,55 — valeurs plus serrées que les défauts Tailwind (ex. `relaxed` 1,625 trop aéré à cette échelle). Police : **Manrope\*\* (400–800).
 
-**Exception — barèmes ministériels :** à l’intérieur des tableaux de grille de correction (`components/tae/grilles/`, `eval-grid.module.css`, `oi6-so3-grid.module.css`), **ne pas** appliquer les interlignes ci-dessus : typo et `line-height` **restent** ceux définis **sur les composants / CSS modules de grilles** (Arial, référentiel ministériel). Détail recette : [ARCHITECTURE.md](./ARCHITECTURE.md) (section Grilles).
+**Exception — barèmes ministériels :** à l’intérieur des tableaux de grille de correction (`components/tache/grilles/`, `eval-grid.module.css`, `oi6-so3-grid.module.css`), **ne pas** appliquer les interlignes ci-dessus : typo et `line-height` **restent** ceux définis **sur les composants / CSS modules de grilles** (Arial, référentiel ministériel). Détail recette : [ARCHITECTURE.md](./ARCHITECTURE.md) (section Grilles).
 
 ### 1.1.1 Deux-points (texte UI)
 
@@ -41,7 +41,7 @@ Bibliothèque **unique**. Glyphe en **`1em`**, pattern **`.icon-text`** / **`.ic
 
 **Wizard :** pas d’icône devant le **titre d’étape** ; glyphes pour **libellés de champs** — [DECISIONS.md](./DECISIONS.md#stepper-visuel-taé), [DECISIONS.md](./DECISIONS.md#mapping-glyphes--bloc-2-libellés-de-champs).
 
-**Documentation légale :** tout encadré ou section d’avertissement juridique (droits d’auteur, Copibec, engagement utilisateur, confirmation avant enregistrement, etc.) utilise **exclusivement** le glyphe Material Symbols Outlined **`gavel`** — **`1em`**, **`text-accent`**, pattern **`.icon-text`** avec le libellé de section si présent. Composant : **`LegalNoticeIcon`** (`components/ui/LegalNoticeIcon.tsx`). **Interdit** d’employer une autre icône pour ce rôle sans décision du développeur — registre [DECISIONS.md](./DECISIONS.md#justifications-des-icônes-material) (**Documentation légale**) ; tooltip : `LEGAL_NOTICE_MATERIAL_ICON` / `MATERIAL_ICON_TOOLTIP` dans `lib/tae/icon-justifications.ts`.
+**Documentation légale :** tout encadré ou section d’avertissement juridique (droits d’auteur, Copibec, engagement utilisateur, confirmation avant enregistrement, etc.) utilise **exclusivement** le glyphe Material Symbols Outlined **`gavel`** — **`1em`**, **`text-accent`**, pattern **`.icon-text`** avec le libellé de section si présent. Composant : **`LegalNoticeIcon`** (`components/ui/LegalNoticeIcon.tsx`). **Interdit** d’employer une autre icône pour ce rôle sans décision du développeur — registre [DECISIONS.md](./DECISIONS.md#justifications-des-icônes-material) (**Documentation légale**) ; tooltip : `LEGAL_NOTICE_MATERIAL_ICON` / `MATERIAL_ICON_TOOLTIP` dans `lib/tache/icon-justifications.ts`.
 
 **Curseur — contrôles cliquables :** tout **bouton** activable affiche la **main** (`cursor: pointer`) ; état désactivé → `not-allowed` — règle globale dans `app/globals.css`. Les boutons **(i)** d’aide (`LabelWithInfo`, `FieldHelpModalButton`) incluent explicitement **`cursor-pointer`** ; ne pas laisser d’icône dans un hit target sans curseur explicite si le pattern sort du `button` natif.
 
@@ -66,11 +66,11 @@ Bibliothèque **unique**. Glyphe en **`1em`**, pattern **`.icon-text`** / **`.ic
 | Brouillon / Publié                                 | `construction` / `check_circle`           |
 | Documentation légale                               | `gavel`                                   |
 
-Justifications pédagogiques : [DECISIONS.md](./DECISIONS.md#justifications-des-icônes-material) ; `lib/tae/icon-justifications.ts`.
+Justifications pédagogiques : [DECISIONS.md](./DECISIONS.md#justifications-des-icônes-material) ; `lib/tache/icon-justifications.ts`.
 
 #### Icônes des types de document
 
-Les types de document ont des icônes **fixes** utilisées de manière cohérente partout dans l'application (toggles, en-têtes, badges, fallbacks pour la catégorie « Autre »). Source de vérité unique : `getDocumentTypeIcon()` dans `lib/tae/document-categories-helpers.ts`.
+Les types de document ont des icônes **fixes** utilisées de manière cohérente partout dans l'application (toggles, en-têtes, badges, fallbacks pour la catégorie « Autre »). Source de vérité unique : `getDocumentTypeIcon()` dans `lib/tache/document-categories-helpers.ts`.
 
 | Type                        | Icône Material Symbols Outlined |
 | --------------------------- | ------------------------------- |

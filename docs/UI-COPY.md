@@ -538,7 +538,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 **Note :** les anciennes constantes `NR_ORDRE_OPTION_*_PLACEHOLDER` ne décrivent plus une saisie libre ; l’affichage public des suites est `formatOrdreOptionRowDisplay` → `1 - 2 - 3 - 4`.
 
-- **Feuille élève (HTML consigne publiée, impression) :** libellé **Réponse :** — `NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL` ; libellé d’accessibilité du groupe d’options — `NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA` (`lib/tae/non-redaction/ordre-chronologique-payload.ts`, styles sous `[data-ordre-chrono-student="true"]` dans `app/globals.css`).
+- **Feuille élève (HTML consigne publiée, impression) :** libellé **Réponse :** — `NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL` ; libellé d’accessibilité du groupe d’options — `NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA` (`lib/tache/non-redaction/ordre-chronologique-payload.ts`, styles sous `[data-ordre-chrono-student="true"]` dans `app/globals.css`).
 
 ### Parcours non rédactionnel — ligne du temps (OI1 · comportement 1.2)
 
@@ -564,7 +564,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ### Parcours perspectives (OI3 · comportements 3.1–3.5)
 
-**Registre :** constantes **`PERSP_*`** dans `lib/ui/ui-copy.ts` (spec [SPEC-TEMPLATES-CONSIGNE.md](./SPEC-TEMPLATES-CONSIGNE.md)). **Branchement :** `WIZARD_BLOC_CONFIGS` dans `lib/tae/wizard-bloc-config.ts` — `Bloc3Resolver`, `Bloc4Resolver`, `Bloc5Resolver`.
+**Registre :** constantes **`PERSP_*`** dans `lib/ui/ui-copy.ts` (spec [SPEC-TEMPLATES-CONSIGNE.md](./SPEC-TEMPLATES-CONSIGNE.md)). **Branchement :** `WIZARD_BLOC_CONFIGS` dans `lib/tache/wizard-bloc-config.ts` — `Bloc3Resolver`, `Bloc4Resolver`, `Bloc5Resolver`.
 
 #### Étape 3 — Modèle souple (3.1, 3.2)
 
@@ -1072,7 +1072,7 @@ Toute copy temporaire doit être marquée comme **PROVISOIRE** dans le code et r
 ## Trous et notes
 
 - **Toasts publication étendus :** nombreux messages dans `lib/ui/ui-copy.ts` (lignes ~6–46 et suivantes) ne sont pas tous recopiés mot à mot dans ce fichier ; le TypeScript reste la **référence d’exécution** — toute évolution doit mettre à jour **les deux**.
-- **« Modifications enregistrées (brouillon) » :** chaîne en dur dans `components/tae/TaeForm/StepperNavFooter.tsx` — à externaliser pour éviter la dérive.
+- **« Modifications enregistrées (brouillon) » :** chaîne en dur dans `components/tache/wizard/StepperNavFooter.tsx` — à externaliser pour éviter la dérive.
 - **Titres modales Bloc 2 :** `MODAL_TITRE_COMPORTEMENT` est défini en local dans `Bloc2GrilleAndModals.tsx` — envisager une constante partagée alignée sur ce registre.
-- **Libellés Secondaire 1…4 et disciplines** : `components/tae/TaeForm/bloc2/constants.ts` (`NIVEAUX`, `DISCIPLINE_LABEL`) — non repris exhaustivement ici.
+- **Libellés Secondaire 1…4 et disciplines** : `components/tache/wizard/bloc2/constants.ts` (`NIVEAUX`, `DISCIPLINE_LABEL`) — non repris exhaustivement ici.
 - **Maquettes « UI suggestion »** de l’ancien document unique : non reproduites ; ne constituent pas une source de copy.

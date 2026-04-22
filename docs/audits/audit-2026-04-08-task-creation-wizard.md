@@ -47,7 +47,7 @@ E2.1 — RÉGRESSION majeure — Spec §2.3 : « Les nœuds documentReference po
 La résolution contextuelle prévue §2.4 (lettre locale en tâche isolée → numéro global déduplicé en épreuve) est impossible : la lettre est figée dans le HTML stocké au moment de l'insertion.
 Si l'enseignant réordonne les documents (spec §3.5 : « les chips de référence dans la consigne se mettent à jour automatiquement »), les références ne se mettent pas à jour parce qu'elles encodent une lettre, pas une cible.
 Si le slot doc_A est dépeuplé et un autre document y est mis, l'ancienne référence pointe encore vers la lettre A mais n'a plus aucune cible vérifiable.
-Fichiers concernés : components/tae/TaeForm/tiptap/extensionDocRef.ts, lib/tae/consigne-helpers.ts (helpers de résolution), components/tae/TaeForm/tiptap/DocRefNodeView.tsx.
+Fichiers concernés : components/tache/wizard/tiptap/extensionDocRef.ts, lib/tache/consigne-helpers.ts (helpers de résolution), components/tache/wizard/tiptap/DocRefNodeView.tsx.
 
 E2.2 — AMBIGUÏTÉ — Spec §2.5 : « avant d'ouvrir le document en édition, le système détecte combien de tâches le référencent » + modale d'avertissement avec option Dupliquer pour créer une variante. Je n'ai pas trouvé cette modale dans BanqueDocumentsStub ni dans le wizard document. La spec décrit une UX éditrice de document (probablement hors wizard tâche), donc à clarifier : est-ce attendu dans le wizard de tâche ou dans le wizard document ? Si c'est dans le wizard document, c'est hors périmètre de cet audit.
 
@@ -106,7 +106,7 @@ E3.4.2 — RÉGRESSION — Spec §3.4 : « Panneau latéral "Modèles fréquents
 
 E3.4.3 — INNOVATION — Le build ajoute une famille de templates de consigne structurés (gabarit OI3 perspectives, OI6 changement/continuité, OI7 liens de causalité) qui va au-delà du « modèle libre à insérer » prévu par la spec. Le pattern Bloc3TemplateStructure / Bloc3TemplatePur génère une consigne déterministe à partir de champs typés (perspectivesMode, contexte, enjeu, éléments). C'est plus riche que les « 2-4 modèles fréquents » et c'est probablement la bonne direction — à faire remonter dans la spec.
 
-Fichiers : Bloc3ConsigneProduction.tsx, Bloc3ModeleSouple.tsx, Bloc3TemplateStructure.tsx, Bloc3TemplatePur.tsx, lib/tae/wizard-bloc-config.ts, lib/tae/consigne-templates.ts.
+Fichiers : Bloc3ConsigneProduction.tsx, Bloc3ModeleSouple.tsx, Bloc3TemplateStructure.tsx, Bloc3TemplatePur.tsx, lib/tache/wizard-bloc-config.ts, lib/tache/consigne-templates.ts.
 
 E3.4.4 — DETTE TECHNIQUE — Tu m'as déjà signalé SectionAspects et SectionCorrige comme « artefacts morts dans bloc3/ ». Vérification :
 
@@ -128,7 +128,7 @@ E3.5.2 — RÉGRESSION — Spec §3.5 : « modale de recherche dans la banque de
 
 E3.5.3 — RÉGRESSION — Spec §3.5 : « Créer un nouveau document — lance le wizard de création de document en pile (ouvert par-dessus le wizard de tâche) ». Le build utilise DocumentSlotCreateForm, un formulaire inline dans le panneau du slot, pas un wizard complet en pile. Cela diverge d'un « wizard de création de document » unifié qui existe par ailleurs dans components/documents/wizard/AutonomousDocumentWizard.tsx. Le formulaire inline est probablement plus rapide pour l'enseignant mais pose deux problèmes : (a) le code de saisie de document est dupliqué entre le wizard standalone et le slot inline, (b) on ne peut pas profiter de toutes les étapes du wizard standalone (légende, repère temporel, etc.). À trancher : régression, ou choix UX assumé ?
 
-E3.5.4 — RÉGRESSION — Spec §3.5 : « Avertissements "est-ce volontaire ?" (à la validation, non bloquants) : Si un document attaché n'a pas de titre / pas de source ». Aucun guard de ce type dans wizard-publish-guards.ts ni dans le handleNext de StepperNavFooter. Cherché : grep volontaire, sans titre, sans source → 0. Fichier suggéré : lib/tae/wizard-publish-guards.ts + nouveau composant modal.
+E3.5.4 — RÉGRESSION — Spec §3.5 : « Avertissements "est-ce volontaire ?" (à la validation, non bloquants) : Si un document attaché n'a pas de titre / pas de source ». Aucun guard de ce type dans wizard-publish-guards.ts ni dans le handleNext de StepperNavFooter. Cherché : grep volontaire, sans titre, sans source → 0. Fichier suggéré : lib/tache/wizard-publish-guards.ts + nouveau composant modal.
 
 3.6 Étape 5 — Corrigé et notes au correcteur
 ✓ Conformités
@@ -198,7 +198,7 @@ E4.4 — INNOVATION — shouldPrintDocumentFullWidth (print-document-full-width.
 E4.5 — AMBIGUÏTÉ — Spec §4.4 : « Image : si largeur native ≤ 315 px, largeur simple ; sinon largeur double ». shouldPrintDocumentFullWidth retourne toujours false pour les iconographiques (print-document-full-width.ts:23-25). Donc toutes les images sont en largeur simple, peu importe leur taille native. C'est une divergence claire mais je la classe en ambiguïté car la spec mentionne un seuil exact (315 px) qui n'est pas trivial à mesurer côté CSS sans connaître la résolution native — il manque peut-être une décision pratique qui n'a pas été notée. Pour moi c'est une RÉGRESSION en réalité.
 
 ✗ Absences
-A4.1 — Indicateur de débordement « dossier > 1 page » (E4.3 ci-dessus). Suggéré : nouveau hook useFicheOverflow dans lib/tae/preview/.
+A4.1 — Indicateur de débordement « dossier > 1 page » (E4.3 ci-dessus). Suggéré : nouveau hook useFicheOverflow dans lib/tache/preview/.
 
 A4.2 — Toggle Formatif/Sommatif (E4.2 ci-dessus).
 
@@ -207,7 +207,7 @@ A4.3 — Onglet inline « Aperçu sommaire / Aperçu imprimé » dans la colonne
 Section 5 — Architecture technique
 ✓ Conformités
 §5.1 Rendu unique : PrintableFicheFromTaeData est utilisé à la fois dans PrintPreviewModal (aperçu écran) et la route /questions/[id]/print (impression). Pas de double-rendereur. CSS print appliqué via print-page-css.ts injecté par la modale.
-§5.2 Layout engine isolé : shouldPrintDocumentFullWidth est une fonction pure dans lib/tae/, réutilisable par tout consommateur. La spec décrit « algorithme glouton et local » — le code est encore plus simple (un booléen par document), ce qui convient.
+§5.2 Layout engine isolé : shouldPrintDocumentFullWidth est une fonction pure dans lib/tache/, réutilisable par tout consommateur. La spec décrit « algorithme glouton et local » — le code est encore plus simple (un booléen par document), ce qui convient.
 §5.3 Sauvegarde automatique en fond : useEffect débouncé 300 ms (FormState.tsx:95-109).
 §5.3 Brouillon explicite : saveWizardDraftAction côté serveur via bouton « Sauvegarder le brouillon » (StepperNavFooter.tsx:399-411).
 §5.4 Taxonomie JSON statique : public/data/{oi.json,grilles-evaluation.json,hec-cd.json,hqc-cd.json,hec-sec1-2.json,hqc-sec3-4.json,css.json} — exactement ce que prévoit la spec.
@@ -230,9 +230,9 @@ E6.2 — RÉGRESSION — Spec §6.3 : « Modèles fréquents issus d'analyse —
 Section « Code mort suspect » à confirmer
 Je n'ai pas audité ces éléments — à toi de trancher s'ils sont vraiment morts :
 
-components/tae/TaeForm/bloc3/SectionCorrige.tsx — aucun import dans le code, fonctionnalité similaire à Bloc5Redactionnel. Confirmé mort par grep.
-components/tae/TaeForm/bloc5/non-redactionnel/Bloc5TestScalability.tsx + entrée test-scalability dans BLOC5_DYNAMIC_BY_SLUG — nom évoque un test ou expérimentation. À vérifier si encore utilisé en production.
-components/tae/TaeForm/bloc5/non-redactionnel/Bloc5Default.tsx — fallback BLOC5_COMPORTEMENT_INCONNU, ne devrait plus jamais s'afficher si tous les comportements sont mappés. À vérifier.
+components/tache/wizard/bloc3/SectionCorrige.tsx — aucun import dans le code, fonctionnalité similaire à Bloc5Redactionnel. Confirmé mort par grep.
+components/tache/wizard/bloc5/non-redactionnel/Bloc5TestScalability.tsx + entrée test-scalability dans BLOC5_DYNAMIC_BY_SLUG — nom évoque un test ou expérimentation. À vérifier si encore utilisé en production.
+components/tache/wizard/bloc5/non-redactionnel/Bloc5Default.tsx — fallback BLOC5_COMPORTEMENT_INCONNU, ne devrait plus jamais s'afficher si tous les comportements sont mappés. À vérifier.
 Le commentaire // Ajouter ici pour OI7 dans consigne-templates.ts:23 suggère un TODO non fait — OI7 utilise déjà un gabarit champ-par-champ via Bloc3TemplatePur, pas une clé de template, donc ce TODO est obsolète.
 Doublon bloc5/Bloc5.tsx ↔ wizardBlocResolver.tsx — deux résolveurs en parallèle pour la même étape (cf. E3.6.3). L'un des deux est probablement à supprimer.
 Slice state.bloc6.cd + bloc6/Miller*.tsx — la numérotation interne 6 ↔ noms de fichiers Bloc5* / Bloc7\* est incohérente. Possible reliquat d'une migration partielle de 6 → 7 étapes.

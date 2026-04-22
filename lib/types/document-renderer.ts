@@ -8,7 +8,7 @@
  * (discriminated union sur `type`).
  *
  * Réutilise les types existants du projet :
- * - `DocumentLegendPosition` (`lib/tae/document-helpers.ts`)
+ * - `DocumentLegendPosition` (`lib/tache/document-helpers.ts`)
  * - `CategorieTextuelleValue` (`lib/documents/categorie-textuelle.ts`)
  * - `DocumentCategorieIconographiqueId` (`lib/types/document-categories.ts`)
  */

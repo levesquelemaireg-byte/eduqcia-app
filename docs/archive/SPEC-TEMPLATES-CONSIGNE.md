@@ -112,7 +112,7 @@ Jamais                   = un composant one-shot par comportement
 ## Registre de configuration
 
 ```typescript
-// lib/tae/wizard-bloc-config.ts
+// lib/tache/wizard-bloc-config.ts
 
 type Bloc3Config =
   | { type: "libre" }
@@ -206,7 +206,7 @@ export const WIZARD_BLOC_CONFIGS: Record<string, WizardBlocConfig> = {
 ## Templates de consigne externalisés
 
 ```typescript
-// lib/tae/consigne-templates.ts
+// lib/tache/consigne-templates.ts
 
 export type ConsigneTemplateKey =
   | "oi3-difference"
@@ -360,7 +360,7 @@ doc_C...      → perspectiveC... (3.5)
 **Implémentation — fonctions pures testables :**
 
 ```typescript
-// lib/tae/oi-perspectives/perspectives-helpers.ts
+// lib/tache/oi-perspectives/perspectives-helpers.ts
 
 function migratePerspectivesToSlots(
   perspectives: PerspectiveData[],
@@ -691,7 +691,7 @@ Le champ période est masqué (implicite dans la réalité).
 ## Payload unifié
 
 ```typescript
-// lib/tae/oi-perspectives/perspectives-types.ts
+// lib/tache/oi-perspectives/perspectives-types.ts
 
 export type PerspectiveData = {
   acteur: string; // nom — label UI "Acteur ou historien"
@@ -732,7 +732,7 @@ export type IntrusPayload = {
 ## Structure des fichiers
 
 ```
-components/tae/TaeForm/
+components/tache/wizard/
   bloc3/
     Bloc3Resolver.tsx               ← ✅ Sprint 2 (dans wizardBlocResolver)
     templates/
@@ -750,7 +750,7 @@ components/tae/TaeForm/
   bloc5/
     Bloc5Intrus.tsx                 ← Sprint 2 étape 10 (stub → impl)
 
-lib/tae/
+lib/tache/
   wizard-bloc-config.ts             ← ✅ Sprint 1
   consigne-templates.ts             ← ✅ Sprint 1
   oi-perspectives/

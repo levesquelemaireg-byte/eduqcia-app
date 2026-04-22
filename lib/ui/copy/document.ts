@@ -269,7 +269,7 @@ export const DOCUMENT_FICHE_SECTION_INDEXATION = "Références et indexation";
 
 /**
  * Catégorie iconographique — labels et helpers déplacés dans
- * `lib/tae/document-categories-helpers.ts` (D-Coexistence Option A, commit
+ * `lib/tache/document-categories-helpers.ts` (D-Coexistence Option A, commit
  * Chantier 3). Le type `DocumentCategorieIconographiqueId` vit dans
  * `lib/types/document-categories.ts`. Source de vérité unique :
  * `public/data/document-categories.json`.

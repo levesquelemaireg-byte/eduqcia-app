@@ -111,7 +111,7 @@ Pas de champ `position`. Visibilité décidée par le mode d'impression dans la 
 - Visibles en mode `formatif`.
 - Masqués en mode `sommatif-standard` et `epreuve-ministerielle` (documents anonymes, seule la matière compte).
 
-**Remplacement de `formStateToTae` :** la fonction existante `lib/tae/fiche-helpers.ts:formStateToTae` marquée `@deprecated` est supprimée. Remplacée par `lib/tache/contrats/etat-wizard-vers-tache.ts:etatWizardVersTache`, pure, testée unitairement.
+**Remplacement de `formStateToTae` :** la fonction existante `lib/tache/fiche-helpers.ts:formStateToTae` marquée `@deprecated` est supprimée. Remplacée par `lib/tache/contrats/etat-wizard-vers-tache.ts:etatWizardVersTache`, pure, testée unitairement.
 
 **Hydratation dans `etatWizardVersTache` :**
 
@@ -567,7 +567,7 @@ Selon l'audit d'implémentabilité, D0 touche **~18 fichiers** directement (ceux
 **Builders NR (3) :** `ordre-chronologique-payload.ts`, `ligne-du-temps-payload.ts`, `avant-apres-payload.ts`
 **Parsers à supprimer (3) :** `parse*ConsigneForStudentPrint` dans les mêmes fichiers
 **Composants de rendu (3+) :** les `*PrintableQuestionnaireCore`
-**Helpers (2) :** `lib/tae/fiche-helpers.ts:formStateToTae`, `lib/tae/consigne-helpers.ts:shouldShowGuidageOnStudentSheet`
+**Helpers (2) :** `lib/tache/fiche-helpers.ts:formStateToTae`, `lib/tache/consigne-helpers.ts:shouldShowGuidageOnStudentSheet`
 **Publication (1) :** `publish-tae-payload.ts` (écriture du payload RPC)
 **Impression d'évaluations (1) :** `lib/evaluations/evaluation-print-doc-map.ts:rewriteTaeHtmlDocRefsForEvaluationPrint`
 **Renommage import type (reste) :** les fichiers qui importent `TaeFicheData` doivent être mis à jour vers `DonneesTache` — changement mécanique sans logique.

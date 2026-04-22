@@ -469,7 +469,7 @@ export function getSortKey(firstName: string, lastName: string): string {
 | `lib/types/database.ts`               | Régénéré via `npm run gen:types` après migrations 1-4                                                                                             |
 | `lib/auth/require-active-app-user.ts` | `ActiveAppUser` : remplacer `fullName: string` par `firstName: string`, `lastName: string` ; query `.select("id, first_name, last_name, status")` |
 | `lib/fiche/types.ts`                  | `AuteurInfo` : `full_name` → `first_name` + `last_name`                                                                                           |
-| `lib/tae/tae-form-state-types.ts`     | Vérifier si `full_name` apparaît dans les types auteur du wizard                                                                                  |
+| `lib/tache/tae-form-state-types.ts`   | Vérifier si `full_name` apparaît dans les types auteur du wizard                                                                                  |
 
 ### 3.3 Queries à modifier (fichier par fichier)
 
@@ -523,30 +523,30 @@ Refactoring complet — voir [Section 4](#4-refactoring-register).
 
 ### 3.5 Composants à modifier
 
-| Composant                                     | Changement                                                                                               |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `components/layout/Sidebar.tsx`               | `displayName` prop → composé via `getDisplayName()` dans le layout parent                                |
-| `components/layout/AppShellClient.tsx`        | Même adaptation                                                                                          |
-| `components/layout/AppShell.tsx`              | Même adaptation                                                                                          |
-| `app/(app)/layout.tsx`                        | `fullName` → `getDisplayName(user.firstName, user.lastName)`                                             |
-| `app/(app)/dashboard/page.tsx`                | `full_name` et `school` → nouvelles colonnes + `getDisplayName()` + `formatSchoolDisplay()` depuis la FK |
-| `app/(app)/collaborateurs/page.tsx`           | Adapter au nouveau type `CollaborateurListRow`                                                           |
-| `app/(app)/questions/[id]/edit/page.tsx`      | Adapter lecture `full_name`                                                                              |
-| `app/(app)/questions/new/page.tsx`            | Adapter lecture `full_name`                                                                              |
-| `components/tae/Bloc1AuteursTache.tsx`        | Adapter type auteur                                                                                      |
-| `components/tae/CollaborateurSearchField.tsx` | Adapter résultats search                                                                                 |
-| `components/tae/FicheSommaireColumn.tsx`      | Adapter affichage auteur                                                                                 |
-| `components/tae/FicheFooter.tsx`              | Adapter affichage auteur                                                                                 |
-| Composants print `(print)/`                   | Adapter partout où `full_name` est lu                                                                    |
+| Composant                                       | Changement                                                                                               |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `components/layout/Sidebar.tsx`                 | `displayName` prop → composé via `getDisplayName()` dans le layout parent                                |
+| `components/layout/AppShellClient.tsx`          | Même adaptation                                                                                          |
+| `components/layout/AppShell.tsx`                | Même adaptation                                                                                          |
+| `app/(app)/layout.tsx`                          | `fullName` → `getDisplayName(user.firstName, user.lastName)`                                             |
+| `app/(app)/dashboard/page.tsx`                  | `full_name` et `school` → nouvelles colonnes + `getDisplayName()` + `formatSchoolDisplay()` depuis la FK |
+| `app/(app)/collaborateurs/page.tsx`             | Adapter au nouveau type `CollaborateurListRow`                                                           |
+| `app/(app)/questions/[id]/edit/page.tsx`        | Adapter lecture `full_name`                                                                              |
+| `app/(app)/questions/new/page.tsx`              | Adapter lecture `full_name`                                                                              |
+| `components/tache/Bloc1AuteursTache.tsx`        | Adapter type auteur                                                                                      |
+| `components/tache/CollaborateurSearchField.tsx` | Adapter résultats search                                                                                 |
+| `components/tache/FicheSommaireColumn.tsx`      | Adapter affichage auteur                                                                                 |
+| `components/tache/FicheFooter.tsx`              | Adapter affichage auteur                                                                                 |
+| Composants print `(print)/`                     | Adapter partout où `full_name` est lu                                                                    |
 
 ### 3.6 Helpers à modifier / supprimer
 
-| Fichier                          | Action                                                                                                                  |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `lib/tae/auteur-display-sort.ts` | **Simplifier** : `familyNameSortKey()` → `getSortKey()` direct. `sortAuteursByFamilyName()` → tri sur `last_name` natif |
-| `lib/profiles/school-json.ts`    | **SUPPRIMER** entièrement — `parseSchoolJson()` et `formatSchoolForDisplay()` n'ont plus de raison d'être               |
-| `lib/data/load-css-ecoles.ts`    | **SUPPRIMER** entièrement — remplacé par les tables `css`/`schools`                                                     |
-| `public/data/css-ecoles.json`    | **SUPPRIMER** — données maintenant en base                                                                              |
+| Fichier                            | Action                                                                                                                  |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `lib/tache/auteur-display-sort.ts` | **Simplifier** : `familyNameSortKey()` → `getSortKey()` direct. `sortAuteursByFamilyName()` → tri sur `last_name` natif |
+| `lib/profiles/school-json.ts`      | **SUPPRIMER** entièrement — `parseSchoolJson()` et `formatSchoolForDisplay()` n'ont plus de raison d'être               |
+| `lib/data/load-css-ecoles.ts`      | **SUPPRIMER** entièrement — remplacé par les tables `css`/`schools`                                                     |
+| `public/data/css-ecoles.json`      | **SUPPRIMER** — données maintenant en base                                                                              |
 
 ### 3.7 Nouveaux helpers
 
@@ -563,8 +563,8 @@ Les selectors dans `lib/fiche/selectors/` qui extraient `auteur_nom` depuis `ban
 
 - `lib/fiche/selectors/lecture-selectors.ts`
 - `lib/fiche/fiche-helpers.ts`
-- `lib/tae/server-fiche-map.ts`
-- `lib/tae/load-tae-for-edit.ts`
+- `lib/tache/server-fiche-map.ts`
+- `lib/tache/load-tae-for-edit.ts`
 - `lib/documents/fetch-doc-fiche-data.ts`
 
 ### 3.9 Ordre de modification build-safe
@@ -755,11 +755,11 @@ const schools = await getSchoolsByCssId(selectedCssId);
 
 ### 5.1 Tests unitaires (Vitest)
 
-| Fichier test                          | Ce qu'il teste                                                                                                    |
-| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `lib/utils/profile-display.test.ts`   | `getDisplayName()`, `getInitials()`, `getSortKey()` — cas limites : accents, tirets, noms composés, chaînes vides |
-| `lib/tae/auteur-display-sort.test.ts` | **Mettre à jour** les tests existants pour `first_name`/`last_name` au lieu de `full_name`                        |
-| `lib/schemas/auth.test.ts` (NOUVEAU)  | Validation Zod : `css_id` UUID valide, `school_id` UUID valide, superRefine cohérence                             |
+| Fichier test                            | Ce qu'il teste                                                                                                    |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `lib/utils/profile-display.test.ts`     | `getDisplayName()`, `getInitials()`, `getSortKey()` — cas limites : accents, tirets, noms composés, chaînes vides |
+| `lib/tache/auteur-display-sort.test.ts` | **Mettre à jour** les tests existants pour `first_name`/`last_name` au lieu de `full_name`                        |
+| `lib/schemas/auth.test.ts` (NOUVEAU)    | Validation Zod : `css_id` UUID valide, `school_id` UUID valide, superRefine cohérence                             |
 
 ### 5.2 Tests d'intégration (Vitest)
 
@@ -926,16 +926,16 @@ Après exécution complète du présent plan, la spec PROFILE-UX-SPEC.md pourra 
 
 **Composants UI :**
 
-| Composant           | Emplacement                         | Statut                                                                                  |
-| ------------------- | ----------------------------------- | --------------------------------------------------------------------------------------- |
-| `MetaPill`          | `components/tae/fiche/MetaPill.tsx` | **Existe déjà** — possiblement à étendre avec des variants couleur par catégorie (§8.4) |
-| `SideSheet`         | `components/ui/`                    | **À créer** — drawer M3, focus trap, focus initial                                      |
-| `AvatarInitials`    | `components/ui/`                    | **À créer** — prop `size: 'sm' \| 'md' \| 'lg'`, initiales via `getInitials()`          |
-| `SidebarNotifBadge` | `components/layout/`                | **À créer** — badge notification sidebar                                                |
-| `RoleBadge`         | `components/ui/`                    | **À créer** — enseignant / CP / admin                                                   |
-| `ExperienceBadge`   | `components/ui/`                    | **À créer** — icône horloge + label                                                     |
-| `CopyButton`        | `components/ui/`                    | **À créer** — copie courriel                                                            |
-| `ProfileSkeleton`   | `components/ui/`                    | **À créer** — skeleton loading par type de vue                                          |
+| Composant           | Emplacement                           | Statut                                                                                  |
+| ------------------- | ------------------------------------- | --------------------------------------------------------------------------------------- |
+| `MetaPill`          | `components/tache/fiche/MetaPill.tsx` | **Existe déjà** — possiblement à étendre avec des variants couleur par catégorie (§8.4) |
+| `SideSheet`         | `components/ui/`                      | **À créer** — drawer M3, focus trap, focus initial                                      |
+| `AvatarInitials`    | `components/ui/`                      | **À créer** — prop `size: 'sm' \| 'md' \| 'lg'`, initiales via `getInitials()`          |
+| `SidebarNotifBadge` | `components/layout/`                  | **À créer** — badge notification sidebar                                                |
+| `RoleBadge`         | `components/ui/`                      | **À créer** — enseignant / CP / admin                                                   |
+| `ExperienceBadge`   | `components/ui/`                      | **À créer** — icône horloge + label                                                     |
+| `CopyButton`        | `components/ui/`                      | **À créer** — copie courriel                                                            |
+| `ProfileSkeleton`   | `components/ui/`                      | **À créer** — skeleton loading par type de vue                                          |
 
 **Queries / Actions :**
 
@@ -1007,16 +1007,16 @@ Ces décisions restent en suspens et devront être tranchées par le développeu
 - `app/(app)/questions/[id]/edit/page.tsx`
 - `app/(app)/questions/new/page.tsx`
 - `app/(auth)/register/page.tsx`
-- `components/tae/Bloc1AuteursTache.tsx`
-- `components/tae/CollaborateurSearchField.tsx`
-- `components/tae/FicheSommaireColumn.tsx`
-- `components/tae/FicheFooter.tsx`
+- `components/tache/Bloc1AuteursTache.tsx`
+- `components/tache/CollaborateurSearchField.tsx`
+- `components/tache/FicheSommaireColumn.tsx`
+- `components/tache/FicheFooter.tsx`
 
 ### Helpers / lib
 
-- `lib/tae/auteur-display-sort.ts`
-- `lib/tae/server-fiche-map.ts`
-- `lib/tae/load-tae-for-edit.ts`
+- `lib/tache/auteur-display-sort.ts`
+- `lib/tache/server-fiche-map.ts`
+- `lib/tache/load-tae-for-edit.ts`
 - `lib/documents/fetch-doc-fiche-data.ts`
 - `lib/fiche/fiche-helpers.ts`
 - `lib/fiche/selectors/lecture-selectors.ts`

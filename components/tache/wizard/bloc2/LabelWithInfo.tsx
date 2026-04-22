@@ -11,7 +11,7 @@ type Props = {
   onInfoClick: () => void;
   /** Glyphe Material Symbols (ligature) avant le libellé — docs/DECISIONS.md §Étape 2 (tableau icônes). */
   leadingIcon?: string;
-  /** Infobulle au survol du glyphe — `lib/tae/icon-justifications.ts` / `docs/DECISIONS.md` (justifications icônes). */
+  /** Infobulle au survol du glyphe — `lib/tache/icon-justifications.ts` / `docs/DECISIONS.md` (justifications icônes). */
   leadingIconTitle?: string;
   /** Par défaut `true` (champs obligatoires). */
   showAsterisk?: boolean;

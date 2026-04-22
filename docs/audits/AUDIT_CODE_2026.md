@@ -44,7 +44,7 @@
 
 - **Route groups bien séparés** : `(auth)` / `(app)` / `(print)` avec layouts dédiés et auth guards au bon niveau (`requireActiveAppUser()` dans les layouts `(app)` et `(print)`).
 - **Séparation Server/Client disciplinée** : package `server-only` installé, admin Supabase isolé dans `lib/supabase/admin.ts`, middleware propre pour la session.
-- **Architecture par feature cohérente** : `components/tae/`, `components/documents/`, `components/evaluations/`, `components/bank/` — chaque entité a son espace avec ses sous-composants.
+- **Architecture par feature cohérente** : `components/tache/`, `components/documents/`, `components/evaluations/`, `components/bank/` — chaque entité a son espace avec ses sous-composants.
 - **`lib/` bien structurée** : `actions/` (Server Actions), `queries/` (lectures), `schemas/` (Zod), `types/` (TypeScript), `tae/` (helpers métier). Séparation claire des responsabilités.
 - **Conventions de nommage documentées et respectées** : kebab-case fichiers, PascalCase composants, noms français pour le domaine métier.
 - **Pas de route handlers REST inutiles** : la quasi-totalité des mutations passe par des Server Actions — architecture Next.js 2026 correcte.
@@ -185,8 +185,8 @@ Manque potentiellement :
 | `app/(print)/documents/[id]/print/page.tsx` | L22             |
 | `app/(app)/documents/[id]/page.tsx`         | L21             |
 | `lib/queries/autonomous-document-edit.ts`   | L47             |
-| `lib/tae/server-fiche-map.ts`               | L67, L102, L144 |
-| `lib/tae/load-tae-for-edit.ts`              | L90             |
+| `lib/tache/server-fiche-map.ts`             | L67, L102, L144 |
+| `lib/tache/load-tae-for-edit.ts`            | L90             |
 
 **Impact :** Surcharge réseau (colonnes inutiles transmises), future exposition de colonnes sensibles, violation des conventions documentées du projet.
 

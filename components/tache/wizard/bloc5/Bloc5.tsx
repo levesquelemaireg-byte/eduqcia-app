@@ -3,7 +3,7 @@
 // Résolveur des variantes Bloc 5 (étape 5 du wizard, corrigé/options).
 // Choisit entre Bloc5Intrus (cas spécial perspectives OI3.5), Bloc5Redactionnel,
 // ou les variantes NR (OrdreChronologique, LigneDuTemps, AvantApres).
-// Le routage des Blocs 3 et 4 est dans lib/tae/wizardBlocResolver.tsx,
+// Le routage des Blocs 3 et 4 est dans lib/tache/wizardBlocResolver.tsx,
 // qui suit un pattern similaire mais opère sur un périmètre distinct.
 // Cette séparation est volontaire : chaque résolveur a une responsabilité unique
 // sur un périmètre clair, conformément au principe de séparation des responsabilités.

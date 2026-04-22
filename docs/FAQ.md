@@ -231,7 +231,7 @@ Elle constitue un outil central pour organiser et exploiter les tâches dans un 
 
 ## FAQ enseignants — Repère temporel et opération intellectuelle « Situer dans le temps »
 
-Texte à destination des **enseignants** : rôle du **repère temporel** et de l'**année normalisée** pour les tâches non rédactionnelles rattachées à l'opération intellectuelle **Situer dans le temps**. Alignement produit et technique : [FEATURES.md](./FEATURES.md), [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md), `public/data/oi.json`, `lib/ui/ui-copy.ts`, `lib/utils/extract-year.ts`, `lib/tae/behaviours/avant-apres.ts`.
+Texte à destination des **enseignants** : rôle du **repère temporel** et de l'**année normalisée** pour les tâches non rédactionnelles rattachées à l'opération intellectuelle **Situer dans le temps**. Alignement produit et technique : [FEATURES.md](./FEATURES.md), [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md), `public/data/oi.json`, `lib/ui/ui-copy.ts`, `lib/utils/extract-year.ts`, `lib/tache/behaviours/avant-apres.ts`.
 
 Les libellés **comportements attendus** ci-dessous reprennent les **énoncés** du référentiel `oi.json`.
 

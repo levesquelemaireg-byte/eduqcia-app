@@ -1,6 +1,6 @@
 /**
  * État du wizard « Créer une tâche » — structure par blocs (behaviour-driven).
- * Le nombre d’étapes = `TAE_FORM_STEP_COUNT` (`components/tae/TaeForm/step-meta.ts`).
+ * Le nombre d’étapes = `TAE_FORM_STEP_COUNT` (`components/tache/wizard/step-meta.ts`).
  */
 
 import type { Dispatch } from "react";

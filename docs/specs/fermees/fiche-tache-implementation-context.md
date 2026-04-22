@@ -48,13 +48,13 @@
 - `DocCard` — card document avec lettre (A-D), titre, source, aperçu, skeleton si incomplet
 - `MetaRow` — ligne icône+texte avec badge statut optionnel (array items + badge)
 
-**Données** — `TaeFicheData` (`lib/types/fiche.ts`) contient tous les champs nécessaires pour la vue lecture. `fetchTaeFicheBundle` (`lib/tae/server-fiche-map.ts`) construit le bundle complet depuis Supabase (tae + profiles + oi + comportements + niveaux + disciplines + cd + connaissances + documents + votes).
+**Données** — `TaeFicheData` (`lib/types/fiche.ts`) contient tous les champs nécessaires pour la vue lecture. `fetchTaeFicheBundle` (`lib/tache/server-fiche-map.ts`) construit le bundle complet depuis Supabase (tae + profiles + oi + comportements + niveaux + disciplines + cd + connaissances + documents + votes).
 
 **Composants embarqués (boîtes noires, ne pas toucher) :**
 
 - Arbre CD : `lib/fiche/sections/SectionCD.tsx` — rendu 3 niveaux (compétence → composante → critère)
 - Arbre connaissances : `lib/fiche/sections/SectionConnaissances.tsx` — rendu hiérarchique (réalité sociale → section → sous-section → énoncés)
-- Grille ministérielle : `components/tae/grilles/GrilleEvalTable.tsx` — wrapper qui délègue à `grille-registry.tsx`
+- Grille ministérielle : `components/tache/grilles/GrilleEvalTable.tsx` — wrapper qui délègue à `grille-registry.tsx`
 
 ### Divergences entre l'existant et la spec
 

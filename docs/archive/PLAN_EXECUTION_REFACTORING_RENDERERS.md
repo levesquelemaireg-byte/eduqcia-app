@@ -236,13 +236,13 @@ Remplacer `DocCard` par `DocumentCard` (ou `DocumentCardReader`). Le document es
 
 ### 6b. Sommaire wizard tâche
 
-Fichier : `components/tae/fiche/SectionDocuments.tsx`
+Fichier : `components/tache/fiche/SectionDocuments.tsx`
 
 Remplacer `DocumentCardCompact` par `DocumentCard`. Le mode sommaire est géré par `FicheRenderer` qui propage `mode="sommaire"`.
 
 ### 6c. Wizard preview (PrintableDocumentCell)
 
-Fichier : `components/tae/TaeForm/preview/PrintableFichePreview.tsx`
+Fichier : `components/tache/wizard/preview/PrintableFichePreview.tsx`
 
 Remplacer UNIQUEMENT la partie `PrintableDocumentCell` (lignes ~72-202) par un appel à `DocumentCardPrint`. **NE PAS supprimer le fichier entier** — il contient aussi le rendu du quadruplet.
 
@@ -276,11 +276,11 @@ La route `/evaluations/[id]/print` est un pipeline parallèle qui contourne `/ap
 
 ## Étape 8 — Supprimer les renderers morts
 
-| Fichier                                        | Raison de suppression                                                                                           |
-| ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `lib/fiche/primitives/DocCard.tsx`             | Remplacé par `DocumentCard` en étape 6a                                                                         |
-| `components/tae/fiche/DocumentCardCompact.tsx` | Remplacé par `DocumentCard` en étape 6b                                                                         |
-| `components/documents/DocumentFicheRead.tsx`   | Code mort (aucun import, confirmé passe 3, aucune gem à récupérer — décisions produit ont éliminé les cas edge) |
+| Fichier                                          | Raison de suppression                                                                                           |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `lib/fiche/primitives/DocCard.tsx`               | Remplacé par `DocumentCard` en étape 6a                                                                         |
+| `components/tache/fiche/DocumentCardCompact.tsx` | Remplacé par `DocumentCard` en étape 6b                                                                         |
+| `components/documents/DocumentFicheRead.tsx`     | Code mort (aucun import, confirmé passe 3, aucune gem à récupérer — décisions produit ont éliminé les cas edge) |
 
 ### DocumentCardThumbnail — NE PAS SUPPRIMER
 
@@ -341,17 +341,17 @@ Les baselines visuelles devront être regénérées — le rendu PDF change (il 
 4. `lib/tache/contrats/etat-wizard-vers-tache.ts` — `construireDocuments` ne détruit plus
 5. `components/epreuve/impression/sections/document.tsx` — délégation au canonique
 6. `lib/impression/builders/blocs-document.ts` — type adapté
-7. `components/tae/TaeForm/preview/PrintableFichePreview.tsx` — `PrintableDocumentCell` → `DocumentCardPrint`
+7. `components/tache/wizard/preview/PrintableFichePreview.tsx` — `PrintableDocumentCell` → `DocumentCardPrint`
 
 ### Remplacements dans consommateurs (2 fichiers)
 
 8. `components/tache/vue-detaillee/sections/documents.tsx` — `DocCard` → `DocumentCard`
-9. `components/tae/fiche/SectionDocuments.tsx` — `DocumentCardCompact` → `DocumentCard`
+9. `components/tache/fiche/SectionDocuments.tsx` — `DocumentCardCompact` → `DocumentCard`
 
 ### Supprimés (5 fichiers)
 
 10. `lib/fiche/primitives/DocCard.tsx`
-11. `components/tae/fiche/DocumentCardCompact.tsx`
+11. `components/tache/fiche/DocumentCardCompact.tsx`
 12. `components/documents/DocumentFicheRead.tsx`
 13. `components/evaluations/EvaluationPrintableBody.tsx`
 14. `components/evaluations/EvaluationFichePrintView.tsx`

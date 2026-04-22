@@ -232,7 +232,7 @@ const bundle = {
       "Toutes les instructions utiles à la génération d'un JSON d'import sont DANS ce fichier. Ne pas compter sur un prompt externe : le modèle doit suivre strategie_double_ceinture_bretelles_fr, protocole_sortie_notebooklm_fr, regles_non_negociables_fr, passe_verification_obligatoire_avant_sortie_fr, checklist_json_importable_fr et les gabarits reference_payload_*.",
     description:
       "Bundle pour outils externes (NotebookLM, etc.) : référentiels OI + règles + gabarits de payload `publish_tae_transaction`. Une seule TAÉ par JSON ; pas une épreuve.",
-    scope: "PublishTaeRpcPayload — `lib/tae/publish-tae-types.ts`",
+    scope: "PublishTaeRpcPayload — `lib/tache/publish-tae-types.ts`",
     auteur_id_a_limport:
       "`auteur_id` peut être `null` dans le JSON généré ; l'application injecte l'UUID de l'enseignant connecté avant la RPC.",
     oi_json_source: "public/data/oi.json",
@@ -257,11 +257,11 @@ const bundle = {
     approche_3_bundle_fr:
       "Garde-fou documentaire : passes V1–V13, erreurs fréquentes, enums listées — forcer la correspondance caractère par caractère avec document_types_autorises (pas textual / iconographic).",
     approche_2_app_fr:
-      "Tolérance à la frontière : parseur serveur `lib/tae/import/normalize-llm-aliases.ts` mappe textual→textuel, iconographic→iconographique (liste fermée). Les données en base restent strictement en français.",
+      "Tolérance à la frontière : parseur serveur `lib/tache/import/normalize-llm-aliases.ts` mappe textual→textuel, iconographic→iconographique (liste fermée). Les données en base restent strictement en français.",
   },
 
   normalisation_cote_app_fr: {
-    reference_code: "lib/tae/import/normalize-llm-aliases.ts",
+    reference_code: "lib/tache/import/normalize-llm-aliases.ts",
     description:
       "Après parsing JSON, l'importateur peut appeler normalizeDocumentsNewTypesFromLlm sur documents_new pour corriger les alias anglais les plus fréquents avant validateTaeImportVsOi et la RPC. Cela complète le bundle ; ce n'est pas documenté comme valeur alternative officielle dans ce fichier — les gabarits restent 100 % français.",
   },
@@ -421,7 +421,7 @@ const bundle = {
 
   non_redaction_avant_apres: {
     pour_comportement_id: "1.3",
-    reference_code: "lib/tae/non-redaction/avant-apres-payload.ts",
+    reference_code: "lib/tache/non-redaction/avant-apres-payload.ts",
     champs_attendus: [
       "schemaVersion (1)",
       "theme",

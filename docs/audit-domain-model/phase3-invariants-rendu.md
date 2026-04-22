@@ -31,16 +31,16 @@ Quatre pipelines rendent un document, avec des contrats de données distincts.
 ### 1.1 Pipeline « aperçu wizard TAÉ » (client, écran seulement)
 
 ```
-components/tae/TaeForm/preview/PreviewPanel.tsx
+components/tache/wizard/preview/PreviewPanel.tsx
   └─ PrintableFichePreview
        └─ PrintableDocumentCell(doc: DocumentFiche)
             ├─ si rendererDocument.elements.length > 1  → DocumentElementRenderer (×N)  ✅ délégation
             └─ sinon (structure simple)                 → rendu INLINE de <img>/<figure>/htmlFlow  ❌ violation INV-R1
 ```
 
-- **Renderer principal :** [components/tae/TaeForm/preview/PrintableFichePreview.tsx:72-202](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L72-L202) (`PrintableDocumentCell`).
+- **Renderer principal :** [components/tache/wizard/preview/PrintableFichePreview.tsx:72-202](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L72-L202) (`PrintableDocumentCell`).
 - **Type consommé :** `DocumentFiche` ([lib/types/fiche.ts](../../lib/types/fiche.ts)) — contrat riche : `source_citation`, `image_url`, `imagePixelWidth/Height`, `imageLegende`, `imageLegendePosition`, `rendererDocument` optionnel.
-- **Délégation :** seulement pour multi-éléments ([PrintableFichePreview.tsx:115-120](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L115-L120)). Sinon rendu direct `<img>` + `dangerouslySetInnerHTML` ([PrintableFichePreview.tsx:164-196](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L164-L196)).
+- **Délégation :** seulement pour multi-éléments ([PrintableFichePreview.tsx:115-120](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L115-L120)). Sinon rendu direct `<img>` + `dangerouslySetInnerHTML` ([PrintableFichePreview.tsx:164-196](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L164-L196)).
 
 ### 1.2 Pipeline « aperçu imprimé / export PDF » (route SSR `/apercu/[token]`)
 
@@ -127,13 +127,13 @@ components/bank/BankDocumentsPanel.tsx
 ### 1.7 Pipeline « sommaire wizard TAÉ » (colonne droite)
 
 ```
-components/tae/TaeForm/sommaire/...
+components/tache/wizard/sommaire/...
   └─ PlaygroundFicheRenderer (ou équivalent)
-       └─ SectionDocuments (components/tae/fiche/SectionDocuments.tsx)
+       └─ SectionDocuments (components/tache/fiche/SectionDocuments.tsx)
             └─ DocumentCardCompact(document)  ❌ rendu direct
 ```
 
-- Source : [components/tae/fiche/DocumentCardCompact.tsx](../../components/tae/fiche/DocumentCardCompact.tsx).
+- Source : [components/tache/fiche/DocumentCardCompact.tsx](../../components/tache/fiche/DocumentCardCompact.tsx).
 - `DocumentCardCompact` rend le contenu du document directement (image/HTML) sans déléguer. **Violation INV-R1.**
 
 ---
@@ -157,14 +157,14 @@ components/tae/TaeForm/sommaire/...
 
 #### 2.1.2 Renderers parallèles identifiés (violations)
 
-| #   | Composant                                 | Fichier                                                                                                                                      | Pipeline                                          | Ce qu'il rend directement                              |
-| --- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
-| V1  | `SectionDocument`                         | [components/epreuve/impression/sections/document.tsx](../../components/epreuve/impression/sections/document.tsx)                             | `/apercu/[token]` (tâche + épreuve)               | `<img>` direct, `dangerouslySetInnerHTML` pour textuel |
-| V2  | `DocCard`                                 | [lib/fiche/primitives/DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx)                                                                   | Vue détaillée tâche, `SectionDocuments` générique | Titre, HTML, image, légende, source, tout mode         |
-| V3  | `DocumentCardCompact`                     | [components/tae/fiche/DocumentCardCompact.tsx](../../components/tae/fiche/DocumentCardCompact.tsx)                                           | Sommaire wizard tâche                             | Image, texte tronqué, source                           |
-| V4  | `PrintableDocumentCell` (chemin `simple`) | [components/tae/TaeForm/preview/PrintableFichePreview.tsx:144-201](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L144-L201) | Aperçu wizard, impression évaluation              | `<img>`, `htmlFlow`, légende via overlay, source       |
-| V5  | `DocumentFicheRead`                       | [components/documents/DocumentFicheRead.tsx](../../components/documents/DocumentFicheRead.tsx)                                               | (code mort — aucun import trouvé)                 | Document complet                                       |
-| V6  | `DocumentCardThumbnail`                   | [components/documents/DocumentCardThumbnail.tsx](../../components/documents/DocumentCardThumbnail.tsx)                                       | Listes (banque tâches, slots)                     | Preview image ou texte tronqué sur mesure              |
+| #   | Composant                                 | Fichier                                                                                                                                        | Pipeline                                          | Ce qu'il rend directement                              |
+| --- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------ |
+| V1  | `SectionDocument`                         | [components/epreuve/impression/sections/document.tsx](../../components/epreuve/impression/sections/document.tsx)                               | `/apercu/[token]` (tâche + épreuve)               | `<img>` direct, `dangerouslySetInnerHTML` pour textuel |
+| V2  | `DocCard`                                 | [lib/fiche/primitives/DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx)                                                                     | Vue détaillée tâche, `SectionDocuments` générique | Titre, HTML, image, légende, source, tout mode         |
+| V3  | `DocumentCardCompact`                     | [components/tache/fiche/DocumentCardCompact.tsx](../../components/tache/fiche/DocumentCardCompact.tsx)                                         | Sommaire wizard tâche                             | Image, texte tronqué, source                           |
+| V4  | `PrintableDocumentCell` (chemin `simple`) | [components/tache/wizard/preview/PrintableFichePreview.tsx:144-201](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L144-L201) | Aperçu wizard, impression évaluation              | `<img>`, `htmlFlow`, légende via overlay, source       |
+| V5  | `DocumentFicheRead`                       | [components/documents/DocumentFicheRead.tsx](../../components/documents/DocumentFicheRead.tsx)                                                 | (code mort — aucun import trouvé)                 | Document complet                                       |
+| V6  | `DocumentCardThumbnail`                   | [components/documents/DocumentCardThumbnail.tsx](../../components/documents/DocumentCardThumbnail.tsx)                                         | Listes (banque tâches, slots)                     | Preview image ou texte tronqué sur mesure              |
 
 - V6 est nommé « variant canonique » dans §4.2 du DOMAIN_MODEL, mais sa stratégie interne n'est pas une délégation. Classer officiellement sa position (variant autonome vs violation) est une **question ouverte** (§5).
 - V4 est partiellement conforme : le chemin multi-éléments délègue à `DocumentElementRenderer`, le chemin `simple` ne délègue pas.
@@ -173,8 +173,8 @@ components/tae/TaeForm/sommaire/...
 
 Les fichiers suivants manipulent `source_citation` ou `image_legende` sans passer par le renderer canonique (rendu en contexte formulaire, souvent légitime, mais à surveiller) :
 
-- [components/tae/TaeForm/bloc4/DocumentSlotReuseBlock.tsx](../../components/tae/TaeForm/bloc4/DocumentSlotReuseBlock.tsx) — affichage informationnel d'un slot réutilisé depuis la banque.
-- [components/tae/TaeForm/bloc4/DocumentSlotCreateForm.tsx](../../components/tae/TaeForm/bloc4/DocumentSlotCreateForm.tsx), [components/tae/TaeForm/bloc4/DocumentSlotPanel.tsx](../../components/tae/TaeForm/bloc4/DocumentSlotPanel.tsx), [components/tae/TaeForm/bloc4/DocumentSlotLegendBlock.tsx](../../components/tae/TaeForm/bloc4/DocumentSlotLegendBlock.tsx), [components/tae/TaeForm/bloc4/BanqueDocumentsStub.tsx](../../components/tae/TaeForm/bloc4/BanqueDocumentsStub.tsx) — création/édition de slot.
+- [components/tache/wizard/bloc4/DocumentSlotReuseBlock.tsx](../../components/tache/wizard/bloc4/DocumentSlotReuseBlock.tsx) — affichage informationnel d'un slot réutilisé depuis la banque.
+- [components/tache/wizard/bloc4/DocumentSlotCreateForm.tsx](../../components/tache/wizard/bloc4/DocumentSlotCreateForm.tsx), [components/tache/wizard/bloc4/DocumentSlotPanel.tsx](../../components/tache/wizard/bloc4/DocumentSlotPanel.tsx), [components/tache/wizard/bloc4/DocumentSlotLegendBlock.tsx](../../components/tache/wizard/bloc4/DocumentSlotLegendBlock.tsx), [components/tache/wizard/bloc4/BanqueDocumentsStub.tsx](../../components/tache/wizard/bloc4/BanqueDocumentsStub.tsx) — création/édition de slot.
 - [components/documents/wizard/steps/StepDocument.tsx](../../components/documents/wizard/steps/StepDocument.tsx), [components/documents/wizard/steps/DocumentElementFields.tsx](../../components/documents/wizard/steps/DocumentElementFields.tsx), [components/documents/wizard/AutonomousDocumentWizard.tsx](../../components/documents/wizard/AutonomousDocumentWizard.tsx) — wizard document autonome.
 - [components/playground/DevBankSummaryMockupCard.tsx](../../components/playground/DevBankSummaryMockupCard.tsx) — maquette playground dev.
 - [app/(app)/documents/page.tsx](<../../app/(app)/documents/page.tsx>) — liste documents.
@@ -206,8 +206,8 @@ Les fichiers suivants manipulent `source_citation` ou `image_legende` sans passe
 
 - **`SectionDocument`** ([components/epreuve/impression/sections/document.tsx](../../components/epreuve/impression/sections/document.tsx)) : conteneur section de page imprimée. Re-render `<img>` et HTML brut. Ne délègue ni à `DocumentCard`, ni à `DocumentCardPrint`, ni à `DocumentElementRenderer`.
 - **`DocCard`** ([lib/fiche/primitives/DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx)) : primitive « document card » pour vue détaillée. Réimplémente tout le rendu intrinsèque (titre, image, HTML, légende, source) dans tous les modes.
-- **`DocumentCardCompact`** ([components/tae/fiche/DocumentCardCompact.tsx](../../components/tae/fiche/DocumentCardCompact.tsx)) : variant sommaire wizard tâche. Rend son propre preview.
-- **`PrintableDocumentCell`** (chemin `simple`, [PrintableFichePreview.tsx:144-201](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L144-L201)) : conteneur cellule imprimable. Délègue seulement pour multi-éléments.
+- **`DocumentCardCompact`** ([components/tache/fiche/DocumentCardCompact.tsx](../../components/tache/fiche/DocumentCardCompact.tsx)) : variant sommaire wizard tâche. Rend son propre preview.
+- **`PrintableDocumentCell`** (chemin `simple`, [PrintableFichePreview.tsx:144-201](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L144-L201)) : conteneur cellule imprimable. Délègue seulement pour multi-éléments.
 - **`DocumentCardThumbnail`** ([components/documents/DocumentCardThumbnail.tsx](../../components/documents/DocumentCardThumbnail.tsx)) : re-render preview custom — voir §5 question ouverte sur son statut.
 
 **Conclusion INV-R2 :** ⚠️. La moitié des conteneurs délèguent correctement ; l'autre moitié réimplémente. L'écart est concentré sur les pipelines d'impression (aperçu PDF), de vue détaillée tâche, et de sommaire wizard.
@@ -235,14 +235,14 @@ Deux systèmes de modes coexistent sans pont explicite :
 | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | FicheRenderer → SectionDocContent → DocumentCard | ✅ `FicheMode`                                                                                                           | `thumbnail \| sommaire \| lecture`            | [doc-fiche-sections.ts](../../lib/fiche/configs/doc-fiche-sections.ts)                                                  |
 | DocCard                                          | ✅ propre prop `mode: FicheMode`                                                                                         | reçue du parent (vue détaillée = `"lecture"`) | [DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx), [rail.tsx:57](../../components/tache/vue-detaillee/rail.tsx#L57) |
-| `PrintableDocumentCell`                          | ❌ pas de prop `mode`                                                                                                    | —                                             | [PrintableFichePreview.tsx:72](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L72)                      |
+| `PrintableDocumentCell`                          | ❌ pas de prop `mode`                                                                                                    | —                                             | [PrintableFichePreview.tsx:72](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L72)                     |
 | `SectionDocument` (aperçu PDF)                   | ❌ pas de prop `mode`, pas de `ContexteImpression` propagé                                                               | —                                             | [document.tsx](../../components/epreuve/impression/sections/document.tsx)                                               |
 | `DocumentCardPrint`                              | ❌ pas de prop `mode`                                                                                                    | —                                             | [DocumentCardPrint.tsx](../../components/documents/DocumentCardPrint.tsx)                                               |
 | `DocumentCard` (canonique)                       | ❌ **pas de prop `mode`**                                                                                                | —                                             | [DocumentCard.tsx](../../components/documents/DocumentCard.tsx)                                                         |
 | `DocumentElementRenderer`                        | ❌ pas de prop `mode` ; reçoit `showAuteur`, `showRepereTemporel`, `hideSource` — dérivés calculés à chaque site d'appel | —                                             | [DocumentElementRenderer.tsx](../../components/documents/DocumentElementRenderer.tsx)                                   |
 
 - Le renderer canonique `DocumentCard` **ne reçoit pas** le mode — il rend la structure quel que soit le contexte, et laisse au conteneur le soin d'ajouter les bordures, le cadre, les métadonnées externes.
-- Les flags `showAuteur` / `showRepereTemporel` / `hideSource` de `DocumentElementRenderer` sont **re-devinés** à chaque site d'appel (`rendererDocument.structure === "perspectives"`, etc.) au lieu d'être dérivés d'une structure unique. Voir [PrintableFichePreview.tsx:87-88](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L87-L88) et [DocumentCardPrint.tsx](../../components/documents/DocumentCardPrint.tsx).
+- Les flags `showAuteur` / `showRepereTemporel` / `hideSource` de `DocumentElementRenderer` sont **re-devinés** à chaque site d'appel (`rendererDocument.structure === "perspectives"`, etc.) au lieu d'être dérivés d'une structure unique. Voir [PrintableFichePreview.tsx:87-88](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L87-L88) et [DocumentCardPrint.tsx](../../components/documents/DocumentCardPrint.tsx).
 
 **Conclusion INV-R3 :** ⚠️. Propagation correcte sur le pipeline `FicheRenderer` (3 modes). Absente des pipelines d'impression. Le mode « aperçu imprimé » n'est pas un mode mais un **autre pipeline** — ce qui est une décision architecturale légitime, mais qui rend l'invariant inapplicable tel que formulé dans §8.2.
 
@@ -266,8 +266,8 @@ Deux systèmes de modes coexistent sans pont explicite :
 
 #### 2.4.2 Divergences prévisibles
 
-- **Légendes d'image** : `PrintableDocumentCell` applique `DocumentImageLegendOverlay` avec `imageLegendePosition` ([PrintableFichePreview.tsx:173-178](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L173-L178)). `DocCard` et `DocumentCardCompact` ont leur propre logique d'affichage de légende — à vérifier manuellement.
-- **Source_citation** : `PrintableDocumentCell` rend la source via `sourceCitationDisplayHtml` dans `PrintableSourceLine` ([PrintableFichePreview.tsx:199, 204-214](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L199)). `DocCard` a sa propre logique. `DocumentCardCompact` également. Trois chemins HTML/sanitization distincts.
+- **Légendes d'image** : `PrintableDocumentCell` applique `DocumentImageLegendOverlay` avec `imageLegendePosition` ([PrintableFichePreview.tsx:173-178](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L173-L178)). `DocCard` et `DocumentCardCompact` ont leur propre logique d'affichage de légende — à vérifier manuellement.
+- **Source_citation** : `PrintableDocumentCell` rend la source via `sourceCitationDisplayHtml` dans `PrintableSourceLine` ([PrintableFichePreview.tsx:199, 204-214](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L199)). `DocCard` a sa propre logique. `DocumentCardCompact` également. Trois chemins HTML/sanitization distincts.
 - **Footnotes** : seul `DocumentElementRenderer` extrait et rend les footnotes de manière structurée. Les trois composants parallèles ne les traitent pas de manière unifiée.
 - **Structures `perspectives` / `deux_temps`** : `PrintableDocumentCell` les gère via délégation à `DocumentElementRenderer`. `DocCard` et `DocumentCardCompact` **n'ont pas** de chemin multi-éléments équivalent — à vérifier si ces structures sont correctement affichées en vue détaillée tâche.
 
@@ -498,8 +498,8 @@ Cette réparation n'est **pas** proposée ici — elle relève d'une passe de re
 
 - [components/epreuve/impression/sections/document.tsx](../../components/epreuve/impression/sections/document.tsx) — `SectionDocument`
 - [lib/fiche/primitives/DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx) — `DocCard`
-- [components/tae/fiche/DocumentCardCompact.tsx](../../components/tae/fiche/DocumentCardCompact.tsx) — `DocumentCardCompact`
-- [components/tae/TaeForm/preview/PrintableFichePreview.tsx:72-202](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L72-L202) — `PrintableDocumentCell`
+- [components/tache/fiche/DocumentCardCompact.tsx](../../components/tache/fiche/DocumentCardCompact.tsx) — `DocumentCardCompact`
+- [components/tache/wizard/preview/PrintableFichePreview.tsx:72-202](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L72-L202) — `PrintableDocumentCell`
 - [components/documents/DocumentCardThumbnail.tsx](../../components/documents/DocumentCardThumbnail.tsx) — `DocumentCardThumbnail`
 - [components/documents/DocumentFicheRead.tsx](../../components/documents/DocumentFicheRead.tsx) — `DocumentFicheRead` (mort)
 
@@ -514,6 +514,6 @@ Cette réparation n'est **pas** proposée ici — elle relève d'une passe de re
 - [app/(print)/evaluations/[id]/print/page.tsx](<../../app/(print)/evaluations/[id]/print/page.tsx>) — pipeline print évaluation parallèle
 - [components/epreuve/impression/index.tsx](../../components/epreuve/impression/index.tsx) — `ApercuImpression`
 - [components/evaluations/EvaluationPrintableBody.tsx](../../components/evaluations/EvaluationPrintableBody.tsx) — `EvaluationPrintableBody`
-- [components/tae/TaeForm/preview/PrintableFichePreview.tsx](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx) — `PrintableFichePreview`
+- [components/tache/wizard/preview/PrintableFichePreview.tsx](../../components/tache/wizard/preview/PrintableFichePreview.tsx) — `PrintableFichePreview`
 - [components/documents/DocumentFicheLecture.tsx](../../components/documents/DocumentFicheLecture.tsx) — vue détaillée document (pipeline conforme)
 - [components/tache/vue-detaillee/sections/documents.tsx](../../components/tache/vue-detaillee/sections/documents.tsx) — vue détaillée tâche (utilise `DocCard`)

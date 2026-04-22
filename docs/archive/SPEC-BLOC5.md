@@ -751,11 +751,11 @@ BLOC4_INTRUS_TOOLTIP          = "L'intrus est l'acteur ou historien
 ## Fichiers à créer
 
 ```
-components/tae/TaeForm/bloc5/
+components/tache/wizard/bloc5/
   Bloc5Redactionnel.tsx      ← générique R — templateKey
   Bloc5NrOptions.tsx         ← générique NR — optionsType
 
-lib/tae/bloc5/
+lib/tache/bloc5/
   bloc5-templates.ts         ← modèles de corrigé par templateKey
   bloc5-notes-templates.ts   ← notes du correcteur par templateKey
   bloc5-prefill.ts           ← logique pré-remplissage depuis Bloc 3/4

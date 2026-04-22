@@ -11,27 +11,27 @@
 
 ### Fichiers qui EXISTENT au chemin exact indiqué
 
-| #   | Fichier                                                    | Existe  | Conforme au plan                           |
-| --- | ---------------------------------------------------------- | ------- | ------------------------------------------ |
-| 1   | `components/documents/DocumentElementRenderer.tsx`         | **OUI** | OUI                                        |
-| 2   | `lib/types/document-renderer.ts`                           | **OUI** | OUI                                        |
-| 3   | `lib/tache/contrats/donnees.ts`                            | **OUI** | OUI                                        |
-| 4   | `lib/tache/contrats/etat-wizard-vers-tache.ts`             | **OUI** | OUI — `construireDocuments` lignes 186-197 |
-| 5   | `components/epreuve/impression/sections/document.tsx`      | **OUI** | OUI                                        |
-| 6   | `lib/impression/builders/blocs-document.ts`                | **OUI** | OUI                                        |
-| 7   | `lib/epreuve/transformation/epreuve-vers-paginee.ts`       | **OUI** | OUI                                        |
-| 8   | `lib/fiche/primitives/DocCard.tsx`                         | **OUI** | OUI                                        |
-| 9   | `components/tae/fiche/DocumentCardCompact.tsx`             | **OUI** | OUI                                        |
-| 10  | `components/tae/fiche/SectionDocuments.tsx`                | **OUI** | **ATTENTION** — voir section 3             |
-| 11  | `components/tae/TaeForm/preview/PrintableFichePreview.tsx` | **OUI** | OUI                                        |
-| 12  | `components/evaluations/EvaluationPrintableBody.tsx`       | **OUI** | OUI                                        |
-| 13  | `components/evaluations/EvaluationFichePrintView.tsx`      | **OUI** | OUI                                        |
-| 14  | `app/(print)/evaluations/[id]/print/page.tsx`              | **OUI** | OUI                                        |
-| 15  | `components/documents/DocumentFicheRead.tsx`               | **OUI** | OUI (dead code confirmé — 0 imports)       |
-| 16  | `components/tache/vue-detaillee/sections/documents.tsx`    | **OUI** | **ATTENTION** — voir section 3             |
-| 17  | `components/documents/DocumentCardPrint.tsx`               | **OUI** | OUI                                        |
-| 18  | `components/documents/DocumentCard.tsx`                    | **OUI** | OUI                                        |
-| 19  | `components/documents/DocumentCardThumbnail.tsx`           | **OUI** | OUI (0 imports — déjà dead code ?)         |
+| #   | Fichier                                                     | Existe  | Conforme au plan                           |
+| --- | ----------------------------------------------------------- | ------- | ------------------------------------------ |
+| 1   | `components/documents/DocumentElementRenderer.tsx`          | **OUI** | OUI                                        |
+| 2   | `lib/types/document-renderer.ts`                            | **OUI** | OUI                                        |
+| 3   | `lib/tache/contrats/donnees.ts`                             | **OUI** | OUI                                        |
+| 4   | `lib/tache/contrats/etat-wizard-vers-tache.ts`              | **OUI** | OUI — `construireDocuments` lignes 186-197 |
+| 5   | `components/epreuve/impression/sections/document.tsx`       | **OUI** | OUI                                        |
+| 6   | `lib/impression/builders/blocs-document.ts`                 | **OUI** | OUI                                        |
+| 7   | `lib/epreuve/transformation/epreuve-vers-paginee.ts`        | **OUI** | OUI                                        |
+| 8   | `lib/fiche/primitives/DocCard.tsx`                          | **OUI** | OUI                                        |
+| 9   | `components/tache/fiche/DocumentCardCompact.tsx`            | **OUI** | OUI                                        |
+| 10  | `components/tache/fiche/SectionDocuments.tsx`               | **OUI** | **ATTENTION** — voir section 3             |
+| 11  | `components/tache/wizard/preview/PrintableFichePreview.tsx` | **OUI** | OUI                                        |
+| 12  | `components/evaluations/EvaluationPrintableBody.tsx`        | **OUI** | OUI                                        |
+| 13  | `components/evaluations/EvaluationFichePrintView.tsx`       | **OUI** | OUI                                        |
+| 14  | `app/(print)/evaluations/[id]/print/page.tsx`               | **OUI** | OUI                                        |
+| 15  | `components/documents/DocumentFicheRead.tsx`                | **OUI** | OUI (dead code confirmé — 0 imports)       |
+| 16  | `components/tache/vue-detaillee/sections/documents.tsx`     | **OUI** | **ATTENTION** — voir section 3             |
+| 17  | `components/documents/DocumentCardPrint.tsx`                | **OUI** | OUI                                        |
+| 18  | `components/documents/DocumentCard.tsx`                     | **OUI** | OUI                                        |
+| 19  | `components/documents/DocumentCardThumbnail.tsx`            | **OUI** | OUI (0 imports — déjà dead code ?)         |
 
 **Tous les fichiers existent.** Aucune erreur de chemin dans le plan.
 
@@ -102,7 +102,7 @@ export interface IconographiqueElement extends BaseElement {
 
 Le plan (étape 3) suppose que `slot.rendererDocument` existe sur les slots du Bloc 4. Vérification :
 
-`DocumentSlotData` (`lib/tae/document-helpers.ts:30-62`) :
+`DocumentSlotData` (`lib/tache/document-helpers.ts:30-62`) :
 
 ```typescript
 export type DocumentSlotData = {
@@ -181,24 +181,24 @@ Confirmé : un seul consommateur. Le plan est correct.
 | `components/tache/vue-detaillee/sections/documents.tsx` | Listé (étape 6a) ✅ |
 | `lib/fiche/sections/SectionDocuments.tsx`               | **NON LISTÉ** ❌    |
 
-Le plan liste `components/tae/fiche/SectionDocuments.tsx` (étape 6b) mais le VRAI `SectionDocuments` qui utilise `DocCard` est à `lib/fiche/sections/SectionDocuments.tsx`. Ce sont **deux fichiers différents** :
+Le plan liste `components/tache/fiche/SectionDocuments.tsx` (étape 6b) mais le VRAI `SectionDocuments` qui utilise `DocCard` est à `lib/fiche/sections/SectionDocuments.tsx`. Ce sont **deux fichiers différents** :
 
-- `components/tae/fiche/SectionDocuments.tsx` — utilise `DocumentCardCompact` (listé en 6b) ✅
+- `components/tache/fiche/SectionDocuments.tsx` — utilise `DocumentCardCompact` (listé en 6b) ✅
 - `lib/fiche/sections/SectionDocuments.tsx` — utilise `DocCard` **NON LISTÉ** ❌
 
 **Hypothèse fausse du plan :** le plan dit que `DocCard` n'est utilisé que dans « vue détaillée tâche ». En réalité, `DocCard` est aussi importé par `lib/fiche/sections/SectionDocuments.tsx` (qui est le renderer fiche lecture).
 
 ### 3c. `DocumentCardCompact` — importé par 1 fichier
 
-`components/tae/fiche/SectionDocuments.tsx` (via `PlaygroundFicheRenderer.tsx`). Le plan est correct.
+`components/tache/fiche/SectionDocuments.tsx` (via `PlaygroundFicheRenderer.tsx`). Le plan est correct.
 
 ### 3d. `PrintableDocumentCell` — importé par 3 fichiers
 
-| Fichier                                                    | Listé dans le plan |
-| ---------------------------------------------------------- | ------------------ |
-| `components/tae/TaeForm/preview/PrintableFichePreview.tsx` | OUI (étape 6c)     |
-| `components/evaluations/EvaluationPrintableBody.tsx`       | OUI (étape 7)      |
-| `components/playground/PlaygroundPrintRenderer.tsx`        | **NON** ❌         |
+| Fichier                                                     | Listé dans le plan |
+| ----------------------------------------------------------- | ------------------ |
+| `components/tache/wizard/preview/PrintableFichePreview.tsx` | OUI (étape 6c)     |
+| `components/evaluations/EvaluationPrintableBody.tsx`        | OUI (étape 7)      |
+| `components/playground/PlaygroundPrintRenderer.tsx`         | **NON** ❌         |
 
 ### 3e. `EvaluationPrintableBody` / `EvaluationFichePrintView`
 
@@ -215,11 +215,11 @@ Aucun test n'importe directement `DocCard`, `DocumentCardCompact`, `PrintableDoc
 
 **3 composants playground** seraient cassés par le plan :
 
-| Fichier                                             | Dépendance                                          |
-| --------------------------------------------------- | --------------------------------------------------- |
-| `components/playground/PlaygroundPrintRenderer.tsx` | Importe `PrintableDocumentCell`                     |
-| `components/playground/PlaygroundFicheRenderer.tsx` | Importe `components/tae/fiche/SectionDocuments.tsx` |
-| `components/playground/PlaygroundContextCanvas.tsx` | Importe `PrintableFichePreview`                     |
+| Fichier                                             | Dépendance                                            |
+| --------------------------------------------------- | ----------------------------------------------------- |
+| `components/playground/PlaygroundPrintRenderer.tsx` | Importe `PrintableDocumentCell`                       |
+| `components/playground/PlaygroundFicheRenderer.tsx` | Importe `components/tache/fiche/SectionDocuments.tsx` |
+| `components/playground/PlaygroundContextCanvas.tsx` | Importe `PrintableFichePreview`                       |
 
 Le plan ne mentionne AUCUN de ces fichiers.
 
@@ -306,8 +306,8 @@ Note : d'autres fichiers utilisent `.kind` mais sur des types différents (bloc.
 | `lib/tache/contrats/donnees.ts`                       | 24    | Champ `echelle?: number` dans `DocumentReference`                    |
 | `lib/tache/contrats/etat-wizard-vers-tache.ts`        | 194   | `echelle: slot.printImpressionScale`                                 |
 | `components/epreuve/impression/sections/document.tsx` | 5, 76 | Commentaire + `transform: scale(${doc.echelle})`                     |
-| `components/tae/grilles/grille-registry.tsx`          | 8, 25 | `bareme.echelle` — SANS RAPPORT (échelle d'évaluation, pas document) |
-| `components/tae/grilles/GenericEchelleGrid.tsx`       | 20    | `entry.bareme.echelle` — SANS RAPPORT (grilles)                      |
+| `components/tache/grilles/grille-registry.tsx`        | 8, 25 | `bareme.echelle` — SANS RAPPORT (échelle d'évaluation, pas document) |
+| `components/tache/grilles/GenericEchelleGrid.tsx`     | 20    | `entry.bareme.echelle` — SANS RAPPORT (grilles)                      |
 
 Le champ `echelle` lié aux documents n'est utilisé que dans 3 fichiers (donnees.ts, etat-wizard-vers-tache.ts, document.tsx). Tous sont modifiés ou supprimés par le plan. **OK.**
 

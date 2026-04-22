@@ -69,19 +69,19 @@ oi.json (référentiel)
 
 | Fichier                                   | Mécanisme                                             | Commentaire                                                                   |
 | ----------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------- |
-| `lib/tae/non-redaction/variant-slugs.ts`  | `as const` array + Set guard                          | Source de vérité des slugs                                                    |
-| `lib/tae/non-redaction/registry.ts`       | `Map.get(comportementId)` depuis oi.json              | Lookup O(1), auto-construit                                                   |
-| `lib/tae/non-redaction/wizard-variant.ts` | 4 fonctions `isActive*Variant()`                      | Chacune appelle `getVariantSlugForComportementId()` puis compare `=== "slug"` |
-| `lib/tae/behaviours/comportement-slug.ts` | if-else cascade (3 slugs) → fallback `"redactionnel"` | Les variants futures tombent silencieusement en rédactionnel                  |
+| `lib/tache/non-redaction/variant-slugs.ts`  | `as const` array + Set guard                          | Source de vérité des slugs                                                    |
+| `lib/tache/non-redaction/registry.ts`       | `Map.get(comportementId)` depuis oi.json              | Lookup O(1), auto-construit                                                   |
+| `lib/tache/non-redaction/wizard-variant.ts` | 4 fonctions `isActive*Variant()`                      | Chacune appelle `getVariantSlugForComportementId()` puis compare `=== "slug"` |
+| `lib/tache/behaviours/comportement-slug.ts` | if-else cascade (3 slugs) → fallback `"redactionnel"` | Les variants futures tombent silencieusement en rédactionnel                  |
 
 ### Couche 2 — État (reducer + types)
 
 | Fichier                           | Mécanisme                              | Commentaire                                                      |
 | --------------------------------- | -------------------------------------- | ---------------------------------------------------------------- |
-| `lib/tae/tae-form-state-types.ts` | Discriminated union `NonRedactionData` | 4 branches : placeholder, ordre, ligne, avant                    |
-| `lib/tae/tae-form-reducer.ts`     | 3 actions `NON_REDACTION_PATCH_*`      | Chacune garde sur `nr?.type !== "slug"`                          |
-| `lib/tae/tae-form-reducer.ts`     | `initialNonRedactionForSlug()`         | 3-way if cascade → payload initial par variant                   |
-| `lib/tae/tae-form-reducer.ts`     | `UPDATE_DOCUMENT_SLOT`                 | Cas spécial avant-après uniquement (reset options si doc change) |
+| `lib/tache/tae-form-state-types.ts` | Discriminated union `NonRedactionData` | 4 branches : placeholder, ordre, ligne, avant                    |
+| `lib/tache/tae-form-reducer.ts`     | 3 actions `NON_REDACTION_PATCH_*`      | Chacune garde sur `nr?.type !== "slug"`                          |
+| `lib/tache/tae-form-reducer.ts`     | `initialNonRedactionForSlug()`         | 3-way if cascade → payload initial par variant                   |
+| `lib/tache/tae-form-reducer.ts`     | `UPDATE_DOCUMENT_SLOT`                 | Cas spécial avant-après uniquement (reset options si doc change) |
 
 ### Couche 3 — UI wizard (composants)
 
@@ -222,7 +222,7 @@ Un 4e variant ajouterait un 4e niveau de ternaire.
 Extraire la logique dupliquée dans une seule fonction :
 
 ```typescript
-// lib/tae/non-redaction/resolve-nr-content.ts
+// lib/tache/non-redaction/resolve-nr-content.ts
 export function resolveNRContent(
   comportementId: string,
   nonRedaction: NonRedactionData | null,
@@ -253,7 +253,7 @@ Les 4 fichiers consommateurs appellent `resolveNRContent()` au lieu de dupliquer
 Regrouper toute la configuration d'un variant dans un objet unique :
 
 ```typescript
-// lib/tae/non-redaction/variants/ordre-chronologique.ts
+// lib/tache/non-redaction/variants/ordre-chronologique.ts
 export const ordreChronologiqueVariant: NRVariantConfig = {
   slug: "ordre-chronologique",
   initialPayload: () => initialOrdreChronologiquePayload(),

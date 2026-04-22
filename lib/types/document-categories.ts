@@ -2,7 +2,7 @@
  * Types — registre des catégories de documents (textuelles, iconographiques, types de source).
  *
  * Source de vérité unique : `public/data/document-categories.json`.
- * Chargé via les helpers de `lib/tae/document-categories-helpers.ts`.
+ * Chargé via les helpers de `lib/tache/document-categories-helpers.ts`.
  */
 
 /** Catégorie textuelle (lois, écrits personnels, presse, etc.). */

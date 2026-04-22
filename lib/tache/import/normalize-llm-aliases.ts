@@ -1,6 +1,6 @@
 /**
  * Normalisation déterministe des alias fréquents générés par des LLM (anglais, casse)
- * avant validation métier / RPC — voir `docs/ARCHITECTURE.md` (`lib/tae/import/`).
+ * avant validation métier / RPC — voir `docs/ARCHITECTURE.md` (`lib/tache/import/`).
  */
 
 export type ImportedDocumentType = "textuel" | "iconographique";

@@ -10,7 +10,7 @@ export type ComportementAttenduJson = {
   nb_lignes?: number;
   outil_evaluation: string;
   status?: OiStatus;
-  /** Slug dossier `components/tae/non-redaction/<slug>/` — voir `docs/wizard-oi-non-redactionnelle.md`. */
+  /** Slug dossier `components/tache/non-redaction/<slug>/` — voir `docs/wizard-oi-non-redactionnelle.md`. */
   variant_slug?: string;
   /** Discriminant stable pour typage / Zod du brouillon non rédactionnel (optionnel). */
   response_format?: string;

@@ -258,8 +258,8 @@ Reçoit `FicheMode` — c'est le seul renderer, avec `FicheRenderer`-driven, à 
 
 ## 5. DocumentCardCompact
 
-**Fichier :** [components/tae/fiche/DocumentCardCompact.tsx](../../components/tae/fiche/DocumentCardCompact.tsx)
-**Rôle :** carte compacte pour le sommaire wizard tâche (`components/tae/fiche/SectionDocuments.tsx`).
+**Fichier :** [components/tache/fiche/DocumentCardCompact.tsx](../../components/tache/fiche/DocumentCardCompact.tsx)
+**Rôle :** carte compacte pour le sommaire wizard tâche (`components/tache/fiche/SectionDocuments.tsx`).
 
 ### a) Champs rendus
 
@@ -312,7 +312,7 @@ type Props = { doc: DocumentFiche };
 
 ## 6. PrintableDocumentCell
 
-**Fichier :** [components/tae/TaeForm/preview/PrintableFichePreview.tsx:72-202](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L72-L202)
+**Fichier :** [components/tache/wizard/preview/PrintableFichePreview.tsx:72-202](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L72-L202)
 **Rôle :** cellule document dans l'aperçu imprimable wizard TAÉ. Bifurque selon `rendererDocument.elements.length > 1` (multi vs simple).
 
 ### a) Champs rendus
@@ -657,21 +657,21 @@ Les 5 autres (`SectionDocument`, `DocCard`, `DocumentCardCompact`, `DocumentFich
 
 ## 13. Références de code
 
-| Symbole                                      | Fichier                                                                                                                             |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `DocumentCard`                               | [components/documents/DocumentCard.tsx](../../components/documents/DocumentCard.tsx)                                                |
-| `DocumentElementRenderer`                    | [components/documents/DocumentElementRenderer.tsx](../../components/documents/DocumentElementRenderer.tsx)                          |
-| `DocumentCardPrint`                          | [components/documents/DocumentCardPrint.tsx](../../components/documents/DocumentCardPrint.tsx)                                      |
-| `SectionDocument`                            | [components/epreuve/impression/sections/document.tsx](../../components/epreuve/impression/sections/document.tsx)                    |
-| `DocCard`                                    | [lib/fiche/primitives/DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx)                                                          |
-| `DocumentCardCompact`                        | [components/tae/fiche/DocumentCardCompact.tsx](../../components/tae/fiche/DocumentCardCompact.tsx)                                  |
-| `PrintableDocumentCell`                      | [components/tae/TaeForm/preview/PrintableFichePreview.tsx](../../components/tae/TaeForm/preview/PrintableFichePreview.tsx#L72-L202) |
-| `DocumentFicheRead`                          | [components/documents/DocumentFicheRead.tsx](../../components/documents/DocumentFicheRead.tsx)                                      |
-| `DocumentCardThumbnail`                      | [components/documents/DocumentCardThumbnail.tsx](../../components/documents/DocumentCardThumbnail.tsx)                              |
-| `DocumentImageLegendOverlay`                 | [components/documents/DocumentImageLegendOverlay.tsx](../../components/documents/DocumentImageLegendOverlay.tsx)                    |
-| `extractFootnotes`                           | [lib/documents/extract-footnotes.ts](../../lib/documents/extract-footnotes.ts)                                                      |
-| `sanitize`                                   | [lib/fiche/helpers.ts](../../lib/fiche/helpers.ts)                                                                                  |
-| `sourceCitationDisplayHtml`                  | [lib/documents/source-citation-html.ts](../../lib/documents/source-citation-html.ts)                                                |
-| `DocumentFiche` type                         | [lib/types/fiche.ts:8-36](../../lib/types/fiche.ts#L8-L36)                                                                          |
-| `RendererDocument` / `DocumentElement` types | [lib/types/document-renderer.ts](../../lib/types/document-renderer.ts)                                                              |
-| `DocumentReference` type                     | [lib/tache/contrats/donnees.ts:19-25](../../lib/tache/contrats/donnees.ts#L19-L25)                                                  |
+| Symbole                                      | Fichier                                                                                                                               |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `DocumentCard`                               | [components/documents/DocumentCard.tsx](../../components/documents/DocumentCard.tsx)                                                  |
+| `DocumentElementRenderer`                    | [components/documents/DocumentElementRenderer.tsx](../../components/documents/DocumentElementRenderer.tsx)                            |
+| `DocumentCardPrint`                          | [components/documents/DocumentCardPrint.tsx](../../components/documents/DocumentCardPrint.tsx)                                        |
+| `SectionDocument`                            | [components/epreuve/impression/sections/document.tsx](../../components/epreuve/impression/sections/document.tsx)                      |
+| `DocCard`                                    | [lib/fiche/primitives/DocCard.tsx](../../lib/fiche/primitives/DocCard.tsx)                                                            |
+| `DocumentCardCompact`                        | [components/tache/fiche/DocumentCardCompact.tsx](../../components/tache/fiche/DocumentCardCompact.tsx)                                |
+| `PrintableDocumentCell`                      | [components/tache/wizard/preview/PrintableFichePreview.tsx](../../components/tache/wizard/preview/PrintableFichePreview.tsx#L72-L202) |
+| `DocumentFicheRead`                          | [components/documents/DocumentFicheRead.tsx](../../components/documents/DocumentFicheRead.tsx)                                        |
+| `DocumentCardThumbnail`                      | [components/documents/DocumentCardThumbnail.tsx](../../components/documents/DocumentCardThumbnail.tsx)                                |
+| `DocumentImageLegendOverlay`                 | [components/documents/DocumentImageLegendOverlay.tsx](../../components/documents/DocumentImageLegendOverlay.tsx)                      |
+| `extractFootnotes`                           | [lib/documents/extract-footnotes.ts](../../lib/documents/extract-footnotes.ts)                                                        |
+| `sanitize`                                   | [lib/fiche/helpers.ts](../../lib/fiche/helpers.ts)                                                                                    |
+| `sourceCitationDisplayHtml`                  | [lib/documents/source-citation-html.ts](../../lib/documents/source-citation-html.ts)                                                  |
+| `DocumentFiche` type                         | [lib/types/fiche.ts:8-36](../../lib/types/fiche.ts#L8-L36)                                                                            |
+| `RendererDocument` / `DocumentElement` types | [lib/types/document-renderer.ts](../../lib/types/document-renderer.ts)                                                                |
+| `DocumentReference` type                     | [lib/tache/contrats/donnees.ts:19-25](../../lib/tache/contrats/donnees.ts#L19-L25)                                                    |

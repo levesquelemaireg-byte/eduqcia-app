@@ -67,7 +67,7 @@ Le playground doit utiliser **exactement les mêmes identifiants métier** que l
 
 - `public/data/oi.json`
 - `public/data/grilles-evaluation.json`
-- `lib/tae/` (helpers, payloads et types)
+- `lib/tache/` (helpers, payloads et types)
 
 ### Évolution volontaire du référentiel (granularité, modularité, scalabilité)
 
@@ -76,7 +76,7 @@ La règle ci-dessus **n'interdit pas** de changer les identifiants métier quand
 Dans ce cas, l'ordre est toujours le même :
 
 1. **Décider et tracer** la nouvelle convention (où c'est normé : [DECISIONS.md](./DECISIONS.md), [ARCHITECTURE.md](./ARCHITECTURE.md) si SQL / RPC / fichiers de données).
-2. **Mettre à jour les sources de vérité** en premier (types, payloads dans `lib/tae/`, migrations Supabase si la base porte les ids). Les **JSON référentiels** sous **`public/data/`** sur lesquels l’app est fondée **ne font pas l’objet de modifications** en développement courant (immuables sauf nécessité absolue) — voir [DECISIONS.md](./DECISIONS.md) § Référentiels `public/data/*.json`.
+2. **Mettre à jour les sources de vérité** en premier (types, payloads dans `lib/tache/`, migrations Supabase si la base porte les ids). Les **JSON référentiels** sous **`public/data/`** sur lesquels l’app est fondée **ne font pas l’objet de modifications** en développement courant (immuables sauf nécessité absolue) — voir [DECISIONS.md](./DECISIONS.md) § Référentiels `public/data/*.json`.
 3. **Faire suivre l'application** (wizard, fiche, impression, actions / RPC).
 4. **Aligner le playground** sur le nouveau référentiel — le playground **suit** la vérité canonique, il ne la précède pas.
 
@@ -112,14 +112,14 @@ app/dev/fragments/
 
 1. Vérifier que le `comportement_id` existe dans `oi.json` et est **sélectionnable** (`nb_documents` renseigné, `status !== coming_soon` au niveau comportement si défini).
 2. Ajouter une entrée dans `MOCK_TAE_FICHE_BY_COMPORTEMENT_ID` typée **`TaeFicheData`** (`lib/types/fiche.ts` uniquement — ne pas recréer le type ailleurs).
-3. Pour un parcours NR, préférer les **builders** `lib/tae/non-redaction/*-payload.ts` pour la consigne publiée afin que l'onglet Print reste cohérent avec `parse*ForStudentPrint`.
+3. Pour un parcours NR, préférer les **builders** `lib/tache/non-redaction/*-payload.ts` pour la consigne publiée afin que l'onglet Print reste cohérent avec `parse*ForStudentPrint`.
 4. `npm run lint && npm run build` ; mettre à jour ce document (table des onglets ou liste des ids mockés si besoin).
 
 ---
 
 ## Format papier de référence
 
-**Le projet utilise le format Lettre US** — voir `lib/tae/print-page-css.ts` et `app/globals.css` :
+**Le projet utilise le format Lettre US** — voir `lib/tache/print-page-css.ts` et `app/globals.css` :
 
 ```
 Format   : Lettre US — 8,5 × 11 po
@@ -164,12 +164,12 @@ Les blocs **StudentId**, **Header**, **Footer** épreuve (spec historique dans l
 
 ## Références croisées projet
 
-| Besoin                           | Fichier                                                              |
-| -------------------------------- | -------------------------------------------------------------------- |
-| Données fiche                    | `lib/types/fiche.ts` (`TaeFicheData`)                                |
-| Grilles d'évaluation             | `components/tae/grilles/grille-registry.tsx`, `eval-grid.module.css` |
-| Source textes grilles            | `public/data/grilles-evaluation.json`                                |
-| Impression depuis `TaeFicheData` | `PrintableFicheFromTaeData` dans `PrintableFichePreview.tsx`         |
-| CSS print + @page Letter         | `lib/tae/print-page-css.ts`, `app/globals.css`                       |
-| Comportements non-rédactionnels  | `lib/tae/non-redaction/`, `docs/wizard-oi-non-redactionnelle.md`     |
-| Référentiel OI (fetch client)    | `useOiData` — `components/tae/TaeForm/bloc2/useBloc2Data.ts`         |
+| Besoin                           | Fichier                                                                |
+| -------------------------------- | ---------------------------------------------------------------------- |
+| Données fiche                    | `lib/types/fiche.ts` (`TaeFicheData`)                                  |
+| Grilles d'évaluation             | `components/tache/grilles/grille-registry.tsx`, `eval-grid.module.css` |
+| Source textes grilles            | `public/data/grilles-evaluation.json`                                  |
+| Impression depuis `TaeFicheData` | `PrintableFicheFromTaeData` dans `PrintableFichePreview.tsx`           |
+| CSS print + @page Letter         | `lib/tache/print-page-css.ts`, `app/globals.css`                       |
+| Comportements non-rédactionnels  | `lib/tache/non-redaction/`, `docs/wizard-oi-non-redactionnelle.md`     |
+| Référentiel OI (fetch client)    | `useOiData` — `components/tache/wizard/bloc2/useBloc2Data.ts`          |

@@ -20,26 +20,26 @@ Ce glossaire est **autoritaire**. Tout code, toute UI, toute doc, toute spec, to
 
 ### 1.1 Entités et concepts principaux
 
-| Concept                                                   | Nom UI (enseignant)                                                         | Nom code                                                                                                        | Nom DB                                              | Fichier principal                                     |
-| --------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ----------------------------------------------------- |
-| Document autonome                                         | **Document**                                                                | `Document` / `RendererDocument`                                                                                 | `documents`                                         | `lib/types/document-renderer.ts`                      |
-| Tâche d'apprentissage et d'évaluation                     | **Tâche** (ou forme longue **TAÉ** quand le contexte éditorial l'exige)     | `DonneesTache` / `Tache` (**jamais `Tae`, jamais `Task`**)                                                      | `tae` (**dette — devrait être `taches`**)           | `lib/tache/contrats/donnees.ts`                       |
-| Regroupement de tâches                                    | **Épreuve**                                                                 | `DonneesEpreuve` / `Epreuve`                                                                                    | `evaluations` (**dette — devrait être `epreuves`**) | `lib/epreuve/contrats/donnees.ts`                     |
-| Opération intellectuelle                                  | **Opération intellectuelle** (forme longue toujours, **jamais `OI` en UI**) | `oi` toléré en code                                                                                             | référentiel `public/data/oi.json`                   | `public/data/oi.json`                                 |
-| Outil d'évaluation (familièrement : grille de correction) | **Outil d'évaluation**                                                      | `OutilEvaluation`                                                                                               | colonne `comportements.outil_evaluation`            | `lib/tache/contrats/donnees.ts:41`                    |
-| Espace de production                                      | **Espace de production**                                                    | `EspaceProduction` (union discriminée : `lignes` / `cases` / `libre`)                                           | valeurs stockées sur la tâche                       | `lib/tache/contrats/donnees.ts:47`                    |
-| Appel documentaire                                        | **Appel documentaire**                                                      | `buildAmorceDocumentaire` / `insertAmorceDocumentaire` (**dette D3 — code dit `amorce`, devrait dire `appel`**) | - (dérivé, généré)                                  | `lib/tae/consigne-helpers.ts`                         |
-| Consigne                                                  | **Consigne**                                                                | `FormState.redaction.consigne`                                                                                  | `tae.consigne`                                      | `lib/tae/tae-form-state-types.ts`                     |
-| Guidage complémentaire                                    | **Guidage complémentaire**                                                  | `Guidage` / `FormState.redaction.guidage`                                                                       | `tae.guidage`                                       | `lib/tache/contrats/donnees.ts:16`                    |
-| Production attendue                                       | **Production attendue** (UI) / `corrige` (code/DB) — **divergence assumée** | `FormState.bloc5.corrige` / `selectCorrige`                                                                     | `tae.corrige`                                       | `lib/fiche/selectors/selectCorrige.ts`                |
-| Notes au correcteur                                       | **Notes au correcteur**                                                     | `FormState.bloc5.notesCorrecteur`                                                                               | **colonne SQL à créer** — `tae.notes_correcteur`    | `lib/tae/tae-form-state-types.ts`                     |
-| Comportement attendu                                      | **Comportement attendu**                                                    | `ComportementPicker`                                                                                            | table `comportements`                               | `components/tae/TaeForm/bloc2/ComportementPicker.tsx` |
-| Repère temporel                                           | **Repère temporel**                                                         | `RepereTemporelField`                                                                                           | `documents.repere_temporel`                         | `components/ui/RepereTemporelField.tsx`               |
-| Année normalisée                                          | **Année normalisée**                                                        | `extract-year.ts` / `document-annee.ts`                                                                         | `documents.annee_normalisee`                        | `lib/utils/extract-year.ts`                           |
-| Espace personnel                                          | **Mes documents** / **Mes tâches** / **Mes épreuves**                       | routes `/documents`, `/questions` (**dette**), `/evaluations` (**dette**)                                       | -                                                   | `components/layout/Sidebar.tsx`                       |
-| Espace partagé                                            | **Banque collaborative** (3 onglets)                                        | `bank` / `BankDocumentsPanel`, `BankTasksPanel`, `BankEvaluationsPanel`                                         | -                                                   | `components/bank/`                                    |
-| Copie de l'élève                                          | **Copie de l'élève**                                                        | rendu via `ApercuImpression`                                                                                    | - (rendu, pas entité)                               | `components/epreuve/impression/index.tsx`             |
-| Interface guidée de création/édition                      | **Assistant de création** (en UI/doc publique)                              | `Wizard` / `wizard` (conservé en code)                                                                          | -                                                   | -                                                     |
+| Concept                                                   | Nom UI (enseignant)                                                         | Nom code                                                                                                        | Nom DB                                              | Fichier principal                                      |
+| --------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| Document autonome                                         | **Document**                                                                | `Document` / `RendererDocument`                                                                                 | `documents`                                         | `lib/types/document-renderer.ts`                       |
+| Tâche d'apprentissage et d'évaluation                     | **Tâche** (ou forme longue **TAÉ** quand le contexte éditorial l'exige)     | `DonneesTache` / `Tache` (**jamais `Tae`, jamais `Task`**)                                                      | `tae` (**dette — devrait être `taches`**)           | `lib/tache/contrats/donnees.ts`                        |
+| Regroupement de tâches                                    | **Épreuve**                                                                 | `DonneesEpreuve` / `Epreuve`                                                                                    | `evaluations` (**dette — devrait être `epreuves`**) | `lib/epreuve/contrats/donnees.ts`                      |
+| Opération intellectuelle                                  | **Opération intellectuelle** (forme longue toujours, **jamais `OI` en UI**) | `oi` toléré en code                                                                                             | référentiel `public/data/oi.json`                   | `public/data/oi.json`                                  |
+| Outil d'évaluation (familièrement : grille de correction) | **Outil d'évaluation**                                                      | `OutilEvaluation`                                                                                               | colonne `comportements.outil_evaluation`            | `lib/tache/contrats/donnees.ts:41`                     |
+| Espace de production                                      | **Espace de production**                                                    | `EspaceProduction` (union discriminée : `lignes` / `cases` / `libre`)                                           | valeurs stockées sur la tâche                       | `lib/tache/contrats/donnees.ts:47`                     |
+| Appel documentaire                                        | **Appel documentaire**                                                      | `buildAmorceDocumentaire` / `insertAmorceDocumentaire` (**dette D3 — code dit `amorce`, devrait dire `appel`**) | - (dérivé, généré)                                  | `lib/tache/consigne-helpers.ts`                        |
+| Consigne                                                  | **Consigne**                                                                | `FormState.redaction.consigne`                                                                                  | `tae.consigne`                                      | `lib/tache/tae-form-state-types.ts`                    |
+| Guidage complémentaire                                    | **Guidage complémentaire**                                                  | `Guidage` / `FormState.redaction.guidage`                                                                       | `tae.guidage`                                       | `lib/tache/contrats/donnees.ts:16`                     |
+| Production attendue                                       | **Production attendue** (UI) / `corrige` (code/DB) — **divergence assumée** | `FormState.bloc5.corrige` / `selectCorrige`                                                                     | `tae.corrige`                                       | `lib/fiche/selectors/selectCorrige.ts`                 |
+| Notes au correcteur                                       | **Notes au correcteur**                                                     | `FormState.bloc5.notesCorrecteur`                                                                               | **colonne SQL à créer** — `tae.notes_correcteur`    | `lib/tache/tae-form-state-types.ts`                    |
+| Comportement attendu                                      | **Comportement attendu**                                                    | `ComportementPicker`                                                                                            | table `comportements`                               | `components/tache/wizard/bloc2/ComportementPicker.tsx` |
+| Repère temporel                                           | **Repère temporel**                                                         | `RepereTemporelField`                                                                                           | `documents.repere_temporel`                         | `components/ui/RepereTemporelField.tsx`                |
+| Année normalisée                                          | **Année normalisée**                                                        | `extract-year.ts` / `document-annee.ts`                                                                         | `documents.annee_normalisee`                        | `lib/utils/extract-year.ts`                            |
+| Espace personnel                                          | **Mes documents** / **Mes tâches** / **Mes épreuves**                       | routes `/documents`, `/questions` (**dette**), `/evaluations` (**dette**)                                       | -                                                   | `components/layout/Sidebar.tsx`                        |
+| Espace partagé                                            | **Banque collaborative** (3 onglets)                                        | `bank` / `BankDocumentsPanel`, `BankTasksPanel`, `BankEvaluationsPanel`                                         | -                                                   | `components/bank/`                                     |
+| Copie de l'élève                                          | **Copie de l'élève**                                                        | rendu via `ApercuImpression`                                                                                    | - (rendu, pas entité)                               | `components/epreuve/impression/index.tsx`              |
+| Interface guidée de création/édition                      | **Assistant de création** (en UI/doc publique)                              | `Wizard` / `wizard` (conservé en code)                                                                          | -                                                   | -                                                      |
 
 ### 1.2 Modes de rendu (canoniques)
 
@@ -126,7 +126,7 @@ Trois entités stockées, toutes autonomes, toutes stockables dans un espace per
 **Nature** : entité composite. Référence des documents, mais ne les contient pas — elle pointe vers eux. Les documents référencés restent des entités autonomes.
 
 **Type domaine** : `DonneesTache` (`lib/tache/contrats/donnees.ts:63`).
-**État wizard** : `FormState` à 7 blocs (`lib/tae/tae-form-state-types.ts`).
+**État wizard** : `FormState` à 7 blocs (`lib/tache/tae-form-state-types.ts`).
 
 **Attributs principaux** :
 
@@ -145,10 +145,10 @@ Trois entités stockées, toutes autonomes, toutes stockables dans un espace per
 
 **Composants** :
 
-- Wizard : `components/tae/TaeForm/` (stepper, blocs 1-7)
+- Wizard : `components/tache/wizard/` (stepper, blocs 1-7)
 - Vue détaillée (nouveau) : `components/tache/vue-detaillee/`
-- Vue détaillée (legacy) : `FicheLecture` (`components/tae/FicheLecture.tsx`)
-- Miniature : `FicheThumbnail` (`components/tae/FicheThumbnail.tsx`)
+- Vue détaillée (legacy) : `FicheLecture` (`components/tache/FicheLecture.tsx`)
+- Miniature : `FicheThumbnail` (`components/tache/FicheThumbnail.tsx`)
 
 **Rendus** : voir §4
 
@@ -269,7 +269,7 @@ Ces entités n'ont pas de cycle de vie propre. Elles sont **calculées** depuis 
 
 **Nom UI** : **appel documentaire**. **Nom code actuel** : `amorceDocumentaire` / `buildAmorceDocumentaire` — **dette D3, à renommer en `appelDocumentaire`**.
 
-**Fichiers** : `lib/tae/consigne-helpers.ts`, `components/tae/TaeForm/tiptap/insertAmorce.ts`.
+**Fichiers** : `lib/tache/consigne-helpers.ts`, `components/tache/wizard/tiptap/insertAmorce.ts`.
 
 **Nature** : fragment **pré-inséré automatiquement** au début de la consigne, indiquant à l'élève le ou les documents à consulter. Librement modifiable ou supprimable par l'enseignant.
 
@@ -399,7 +399,7 @@ Champs saisis : type, titre, contenu, source, légende, repère temporel, indexa
 
 ### 5.2 Assistant de création de tâche (7 étapes) — wizard tâche en code
 
-**En code** : `components/tae/TaeForm/`, stepper dans `Stepper.tsx`, méta-étapes dans `step-meta.ts` (`TAE_FORM_STEPS`).
+**En code** : `components/tache/wizard/`, stepper dans `Stepper.tsx`, méta-étapes dans `step-meta.ts` (`TAE_FORM_STEPS`).
 
 1. **Auteurs** (`auteurs`) : enseignant unique ou collaborateurs
 2. **Paramètres pédagogiques** (`parametres`) : niveau, discipline, opération intellectuelle, comportement attendu — **verrouillables**. Le déverrouillage réinitialise les étapes dépendantes.

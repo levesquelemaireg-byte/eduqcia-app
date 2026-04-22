@@ -52,7 +52,7 @@ Bannière invalidation (si empreinteWizard ≠ empreintePng)
 | ------------------------------------------------------ | ------ | ------------------------------------- |
 | `components/epreuve/apercu/carrousel.tsx`              | ~260   | Composant carrousel (Embla)           |
 | `hooks/epreuve/use-apercu-png.ts`                      | ~213   | Hook orchestration PNG + PDF          |
-| `components/tae/TaeForm/preview/PrintPreviewModal.tsx` | ~145   | Modale d'aperçu impression            |
+| `components/tache/wizard/preview/PrintPreviewModal.tsx` | ~145   | Modale d'aperçu impression            |
 | `app/api/impression/apercu-png/route.ts`               | ~196   | API route génération PNG              |
 | `app/api/impression/token-draft/route.ts`              | —      | API route token HMAC + KV             |
 | `lib/epreuve/impression/puppeteer.ts`                  | ~131   | Wrapper Chromium headless             |

@@ -5,7 +5,7 @@ import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-cat
 /**
  * Schéma Zod aligné sur les ids du JSON `public/data/document-categories.json`
  * clé `iconographiques`. Source de vérité unique : le JSON, lu via les helpers
- * `lib/tae/document-categories-helpers.ts`.
+ * `lib/tache/document-categories-helpers.ts`.
  *
  * L'ancien tableau hardcodé `DOCUMENT_TYPE_ICONO_SLUGS` (dans `lib/ui/ui-copy.ts`)
  * a été supprimé au commit Chantier 3 (D-Coexistence Option A). Le type

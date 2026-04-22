@@ -118,7 +118,7 @@
 - [ ] Ajouter l'indicateur « Utilisé dans N tâches » pour chaque document (requête comptage côté serveur)
 - [ ] Ajouter la pagination si la banque grossit (cursor-based)
 - [ ] Mettre à jour `listBankDocumentsPickerAction` pour supporter les filtres et la pagination
-- [ ] Afficher l'icône de la catégorie textuelle ou iconographique à côté du label de chaque document dans les thumbnails et fiches de la banque. Consommer le mapping défini dans `public/data/document-categories.json` via les helpers de `lib/tae/document-categories-helpers.ts` (`getCategoryIcon` ou `getDocumentCategorieIconographique` / `getDocumentCategorieTextuelle`).
+- [ ] Afficher l'icône de la catégorie textuelle ou iconographique à côté du label de chaque document dans les thumbnails et fiches de la banque. Consommer le mapping défini dans `public/data/document-categories.json` via les helpers de `lib/tache/document-categories-helpers.ts` (`getCategoryIcon` ou `getDocumentCategorieIconographique` / `getDocumentCategorieTextuelle`).
 
 ---
 

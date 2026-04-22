@@ -3,7 +3,7 @@
     "allow": [
       "Bash(npm run:*)",
       "Bash(npx tsc:*)",
-      "Bash(wc -l /c/Users/leves/eduqcia-app/components/tae/TaeForm/bloc4/*.tsx)",
+      "Bash(wc -l /c/Users/leves/eduqcia-app/components/tache/wizard/bloc4/*.tsx)",
       "Bash(grep -E \"\\\\.\\(ts|tsx\\)$\")",
       "Bash(grep -l \"SegmentedControl\" /c/Users/leves/eduqcia-app/components/ui/*)",
       "Bash(grep -l \"RichTextEditorToolbar\" /c/Users/leves/eduqcia-app/components/ui/*)",

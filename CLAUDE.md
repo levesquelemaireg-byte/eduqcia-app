@@ -366,7 +366,7 @@ Workflow obligatoire pour tout changement schéma :
 ```
 Page (app/)
   └── Layout Components (components/layout/)
-        └── Feature Components (components/tae/, components/documents/, etc.)
+        └── Feature Components (components/tache/, components/documents/, etc.)
               └── UI Primitives (components/ui/)
                     └── Fonctions pures (lib/)
 ```
@@ -530,7 +530,7 @@ const RichTextEditor = dynamic(
 )
 
 const GrilleEvalTable = dynamic(
-  () => import('@/components/tae/grilles/GrilleEvalTable'),
+  () => import('@/components/tache/grilles/GrilleEvalTable'),
   { loading: () => <GrilleSkeleton /> }
 )
 ```
@@ -648,7 +648,7 @@ NEXT_PUBLIC_ * // côté client — jamais de secrets
 
 ```typescript
 // ✅ Fonctions pures lib/ — toujours testables sans mock
-// lib/tae/*.test.ts déjà en place — continuer ce pattern
+// lib/tache/*.test.ts déjà en place — continuer ce pattern
 
 // Priorité haute :
 // - tae-form-reducer.ts (logique critique du wizard)
@@ -660,7 +660,7 @@ NEXT_PUBLIC_ * // côté client — jamais de secrets
 
 // Pattern de test :
 import { describe, it, expect } from "vitest";
-import { taeFormReducer } from "@/lib/tae/tae-form-reducer";
+import { taeFormReducer } from "@/lib/tache/tae-form-reducer";
 
 describe("SET_COMPORTEMENT", () => {
   it("remet guidage à vide lors du changement de comportement", () => {
@@ -1024,7 +1024,7 @@ Chaque fois qu'une icône Material Symbols apparaît à côté d'un texte, utili
 ```
 components/ui/              → primitives de référence — s'en inspirer
 app/globals.css             → tokens, patterns icônes, interlignes, print
-components/tae/TaeForm/     → wizard split — référence layout
+components/tache/wizard/     → wizard split — référence layout
 printable-fiche-preview.module.css → référence impression
 eval-grid.module.css        → référence typographie dense et précise
 ```
@@ -1059,7 +1059,7 @@ Ex: feat(wizard): ajouter repère temporel au Bloc 4
 Tout nouveau composant Bloc 3 doit :
 
 1. Avoir un guard correspondant dans
-   lib/tae/wizard-publish-guards.ts
+   lib/tache/wizard-publish-guards.ts
 2. Être branché dans StepperNavFooter.tsx
 
 Tout accordéon séquentiel doit :

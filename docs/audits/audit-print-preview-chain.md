@@ -6,7 +6,7 @@
 
 ## Élément 1 — `PrintableFichePreview.tsx` complet + signatures sous-composants
 
-**Fichier :** `components/tae/TaeForm/preview/PrintableFichePreview.tsx` — ~415 lignes, `"use client"`
+**Fichier :** `components/tache/wizard/preview/PrintableFichePreview.tsx` — ~415 lignes, `"use client"`
 
 ### Exports du fichier
 
@@ -30,11 +30,11 @@
 
 | Composant                                      | Fichier                                                                           | Props                                                                                                           |
 | ---------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `OrdreChronologiquePrintableQuestionnaireCore` | `components/tae/TaeForm/preview/OrdreChronologiquePrintableQuestionnaireCore.tsx` | `{ consigneHtml: string; guidageHtml: string; documentSlotCount: number; showGuidageOnStudentSheet?: boolean }` |
-| `LigneDuTempsPrintableQuestionnaireCore`       | `components/tae/TaeForm/preview/LigneDuTempsPrintableQuestionnaireCore.tsx`       | Mêmes props que ci-dessus                                                                                       |
-| `AvantApresPrintableQuestionnaireCore`         | `components/tae/TaeForm/preview/AvantApresPrintableQuestionnaireCore.tsx`         | Mêmes props que ci-dessus                                                                                       |
-| `TaePrintFeuilletToggle`                       | `components/tae/TaeForm/preview/TaePrintFeuilletToggle.tsx`                       | `{ active: TaePrintFeuilletId; onChange: (id) => void; className?: string }`                                    |
-| `GrilleEvalTable`                              | `components/tae/grilles/GrilleEvalTable`                                          | `{ entry: GrilleEntry \| null; outilEvaluationId: string; viewport: "compact" }`                                |
+| `OrdreChronologiquePrintableQuestionnaireCore` | `components/tache/wizard/preview/OrdreChronologiquePrintableQuestionnaireCore.tsx` | `{ consigneHtml: string; guidageHtml: string; documentSlotCount: number; showGuidageOnStudentSheet?: boolean }` |
+| `LigneDuTempsPrintableQuestionnaireCore`       | `components/tache/wizard/preview/LigneDuTempsPrintableQuestionnaireCore.tsx`       | Mêmes props que ci-dessus                                                                                       |
+| `AvantApresPrintableQuestionnaireCore`         | `components/tache/wizard/preview/AvantApresPrintableQuestionnaireCore.tsx`         | Mêmes props que ci-dessus                                                                                       |
+| `TaePrintFeuilletToggle`                       | `components/tache/wizard/preview/TaePrintFeuilletToggle.tsx`                       | `{ active: TaePrintFeuilletId; onChange: (id) => void; className?: string }`                                    |
+| `GrilleEvalTable`                              | `components/tache/grilles/GrilleEvalTable`                                          | `{ entry: GrilleEntry \| null; outilEvaluationId: string; viewport: "compact" }`                                |
 | `DocumentElementRenderer`                      | `components/documents/DocumentElementRenderer`                                    | `{ element; showAuteur; showRepereTemporel; hideSource }`                                                       |
 | `DocumentImageLegendOverlay`                   | `components/documents/DocumentImageLegendOverlay`                                 | `{ text: string; position: string }`                                                                            |
 
@@ -157,7 +157,7 @@ Texte fixe provenant de `NR_ORDRE_STUDENT_GUIDAGE` dans `lib/ui/ui-copy.ts`.
 
 ## Élément 3 — Types TypeScript
 
-### `NonRedactionData` — `lib/tae/tae-form-state-types.ts`
+### `NonRedactionData` — `lib/tache/tae-form-state-types.ts`
 
 ```ts
 export type NonRedactionData =
@@ -167,7 +167,7 @@ export type NonRedactionData =
   | { type: "avant-apres"; payload: AvantApresPayload };
 ```
 
-### `OrdreChronologiquePayload` — `lib/tae/non-redaction/ordre-chronologique-payload.ts`
+### `OrdreChronologiquePayload` — `lib/tache/non-redaction/ordre-chronologique-payload.ts`
 
 ```ts
 export type OrdreChronologiquePayload = {
@@ -182,7 +182,7 @@ export type OrdreChronologiquePayload = {
 };
 ```
 
-### `LigneDuTempsPayload` — `lib/tae/non-redaction/ligne-du-temps-payload.ts`
+### `LigneDuTempsPayload` — `lib/tache/non-redaction/ligne-du-temps-payload.ts`
 
 ```ts
 export type LigneDuTempsPayload = {
@@ -193,7 +193,7 @@ export type LigneDuTempsPayload = {
 };
 ```
 
-### `AvantApresPayload` — `lib/tae/non-redaction/avant-apres-payload.ts`
+### `AvantApresPayload` — `lib/tache/non-redaction/avant-apres-payload.ts`
 
 ```ts
 export type AvantApresPayload = {
@@ -216,7 +216,7 @@ export type AvantApresPayload = {
 
 ### 1. Wizard (création / édition)
 
-`components/tae/TaeForm/index.tsx` importe `PrintableFichePreview` et le passe à `PreviewPanel` dans la colonne droite du split wizard. `PrintableFichePreview` appelle `useTaeForm()` → `formStateToTae(state, oiList, previewMeta)` → `TaeFicheData` → délègue à `PrintableFicheFromTaeData`. L'onglet « Imprimé » du `PreviewPanel` passe un prop `feuillet` contrôlé. La modale plein écran passe par `PrintPreviewModal` qui wrap aussi `PrintableFichePreview`.
+`components/tache/wizard/index.tsx` importe `PrintableFichePreview` et le passe à `PreviewPanel` dans la colonne droite du split wizard. `PrintableFichePreview` appelle `useTaeForm()` → `formStateToTae(state, oiList, previewMeta)` → `TaeFicheData` → délègue à `PrintableFicheFromTaeData`. L'onglet « Imprimé » du `PreviewPanel` passe un prop `feuillet` contrôlé. La modale plein écran passe par `PrintPreviewModal` qui wrap aussi `PrintableFichePreview`.
 
 ### 2. Route impression publiée
 

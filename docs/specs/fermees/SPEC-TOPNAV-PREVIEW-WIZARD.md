@@ -505,7 +505,7 @@ Les icônes qui accompagnent un texte sont décoratives → `aria-hidden="true"`
 
 **Avant de coder**, identifier dans le codebase :
 
-1. **Composant actuel de la barre** du wizard tâche — probablement dans `components/tae/TaeForm/preview/` ou `components/tae/TaeForm/` (chercher les fichiers qui contiennent les libellés actuels « Sommaire », « Aperçu de l'imprimé », « Formatif »)
+1. **Composant actuel de la barre** du wizard tâche — probablement dans `components/tache/wizard/preview/` ou `components/tache/wizard/` (chercher les fichiers qui contiennent les libellés actuels « Sommaire », « Aperçu de l'imprimé », « Formatif »)
 2. **Composant actuel de la barre** du wizard document — probablement dans `components/documents/wizard/preview/` ou équivalent
 3. **State management** qui gère les valeurs `vue`, `mode`, `feuillet` — reducer du wizard ou URL params ou context
 4. **Libellés existants** dans `lib/ui/ui-copy.ts` — chercher `CARROUSEL_APERCU_COPY`, `EVAL_PRINT_SECTION_COPY`, `WIZARD_PREVIEW_*`

@@ -22,7 +22,7 @@ Document de **référence normative** pour nommer et structurer les fragments de
 
 **Objectif :** noms **français**, **stables**, **grep-friendly**, qui disent **quoi** (métier) et **où** (app vs feuille).
 
-**Emplacement des fichiers (nouveaux fragments) :** les composants `…App` et `…Print` **extraits** vivent sous **`components/fragments/`** (un fichier **PascalCase** par composant — créer le dossier au premier besoin). Les **assembleurs** existants (`FicheTache`, `TaeCard`, `PrintableFicheFromTaeData`, etc.) restent sous leurs chemins actuels (souvent **`components/tae/`**) et importent depuis `components/fragments/`. Détail arborescence : [ARCHITECTURE.md](./ARCHITECTURE.md#structure-des-dossiers-état-du-dépôt).
+**Emplacement des fichiers (nouveaux fragments) :** les composants `…App` et `…Print` **extraits** vivent sous **`components/fragments/`** (un fichier **PascalCase** par composant — créer le dossier au premier besoin). Les **assembleurs** existants (`FicheTache`, `TaeCard`, `PrintableFicheFromTaeData`, etc.) restent sous leurs chemins actuels (souvent **`components/tache/`**) et importent depuis `components/fragments/`. Détail arborescence : [ARCHITECTURE.md](./ARCHITECTURE.md#structure-des-dossiers-état-du-dépôt).
 
 ---
 

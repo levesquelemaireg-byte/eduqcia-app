@@ -186,7 +186,7 @@
   --app-font-root-scale: 112.5%;
 
   /*
-   * Interlignes app (hors barèmes ministériels — `components/tae/grilles/` inchangé).
+   * Interlignes app (hors barèmes ministériels — `components/tache/grilles/` inchangé).
    * Réf. pratiques UI : corps >16px → ~1,35–1,4 ; texte secondaire / paragraphes → ~1,4–1,5 ; UI dense → ~1,3–1,35.
    */
   --app-leading-body: 1.375;
@@ -199,7 +199,7 @@
   /*
    * Feuille imprimable TAÉ — Letter portrait.
    * Aperçu écran (`.paper`) : marges blanches = ce padding.
-   * Impression : `@page { margin: … }` dans `lib/tae/print-page-css.ts` (**TAE_PRINT_PAGE_MARGIN**, = cette valeur)
+   * Impression : `@page { margin: … }` dans `lib/tache/print-page-css.ts` (**TAE_PRINT_PAGE_MARGIN**, = cette valeur)
    * — répété sur chaque page ; le padding ne le serait pas sur un bloc fragmenté.
    */
   --tae-print-sheet-width: 8.5in;
@@ -497,7 +497,7 @@ body {
   }
 }
 
-/* Feuille Letter : marges blanches = `@page` injecté (`lib/tae/print-page-css.ts`) — pas de padding ici en print */
+/* Feuille Letter : marges blanches = `@page` injecté (`lib/tache/print-page-css.ts`) — pas de padding ici en print */
 @media print {
   html.tae-print-preview-modal-open #tae-wizard-printable-fiche,
   html[data-tae-print-route] #tae-wizard-printable-fiche {

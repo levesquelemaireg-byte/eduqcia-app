@@ -13,7 +13,7 @@ const outPath = path.join(root, "public", "data", "grilles-templates.html");
 
 const header = `<!--
   LEGACY — remplacé par GrilleOI3SO5.tsx / OI6SO3Grid.tsx (GrilleOI6SO3) /
-  GrilleOI7SO1.tsx dans components/tae/grilles/. Conserver pour référence
+  GrilleOI7SO1.tsx dans components/tache/grilles/. Conserver pour référence
   historique uniquement ; le rendu produit consomme grilles-evaluation.json
   et les composants React.
 

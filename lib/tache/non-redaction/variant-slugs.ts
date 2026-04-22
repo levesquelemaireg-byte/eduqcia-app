@@ -1,5 +1,5 @@
 /**
- * Slugs dossiers `components/tae/non-redaction/<slug>/` — alignés sur la spec et `public/data/oi.json`.
+ * Slugs dossiers `components/tache/non-redaction/<slug>/` — alignés sur la spec et `public/data/oi.json`.
  */
 
 export const TAE_NON_REDACTION_VARIANT_SLUGS = [

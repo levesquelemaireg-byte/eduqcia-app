@@ -18,7 +18,7 @@ export type PublishTaeActionResult =
 const TAE_ID_UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
- * Publie une TAÉ complète ou met à jour une existante (`lib/tae/publish-tae.ts`).
+ * Publie une TAÉ complète ou met à jour une existante (`lib/tache/publish-tae.ts`).
  * Deux arguments : évite les pertes de `editingTaeId` lors de la sérialisation RSC d’un seul objet imbriqué.
  */
 export async function publishTaeAction(
