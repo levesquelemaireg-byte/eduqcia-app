@@ -55,13 +55,17 @@ export function isBlueprintFieldsComplete(b: {
   aspectA?: AspectSocieteKey | null;
   aspectB?: AspectSocieteKey | null;
 }): boolean {
-  if (!b.niveau || !b.discipline || !b.oiId || !b.comportementId) return false;
+  if (!b.niveau || !b.discipline) return false;
   if (b.nbDocuments == null) return false;
   if (b.nbLignes == null || b.nbLignes < 0 || b.nbLignes > 10) return false;
   if (b.typeTache === "section_b") {
+    // Parcours Schéma de caractérisation : pas d'OI ni de comportement attendu.
+    // Les deux aspects de société structurent à eux seuls la tâche.
     if (!b.aspectA || !b.aspectB) return false;
     if (b.aspectA === b.aspectB) return false;
+    return true;
   }
+  if (!b.oiId || !b.comportementId) return false;
   return true;
 }
 
