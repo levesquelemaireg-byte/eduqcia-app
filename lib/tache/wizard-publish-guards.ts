@@ -130,6 +130,8 @@ function documentsCompleteButUrlsBlocked(state: TacheFormState): boolean {
 /** Toutes les étapes requises avant `is_published = true` côté serveur. */
 export function isWizardPublishReady(state: TacheFormState): boolean {
   if (!conceptionOkForPublish(state.bloc1)) return false;
+  // Bloqué pour Section B (Phase 3) et Section C (future)
+  if (state.bloc2.typeTache !== "section_a") return false;
   const b = state.bloc2;
   if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
   if (!redactionStepOkForPublish(state)) return false;

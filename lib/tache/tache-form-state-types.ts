@@ -42,12 +42,15 @@ export const TACHE_CONNAISSANCES_STEP_INDEX = 6;
 export type BlueprintSlice = {
   niveau: string;
   discipline: string;
+  typeTache: "section_a" | "section_b" | "section_c";
   oiId: string;
   comportementId: string;
   nbLignes: number | null;
   nbDocuments: number | null;
   outilEvaluation: string | null;
   documentSlots: { slotId: DocumentSlotId }[];
+  aspectA: AspectSocieteKey | null;
+  aspectB: AspectSocieteKey | null;
   blueprintLocked: boolean;
 };
 
@@ -132,6 +135,9 @@ export type TacheFormAction =
   | { type: "REMOVE_COLLABORATEUR"; id: string }
   | { type: "SET_NIVEAU"; niveau: string }
   | { type: "SET_DISCIPLINE"; discipline: string }
+  | { type: "SET_TYPE_TACHE"; value: "section_a" | "section_b" | "section_c" }
+  | { type: "SET_ASPECT_A"; value: AspectSocieteKey | null }
+  | { type: "SET_ASPECT_B"; value: AspectSocieteKey | null }
   | { type: "SET_OI"; oiId: string }
   | {
       type: "SET_COMPORTEMENT";
@@ -182,12 +188,15 @@ export type TacheFormAction =
 export const initialBlueprint: BlueprintSlice = {
   niveau: "",
   discipline: "",
+  typeTache: "section_a",
   oiId: "",
   comportementId: "",
   nbLignes: null,
   nbDocuments: null,
   outilEvaluation: null,
   documentSlots: [],
+  aspectA: null,
+  aspectB: null,
   blueprintLocked: false,
 };
 

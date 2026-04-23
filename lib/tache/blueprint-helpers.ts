@@ -1,4 +1,5 @@
 import type { ComportementAttenduJson, OiEntryJson } from "@/lib/types/oi";
+import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 
 /** Valeur par défaut du nombre de lignes (wizard bloc 2) — réinitialisée avec OI / comportement / niveau / discipline. */
 export const BLUEPRINT_INITIAL_NB_LIGNES = 5;
@@ -50,10 +51,17 @@ export function isBlueprintFieldsComplete(b: {
   comportementId: string;
   nbLignes: number | null;
   nbDocuments: number | null;
+  typeTache?: "section_a" | "section_b" | "section_c";
+  aspectA?: AspectSocieteKey | null;
+  aspectB?: AspectSocieteKey | null;
 }): boolean {
   if (!b.niveau || !b.discipline || !b.oiId || !b.comportementId) return false;
   if (b.nbDocuments == null) return false;
   if (b.nbLignes == null || b.nbLignes < 0 || b.nbLignes > 10) return false;
+  if (b.typeTache === "section_b") {
+    if (!b.aspectA || !b.aspectB) return false;
+    if (b.aspectA === b.aspectB) return false;
+  }
   return true;
 }
 

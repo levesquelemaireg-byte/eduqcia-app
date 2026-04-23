@@ -328,12 +328,15 @@ export async function loadTacheFormStateForEdit(
     bloc2: {
       niveau: niveauCode as NiveauCode,
       discipline,
+      typeTache: "section_a",
       oiId: typeof row.oi_id === "string" ? row.oi_id : "",
       comportementId: typeof row.comportement_id === "string" ? row.comportement_id : "",
       nbLignes: typeof row.nb_lignes === "number" ? row.nb_lignes : 5,
       nbDocuments,
       outilEvaluation,
       documentSlots,
+      aspectA: null,
+      aspectB: null,
       blueprintLocked: true,
     },
     bloc3: {

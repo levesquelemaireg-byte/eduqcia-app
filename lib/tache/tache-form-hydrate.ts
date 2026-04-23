@@ -244,9 +244,25 @@ export function sanitizeHydratedState(raw: unknown): TacheFormState | null {
   const rawDocumentSlots = Array.isArray((o.bloc2 as BlueprintSlice).documentSlots)
     ? (o.bloc2 as BlueprintSlice).documentSlots
     : [];
+  const rawBloc2 =
+    typeof o.bloc2 === "object" && o.bloc2 !== null ? (o.bloc2 as Record<string, unknown>) : {};
+  const rawTypeTache = rawBloc2.typeTache;
+  const typeTache: BlueprintSlice["typeTache"] =
+    rawTypeTache === "section_a" || rawTypeTache === "section_b" || rawTypeTache === "section_c"
+      ? rawTypeTache
+      : "section_a";
+  const isAspectKey = (v: unknown): v is BlueprintSlice["aspectA"] & string =>
+    v === "economique" ||
+    v === "politique" ||
+    v === "social" ||
+    v === "culturel" ||
+    v === "territorial";
   const bloc2: BlueprintSlice = {
     ...initialBlueprint,
-    ...(typeof o.bloc2 === "object" && o.bloc2 !== null ? o.bloc2 : {}),
+    ...rawBloc2,
+    typeTache,
+    aspectA: isAspectKey(rawBloc2.aspectA) ? rawBloc2.aspectA : null,
+    aspectB: isAspectKey(rawBloc2.aspectB) ? rawBloc2.aspectB : null,
     documentSlots: rawDocumentSlots
       .map((s) => {
         if (!s || typeof s !== "object") return null;

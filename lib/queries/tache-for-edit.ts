@@ -353,12 +353,15 @@ export async function fetchTacheFormStateForEdit(
     bloc2: {
       niveau,
       discipline,
+      typeTache: "section_a",
       oiId: t.oi_id,
       comportementId: t.comportement_id,
       nbLignes: t.nb_lignes ?? BLUEPRINT_INITIAL_NB_LIGNES,
       nbDocuments,
       outilEvaluation,
       documentSlots: documentSlotsFromCount(nbDocuments),
+      aspectA: null,
+      aspectB: null,
       blueprintLocked: true,
     },
     bloc3: {

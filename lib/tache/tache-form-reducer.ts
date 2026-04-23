@@ -6,9 +6,11 @@ import {
 } from "@/lib/tache/blueprint-helpers";
 import { emptyDocumentSlot } from "@/lib/tache/document-helpers";
 import { handlePerspectivesModeWithMigration } from "@/lib/tache/reducer-perspectives";
-import { initialCdFormSlice, sanitizeCdFormSlice } from "@/lib/tache/cd-helpers";
+import { sanitizeCdFormSlice } from "@/lib/tache/cd-helpers";
 import { sanitizeConnaissances } from "@/lib/tache/connaissances-helpers";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
+import { reinitialiserBlocsEnAval } from "@/lib/tache/reinitialiser-blocs-en-aval";
 import {
   initialAvantApresPayload,
   mergeAvantApresPayload,
@@ -24,7 +26,6 @@ import {
 } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
 import type { BlueprintSlice } from "@/lib/tache/tache-form-state-types";
 import {
-  initialBloc3,
   initialBloc5,
   initialBloc7,
   initialTacheFormState,
@@ -152,48 +153,84 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
       const prevD = state.bloc2.discipline;
       const nextDiscipline =
         opts.length === 1 ? opts[0]! : prevD && opts.includes(prevD as DisciplineCode) ? prevD : "";
-      const disciplineChanged = prevD !== nextDiscipline;
       const b = clearOiAndComportement({
         ...state.bloc2,
         niveau: action.niveau,
         discipline: nextDiscipline,
+        typeTache: "section_a" as const,
+        aspectA: null,
+        aspectB: null,
       });
       return {
         ...state,
         bloc2: b,
-        bloc3: disciplineChanged ? initialBloc3 : state.bloc3,
-        bloc4: {
-          documents: {},
-          perspectives: null,
-          perspectivesTitre: "",
-          moments: null,
-          momentsTitre: "",
-        },
-        bloc5: initialBloc5,
-        bloc6: { cd: initialCdFormSlice },
-        bloc7: { ...initialBloc7, connaissances: [] },
+        ...reinitialiserBlocsEnAval(state),
       };
     }
     case "SET_DISCIPLINE": {
-      const disciplineChanged = state.bloc2.discipline !== action.discipline;
       const b = clearOiAndComportement({
         ...state.bloc2,
         discipline: action.discipline,
+        typeTache: "section_a" as const,
+        aspectA: null,
+        aspectB: null,
       });
       return {
         ...state,
         bloc2: b,
-        bloc3: disciplineChanged ? initialBloc3 : state.bloc3,
-        bloc4: {
-          documents: {},
-          perspectives: null,
-          perspectivesTitre: "",
-          moments: null,
-          momentsTitre: "",
+        ...reinitialiserBlocsEnAval(state),
+      };
+    }
+    case "SET_TYPE_TACHE": {
+      if (state.bloc2.blueprintLocked) return state;
+
+      const typeTache = action.value;
+      const parcours = resoudreParcours(typeTache);
+
+      if (!parcours.actif) return state;
+
+      const oiId = parcours.oiAutoAssignee ? (parcours.oiIdFixe ?? "") : "";
+      const comportementId = parcours.comportementAutoAssigne
+        ? (parcours.comportementIdFixe ?? "")
+        : "";
+      const nbDocuments = parcours.oiAutoAssignee ? parcours.documentsMin : null;
+      const documentSlots = nbDocuments ? documentSlotsFromCount(nbDocuments) : [];
+      const outilEvaluation = parcours.grilleFixe ?? null;
+      const nbLignes = parcours.oiAutoAssignee ? 0 : null;
+
+      return {
+        ...state,
+        bloc2: {
+          ...state.bloc2,
+          typeTache,
+          oiId,
+          comportementId,
+          nbDocuments,
+          nbLignes,
+          outilEvaluation,
+          documentSlots,
+          aspectA: null,
+          aspectB: null,
         },
-        bloc5: initialBloc5,
-        bloc6: { cd: initialCdFormSlice },
-        bloc7: { ...initialBloc7, connaissances: [] },
+        ...reinitialiserBlocsEnAval(state),
+      };
+    }
+    case "SET_ASPECT_A": {
+      if (state.bloc2.blueprintLocked) return state;
+      if (action.value && action.value === state.bloc2.aspectB) return state;
+      return {
+        ...state,
+        bloc2: { ...state.bloc2, aspectA: action.value },
+        ...reinitialiserBlocsEnAval(state),
+      };
+    }
+    case "SET_ASPECT_B": {
+      if (state.bloc2.blueprintLocked) return state;
+      if (action.value && action.value === state.bloc2.aspectA) return state;
+      return {
+        ...state,
+        bloc2: { ...state.bloc2, aspectB: action.value },
+        ...reinitialiserBlocsEnAval(state),
       };
     }
     case "SET_OI": {
@@ -204,7 +241,7 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
           ...b,
           oiId: action.oiId,
         },
-        bloc5: initialBloc5,
+        ...reinitialiserBlocsEnAval(state),
       };
     }
     case "SET_COMPORTEMENT": {
@@ -220,32 +257,8 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
           documentSlots: documentSlotsFromCount(action.nbDocuments),
           nbLignes: action.nbLignes,
         },
-        bloc4: {
-          documents: {},
-          perspectives: null,
-          perspectivesTitre: "",
-          moments: null,
-          momentsTitre: "",
-        },
-        bloc5: {
-          corrige: state.bloc5.corrige,
-          notesCorrecteur: state.bloc5.notesCorrecteur,
-          nonRedaction,
-          intrus: null,
-        },
-        bloc3: {
-          ...state.bloc3,
-          guidage: "",
-          perspectivesMode: null,
-          perspectivesType: "acteurs",
-          perspectivesContexte: "",
-          oi6Enjeu: "",
-          oi7EnjeuGlobal: "",
-          oi7Element1: "",
-          oi7Element2: "",
-          oi7Element3: "",
-          consigneMode: "gabarit",
-        },
+        ...reinitialiserBlocsEnAval(state),
+        bloc5: { ...initialBloc5, nonRedaction },
       };
     }
     case "LOCK_BLUEPRINT":
