@@ -1,48 +1,73 @@
 "use client";
 
-import type { FicheSectionEntry } from "@/lib/fiche/types";
+import { defineSection } from "@/lib/fiche/defineSection";
 import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import {
   SECTION_CD,
-  SECTION_CONNAISSANCES,
-  SECTION_CONSIGNE,
-  SECTION_CORRIGE,
   SECTION_DOCUMENTS,
   SECTION_FOOTER,
   SECTION_GRILLE,
-  SECTION_GUIDAGE,
   SECTION_HEADER,
 } from "@/lib/fiche/configs/tache-fiche-sections";
 
-/**
- * Force une section à retourner systématiquement `skeleton` — utilisé pour les sections
- * Section B dont l'UI de saisie n'est pas encore livrée. Le rendu affiche le squelette
- * pulsant défini sur la section (ou un fallback neutre si absent).
- */
-function forcerSkeleton(
-  section: FicheSectionEntry<TacheFormState>,
-): FicheSectionEntry<TacheFormState> {
-  return {
-    ...section,
-    resolve: () => ({ status: "skeleton" }),
-  };
-}
+import { selectDispositifIntroductif } from "@/lib/fiche/selectors/tache/dispositif-introductif";
+import { selectSchemaSeptCases } from "@/lib/fiche/selectors/tache/schema-sept-cases";
+import { selectCorrigeTabulaire } from "@/lib/fiche/selectors/tache/corrige-tabulaire";
+
+import { SectionDispositifIntroductif } from "@/lib/fiche/sections/schema-cd1/dispositif-introductif";
+import { SectionSchemaSeptCases } from "@/lib/fiche/sections/schema-cd1/schema-sept-cases";
+import { SectionCorrigeTabulaire } from "@/lib/fiche/sections/schema-cd1/corrige-tabulaire";
+
+/* ─── Sections spécifiques Section B ──────────────────────────── */
+
+const SECTION_DISPOSITIF_INTRODUCTIF = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/selectors/tache/dispositif-introductif").DispositifIntroductifData
+>({
+  id: "dispositif-introductif",
+  stepId: "consigne",
+  selector: selectDispositifIntroductif,
+  component: SectionDispositifIntroductif,
+});
+
+const SECTION_SCHEMA_SEPT_CASES = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/selectors/tache/schema-sept-cases").SchemaSeptCasesData
+>({
+  id: "schema-sept-cases",
+  stepId: "consigne",
+  selector: selectSchemaSeptCases,
+  component: SectionSchemaSeptCases,
+});
+
+const SECTION_CORRIGE_TABULAIRE = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/selectors/tache/corrige-tabulaire").CorrigeTabulaireData
+>({
+  id: "corrige-tabulaire",
+  stepId: "corrige",
+  selector: selectCorrigeTabulaire,
+  component: SectionCorrigeTabulaire,
+});
 
 /**
- * Configuration Sommaire pour le parcours Section B (Schéma CD1).
- * Réutilise les sections communes avec `tache-fiche-sections.tsx`.
- * Les sections dont le contenu n'est pas encore disponible en Section B
- * affichent le squelette pulsant.
+ * Configuration Sommaire pour le parcours Section B (Schéma de caractérisation).
+ *
+ * Les sections communes `SECTION_HEADER`, `SECTION_DOCUMENTS`, `SECTION_GRILLE`,
+ * `SECTION_CD`, `SECTION_FOOTER` sont réutilisées directement. Les sections
+ * pédagogiquement spécifiques (dispositif introductif, schéma, corrigé tabulaire)
+ * sont définies ci-dessus.
+ *
+ * La section CONNAISSANCES est omise en Section B : l'indexation est traitée
+ * uniquement à l'étape 7 et le Sommaire n'affiche pas de bloc skeleton vide.
  */
 export const TACHE_FICHE_SECTIONS_B = [
   SECTION_HEADER,
-  forcerSkeleton(SECTION_CONSIGNE),
-  forcerSkeleton(SECTION_GUIDAGE),
-  forcerSkeleton(SECTION_DOCUMENTS),
-  forcerSkeleton(SECTION_CORRIGE),
+  SECTION_DISPOSITIF_INTRODUCTIF,
+  SECTION_DOCUMENTS,
+  SECTION_SCHEMA_SEPT_CASES,
+  SECTION_CORRIGE_TABULAIRE,
   SECTION_GRILLE,
-  // SECTION_CD : pas de skeleton forcé — le selector dérive la CD auto-assignée dès l'étape 2.
   SECTION_CD,
-  forcerSkeleton(SECTION_CONNAISSANCES),
   SECTION_FOOTER,
 ] as const;
