@@ -400,12 +400,12 @@ COMMENT ON COLUMN documents.repere_temporel IS
 COMMENT ON COLUMN documents.annee_normalisee IS
   'Année normalisée (entier, peut être négatif). Comparaisons parcours non rédactionnels OI1.';
 
--- Liaison TAÉ ↔ Documents avec slots doc_A–D (DOMAIN §4.2 ; D = parcours non rédactionnel)
+-- Liaison TAÉ ↔ Documents avec slots doc_1..doc_N (DOMAIN §4.2 ; doc_4 = parcours non rédactionnel)
 CREATE TABLE tache_documents (
   id          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   tae_id      UUID NOT NULL REFERENCES tache(id) ON DELETE CASCADE,
   document_id UUID NOT NULL REFERENCES documents(id) ON DELETE RESTRICT,
-  slot        TEXT NOT NULL CHECK (slot IN ('doc_A', 'doc_B', 'doc_C', 'doc_D')),
+  slot        TEXT NOT NULL CHECK (slot ~ '^doc_[1-9][0-9]?$'),
   ordre       INT NOT NULL DEFAULT 0,
   UNIQUE(tae_id, slot),
   UNIQUE(tae_id, document_id)

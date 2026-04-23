@@ -64,13 +64,24 @@ function clampStep(step: number): number {
 }
 
 const SLOT_ID_PATTERN = /^doc_\d+$/;
+const LEGACY_SLOT_MAPPING: Record<string, DocumentSlotId> = {
+  doc_A: "doc_1",
+  doc_B: "doc_2",
+  doc_C: "doc_3",
+  doc_D: "doc_4",
+};
+
+function normalizeSlotKey(key: string): DocumentSlotId | null {
+  if (SLOT_ID_PATTERN.test(key)) return key as DocumentSlotId;
+  return LEGACY_SLOT_MAPPING[key] ?? null;
+}
 
 function sanitizeDocumentsSlice(raw: unknown): Partial<Record<DocumentSlotId, DocumentSlotData>> {
   if (!raw || typeof raw !== "object") return {};
   const out: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
   for (const [key, slot] of Object.entries(raw as Record<string, unknown>)) {
-    if (!SLOT_ID_PATTERN.test(key)) continue;
-    const id = key as DocumentSlotId;
+    const id = normalizeSlotKey(key);
+    if (!id) continue;
     if (!slot || typeof slot !== "object") continue;
     const s = slot as Partial<DocumentSlotData>;
     const base = emptyDocumentSlot();
@@ -230,16 +241,21 @@ export function sanitizeHydratedState(raw: unknown): TacheFormState | null {
       : [],
   };
 
+  const rawDocumentSlots = Array.isArray((o.bloc2 as BlueprintSlice).documentSlots)
+    ? (o.bloc2 as BlueprintSlice).documentSlots
+    : [];
   const bloc2: BlueprintSlice = {
     ...initialBlueprint,
     ...(typeof o.bloc2 === "object" && o.bloc2 !== null ? o.bloc2 : {}),
-    documentSlots: Array.isArray((o.bloc2 as BlueprintSlice).documentSlots)
-      ? (o.bloc2 as BlueprintSlice).documentSlots.filter((s): s is { slotId: DocumentSlotId } => {
-          if (!s || typeof s !== "object") return false;
-          const sid = (s as { slotId?: unknown }).slotId;
-          return typeof sid === "string" && SLOT_ID_PATTERN.test(sid);
-        })
-      : [],
+    documentSlots: rawDocumentSlots
+      .map((s) => {
+        if (!s || typeof s !== "object") return null;
+        const sid = (s as { slotId?: unknown }).slotId;
+        if (typeof sid !== "string") return null;
+        const normalized = normalizeSlotKey(sid);
+        return normalized ? { slotId: normalized } : null;
+      })
+      .filter((s): s is { slotId: DocumentSlotId } => s !== null),
   };
 
   const b3 = o.bloc3 as Record<string, unknown>;
