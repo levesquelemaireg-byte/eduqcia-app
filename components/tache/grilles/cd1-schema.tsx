@@ -30,9 +30,13 @@ export function GrilleCD1Schema() {
 
   const tdDetail = cn(styles.cell, styles.cellDetail);
   const tdPts = cn(styles.cell, styles.cellPoints);
-  /** Sous-rangée de continuation à l'intérieur d'un groupe d'élément central — pas de bordure supérieure. */
-  const tdDetailCont = cn(styles.cell, styles.cellDetail, styles.noBorderTop);
-  const tdPtsCont = cn(styles.cell, styles.cellPoints, styles.noBorderTop);
+  /**
+   * Sous-rangée de continuation à l'intérieur d'un groupe d'élément central —
+   * pas de bordure supérieure (requiert `hidden` pour battre le `border-bottom`
+   * de la cellule du haut dans le modèle `border-collapse: collapse`).
+   */
+  const tdDetailCont = cn(styles.cell, styles.cellDetail, styles.cd1GroupInnerNoTop);
+  const tdPtsCont = cn(styles.cell, styles.cellPoints, styles.cd1GroupInnerNoTop);
 
   return (
     <div className={styles.wrapper}>

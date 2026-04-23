@@ -339,3 +339,17 @@
 .cd1TotalRow th {
   font-weight: 700;
 }
+
+/*
+ * Continuation à l'intérieur d'un groupe d'élément central :
+ * le trait horizontal entre les sous-rangées doit disparaître.
+ *
+ * `border-top-style: hidden` est obligatoire (et non `border-top-width: 0` seul) :
+ * en `border-collapse: collapse`, la bordure visible entre deux cellules est la plus
+ * « forte » des deux côtés. `hidden` bat tout (règle standard CSS), tandis que
+ * `width: 0 style: solid` perd contre le `border-bottom: 1px solid` de la cellule
+ * du haut (issu de `.cell`).
+ */
+.cd1GroupInnerNoTop {
+  border-top-style: hidden;
+}
