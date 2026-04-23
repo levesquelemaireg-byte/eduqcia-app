@@ -16,7 +16,14 @@
 -- Les `data-doc-ref="A"` dans le HTML sont conservés tels quels (affichage).
 
 -- ----------------------------------------------------------------------------
--- 1. Mise à jour des valeurs slot dans tache_documents
+-- 1. Suppression de l'ancienne contrainte CHECK (elle bloquerait les UPDATE ci-dessous)
+-- ----------------------------------------------------------------------------
+
+ALTER TABLE tache_documents DROP CONSTRAINT IF EXISTS tae_documents_slot_check;
+ALTER TABLE tache_documents DROP CONSTRAINT IF EXISTS tache_documents_slot_check;
+
+-- ----------------------------------------------------------------------------
+-- 2. Mise à jour des valeurs slot dans tache_documents
 -- ----------------------------------------------------------------------------
 
 UPDATE tache_documents SET slot = 'doc_1' WHERE slot = 'doc_A';
@@ -25,18 +32,15 @@ UPDATE tache_documents SET slot = 'doc_3' WHERE slot = 'doc_C';
 UPDATE tache_documents SET slot = 'doc_4' WHERE slot = 'doc_D';
 
 -- ----------------------------------------------------------------------------
--- 2. Remplacement de la contrainte CHECK
+-- 3. Création de la nouvelle contrainte CHECK (regex dynamique)
 -- ----------------------------------------------------------------------------
-
-ALTER TABLE tache_documents DROP CONSTRAINT IF EXISTS tae_documents_slot_check;
-ALTER TABLE tache_documents DROP CONSTRAINT IF EXISTS tache_documents_slot_check;
 
 ALTER TABLE tache_documents
   ADD CONSTRAINT tache_documents_slot_check
   CHECK (slot ~ '^doc_[1-9][0-9]?$');
 
 -- ----------------------------------------------------------------------------
--- 3. Migration des placeholders {{doc_A..D}} dans les colonnes HTML de `tache`
+-- 4. Migration des placeholders {{doc_A..D}} dans les colonnes HTML de `tache`
 -- ----------------------------------------------------------------------------
 
 UPDATE tache SET consigne = REPLACE(consigne, '{{doc_A}}', '{{doc_1}}') WHERE consigne LIKE '%{{doc_A}}%';
