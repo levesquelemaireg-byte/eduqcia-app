@@ -13,7 +13,6 @@ import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/regis
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { reinitialiserBlocsEnAval } from "@/lib/tache/reinitialiser-blocs-en-aval";
 import { mettreAJourCase } from "@/lib/tache/schema-cd1/mise-a-jour-case";
-import { SCHEMA_CD1_INITIAL } from "@/lib/tache/schema-cd1/types";
 import {
   initialAvantApresPayload,
   mergeAvantApresPayload,
@@ -167,7 +166,7 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
       return {
         ...state,
         bloc2: b,
-        ...reinitialiserBlocsEnAval(state),
+        ...reinitialiserBlocsEnAval(state, "section_a"),
       };
     }
     case "SET_DISCIPLINE": {
@@ -181,7 +180,7 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
       return {
         ...state,
         bloc2: b,
-        ...reinitialiserBlocsEnAval(state),
+        ...reinitialiserBlocsEnAval(state, "section_a"),
       };
     }
     case "SET_TYPE_TACHE": {
@@ -208,12 +207,6 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
       // Lignes de réponse : 0 si non rédactionnel (Section B/C), sinon null (fixé par comportement).
       const nbLignes = !parcours.oiPertinente ? 0 : null;
 
-      const blocsEnAval = reinitialiserBlocsEnAval(state);
-      const bloc3 =
-        typeTache === "section_b"
-          ? { ...blocsEnAval.bloc3, schemaCd1: SCHEMA_CD1_INITIAL }
-          : blocsEnAval.bloc3;
-
       return {
         ...state,
         bloc2: {
@@ -228,8 +221,7 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
           aspectA: null,
           aspectB: null,
         },
-        ...blocsEnAval,
-        bloc3,
+        ...reinitialiserBlocsEnAval(state, typeTache),
       };
     }
     case "SET_ASPECT_A": {
