@@ -705,6 +705,8 @@ export type Database = {
           niveau_id: number | null;
           non_redaction_data: Json | null;
           oi_id: string | null;
+          schema_cd1_data: Json | null;
+          type_tache: string;
           updated_at: string;
           version: number;
           version_updated_at: string | null;
@@ -730,6 +732,8 @@ export type Database = {
           niveau_id?: number | null;
           non_redaction_data?: Json | null;
           oi_id?: string | null;
+          schema_cd1_data?: Json | null;
+          type_tache?: string;
           updated_at?: string;
           version?: number;
           version_updated_at?: string | null;
@@ -755,6 +759,8 @@ export type Database = {
           niveau_id?: number | null;
           non_redaction_data?: Json | null;
           oi_id?: string | null;
+          schema_cd1_data?: Json | null;
+          type_tache?: string;
           updated_at?: string;
           version?: number;
           version_updated_at?: string | null;
@@ -856,21 +862,27 @@ export type Database = {
       };
       tache_documents: {
         Row: {
+          cases_associees: string[];
           document_id: string;
+          est_leurre: boolean;
           id: string;
           ordre: number;
           slot: string;
           tae_id: string;
         };
         Insert: {
+          cases_associees?: string[];
           document_id: string;
+          est_leurre?: boolean;
           id?: string;
           ordre?: number;
           slot: string;
           tae_id: string;
         };
         Update: {
+          cases_associees?: string[];
           document_id?: string;
+          est_leurre?: boolean;
           id?: string;
           ordre?: number;
           slot?: string;
