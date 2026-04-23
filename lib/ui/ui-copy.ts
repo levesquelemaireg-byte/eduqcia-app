@@ -11,3 +11,4 @@ export * from "./copy/pages-banque";
 export * from "./copy/evaluation";
 export * from "./copy/non-redaction";
 export * from "./copy/perspectives";
+export * from "./copy/section-b";

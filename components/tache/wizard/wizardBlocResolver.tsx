@@ -62,8 +62,14 @@ export function resolveWizardBlocComponent(
     return null;
   }
   const parcours = resoudreParcours(state.bloc2.typeTache);
-  if (parcours.bloc3Type === "schema_cd1" || parcours.bloc3Type === "interpretation_cd2") {
-    // Sections B et C — composants non implémentés, le parent rend un squelette.
+  if (parcours.bloc3Type === "schema_cd1") {
+    // Section B — étape 3 = préambule + chapeau + démarche + schéma à 7 cases.
+    if (stepIndex === TACHE_REDACTION_STEP_INDEX) return Bloc3SchemaCd1;
+    // Étape 4 Section B (bloc 4 dossier documentaire) : lot 3.
+    return null;
+  }
+  if (parcours.bloc3Type === "interpretation_cd2") {
+    // Section C — composants non implémentés, le parent rend un squelette.
     return null;
   }
   const slug = getVariantSlugForComportementId(state.bloc2.comportementId);
@@ -87,6 +93,10 @@ const Bloc3TemplateStructure = dynamic(
 );
 const Bloc3TemplatePur = dynamic(
   () => import("@/components/tache/wizard/bloc3/templates/Bloc3TemplatePur"),
+  { ssr: false },
+);
+const Bloc3SchemaCd1 = dynamic(
+  () => import("@/components/tache/wizard/bloc3/templates/schema-cd1"),
   { ssr: false },
 );
 const Bloc4Perspectives = dynamic(
