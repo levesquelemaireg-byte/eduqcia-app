@@ -65,15 +65,16 @@ export function numeroGlobalParId(
 }
 
 /* -------------------------------------------------------------------------- */
-/*  Résolution des placeholders {{doc_A}}, {{doc_B}}, etc.                    */
+/*  Résolution des placeholders {{doc_N}} (nouveau) et {{doc_A}} (legacy)     */
 /* -------------------------------------------------------------------------- */
 
 /**
- * Réécrit les placeholders `{{doc_A}}` à `{{doc_D}}` et les `data-doc-ref`
- * dans une chaîne HTML en les remplaçant par le numéro global du document.
+ * Réécrit les placeholders document et les `data-doc-ref` dans une chaîne HTML
+ * en les remplaçant par le numéro global du document dans l'épreuve.
  *
- * La correspondance lettre → document se fait par position dans le tableau
- * `documents` de la tâche : A=0, B=1, C=2, D=3.
+ * Deux formats acceptés :
+ *  - `{{doc_1}}` … `{{doc_N}}` (nouveau, 1-based) — correspondance directe à la position du document.
+ *  - `{{doc_A}}` … `{{doc_Z}}` et `data-doc-ref="A"` (legacy) — correspondance lettre → position (A=0, B=1, …).
  */
 export function resoudreReferencesDocuments(
   html: string,
@@ -82,24 +83,32 @@ export function resoudreReferencesDocuments(
 ): string {
   if (!html) return "";
 
-  const lettreVersIndex: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
+  // Format numérique (nouveau) : {{doc_1}}, {{doc_2}}, …
+  let resultat = html.replace(/\{\{doc_(\d+)\}\}/g, (_, num: string) => {
+    const idx = parseInt(num, 10) - 1;
+    if (!Number.isFinite(idx) || idx < 0) return num;
+    const doc = tacheDocuments[idx];
+    if (!doc) return num;
+    const n = numeroGlobalParId(taches, doc.id);
+    return n > 0 ? String(n) : num;
+  });
 
-  // Résoudre {{doc_A}} .. {{doc_D}}
-  let resultat = html.replace(/\{\{doc_([A-Da-d])\}\}/g, (_, lettre: string) => {
-    const idx = lettreVersIndex[lettre.toUpperCase()];
-    if (idx === undefined) return lettre;
+  // Format alphabétique (legacy, rétrocompat) : {{doc_A}}, {{doc_b}}, …
+  resultat = resultat.replace(/\{\{doc_([A-Za-z])\}\}/g, (_, lettre: string) => {
+    const idx = lettre.toUpperCase().charCodeAt(0) - 65;
+    if (idx < 0) return lettre;
     const doc = tacheDocuments[idx];
     if (!doc) return lettre;
     const n = numeroGlobalParId(taches, doc.id);
     return n > 0 ? String(n) : lettre;
   });
 
-  // Résoudre <span data-doc-ref="A">...</span>
+  // Spans data-doc-ref="A" (lettre conservée pour l'affichage dans l'éditeur)
   resultat = resultat.replace(
-    /<span[^>]*\bdata-doc-ref=["']([A-Da-d])["'][^>]*>[\s\S]*?<\/span>/gi,
+    /<span[^>]*\bdata-doc-ref=["']([A-Za-z])["'][^>]*>[\s\S]*?<\/span>/gi,
     (_full, lettre: string) => {
-      const idx = lettreVersIndex[lettre.toUpperCase()];
-      if (idx === undefined) return lettre;
+      const idx = lettre.toUpperCase().charCodeAt(0) - 65;
+      if (idx < 0) return lettre;
       const doc = tacheDocuments[idx];
       if (!doc) return lettre;
       const n = numeroGlobalParId(taches, doc.id);

@@ -85,25 +85,29 @@ export function stripHtml(html: string): string {
 export function resolveDocRefsForPreview(html: string): string {
   if (!html) return "";
   return html.replace(
-    /<span[^>]*\bdata-doc-ref=["']([A-D])["'][^>]*>[\s\S]*?<\/span>/gi,
-    (_, letter: string) => letter,
+    /<span[^>]*\bdata-doc-ref=["']([A-Za-z])["'][^>]*>[\s\S]*?<\/span>/gi,
+    (_, letter: string) => letter.toUpperCase(),
   );
 }
 
-const DOC_PLACEHOLDER_LETTERS = ["A", "B", "C", "D"] as const;
-
 /**
- * Remplace `{{doc_A}}` … `{{doc_D}}` par les numéros 1…N (aperçu tâche seule, sommaire, fiche).
+ * Remplace les placeholders `{{doc_N}}` (numérique) et `{{doc_A}}` (legacy) par
+ * les numéros 1…N (aperçu tâche seule, sommaire, fiche).
  * `nbDocuments` défaut 4 : permet les extraits liste sans requête `nb_documents`.
  */
 export function resolveDocPlaceholdersForSingleTask(html: string, nbDocuments = 4): string {
   if (!html) return "";
-  const n = Math.min(Math.max(nbDocuments, 0), 4);
-  let s = html;
-  for (let i = 0; i < n; i++) {
-    const L = DOC_PLACEHOLDER_LETTERS[i];
-    s = s.replace(new RegExp(`\\{\\{doc_${L}\\}\\}`, "gi"), String(i + 1));
-  }
+  const n = Math.max(nbDocuments, 0);
+  // Format numérique (nouveau) : {{doc_1}}, {{doc_2}}, … (insensible à la casse sur « doc »).
+  let s = html.replace(/\{\{doc_(\d+)\}\}/gi, (match, num: string) => {
+    const idx = parseInt(num, 10) - 1;
+    return idx >= 0 && idx < n ? String(idx + 1) : match;
+  });
+  // Format alphabétique (legacy) : {{doc_A}} → 1, {{doc_B}} → 2, …
+  s = s.replace(/\{\{doc_([A-Za-z])\}\}/gi, (match, letter: string) => {
+    const idx = letter.toUpperCase().charCodeAt(0) - 65;
+    return idx >= 0 && idx < n ? String(idx + 1) : match;
+  });
   return s;
 }
 
@@ -132,14 +136,22 @@ export function shouldShowGuidageOnStudentSheet(
 }
 
 /** Lettres doc manquantes (références attendues selon nb_documents). BLOC3 §5.5 */
-export function getMissingDocLetters(html: string, nbDocuments: number): ("A" | "B" | "C" | "D")[] {
+export function getMissingDocLetters(html: string, nbDocuments: number): string[] {
   if (nbDocuments <= 0) return [];
-  const expected = (["A", "B", "C", "D"] as const).slice(0, Math.min(nbDocuments, 4));
+  const expected = Array.from({ length: nbDocuments }, (_, i) => lettreAffichee(i));
   const present = new Set<string>();
-  const reAttr = /data-doc-ref="([A-D])"/g;
+  // Spans data-doc-ref (lettre)
+  const reAttr = /data-doc-ref=["']?([A-Za-z])["']?/g;
   let m: RegExpExecArray | null;
-  while ((m = reAttr.exec(html)) !== null) present.add(m[1]);
-  const rePh = /\{\{doc_([A-D])\}\}/g;
-  while ((m = rePh.exec(html)) !== null) present.add(m[1]);
+  while ((m = reAttr.exec(html)) !== null) present.add(m[1]!.toUpperCase());
+  // Placeholders numériques : {{doc_1}} → A, {{doc_2}} → B, …
+  const rePhNum = /\{\{doc_(\d+)\}\}/g;
+  while ((m = rePhNum.exec(html)) !== null) {
+    const idx = parseInt(m[1]!, 10) - 1;
+    if (idx >= 0) present.add(lettreAffichee(idx));
+  }
+  // Placeholders alphabétiques (legacy) : {{doc_A}}
+  const rePhLetter = /\{\{doc_([A-Za-z])\}\}/g;
+  while ((m = rePhLetter.exec(html)) !== null) present.add(m[1]!.toUpperCase());
   return expected.filter((x) => !present.has(x));
 }
