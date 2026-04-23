@@ -8,7 +8,7 @@ export const PARCOURS_SECTION_B_SCHEMA_CD1: ParcoursTache = {
   actif: true,
   oiPertinente: false,
   cdAutoAssignee: true,
-  icone: "schema",
+  icone: "flowchart",
   cdParNiveau: {
     sec1: "HEC-CD1",
     sec2: "HEC-CD1",
