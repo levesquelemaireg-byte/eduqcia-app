@@ -8,56 +8,15 @@ import { saveWizardDraftAction } from "@/lib/actions/tache-draft";
 import { useWizardSession } from "@/components/tache/wizard/WizardSessionContext";
 import {
   TACHE_BLUEPRINT_STEP_INDEX,
-  TACHE_BLOC5_STEP_INDEX,
-  TACHE_CD_STEP_INDEX,
-  TACHE_DOCUMENTS_STEP_INDEX,
   TACHE_FORM_STEP_COUNT,
-  TACHE_REDACTION_STEP_INDEX,
-  isConceptionStepComplete,
   useTacheForm,
 } from "@/components/tache/wizard/FormState";
-import { isCdStepComplete } from "@/lib/tache/cd-step-guards";
-import { isDocumentsStepComplete } from "@/lib/tache/document-helpers";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
-import {
-  isAvantApresBloc5CompleteForNext,
-  isAvantApresDocumentsStepComplete,
-  isAvantApresRedactionStepCompleteForNext,
-  normalizeAvantApresPayload,
-} from "@/lib/tache/non-redaction/avant-apres-payload";
-import {
-  isLigneDuTempsStep3Complete,
-  isLigneDuTempsStep5SegmentComplete,
-  normalizeLigneDuTempsPayload,
-} from "@/lib/tache/non-redaction/ligne-du-temps-payload";
-import {
-  isOrdreChronologiqueDocumentsStepComplete,
-  isOrdreChronologiqueStep3ConsigneComplete,
-  isOrdreChronologiqueStep5OptionsComplete,
-  normalizeOrdreChronologiquePayload,
-} from "@/lib/tache/non-redaction/ordre-chronologique-payload";
-import {
-  isActiveAvantApresVariant,
-  isActiveLigneDuTempsVariant,
-  isActiveNonRedactionVariant,
-  isActiveOrdreChronologiqueVariant,
-} from "@/lib/tache/non-redaction/wizard-variant";
-import {
-  nonRedactionAvantApresPayload,
-  nonRedactionLignePayload,
-  nonRedactionOrdrePayload,
-} from "@/lib/tache/wizard-state-nr";
-import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import {
   isPublishBlockedOnlyByIconographicUrls,
   isWizardPublishReady,
 } from "@/lib/tache/wizard-publish-guards";
-import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
-import {
-  isMomentsStepComplete,
-  isPerspectivesStepComplete,
-} from "@/lib/tache/oi-perspectives/perspectives-helpers";
-import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
+import { isStepReadyForNext, TOAST_NEXT_COMPLETER } from "@/lib/tache/wizard-step-next-gate";
 import type { PublishTacheFailureCode } from "@/lib/tache/publish-tache";
 import { detectMajorChangeFromFormState } from "@/lib/tache/publish-tache-version";
 import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
@@ -88,57 +47,6 @@ import {
   EDIT_MAJOR_VERSION_MODAL_CANCEL,
 } from "@/lib/ui/ui-copy";
 
-/** Guard Bloc 5 intrus — vérifie que l'intrus est sélectionné et les champs remplis. */
-function isBloc5IntrusActive(state: TacheFormState): boolean {
-  const config = getWizardBlocConfig(state.bloc2.comportementId);
-  return config?.bloc5?.type === "intrus";
-}
-
-function isBloc5IntrusCompleteForNext(state: TacheFormState): boolean {
-  const intrus = state.bloc5.intrus;
-  if (!intrus) return false;
-  if (intrus.intrusLetter === "") return false;
-  if (!htmlHasMeaningfulText(intrus.explicationDifference)) return false;
-  if (!htmlHasMeaningfulText(intrus.pointCommun)) return false;
-  return true;
-}
-
-/** Guard Bloc 3 templates structurés et purs. */
-function isBloc3PerspectivesReadyForNext(state: TacheFormState): boolean {
-  const config = getWizardBlocConfig(state.bloc2.comportementId);
-  if (!config) return true;
-  if (config.bloc3.type === "structure") {
-    if (state.bloc3.perspectivesMode === null) return false;
-    if (state.bloc3.perspectivesContexte.trim().length === 0) return false;
-    return true;
-  }
-  if (config.bloc3.type === "pur") {
-    if (config.bloc3.variante === "oi6") {
-      // OI6·6.3 : perspectivesMode + enjeu obligatoires
-      if (state.bloc3.perspectivesMode === null) return false;
-      if (state.bloc3.oi6Enjeu.trim().length === 0) return false;
-      return true;
-    }
-    if (config.bloc3.variante === "oi7") {
-      if (state.bloc3.consigneMode === "personnalisee") {
-        // Mode libre : consigne non vide suffit
-        return htmlHasMeaningfulText(state.bloc3.consigne);
-      }
-      // Mode gabarit : 4 champs obligatoires
-      if (state.bloc3.oi7EnjeuGlobal.trim().length === 0) return false;
-      if (state.bloc3.oi7Element1.trim().length === 0) return false;
-      if (state.bloc3.oi7Element2.trim().length === 0) return false;
-      if (state.bloc3.oi7Element3.trim().length === 0) return false;
-      return true;
-    }
-    // OI3·3.5 (triple) : perspectives mode + contexte obligatoire
-    if (state.bloc3.perspectivesMode === null) return false;
-    if (state.bloc3.perspectivesContexte.trim().length === 0) return false;
-    return true;
-  }
-  return true;
-}
-
 const PUBLISH_FAILURE_TOAST: Record<PublishTacheFailureCode, string> = {
   validation: TOAST_PUBLICATION_VALIDATION,
   lookup_niveau: TOAST_PUBLICATION_LOOKUP_NIVEAU,
@@ -165,141 +73,15 @@ export function StepperNavFooter() {
   const canPrev = state.currentStep > 0;
   const canNext = state.currentStep < TACHE_FORM_STEP_COUNT - 1;
 
-  const conceptionIncomplete = state.currentStep === 0 && !isConceptionStepComplete(state.bloc1);
-
-  const blueprintIncomplete =
-    state.currentStep === TACHE_BLUEPRINT_STEP_INDEX &&
-    !state.bloc2.blueprintLocked &&
-    !isBlueprintFieldsComplete(state.bloc2);
-
-  const blueprintGate = isBlueprintFieldsComplete(state.bloc2) && state.bloc2.blueprintLocked;
-
-  const nextDisabled = !canNext || conceptionIncomplete || blueprintIncomplete;
+  const stepReady = isStepReadyForNext(state, state.currentStep);
+  const nextDisabled = !canNext || !stepReady;
+  const nextTitle = stepReady ? undefined : TOAST_NEXT_COMPLETER;
 
   const handleNext = () => {
-    if (nextDisabled) return;
-    if (state.currentStep === TACHE_REDACTION_STEP_INDEX) {
-      if (!blueprintGate) {
-        toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-        return;
-      }
-      if (isActiveOrdreChronologiqueVariant(state)) {
-        const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
-        if (!p || !isOrdreChronologiqueStep3ConsigneComplete(p)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (isActiveLigneDuTempsVariant(state)) {
-        const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
-        if (!p || !isLigneDuTempsStep3Complete(p)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (isActiveAvantApresVariant(state)) {
-        const p = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
-        if (!p || !isAvantApresRedactionStepCompleteForNext(p)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (!isBloc3PerspectivesReadyForNext(state)) {
-        toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-        return;
-      } else if (!htmlHasMeaningfulText(state.bloc3.consigne)) {
-        toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-        return;
-      }
-    }
-    if (state.currentStep === TACHE_BLOC5_STEP_INDEX) {
-      if (isActiveOrdreChronologiqueVariant(state)) {
-        const p = normalizeOrdreChronologiquePayload(nonRedactionOrdrePayload(state));
-        if (!p || !isOrdreChronologiqueStep5OptionsComplete(p)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (isActiveLigneDuTempsVariant(state)) {
-        const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
-        if (!p || !isLigneDuTempsStep5SegmentComplete(p)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (isActiveAvantApresVariant(state)) {
-        const p = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
-        if (!p || !isAvantApresBloc5CompleteForNext(p)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (isBloc5IntrusActive(state)) {
-        if (!isBloc5IntrusCompleteForNext(state)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      } else if (!isActiveNonRedactionVariant(state)) {
-        if (!htmlHasMeaningfulText(state.bloc5.corrige)) {
-          toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-          return;
-        }
-      }
-    }
-    if (state.currentStep === TACHE_DOCUMENTS_STEP_INDEX) {
-      // PROVISOIRE — anti-pattern d'énumération identifié le 8 avril 2026 :
-      // ce guard énumère tous les cas particuliers et finit toujours par en oublier un
-      // (perspectives groupées + moments groupés étaient cassés en silence avant le hotfix
-      // du 8 avril 2026). Solution durable : déclarer un validateur par comportement
-      // dans wizard-bloc-config.ts. Voir BACKLOG.md "Anomalies identifiées" et
-      // docs/todos/post-audit-corrections.md Phase 5.
-      const blocConfig = getWizardBlocConfig(state.bloc2.comportementId);
-      const isPerspectivesGroupe =
-        blocConfig?.bloc4.type === "perspectives" && state.bloc3.perspectivesMode === "groupe";
-      const isMomentsGroupe =
-        blocConfig?.bloc4.type === "moments" && state.bloc3.perspectivesMode === "groupe";
-
-      if (isPerspectivesGroupe) {
-        const count = blocConfig.bloc4.type === "perspectives" ? blocConfig.bloc4.count : 2;
-        if (
-          !isPerspectivesStepComplete(
-            state.bloc4.perspectives,
-            count,
-            state.bloc4.perspectivesTitre,
-          )
-        ) {
-          toast.error("Toutes les perspectives doivent être complétées avant de continuer.");
-          return;
-        }
-      } else if (isMomentsGroupe) {
-        if (!isMomentsStepComplete(state.bloc4.moments, 2, state.bloc4.momentsTitre)) {
-          toast.error("Tous les moments doivent être complétés avant de continuer.");
-          return;
-        }
-      } else if (isActiveOrdreChronologiqueVariant(state)) {
-        if (
-          !isOrdreChronologiqueDocumentsStepComplete(
-            state.bloc2.documentSlots,
-            state.bloc4.documents,
-          )
-        ) {
-          toast.error("Tous les documents doivent être complétés avant de continuer.");
-          return;
-        }
-      } else if (isActiveLigneDuTempsVariant(state)) {
-        if (!isDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents)) {
-          toast.error("Tous les documents doivent être complétés avant de continuer.");
-          return;
-        }
-      } else if (isActiveAvantApresVariant(state)) {
-        if (!isAvantApresDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents)) {
-          toast.error("Tous les documents doivent être complétés avant de continuer.");
-          return;
-        }
-      } else if (!isDocumentsStepComplete(state.bloc2.documentSlots, state.bloc4.documents)) {
-        toast.error("Tous les documents doivent être complétés avant de continuer.");
-        return;
-      }
-    }
-    if (state.currentStep === TACHE_CD_STEP_INDEX) {
-      if (!isCdStepComplete(state)) {
-        toast.error("Veuillez compléter tous les champs obligatoires avant de continuer.");
-        return;
-      }
+    if (!canNext) return;
+    if (!stepReady) {
+      toast.error(TOAST_NEXT_COMPLETER);
+      return;
     }
     if (state.currentStep === TACHE_BLUEPRINT_STEP_INDEX) {
       if (!state.bloc2.blueprintLocked) {
@@ -423,6 +205,8 @@ export function StepperNavFooter() {
               type="button"
               onClick={handleNext}
               disabled={nextDisabled}
+              title={nextTitle}
+              aria-disabled={nextDisabled || undefined}
               className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
             >
               Suivant
