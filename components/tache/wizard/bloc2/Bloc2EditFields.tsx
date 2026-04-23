@@ -174,7 +174,7 @@ export function Bloc2EditFields({
 
       {parcours.aspectsRequis ? <SelecteurAspects /> : null}
 
-      {!parcours.oiAutoAssignee ? (
+      {parcours.oiPertinente ? (
         <>
           <OiPicker
             oiList={oiList}

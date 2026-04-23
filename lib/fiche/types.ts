@@ -110,6 +110,8 @@ export interface FicheSectionEntry<TState> {
 
 export interface HeaderData {
   oi: { id: string; titre: string; icone: string } | null;
+  /** Parcours affiché à la place de l'OI quand celle-ci n'est pas pertinente (Section B/C). */
+  parcours: { label: string; icone: string } | null;
   comportement: { id: string; enonce: string } | null;
   niveau: string;
   discipline: string;

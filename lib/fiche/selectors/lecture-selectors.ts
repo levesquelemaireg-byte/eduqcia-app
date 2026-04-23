@@ -27,6 +27,7 @@ export function selectLectureHeader(
 ): SectionState<HeaderData> {
   return ready({
     oi: state.oi ? { id: state.oi.id, titre: state.oi.titre, icone: state.oi.icone } : null,
+    parcours: null,
     comportement: state.comportement
       ? { id: state.comportement.id, enonce: state.comportement.enonce }
       : null,

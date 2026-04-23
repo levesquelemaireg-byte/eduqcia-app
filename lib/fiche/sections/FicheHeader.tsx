@@ -16,24 +16,30 @@ type Props = { data: HeaderData; mode: FicheMode };
  */
 export function FicheHeader({ data, mode }: Props) {
   const showOiPill = Boolean(data.oi?.titre?.trim());
+  const showParcoursPill = Boolean(data.parcours?.label?.trim());
   const showComportementPill = Boolean(data.comportement?.id?.trim());
   const showAspectsPill = data.aspectsSociete.length > 0;
   const hasAnyPill =
     showOiPill ||
+    showParcoursPill ||
     showComportementPill ||
     showAspectsPill ||
     Boolean(data.niveau) ||
     Boolean(data.discipline);
   const chipProps = chipPropsForFicheMode(mode);
 
+  const badgeGlyph = data.oi?.icone ?? data.parcours?.icone ?? null;
+
   if (mode === "thumbnail") {
     return (
       <div className="flex items-center gap-3 px-4 pt-3 pb-2">
-        {data.oi ? <IconBadge glyph={data.oi.icone} mode={mode} /> : null}
+        {badgeGlyph ? <IconBadge glyph={badgeGlyph} mode={mode} /> : null}
         {hasAnyPill ? (
           <ChipBar className="gap-1.5">
             {showOiPill ? (
               <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
+            ) : showParcoursPill ? (
+              <MetaChip icon={data.parcours!.icone} label={data.parcours!.label} {...chipProps} />
             ) : null}
             {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
           </ChipBar>
@@ -45,8 +51,8 @@ export function FicheHeader({ data, mode }: Props) {
   return (
     <header className="relative grid min-w-0 grid-cols-[96px_minmax(0,1fr)] items-stretch">
       <div className="relative flex items-center justify-center px-1 py-0">
-        {data.oi ? (
-          <IconBadge glyph={data.oi.icone} mode={mode} />
+        {badgeGlyph ? (
+          <IconBadge glyph={badgeGlyph} mode={mode} />
         ) : (
           <div
             className="h-14 w-14 shrink-0 rounded-full border-2 border-dashed border-border animate-pulse"
@@ -64,6 +70,8 @@ export function FicheHeader({ data, mode }: Props) {
           <ChipBar>
             {showOiPill ? (
               <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
+            ) : showParcoursPill ? (
+              <MetaChip icon={data.parcours!.icone} label={data.parcours!.label} {...chipProps} />
             ) : null}
             {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
             {data.discipline ? (

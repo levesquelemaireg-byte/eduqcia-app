@@ -67,7 +67,7 @@ export function BlueprintLockedView({
               {ASPECT_LABEL[b.aspectA]}, {ASPECT_LABEL[b.aspectB]}
             </li>
           ) : null}
-          {parcours.oiAutoAssignee ? null : (
+          {parcours.oiPertinente ? (
             <>
               <li>
                 <span className="font-medium text-deep">{BLOC2_BLUEPRINT_LOCKED_LBL_OI}</span>{" "}
@@ -80,7 +80,7 @@ export function BlueprintLockedView({
                 {selectedComportement?.enonce ?? b.comportementId}
               </li>
             </>
-          )}
+          ) : null}
           {hideNbLignesSummary ? null : (
             <li>
               <span className="font-medium text-deep">{BLOC2_BLUEPRINT_LOCKED_LBL_NB_LIGNES}</span>{" "}

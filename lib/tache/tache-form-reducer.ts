@@ -190,14 +190,21 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
 
       if (!parcours.actif) return state;
 
-      const oiId = parcours.oiAutoAssignee ? (parcours.oiIdFixe ?? "") : "";
-      const comportementId = parcours.comportementAutoAssigne
-        ? (parcours.comportementIdFixe ?? "")
-        : "";
-      const nbDocuments = parcours.oiAutoAssignee ? parcours.documentsMin : null;
+      // OI et comportement : vides si non pertinents pour ce parcours.
+      // Sinon on préserve ce que l'enseignant a déjà choisi.
+      const oiId = parcours.oiPertinente ? state.bloc2.oiId : "";
+      const comportementId = parcours.oiPertinente ? state.bloc2.comportementId : "";
+
+      // Documents : si l'OI n'est pas pertinente, on utilise le minimum du parcours.
+      // Sinon on laisse null — le comportement OI choisi ensuite fixera le nombre.
+      const nbDocuments = !parcours.oiPertinente ? parcours.documentsMin : null;
       const documentSlots = nbDocuments ? documentSlotsFromCount(nbDocuments) : [];
+
+      // Grille : forcée par le parcours si définie, sinon par le comportement OI.
       const outilEvaluation = parcours.grilleFixe ?? null;
-      const nbLignes = parcours.oiAutoAssignee ? 0 : null;
+
+      // Lignes de réponse : 0 si non rédactionnel (Section B/C), sinon null (fixé par comportement).
+      const nbLignes = !parcours.oiPertinente ? 0 : null;
 
       return {
         ...state,

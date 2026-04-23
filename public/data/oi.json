@@ -229,21 +229,5 @@
         "outil_evaluation": "OI7_SO1"
       }
     ]
-  },
-  {
-    "id": "CD1",
-    "titre": "Caractériser une période de l'histoire du Québec et du Canada",
-    "icone": "account_tree",
-    "status": "active",
-    "comportements_attendus": [
-      {
-        "id": "CD1.schema",
-        "enonce": "À l'aide d'un schéma, l'élève décrit une réalité sociale sous deux aspects en indiquant l'objet de la description, des éléments centraux et des éléments de précision.",
-        "nb_documents": 8,
-        "nb_lignes": 0,
-        "outil_evaluation": "CD1_SCHEMA",
-        "status": "active"
-      }
-    ]
   }
 ]

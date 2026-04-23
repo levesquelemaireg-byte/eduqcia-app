@@ -19,11 +19,16 @@ export type ParcoursTache = {
   description: string;
   /** Le parcours est-il activé dans l'UI ? false = carte grisée « Bientôt disponible ». */
   actif: boolean;
-  oiAutoAssignee: boolean;
-  comportementAutoAssigne: boolean;
-  oiIdFixe?: string;
-  comportementIdFixe?: string;
+  /** L'OI est-elle pertinente pour ce parcours ? false = pas d'OI, pas de comportement. */
+  oiPertinente: boolean;
+  /** La CD est-elle auto-assignée au bloc 6 ? */
+  cdAutoAssignee: boolean;
+  /** Mapping niveau → identifiant de CD pour l'auto-assignation. Absent si cdAutoAssignee === false. */
+  cdParNiveau?: Record<string, string>;
+  /** Outil d'évaluation fixe (ex. grille `CD1_SCHEMA`). Absent si fixé par le comportement OI. */
   grilleFixe?: string;
+  /** Icône Material Symbols Outlined — pastille du Sommaire quand l'OI n'est pas pertinente. */
+  icone: string;
   documentsMin: number;
   documentsMax: number;
   aspectsRequis: boolean;

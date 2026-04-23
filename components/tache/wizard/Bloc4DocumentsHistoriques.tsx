@@ -70,7 +70,7 @@ export function Bloc4DocumentsHistoriques() {
         </div>
       </DocumentSlotsAccordionProvider>
 
-      {parcours.oiAutoAssignee && slots.length < parcours.documentsMax ? (
+      {!parcours.oiPertinente && slots.length < parcours.documentsMax ? (
         <button
           type="button"
           onClick={() => dispatch({ type: "ADD_DOCUMENT_SLOT" })}
