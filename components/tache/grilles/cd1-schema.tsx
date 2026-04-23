@@ -30,6 +30,9 @@ export function GrilleCD1Schema() {
 
   const tdDetail = cn(styles.cell, styles.cellDetail);
   const tdPts = cn(styles.cell, styles.cellPoints);
+  /** Sous-rangée de continuation à l'intérieur d'un groupe d'élément central — pas de bordure supérieure. */
+  const tdDetailCont = cn(styles.cell, styles.cellDetail, styles.noBorderTop);
+  const tdPtsCont = cn(styles.cell, styles.cellPoints, styles.noBorderTop);
 
   return (
     <div className={styles.wrapper}>
@@ -140,18 +143,18 @@ export function GrilleCD1Schema() {
             </th>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM1} ${hM1_N1}`}>
+            <td className={tdDetailCont} headers={`${hM1} ${hM1_N1}`}>
               et précise l&rsquo;un des deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM1} ${hM1_N1}`}>
+            <td className={tdPtsCont} headers={`${hM1} ${hM1_N1}`}>
               2 points
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM1} ${hM1_N1}`}>
+            <td className={tdDetailCont} headers={`${hM1} ${hM1_N1}`}>
               mais ne précise pas les deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM1} ${hM1_N1}`}>
+            <td className={tdPtsCont} headers={`${hM1} ${hM1_N1}`}>
               1 point
             </td>
           </tr>
@@ -174,18 +177,18 @@ export function GrilleCD1Schema() {
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM1} ${hM1_N2}`}>
+            <td className={tdDetailCont} headers={`${hM1} ${hM1_N2}`}>
               et précise l&rsquo;un des deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM1} ${hM1_N2}`}>
+            <td className={tdPtsCont} headers={`${hM1} ${hM1_N2}`}>
               1 point
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM1} ${hM1_N2}`}>
+            <td className={tdDetailCont} headers={`${hM1} ${hM1_N2}`}>
               mais ne précise pas les deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM1} ${hM1_N2}`}>
+            <td className={tdPtsCont} headers={`${hM1} ${hM1_N2}`}>
               0 point
             </td>
           </tr>
@@ -208,16 +211,17 @@ export function GrilleCD1Schema() {
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM1} ${hM1_N3}`}>
+            <td className={tdDetailCont} headers={`${hM1} ${hM1_N3}`}>
               mais précise l&rsquo;un des deux autres éléments ou n&rsquo;en précise aucun.
             </td>
-            <td className={tdPts} headers={`${hM1} ${hM1_N3}`}>
+            <td className={tdPtsCont} headers={`${hM1} ${hM1_N3}`}>
               0 point
             </td>
           </tr>
 
           {/* ═══ Deuxième mise en relation — 8 lignes, structure identique ═══ */}
-          <tr>
+          {/* Séparation épaisse entre première et deuxième mise en relation. */}
+          <tr className={styles.doubleSepTop}>
             <th
               className={cn(styles.cell, styles.cellRubrique, styles.cd1MiseLabel)}
               id={hM2}
@@ -250,18 +254,18 @@ export function GrilleCD1Schema() {
             </th>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM2} ${hM2_N1}`}>
+            <td className={tdDetailCont} headers={`${hM2} ${hM2_N1}`}>
               et précise l&rsquo;un des deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM2} ${hM2_N1}`}>
+            <td className={tdPtsCont} headers={`${hM2} ${hM2_N1}`}>
               2 points
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM2} ${hM2_N1}`}>
+            <td className={tdDetailCont} headers={`${hM2} ${hM2_N1}`}>
               mais ne précise pas les deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM2} ${hM2_N1}`}>
+            <td className={tdPtsCont} headers={`${hM2} ${hM2_N1}`}>
               1 point
             </td>
           </tr>
@@ -283,18 +287,18 @@ export function GrilleCD1Schema() {
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM2} ${hM2_N2}`}>
+            <td className={tdDetailCont} headers={`${hM2} ${hM2_N2}`}>
               et précise l&rsquo;un des deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM2} ${hM2_N2}`}>
+            <td className={tdPtsCont} headers={`${hM2} ${hM2_N2}`}>
               1 point
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM2} ${hM2_N2}`}>
+            <td className={tdDetailCont} headers={`${hM2} ${hM2_N2}`}>
               mais ne précise pas les deux autres éléments.
             </td>
-            <td className={tdPts} headers={`${hM2} ${hM2_N2}`}>
+            <td className={tdPtsCont} headers={`${hM2} ${hM2_N2}`}>
               0 point
             </td>
           </tr>
@@ -316,10 +320,10 @@ export function GrilleCD1Schema() {
             </td>
           </tr>
           <tr>
-            <td className={tdDetail} headers={`${hM2} ${hM2_N3}`}>
+            <td className={tdDetailCont} headers={`${hM2} ${hM2_N3}`}>
               mais précise l&rsquo;un des deux autres éléments ou n&rsquo;en précise aucun.
             </td>
-            <td className={tdPts} headers={`${hM2} ${hM2_N3}`}>
+            <td className={tdPtsCont} headers={`${hM2} ${hM2_N3}`}>
               0 point
             </td>
           </tr>
