@@ -28,10 +28,10 @@ function docSlot(annee: number): DocumentSlotData {
 }
 
 const fourDocs = (): Record<string, DocumentSlotData> => ({
-  doc_A: docSlot(1900),
-  doc_B: docSlot(1910),
-  doc_C: docSlot(1920),
-  doc_D: docSlot(1930),
+  doc_1: docSlot(1900),
+  doc_2: docSlot(1910),
+  doc_3: docSlot(1920),
+  doc_4: docSlot(1930),
 });
 
 describe("normalizeAvantApresPayload", () => {
@@ -73,8 +73,8 @@ describe("normalizeAvantApresPayload", () => {
   it("rejette optionRows non vides si generated false", () => {
     const row = {
       letter: "A" as const,
-      avantSlots: ["doc_A", "doc_B"] as const,
-      apresSlots: ["doc_C", "doc_D"] as const,
+      avantSlots: ["doc_1", "doc_2"] as const,
+      apresSlots: ["doc_3", "doc_4"] as const,
     };
     expect(
       normalizeAvantApresPayload({
@@ -129,28 +129,28 @@ describe("parseNonRedactionData (avant-apres)", () => {
 });
 
 describe("avant-apres-helpers", () => {
-  const slots = ["doc_A", "doc_B", "doc_C", "doc_D"] as const;
+  const slots = ["doc_1", "doc_2", "doc_3", "doc_4"] as const;
   const docs = fourDocs();
 
   it("computeCorrectAvantPair — repère 1915 → deux avant", () => {
     const r = computeCorrectAvantPair([...slots], docs, 1915, {});
     expect(r.ok).toBe(true);
     if (r.ok) {
-      expect(new Set(r.pair)).toEqual(new Set(["doc_A", "doc_B"]));
+      expect(new Set(r.pair)).toEqual(new Set(["doc_1", "doc_2"]));
     }
   });
 
   it("computeCorrectAvantPair — période 1541–1543 : deux avant strictement avant 1541", () => {
     const capDocs: Record<string, DocumentSlotData> = {
-      doc_A: docSlot(1497),
-      doc_B: docSlot(1534),
-      doc_C: docSlot(1605),
-      doc_D: docSlot(1608),
+      doc_1: docSlot(1497),
+      doc_2: docSlot(1534),
+      doc_3: docSlot(1605),
+      doc_4: docSlot(1608),
     };
     const r = computeCorrectAvantPair([...slots], capDocs, 1541, {}, 1543);
     expect(r.ok).toBe(true);
     if (r.ok) {
-      expect(new Set(r.pair)).toEqual(new Set(["doc_A", "doc_B"]));
+      expect(new Set(r.pair)).toEqual(new Set(["doc_1", "doc_2"]));
     }
   });
 
@@ -182,7 +182,7 @@ describe("validateAvantApresPayloadInvariants + mutation partielle", () => {
     const base = initialAvantApresPayload();
     const gen = runAvantApresGeneration(
       { ...base, theme: "t", repere: "r", anneeRepere: 1915 },
-      ["doc_A", "doc_B", "doc_C", "doc_D"],
+      ["doc_1", "doc_2", "doc_3", "doc_4"],
       fourDocs(),
       () => 0.42,
     );

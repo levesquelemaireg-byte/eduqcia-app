@@ -1,11 +1,8 @@
-import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import {
   getRedactionSliceForPreview,
   type TacheFormState,
 } from "@/lib/tache/tache-form-state-types";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
-
-const SLOT_IDS: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
 
 /**
  * Indique si l’état du wizard a avancé au-delà d’un formulaire vierge.
@@ -32,8 +29,7 @@ export function hasMeaningfulWizardProgress(s: TacheFormState): boolean {
   if (htmlHasMeaningfulText(rp.corrige)) return true;
   if (Object.values(rp.aspects).some(Boolean)) return true;
 
-  for (const id of SLOT_IDS) {
-    const d = s.bloc4.documents[id];
+  for (const d of Object.values(s.bloc4.documents)) {
     if (!d) continue;
     if (d.mode !== "idle") return true;
     if (

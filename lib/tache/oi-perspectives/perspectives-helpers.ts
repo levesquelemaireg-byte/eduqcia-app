@@ -4,7 +4,7 @@
  * Spec : docs/SPEC-TEMPLATES-CONSIGNE.md
  */
 
-import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
+import { documentSlotsFromCount, type DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotData } from "@/lib/tache/document-helpers";
 import { emptyDocumentSlot } from "@/lib/tache/document-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
@@ -87,15 +87,14 @@ export function intrusRadioLabels(
 // Migration groupé ↔ séparé
 // ---------------------------------------------------------------------------
 
-const SLOT_IDS: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
-
 /** Groupé → Séparé : transfère les perspectives dans des slots documents indépendants. */
 export function migratePerspectivesToSlots(
   perspectives: PerspectiveData[],
 ): Partial<Record<DocumentSlotId, DocumentSlotData>> {
   const result: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
+  const slots = documentSlotsFromCount(perspectives.length);
   for (let i = 0; i < perspectives.length; i++) {
-    const slotId = SLOT_IDS[i];
+    const slotId = slots[i]?.slotId;
     if (!slotId) break;
     const p = perspectives[i]!;
     result[slotId] = {
@@ -116,7 +115,7 @@ export function migrateSlotsToPerpsectives(
   slots: Partial<Record<DocumentSlotId, DocumentSlotData>>,
   count: 2 | 3,
 ): PerspectiveData[] {
-  return SLOT_IDS.slice(0, count).map((slotId) => {
+  return documentSlotsFromCount(count).map(({ slotId }) => {
     const slot = slots[slotId];
     if (!slot) return emptyPerspective();
     return {
@@ -146,8 +145,9 @@ export function migrateMomentsToSlots(
   moments: MomentData[],
 ): Partial<Record<DocumentSlotId, DocumentSlotData>> {
   const result: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
+  const slots = documentSlotsFromCount(moments.length);
   for (let i = 0; i < moments.length; i++) {
-    const slotId = SLOT_IDS[i];
+    const slotId = slots[i]?.slotId;
     if (!slotId) break;
     const m = moments[i]!;
     result[slotId] = {
@@ -167,7 +167,7 @@ export function migrateSlotsToMoments(
   slots: Partial<Record<DocumentSlotId, DocumentSlotData>>,
   count: 2,
 ): MomentData[] {
-  return SLOT_IDS.slice(0, count).map((slotId) => {
+  return documentSlotsFromCount(count).map(({ slotId }) => {
     const slot = slots[slotId];
     if (!slot) return emptyMoment();
     return {

@@ -13,7 +13,7 @@ import type {
 import { isCompleteOrdrePermutation } from "@/lib/tache/non-redaction/ordre-chronologique-permutations";
 
 export type OrdreYearResolution =
-  | { kind: "missing_years"; slotLetters: ("A" | "B" | "C" | "D")[] }
+  | { kind: "missing_years"; slotLetters: string[] }
   | { kind: "tie" }
   | { kind: "ok"; sequence: OrdrePermutation };
 
@@ -30,7 +30,7 @@ export function computeOrdreSequenceFromYears(
     return { kind: "missing_years", slotLetters: [] };
   }
 
-  const missing: ("A" | "B" | "C" | "D")[] = [];
+  const missing: string[] = [];
   const entries: { docNum: 1 | 2 | 3 | 4; year: number }[] = [];
 
   orderedSlotIds.forEach((slotId, idx) => {

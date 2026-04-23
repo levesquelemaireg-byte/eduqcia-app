@@ -92,11 +92,21 @@ export function emptyDocumentSlot(): DocumentSlotData {
   };
 }
 
-export function slotLetter(id: DocumentSlotId): "A" | "B" | "C" | "D" {
-  if (id === "doc_A") return "A";
-  if (id === "doc_B") return "B";
-  if (id === "doc_C") return "C";
-  return "D";
+/** Extrait l'index numérique (base 0) d'un SlotId. "doc_1" → 0, "doc_2" → 1. */
+export function slotIndex(id: DocumentSlotId): number {
+  const n = parseInt(String(id).replace("doc_", ""), 10);
+  return Number.isFinite(n) && n >= 1 ? n - 1 : 0;
+}
+
+/** Lettre d'affichage pour un index (base 0). 0 → "A", 1 → "B", 25 → "Z". */
+export function lettreAffichee(index: number): string {
+  const safe = Math.max(0, Math.trunc(index));
+  return String.fromCharCode(65 + safe);
+}
+
+/** Lettre d'affichage directe depuis un SlotId. "doc_1" → "A", "doc_3" → "C". */
+export function slotLetter(id: DocumentSlotId): string {
+  return lettreAffichee(slotIndex(id));
 }
 
 export function slotStatusLabel(status: SlotUiStatus): string {

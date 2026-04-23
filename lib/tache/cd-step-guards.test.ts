@@ -67,7 +67,7 @@ describe("isCdStepGateOk", () => {
     const state = minimalRedactionStateForCdGate();
     state.bloc2.comportementId = "3.3";
     state.bloc2.nbDocuments = 2;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }, { slotId: "doc_B" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }, { slotId: "doc_2" }];
     state.bloc3.perspectivesMode = "groupe";
     state.bloc4.perspectives = [
       {
@@ -93,7 +93,7 @@ describe("isCdStepGateOk", () => {
     const state = minimalRedactionStateForCdGate();
     state.bloc2.comportementId = "3.3";
     state.bloc2.nbDocuments = 2;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }, { slotId: "doc_B" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }, { slotId: "doc_2" }];
     state.bloc3.perspectivesMode = "groupe";
     state.bloc4.perspectives = null;
     state.bloc4.perspectivesTitre = "";

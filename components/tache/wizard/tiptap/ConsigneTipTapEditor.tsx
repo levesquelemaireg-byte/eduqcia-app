@@ -11,15 +11,9 @@ import {
 import { RichTextEditorShell } from "@/components/ui/RichTextEditorShell";
 import { getMissingDocLetters } from "@/lib/tache/consigne-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
+import { slotLetter } from "@/lib/tache/document-helpers";
 
 const AUTOSAVE_KEY = "eduqcia-tache-consigne-new";
-
-function slotIdToLetter(slotId: DocumentSlotId): "A" | "B" | "C" | "D" {
-  if (slotId === "doc_A") return "A";
-  if (slotId === "doc_B") return "B";
-  if (slotId === "doc_C") return "C";
-  return "D";
-}
 
 type Props = {
   value: string;
@@ -121,7 +115,7 @@ export function ConsigneTipTapEditor({
   const missing = getMissingDocLetters(html, nbDocuments);
 
   const docInsertButtons = documentSlotIds.map((slotId) => {
-    const letter = slotIdToLetter(slotId);
+    const letter = slotLetter(slotId);
     return {
       slot: slotId,
       label: `Document ${letter}`,

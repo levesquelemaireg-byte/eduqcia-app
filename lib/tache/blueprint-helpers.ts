@@ -36,11 +36,11 @@ export function findComportement(
   return oi?.comportements_attendus.find((c) => c.id === comportementId);
 }
 
-export type DocumentSlotId = "doc_A" | "doc_B" | "doc_C" | "doc_D";
+export type DocumentSlotId = `doc_${number}`;
 
 export function documentSlotsFromCount(n: number): { slotId: DocumentSlotId }[] {
-  const ids: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
-  return ids.slice(0, Math.min(n, 4)).map((slotId) => ({ slotId }));
+  if (n <= 0) return [];
+  return Array.from({ length: n }, (_, i) => ({ slotId: `doc_${i + 1}` as DocumentSlotId }));
 }
 
 export function isBlueprintFieldsComplete(b: {

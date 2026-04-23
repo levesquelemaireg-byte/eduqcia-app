@@ -273,8 +273,9 @@ export async function fetchTacheFormStateForEdit(
   const documents: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
   if (links) {
     for (const l of links) {
-      const sid = l.slot as DocumentSlotId;
-      if (sid !== "doc_A" && sid !== "doc_B" && sid !== "doc_C" && sid !== "doc_D") continue;
+      const rawSlot = l.slot;
+      if (typeof rawSlot !== "string" || !/^doc_\d+$/.test(rawSlot)) continue;
+      const sid = rawSlot as DocumentSlotId;
       const doc = docById.get(l.document_id);
       if (!doc) return null;
       documents[sid] = slotDataForReuse(doc);

@@ -109,7 +109,7 @@ function etatRedactionnel(): TacheFormState {
       nbLignes: 2,
       nbDocuments: 1,
       outilEvaluation: "OI0_SO1",
-      documentSlots: [{ slotId: "doc_A" }],
+      documentSlots: [{ slotId: "doc_1" }],
       blueprintLocked: true,
     },
     bloc3: {
@@ -140,10 +140,10 @@ function etatOrdreChronologique(): TacheFormState {
       nbDocuments: 4,
       outilEvaluation: "OI1_SO1",
       documentSlots: [
-        { slotId: "doc_A" },
-        { slotId: "doc_B" },
-        { slotId: "doc_C" },
-        { slotId: "doc_D" },
+        { slotId: "doc_1" },
+        { slotId: "doc_2" },
+        { slotId: "doc_3" },
+        { slotId: "doc_4" },
       ],
       blueprintLocked: true,
     },
@@ -325,7 +325,7 @@ describe("etatWizardVersTache", () => {
     it("mappe les slots document vers RendererDocument", () => {
       const result = etatWizardVersTache(etatRedactionnel(), OI_FIXTURE, GRILLES_FIXTURE);
       expect(result.documents).toHaveLength(1);
-      expect(result.documents[0].id).toBe("doc_A");
+      expect(result.documents[0].id).toBe("doc_1");
       expect(result.documents[0].structure).toBe("simple");
       expect(result.documents[0].elements).toHaveLength(1);
       expect(result.documents[0].elements[0].type).toBeDefined();
@@ -354,7 +354,7 @@ describe("etatWizardVersTache", () => {
       slot.mode = "create";
       slot.rendererDocument = rendererDoc;
 
-      etat.bloc4.documents = { doc_A: slot };
+      etat.bloc4.documents = { doc_1: slot };
 
       const result = etatWizardVersTache(etat, OI_FIXTURE, GRILLES_FIXTURE);
       expect(result.documents[0]).toEqual(rendererDoc);
@@ -373,7 +373,7 @@ describe("etatWizardVersTache", () => {
       slot.repere_temporel = "1900";
       slot.categorie_textuelle = "autre";
 
-      etat.bloc4.documents = { doc_A: slot };
+      etat.bloc4.documents = { doc_1: slot };
 
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
       try {
@@ -381,11 +381,11 @@ describe("etatWizardVersTache", () => {
 
         expect(warnSpy).toHaveBeenCalledTimes(1);
         expect(warnSpy).toHaveBeenCalledWith(
-          "[construireDocuments] Slot doc_A sans rendererDocument - fallback",
+          "[construireDocuments] Slot doc_1 sans rendererDocument - fallback",
         );
         expect(result.documents[0]).toEqual(
           expect.objectContaining({
-            id: "doc_A",
+            id: "doc_1",
             titre: "Titre fallback",
             structure: "simple",
             repereTemporelDocument: "1900",

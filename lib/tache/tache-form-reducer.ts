@@ -504,7 +504,7 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
         ...initialTacheFormState,
         bloc4: {
           ...initialTacheFormState.bloc4,
-          documents: { doc_A: action.data },
+          documents: { doc_1: action.data },
         },
       };
     }

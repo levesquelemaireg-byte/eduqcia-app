@@ -137,7 +137,7 @@ export const NR_ORDRE_BLOC5_AUTO_SEQUENCE_LEAD =
 export const NR_ORDRE_BLOC5_YEAR_TIE_WARNING =
   "Deux documents ou plus partagent la même année normalisée. Saisissez ci-dessous la bonne séquence chronologique (une case par position), puis générez les options.";
 export const NR_ORDRE_JUSTIFICATION_LABEL = "Justification";
-export function NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(letters: ("A" | "B" | "C" | "D")[]): string {
+export function NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(letters: string[]): string {
   if (letters.length === 0) {
     return "Année manquante pour au moins un document.";
   }

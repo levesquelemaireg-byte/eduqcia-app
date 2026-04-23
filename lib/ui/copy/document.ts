@@ -354,7 +354,7 @@ export const INJECT_DOC_MODAL_CANCEL = "Annuler";
 
 /** Deep-link — toasts d'injection. */
 export const TOAST_INJECT_DOC_REPLACED = "Document injecté dans le slot A.";
-export const TOAST_INJECT_DOC_FIRST_EMPTY = (slot: "A" | "B" | "C" | "D") =>
+export const TOAST_INJECT_DOC_FIRST_EMPTY = (slot: string) =>
   `Document injecté dans le slot ${slot}.`;
 export const TOAST_INJECT_DOC_RESET = "Nouveau brouillon démarré avec ce document en slot A.";
 export const TOAST_INJECT_DOC_NOT_FOUND = "Document introuvable ou inaccessible.";

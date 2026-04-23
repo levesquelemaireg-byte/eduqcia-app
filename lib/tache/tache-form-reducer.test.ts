@@ -18,10 +18,10 @@ describe("tacheFormReducer SET_COMPORTEMENT", () => {
         nbLignes: 0,
         blueprintLocked: true,
         documentSlots: [
-          { slotId: "doc_A" as const },
-          { slotId: "doc_B" as const },
-          { slotId: "doc_C" as const },
-          { slotId: "doc_D" as const },
+          { slotId: "doc_1" as const },
+          { slotId: "doc_2" as const },
+          { slotId: "doc_3" as const },
+          { slotId: "doc_4" as const },
         ],
       },
       bloc3: {

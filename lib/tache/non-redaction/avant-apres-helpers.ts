@@ -2,16 +2,17 @@
  * Parcours 1.3 — partitions 2/2, distracteurs C(4,2), mélange (RNG injectable).
  */
 
-import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
+import { documentSlotsFromCount, type DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { getAnneePourComparaison } from "@/lib/tache/document-annee";
 import { getSlotData, type DocumentSlotData } from "@/lib/tache/document-helpers";
 
-export const AVANT_APRES_ALL_SLOTS: readonly DocumentSlotId[] = [
-  "doc_A",
-  "doc_B",
-  "doc_C",
-  "doc_D",
-] as const;
+/**
+ * Slots attendus par le parcours avant/après (comportement figé à 4 documents).
+ * Dérivé dynamiquement — aucune clé câblée dans le code.
+ */
+export const AVANT_APRES_ALL_SLOTS: readonly DocumentSlotId[] = documentSlotsFromCount(4).map(
+  (s) => s.slotId,
+);
 
 export type AvantApresPartitionRow = {
   avantSlots: [DocumentSlotId, DocumentSlotId];

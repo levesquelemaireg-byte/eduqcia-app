@@ -6,6 +6,7 @@
 import { z } from "zod";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import {
+  AVANT_APRES_ALL_SLOTS,
   complementAvantPair,
   computeCorrectAvantPair,
   generateAvantApresOptionPartitions,
@@ -25,7 +26,9 @@ import {
   NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR,
 } from "@/lib/ui/ui-copy";
 
-const slotIdZ = z.enum(["doc_A", "doc_B", "doc_C", "doc_D"]);
+const slotIdZ = z.custom<DocumentSlotId>(
+  (v): v is DocumentSlotId => typeof v === "string" && /^doc_\d+$/.test(v),
+);
 const letterZ = z.enum(["A", "B", "C", "D"]);
 
 const optionRowZ = z.object({
@@ -121,8 +124,7 @@ function coerceOverrides(raw: unknown): Partial<Record<DocumentSlotId, "avant" |
   if (!raw || typeof raw !== "object") return {};
   const o = raw as Record<string, unknown>;
   const out: Partial<Record<DocumentSlotId, "avant" | "apres">> = {};
-  const ids: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
-  for (const id of ids) {
+  for (const id of AVANT_APRES_ALL_SLOTS) {
     const v = o[id];
     if (v === "avant" || v === "apres") out[id] = v;
   }
@@ -135,7 +137,7 @@ function coerceLetter(raw: unknown): AvantApresOptionLetter {
 }
 
 function isDocSlotId(v: unknown): v is DocumentSlotId {
-  return v === "doc_A" || v === "doc_B" || v === "doc_C" || v === "doc_D";
+  return typeof v === "string" && /^doc_\d+$/.test(v);
 }
 
 function coerceOptionRow(raw: unknown): AvantApresOptionRow | null {

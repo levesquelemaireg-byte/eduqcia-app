@@ -7,7 +7,7 @@ import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { getAnneePourComparaison } from "@/lib/tache/document-annee";
-import { getSlotData } from "@/lib/tache/document-helpers";
+import { emptyDocumentSlot, getSlotData } from "@/lib/tache/document-helpers";
 import {
   determineSegmentIndexFromYear,
   ligneDuTempsSegmentYearBounds,
@@ -60,9 +60,7 @@ export default function Bloc5LigneDuTemps(_props: Bloc5Props) {
     [b.documentSlots],
   );
   const firstSlotId = orderedSlotIds[0];
-  const slot = firstSlotId
-    ? getSlotData(state.bloc4.documents, firstSlotId)
-    : getSlotData({}, "doc_A");
+  const slot = firstSlotId ? getSlotData(state.bloc4.documents, firstSlotId) : emptyDocumentSlot();
 
   const p = useMemo(() => normalizeLigneDuTempsPayload(nonRedactionLignePayload(state)), [state]);
 

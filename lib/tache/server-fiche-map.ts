@@ -11,7 +11,7 @@ import type {
 } from "@/lib/types/fiche";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { canonicalOiIcone } from "@/lib/tache/oi-canonical";
-import { parseDocumentLegendPosition } from "@/lib/tache/document-helpers";
+import { parseDocumentLegendPosition, slotIndex, slotLetter } from "@/lib/tache/document-helpers";
 import {
   getDocumentCategorieTextuelle,
   documentCategorieIconographiqueLabel,
@@ -51,13 +51,10 @@ const ASPECT_LABEL: Record<string, string> = {
   territorial: "Territorial",
 };
 
-const SLOT_ORDER: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
+const SLOT_ID_PATTERN = /^doc_\d+$/;
 
-function slotLetterFromSlot(slot: string): "A" | "B" | "C" | "D" {
-  if (slot === "doc_A") return "A";
-  if (slot === "doc_B") return "B";
-  if (slot === "doc_C") return "C";
-  return "D";
+function isDocumentSlotId(slot: string): slot is DocumentSlotId {
+  return SLOT_ID_PATTERN.test(slot);
 }
 
 export async function fetchTacheFicheBundle(
@@ -164,8 +161,9 @@ export async function fetchTacheFicheBundle(
     }
   }
   if (links) {
-    const bySlot = new Map<string, DocumentFiche>();
+    const bySlot = new Map<DocumentSlotId, DocumentFiche>();
     for (const l of links) {
+      if (!isDocumentSlotId(l.slot)) continue;
       const d = docById.get(l.document_id);
       if (!d) continue;
       const rawElements = (Array.isArray(d.elements) ? d.elements : []) as DocumentElementJson[];
@@ -183,7 +181,7 @@ export async function fetchTacheFicheBundle(
             ? (documentCategorieIconographiqueLabel(firstEl.categorie_iconographique) ?? null)
             : null;
       bySlot.set(l.slot, {
-        letter: slotLetterFromSlot(l.slot),
+        letter: slotLetter(l.slot),
         titre: d.titre,
         contenu,
         source_citation: sourceCitation,
@@ -199,9 +197,9 @@ export async function fetchTacheFicheBundle(
         categorieLabel,
       });
     }
-    for (const sid of SLOT_ORDER) {
-      const found = bySlot.get(sid);
-      if (found) documents.push(found);
+    const sortedEntries = [...bySlot.entries()].sort(([a], [b]) => slotIndex(a) - slotIndex(b));
+    for (const [, found] of sortedEntries) {
+      documents.push(found);
     }
   }
 

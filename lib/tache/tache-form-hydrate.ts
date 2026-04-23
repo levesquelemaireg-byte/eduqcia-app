@@ -63,12 +63,14 @@ function clampStep(step: number): number {
   return step;
 }
 
+const SLOT_ID_PATTERN = /^doc_\d+$/;
+
 function sanitizeDocumentsSlice(raw: unknown): Partial<Record<DocumentSlotId, DocumentSlotData>> {
   if (!raw || typeof raw !== "object") return {};
   const out: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
-  const ids: DocumentSlotId[] = ["doc_A", "doc_B", "doc_C", "doc_D"];
-  for (const id of ids) {
-    const slot = (raw as Record<string, unknown>)[id];
+  for (const [key, slot] of Object.entries(raw as Record<string, unknown>)) {
+    if (!SLOT_ID_PATTERN.test(key)) continue;
+    const id = key as DocumentSlotId;
     if (!slot || typeof slot !== "object") continue;
     const s = slot as Partial<DocumentSlotData>;
     const base = emptyDocumentSlot();
@@ -232,11 +234,11 @@ export function sanitizeHydratedState(raw: unknown): TacheFormState | null {
     ...initialBlueprint,
     ...(typeof o.bloc2 === "object" && o.bloc2 !== null ? o.bloc2 : {}),
     documentSlots: Array.isArray((o.bloc2 as BlueprintSlice).documentSlots)
-      ? (o.bloc2 as BlueprintSlice).documentSlots.filter((s): s is { slotId: DocumentSlotId } =>
-          Boolean(
-            s && typeof s === "object" && typeof (s as { slotId?: unknown }).slotId === "string",
-          ),
-        )
+      ? (o.bloc2 as BlueprintSlice).documentSlots.filter((s): s is { slotId: DocumentSlotId } => {
+          if (!s || typeof s !== "object") return false;
+          const sid = (s as { slotId?: unknown }).slotId;
+          return typeof sid === "string" && SLOT_ID_PATTERN.test(sid);
+        })
       : [],
   };
 

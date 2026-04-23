@@ -10,7 +10,7 @@ import {
   type InjectAction,
 } from "@/components/tache/wizard/InjectDocumentModal";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
-import type { DocumentSlotData } from "@/lib/tache/document-helpers";
+import { slotLetter, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import {
   TOAST_INJECT_DOC_FIRST_EMPTY,
   TOAST_INJECT_DOC_NOT_FOUND,
@@ -75,7 +75,7 @@ export function InjectDocumentController({ pendingInjection, injectionError }: P
       processedRef.current = true;
       dispatch({
         type: "INJECT_DOCUMENT_SLOT_REPLACE",
-        slotId: "doc_A",
+        slotId: "doc_1",
         data: pendingInjection.data,
       });
       toast.success(TOAST_INJECT_DOC_REPLACED);
@@ -100,7 +100,7 @@ export function InjectDocumentController({ pendingInjection, injectionError }: P
     const data = pendingInjection.data;
 
     if (action === "replace") {
-      dispatch({ type: "INJECT_DOCUMENT_SLOT_REPLACE", slotId: "doc_A", data });
+      dispatch({ type: "INJECT_DOCUMENT_SLOT_REPLACE", slotId: "doc_1", data });
       toast.success(TOAST_INJECT_DOC_REPLACED);
     } else if (action === "first-empty") {
       const target = findFirstEmptySlot(state.bloc2.documentSlots, state.bloc4.documents);
@@ -109,8 +109,7 @@ export function InjectDocumentController({ pendingInjection, injectionError }: P
         return;
       }
       dispatch({ type: "INJECT_DOCUMENT_SLOT_FIRST_EMPTY", data });
-      const letter = target.replace("doc_", "") as "A" | "B" | "C" | "D";
-      toast.success(TOAST_INJECT_DOC_FIRST_EMPTY(letter));
+      toast.success(TOAST_INJECT_DOC_FIRST_EMPTY(slotLetter(target)));
     } else {
       dispatch({ type: "RESET_DRAFT_AND_INJECT_DOCUMENT", data });
       toast.success(TOAST_INJECT_DOC_RESET);

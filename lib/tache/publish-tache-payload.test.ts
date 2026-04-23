@@ -29,10 +29,10 @@ function avantApresFourDocSlots(): Record<string, DocumentSlotData> {
     annee_normalisee: y,
   });
   return {
-    doc_A: d(1900),
-    doc_B: d(1910),
-    doc_C: d(1920),
-    doc_D: d(1930),
+    doc_1: d(1900),
+    doc_2: d(1910),
+    doc_3: d(1920),
+    doc_4: d(1930),
   };
 }
 
@@ -61,29 +61,29 @@ describe("buildPublishPayload", () => {
 
   it("slot idle → validation", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     const r = buildPublishPayload("u", state, ctx);
     expect(r).toEqual({ error: "validation" });
   });
 
   it("reuse sans document_id → validation", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     const slot: DocumentSlotData = {
       ...emptyDocumentSlot(),
       mode: "reuse",
       source_document_id: null,
     };
-    state.bloc4.documents = { doc_A: slot };
+    state.bloc4.documents = { doc_1: slot };
     const r = buildPublishPayload("u", state, ctx);
     expect(r).toEqual({ error: "validation" });
   });
 
   it("reuse avec document_id", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_B" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_2" }];
     state.bloc4.documents = {
-      doc_B: {
+      doc_2: {
         ...emptyDocumentSlot(),
         mode: "reuse",
         source_document_id: "doc-existing-uuid",
@@ -94,7 +94,7 @@ describe("buildPublishPayload", () => {
     expect(r.documents_new).toEqual([]);
     expect(r.slots).toEqual([
       {
-        slot: "doc_B",
+        slot: "doc_2",
         ordre: 0,
         mode: "reuse",
         document_id: "doc-existing-uuid",
@@ -115,9 +115,9 @@ describe("buildPublishPayload", () => {
     state.bloc3.guidage = "g";
     state.bloc5.corrige = "<p>K</p>";
     state.bloc7.aspects.economique = true;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     state.bloc4.documents = {
-      doc_A: {
+      doc_1: {
         ...emptyDocumentSlot(),
         mode: "create",
         type: "textuel",
@@ -146,7 +146,7 @@ describe("buildPublishPayload", () => {
       source_type: "secondaire",
     });
     expect(r.slots[0]).toMatchObject({
-      slot: "doc_A",
+      slot: "doc_1",
       ordre: 0,
       mode: "create",
       newIndex: 0,
@@ -157,9 +157,9 @@ describe("buildPublishPayload", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
     state.bloc1.modeConception = "equipe";
     state.bloc1.collaborateurs = [];
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     state.bloc4.documents = {
-      doc_A: {
+      doc_1: {
         ...emptyDocumentSlot(),
         mode: "create",
         type: "textuel",
@@ -174,9 +174,9 @@ describe("buildPublishPayload", () => {
 
   it("iconographique : URL non http(s) → document_image", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     state.bloc4.documents = {
-      doc_A: {
+      doc_1: {
         ...emptyDocumentSlot(),
         mode: "create",
         type: "iconographique",
@@ -191,9 +191,9 @@ describe("buildPublishPayload", () => {
 
   it("iconographique : https accepté", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     state.bloc4.documents = {
-      doc_A: {
+      doc_1: {
         ...emptyDocumentSlot(),
         mode: "create",
         type: "iconographique",
@@ -212,9 +212,9 @@ describe("buildPublishPayload", () => {
 
   it("create : source primaire et légende dans le payload iconographique", () => {
     const state = structuredClone(initialTacheFormState) as TacheFormState;
-    state.bloc2.documentSlots = [{ slotId: "doc_A" }];
+    state.bloc2.documentSlots = [{ slotId: "doc_1" }];
     state.bloc4.documents = {
-      doc_A: {
+      doc_1: {
         ...emptyDocumentSlot(),
         mode: "create",
         type: "iconographique",
@@ -243,10 +243,10 @@ describe("buildPublishPayload", () => {
     state.bloc2.nbLignes = 0;
     state.bloc2.nbDocuments = 4;
     state.bloc2.documentSlots = [
-      { slotId: "doc_A" },
-      { slotId: "doc_B" },
-      { slotId: "doc_C" },
-      { slotId: "doc_D" },
+      { slotId: "doc_1" },
+      { slotId: "doc_2" },
+      { slotId: "doc_3" },
+      { slotId: "doc_4" },
     ];
     state.bloc4.documents = avantApresFourDocSlots();
     state.bloc7.aspects.economique = true;
@@ -267,10 +267,10 @@ describe("buildPublishPayload", () => {
     state.bloc2.nbLignes = 0;
     state.bloc2.nbDocuments = 4;
     state.bloc2.documentSlots = [
-      { slotId: "doc_A" },
-      { slotId: "doc_B" },
-      { slotId: "doc_C" },
-      { slotId: "doc_D" },
+      { slotId: "doc_1" },
+      { slotId: "doc_2" },
+      { slotId: "doc_3" },
+      { slotId: "doc_4" },
     ];
     state.bloc4.documents = avantApresFourDocSlots();
     state.bloc7.aspects.economique = true;
@@ -290,7 +290,7 @@ describe("buildPublishPayload", () => {
     };
     const gen = runAvantApresGeneration(
       base,
-      ["doc_A", "doc_B", "doc_C", "doc_D"],
+      ["doc_1", "doc_2", "doc_3", "doc_4"],
       state.bloc4.documents,
       rng,
     );
