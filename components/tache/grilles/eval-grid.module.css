@@ -242,3 +242,100 @@
 .nowrapParenGroup {
   white-space: nowrap;
 }
+
+/*
+ * CD1_SCHEMA — Schéma de caractérisation (Section B).
+ * 5 colonnes (660px) : label mise en relation | élément central | détail précisions | points | /N section.
+ * Objet (2 lignes) en haut : 3 sous-cellules égales via table imbriquée.
+ * Total /8 en pied.
+ */
+.tableCd1Schema {
+  font-size: var(--eval-grid-font-size, 14px);
+  line-height: 1.18;
+  border-width: 1px;
+}
+
+.tableCd1Schema .cell {
+  padding: 5px 7px;
+}
+
+.tableCd1Schema .cellRubrique {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tableCd1Schema .cellCond {
+  font-weight: 500;
+  text-align: left;
+}
+
+.tableCd1Schema .cellDetail {
+  text-align: left;
+}
+
+/* 90 + 130 + 340 + 50 + 50 = 660 */
+.cd1ColLabel {
+  width: 90px;
+}
+
+.cd1ColCentral {
+  width: 130px;
+}
+
+.cd1ColDetail {
+  width: 340px;
+}
+
+.cd1ColPoints {
+  width: 50px;
+}
+
+.cd1ColTotal {
+  width: 50px;
+}
+
+/* Étiquette verticale « Première / Deuxième mise en relation » — texte pivoté. */
+.cd1MiseLabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: 700;
+  padding: 8px 4px;
+  line-height: 1.1;
+}
+
+/* Ligne body objet : pas de padding, la table imbriquée dessine les bordures internes. */
+.cd1ObjetBodyCell {
+  padding: 0;
+}
+
+.cd1NestedTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.cd1ObjetSubCell {
+  width: 33.3333%;
+  padding: 6px 8px;
+  text-align: center;
+  vertical-align: middle;
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 1px solid var(--eval-grid-ink, #000);
+  border-right: 0;
+}
+
+.cd1ObjetSubCellFirst {
+  border-left: 0;
+}
+
+.cd1ObjetSubPts {
+  margin-top: 6px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.cd1TotalRow td,
+.cd1TotalRow th {
+  font-weight: 700;
+}
