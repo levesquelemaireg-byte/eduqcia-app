@@ -221,7 +221,7 @@
 
 - **Bloc 4 :** `Bloc4DocumentsHistoriques.tsx` + `BanqueDocumentsStub.tsx`
 - **Picker :** recherche + filtres (niveau, discipline, OI, aspects), scroll infini, pagination
-- **Slots :** doc_A à doc_D selon `nb_documents` du comportement
+- **Slots :** doc_1 à doc_N selon `nb_documents` du comportement (parcours actuels : jusqu'à 4 ; affichage UI en lettres A..D via `slotLetter`)
 - **Effort restant :** 0
 
 #### C8 — Créer des documents dans le wizard ✅ Fait

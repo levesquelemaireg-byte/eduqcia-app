@@ -116,20 +116,22 @@ Une fois le comportement attendu sélectionné et le Bloc 1 validé, `nb_documen
 La consigne est rédigée par l'enseignant. Elle doit :
 
 - Commencer par un verbe d'action clair (Indiquez, Présentez, Expliquez, Montrez)
-- Référencer les documents via les placeholders `{{doc_A}}`, `{{doc_B}}`, `{{doc_C}}`
+- Référencer les documents via les placeholders `{{doc_1}}`, `{{doc_2}}`, `{{doc_3}}`, … (format numérique depuis Phase 1, 22 avril 2026)
 - Être cohérente avec l'OI et le comportement attendu choisis
 
 ### 4.2 Système de placeholders
 
-Les documents sont référencés dans la consigne par des identifiants alphabétiques (`doc_A`, `doc_B`, `doc_C`). Ces identifiants sont internes — ils sont remplacés par des numéros réels à l'export PDF.
+Les documents sont référencés dans la consigne par des identifiants **numériques** (`doc_1`, `doc_2`, `doc_3`, …), indexés à partir de 1 selon l'ordre des slots dans le Bloc 4. Ces identifiants sont internes — ils sont remplacés par des numéros **globaux** dans une épreuve à l'export PDF (voir §10.3). L'**affichage éditeur** du wizard (nœud TipTap `docRef`) conserve la **lettre** (A, B, C, …) via l'attribut `data-doc-ref` pour la lisibilité ; seul le HTML sérialisé utilise le format numérique.
 
 ```
-Consigne saisie :    "Consultez {{doc_A}} et {{doc_B}}. Indiquez ce qui est différent..."
+Consigne stockée :   "Consultez {{doc_1}} et {{doc_2}}. Indiquez ce qui est différent..."
 Affichage preview :  "Consultez le Document A et le Document B. Indiquez ce qui est différent..."
 Export PDF :         "Consultez le Document 3 et le Document 4. Indiquez ce qui est différent..."
 ```
 
 Les badges `[Doc A]`, `[Doc B]` sont affichés au **Bloc 3** (éditeur de consigne) comme raccourcis cliquables pour insérer les placeholders dans la consigne.
+
+**Rétrocompatibilité :** le HTML legacy stocké avec `{{doc_A}}`…`{{doc_D}}` a été migré en base (22 avril 2026, migration `20260422200000_slots_documents_alpha_to_numeric.sql`) ; les résolveurs côté application acceptent quand même les deux formats en lecture pour tolérer d'éventuels brouillons antérieurs.
 
 ### 4.3 Guidage (optionnel)
 
@@ -139,11 +141,11 @@ Le guidage est un étayage méthodologique bref (scaffolding). Il doit être ret
 
 ### 4.4 Aperçu texte (liste « Mes tâches », carte `TacheCard`)
 
-L’amorce documentaire (« Consultez le document A. », et les variantes à deux ou trois documents) fait partie intégrante du HTML TipTap de la consigne — elle est insérée par le wizard dans l’éditeur et stockée en base avec le reste de la consigne. Les selectors fiche (`selectConsigne`, `selectLectureConsigne`) n’injectent aucun texte : ils prennent le HTML brut, résolvent les placeholders `{{doc_A}}` → numéros, sanitisent, et retournent. L’amorce s’affiche donc naturellement sur la **fiche lecture** et dans le **sommaire**.
+L’amorce documentaire (« Consultez le document A. », et les variantes à deux, trois, ou davantage de documents selon `nb_documents` — formulation générée dynamiquement par `buildAmorceDocumentaire`) fait partie intégrante du HTML TipTap de la consigne — elle est insérée par le wizard dans l’éditeur et stockée en base avec le reste de la consigne. Les selectors fiche (`selectConsigne`, `selectLectureConsigne`) n’injectent aucun texte : ils prennent le HTML brut, résolvent les placeholders `{{doc_N}}` (et `{{doc_A}}` legacy) → numéros, sanitisent, et retournent. L’amorce s’affiche donc naturellement sur la **fiche lecture** et dans le **sommaire**.
 
 Pour les **miniatures** — ligne de la liste **Mes tâches** (`/questions`), aperçu du brouillon wizard côté serveur dans cette liste, et extrait sur la carte **`TacheCard`** — l’amorce documentaire est **retirée** du texte d’aperçu lorsqu’elle correspond **exactement** au modèle (début de chaîne, après résolution des références document en lettres et suppression du HTML). Objectif : mettre en avant la consigne rédigée par l’enseignant. Si l’enseignant a modifié l’amorce, elle n’est pas retirée.
 
-Implémentation : `plainConsigneForMiniature` et `stripAutoIntroPhraseForMiniature` dans `lib/tache/consigne-helpers.ts`. Les placeholders `{{doc_A}}`…`{{doc_D}}` (ex. consigne ordre chronologique publiée) sont résolus en **numéros 1…N** pour l’affichage tâche seule via `resolveDocPlaceholdersForSingleTask` / `resolveConsigneHtmlForDisplay` (fiche, sommaire, aperçu impression) ; l’**impression épreuve** conserve la réécriture globale existante (`evaluation-print-doc-map`). Règle icônes OI fiche / vignette : [DECISIONS.md](./DECISIONS.md#fiche-lecture-et-vignette-liste-taecard).
+Implémentation : `plainConsigneForMiniature` et `stripAutoIntroPhraseForMiniature` dans `lib/tache/consigne-helpers.ts`. Les placeholders `{{doc_1}}`…`{{doc_N}}` (et `{{doc_A}}`…`{{doc_D}}` legacy — rétrocompat) sont résolus en **numéros 1…N** pour l’affichage tâche seule via `resolveDocPlaceholdersForSingleTask` / `resolveConsigneHtmlForDisplay` (fiche, sommaire, aperçu impression) ; l’**impression épreuve** conserve la réécriture globale existante (`evaluation-print-doc-map`). Règle icônes OI fiche / vignette : [DECISIONS.md](./DECISIONS.md#fiche-lecture-et-vignette-liste-taecard).
 
 ---
 
@@ -193,7 +195,7 @@ Quand l'auteur d'un document source publie une mise à jour majeure, les enseign
 ```
 Structure d'un document instance :
 {
-    id:                 'doc_A',           // Identifiant local dans la TAÉ
+    id:                 'doc_1',           // Identifiant local dans la TAÉ (format numérique depuis Phase 1)
     titre:              '',
     type:               'textuel' | 'iconographique',
     contenu:            '',
@@ -455,7 +457,7 @@ Une **épreuve** est un regroupement de TAÉ créé par un enseignant pour ses �
 - **Publication :** au moins **une** TAÉ dans l'ordre défini ; pas de doublon de `tae_id` dans la même épreuve.
 - **Après publication :** la composition reste **modifiable** (réordonnancement, ajouts, retraits) via le même écran d'édition ; le statut publié est conservé selon la logique RPC (mise à jour `evaluations` / `evaluation_tae`).
 - **Éligibilité des TAÉ :** publiées (banque ou propres) ou brouillon **dont l'enseignant est auteur ou co-concepteur** — aligné sur les contrôles SQL de `save_evaluation_composition`.
-- **Numérotation affichée dans l'UI** (préfixe question, indice documents par TAÉ) : cohérente avec la logique globale décrite au **§10.3** (documents `doc_A` / `doc_B` / … renumérotés en suite continue selon l'ordre des TAÉ) ; détail d'implémentation : [WORKFLOWS.md](./WORKFLOWS.md).
+- **Numérotation affichée dans l'UI** (préfixe question, indice documents par TAÉ) : cohérente avec la logique globale décrite au **§10.3** (documents `doc_1` / `doc_2` / … renumérotés en suite continue selon l'ordre des TAÉ) ; détail d'implémentation : [WORKFLOWS.md](./WORKFLOWS.md).
 - **Aperçu / impression navigateur :** depuis l'éditeur de composition (**Aperçu**), enregistrement brouillon puis ouverture de `/evaluations/[id]/print` dans un nouvel onglet — feuille unique (dossier documentaire + questionnaire) pour contrôle ou impression locale par l'enseignant. Ce parcours ne remplace pas l'**export PDF** du **§10.3** (deux fichiers générés côté serveur, matériel élève).
 
 ### 10.3 Export PDF
@@ -472,21 +474,22 @@ Deux fichiers générés séparément :
 **Questionnaire**
 
 - Toutes les consignes avec références aux numéros globaux du dossier documentaire
-- Les placeholders `{{doc_A}}` sont remplacés par les numéros globaux correspondants
+- Les placeholders `{{doc_N}}` (et `{{doc_A}}` legacy, rétrocompat) sont remplacés par les numéros globaux correspondants
 - Le guidage peut être inclus ou exclu selon le contexte (formatif vs sommatif)
 - Les grilles de correction sont incluses en annexe (usage enseignant)
 
-**Algorithme de renumérotation :**
+**Algorithme de renumérotation** (`lib/epreuve/transformation/renumerotation.ts`) :
 
 ```
 Pour chaque TAÉ dans l'épreuve (dans l'ordre) :
-    Pour chaque document de la TAÉ (doc_A, doc_B, ...) :
+    Pour chaque document de la TAÉ (doc_1, doc_2, ...) :
         Assigner le prochain numéro global disponible
-        Stocker le mapping : { tae_id, doc_id: 'doc_A', global_num: 3 }
+        Stocker le mapping : { tae_id, doc_id: 'doc_1', global_num: 3 }
 
 À l'impression des consignes :
     Pour chaque consigne :
-        Remplacer {{doc_X}} par le numéro global correspondant dans le mapping
+        Remplacer {{doc_N}} par le numéro global correspondant dans le mapping
+        (et tolérer {{doc_A}} legacy pour le HTML non encore migré)
 ```
 
 ### 10.4 Copie d'épreuve

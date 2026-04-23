@@ -124,7 +124,7 @@ Pas de champ `position`. Visibilité décidée par le mode d'impression dans la 
 
 **Builders NR à modifier :** les trois builders qui injectent actuellement des ancres (`ordre-chronologique-payload.ts`, `ligne-du-temps-payload.ts`, `avant-apres-payload.ts`) doivent émettre du JSON structuré (consigne nettoyée + guidage séparé). Les parsers correspondants (`parse*ConsigneForStudentPrint`) sont supprimés.
 
-**`rewriteTacheHtmlDocRefsForEvaluationPrint`** (`lib/evaluations/evaluation-print-doc-map.ts`) est refactorisé pour consommer `guidage.content` (string) et `consigne` (string) séparément. La logique de résolution `{{doc_A}}` est conservée et réutilisée dans `epreuveVersPaginee`.
+**`rewriteTacheHtmlDocRefsForEvaluationPrint`** (`lib/evaluations/evaluation-print-doc-map.ts`) est refactorisé pour consommer `guidage.content` (string) et `consigne` (string) séparément. La logique de résolution `{{doc_N}}` (et `{{doc_A}}` legacy, rétrocompat) est conservée et réutilisée dans `epreuveVersPaginee`.
 
 ### D1 — Source de vérité visuelle : route SSR unique
 
@@ -180,7 +180,7 @@ export const MAX_CONTENT_HEIGHT_PX = PAGE_HEIGHT_PX - PAGE_MARGIN_PX - HEADER_HE
 **Décision :** transformation pure `epreuveVersPaginee(epreuve, options, mesureur): EpreuvePaginee` qui centralise :
 
 - Renumérotation globale des documents (réutilise `flattenDocumentsWithGlobalNumbers` de `evaluation-print-doc-map.ts`).
-- Résolution `{{doc_A}}` (réutilise et adapte `rewriteTacheHtmlDocRefsForEvaluationPrint`).
+- Résolution `{{doc_N}}` (et `{{doc_A}}` legacy, rétrocompat ; réutilise et adapte `rewriteTacheHtmlDocRefsForEvaluationPrint`).
 - Composition par mode.
 - Application du flag `estCorrige`.
 - Règles de visibilité (guidage et titres de documents selon le mode).
@@ -611,7 +611,7 @@ L'ordre v1 plaçait le pager avant l'en-tête. C'était faux : le pager a besoin
    - Définir `HEADER_HEIGHT_PX = 80` dans `lib/epreuve/pagination/constantes.ts`.
 
 4. **D3 — Transformation `epreuveVersPaginee`**
-   - Créer la fonction pure avec composition par mode, renumérotation (réutilise `flattenDocumentsWithGlobalNumbers`), résolution `{{doc_A}}` (réutilise et adapte `rewriteTacheHtmlDocRefsForEvaluationPrint`), flag `estCorrige`, règles de visibilité.
+   - Créer la fonction pure avec composition par mode, renumérotation (réutilise `flattenDocumentsWithGlobalNumbers`), résolution `{{doc_N}}` (et `{{doc_A}}` legacy, rétrocompat ; réutilise et adapte `rewriteTacheHtmlDocRefsForEvaluationPrint`), flag `estCorrige`, règles de visibilité.
    - Tests unitaires sur les 3 modes + corrigé.
 
 5. **D2 — Pager isomorphe**

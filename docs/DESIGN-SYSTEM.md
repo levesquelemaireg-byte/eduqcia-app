@@ -281,8 +281,8 @@ Composant **unifié** rendu à la fois dans la banque collaborative (`BankDocume
 
 Modale de confirmation déclenchée par le deep-link `/questions/new?doc=<id>` quand le wizard contient déjà une progression significative. `SimpleModal` avec trois `ActionRow` (label + hint + chevron, disabled si non applicable) et un bouton Annuler dans le footer.
 
-- **Actions :** « Remplacer slot A » (écrase `doc_A` sans toucher le reste du brouillon), « Injecter dans le premier slot libre » (désactivée si aucun slot libre), « Repartir de zéro et injecter ».
-- **Injection silencieuse :** si `hasMeaningfulWizardProgress(state)` retourne `false`, l'`InjectDocumentController` dispatch directement `INJECT_DOCUMENT_SLOT_REPLACE` sur `doc_A` + toast succès + nettoyage URL — sans ouvrir la modale.
+- **Actions :** « Remplacer slot A » (écrase **`doc_1`** — premier slot, affiché lettre A — sans toucher le reste du brouillon), « Injecter dans le premier slot libre » (désactivée si aucun slot libre), « Repartir de zéro et injecter ».
+- **Injection silencieuse :** si `hasMeaningfulWizardProgress(state)` retourne `false`, l'`InjectDocumentController` dispatch directement `INJECT_DOCUMENT_SLOT_REPLACE` sur **`doc_1`** + toast succès + nettoyage URL — sans ouvrir la modale.
 - **Document non trouvé :** toast d'erreur + nettoyage URL.
 - **Copy :** constantes `INJECT_DOC_MODAL_*` et `TOAST_INJECT_DOC_*` dans `lib/ui/copy/document.ts`.
 

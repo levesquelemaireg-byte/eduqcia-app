@@ -211,7 +211,7 @@ export function epreuveVersImprimable(
   // Contexte épreuve : renumérotation globale des documents
   const blocsFusionnes = renumeroterDocuments(blocsParTache);
 
-  // Contexte épreuve : résolution {{doc_A}} cross-tâches
+  // Contexte épreuve : résolution {{doc_N}} (et {{doc_A}} legacy) cross-tâches
   const blocsResolus = resoudreReferences(blocsFusionnes, epreuve);
 
   // Couche 2 : paginer le tout
@@ -237,7 +237,7 @@ export function epreuveVersImprimable(
 **Pourquoi `epreuveVersImprimable` n'appelle PAS `tacheVersImprimable`** :
 
 - L'épreuve renumérate les documents globalement (Document 1 de tâche 2 = Document 4 global)
-- L'épreuve résout les références `{{doc_A}}` dans un contexte cross-tâches
+- L'épreuve résout les références `{{doc_N}}` (et `{{doc_A}}` legacy, rétrocompat) dans un contexte cross-tâches
 - L'épreuve pagine TOUS les blocs ensemble (continuité de pagination)
 - Appeler `tacheVersImprimable` forcerait une pagination par tâche puis une fusion — plus complexe, moins contrôlable
 
