@@ -32,7 +32,7 @@ export const NR_ORDRE_WIZARD_DOC_TOKEN_PREFIX = "Doc";
 /** Fragments de la phrase publiée (`{{doc_*}}` réécrits à l'impression épreuve). */
 export const NR_ORDRE_PUBLISHED_INTRO_LES_DOCUMENTS = "Les documents ";
 export const NR_ORDRE_PUBLISHED_INTRO_DOC_PLACEHOLDERS =
-  "{{doc_A}}, {{doc_B}}, {{doc_C}} et {{doc_D}}";
+  "{{doc_1}}, {{doc_2}}, {{doc_3}} et {{doc_4}}";
 export const NR_ORDRE_PUBLISHED_INTRO_PORTENT_SUR = " portent sur ";
 export const NR_ORDRE_PUBLISHED_INTRO_SUFFIX =
   ". Classez-les en ordre chronologique. Quelle option (A, B, C ou D) présente la bonne séquence ?";
@@ -331,7 +331,7 @@ export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES = "Après";
 /** Libellé masqué visuellement : colonne centrale du tableau (repère affiché dans les lignes). */
 export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR = "Repère de comparaison";
 export const NR_AVANT_APRES_PUBLISHED_INTRO_PREFIX =
-  "Les documents {{doc_A}}, {{doc_B}}, {{doc_C}} et {{doc_D}} font référence à ";
+  "Les documents {{doc_1}}, {{doc_2}}, {{doc_3}} et {{doc_4}} font référence à ";
 export const NR_AVANT_APRES_PUBLISHED_INTRO_MIDDLE =
   "{{theme}}. Les faits qui y sont présentés se déroulent avant ou après {{repere}} ({{annee}}). ";
 export const NR_AVANT_APRES_PUBLISHED_INTRO_SUFFIX =

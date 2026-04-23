@@ -72,7 +72,7 @@ export default function Bloc3TemplateStructure() {
     const pluriel = perspectiveTypePluriel(typePerspectives);
     const ctx = contexte.trim() ? ` ${contexte.trim()}` : "";
     return (
-      `Le document {{doc_A}} présente deux points de vue ${partitif}${ctx}. ` +
+      `Le document {{doc_1}} présente deux points de vue ${partitif}${ctx}. ` +
       `Sur quel point précis ces ${pluriel} sont-ils ${accordLabel}\u00a0?`
     );
   }, [typePerspectives, contexte, accordLabel]);

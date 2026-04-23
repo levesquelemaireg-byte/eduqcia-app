@@ -23,8 +23,9 @@ describe("consigne-helpers — shouldShowGuidageOnStudentSheet", () => {
 /* ---------- docRefSpan ---------------------------------------------------- */
 
 describe("docRefSpan", () => {
-  it("produit un span data-doc-ref avec placeholder", () => {
-    expect(docRefSpan("A")).toBe('<span data-doc-ref="A">{{doc_A}}</span>');
+  it("produit un span data-doc-ref avec placeholder numérique", () => {
+    expect(docRefSpan("A")).toBe('<span data-doc-ref="A">{{doc_1}}</span>');
+    expect(docRefSpan("C")).toBe('<span data-doc-ref="C">{{doc_3}}</span>');
   });
 });
 

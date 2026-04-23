@@ -2,20 +2,27 @@
  * docs/WORKFLOWS.md + CONSIGNE-EDITOR.md — amorce documentaire, prévisualisation sommaire, validation texte HTML.
  */
 
+import { lettreAffichee } from "@/lib/tache/document-helpers";
+
 /** docs/WORKFLOWS.md §4 — amorce documentaire (italique sous le bandeau). */
 export function buildAmorceDocumentaire(nbDocs: number): string {
-  if (nbDocs === 1) return "Consultez le document A.";
-  if (nbDocs === 2) return "Consultez les documents A et B.";
-  if (nbDocs === 3) return "Consultez les documents A, B et C.";
-  return "Consultez les documents A, B, C et D.";
+  if (nbDocs <= 0) return "";
+  const lettres = Array.from({ length: nbDocs }, (_, i) => lettreAffichee(i));
+  if (nbDocs === 1) return `Consultez le document ${lettres[0]}.`;
+  const derniere = lettres.pop()!;
+  return `Consultez les documents ${lettres.join(", ")} et ${derniere}.`;
 }
 
 /**
  * Span HTML `data-doc-ref` pour une lettre de slot — parsé par TipTap comme nœud `docRef`.
  * Source unique : tout HTML qui référence un document doit passer par ce helper.
+ * Sérialise le placeholder au format numérique `{{doc_N}}` ; le `data-doc-ref`
+ * conserve la lettre pour l'affichage dans l'éditeur.
  */
 export function docRefSpan(letter: string): string {
-  return `<span data-doc-ref="${letter}">{{doc_${letter}}}</span>`;
+  const numero = (letter.toUpperCase().charCodeAt(0) - 64) | 0;
+  const safe = numero >= 1 ? numero : 1;
+  return `<span data-doc-ref="${letter}">{{doc_${safe}}}</span>`;
 }
 
 /**
@@ -23,12 +30,11 @@ export function docRefSpan(letter: string): string {
  * (gabarits templates, bascule gabarit → libre). Sans ponctuation finale.
  */
 export function buildAmorceDocumentaireHtml(nbDocs: number): string {
-  const n = Math.min(Math.max(nbDocs, 1), 4);
-  if (n === 1) return `Consultez le document ${docRefSpan("A")}`;
-  if (n === 2) return `Consultez les documents ${docRefSpan("A")} et ${docRefSpan("B")}`;
-  if (n === 3)
-    return `Consultez les documents ${docRefSpan("A")}, ${docRefSpan("B")} et ${docRefSpan("C")}`;
-  return `Consultez les documents ${docRefSpan("A")}, ${docRefSpan("B")}, ${docRefSpan("C")} et ${docRefSpan("D")}`;
+  if (nbDocs <= 0) return "";
+  const spans = Array.from({ length: nbDocs }, (_, i) => docRefSpan(lettreAffichee(i)));
+  if (nbDocs === 1) return `Consultez le document ${spans[0]}`;
+  const dernier = spans.pop()!;
+  return `Consultez les documents ${spans.join(", ")} et ${dernier}`;
 }
 
 function escapeRegExp(s: string): string {

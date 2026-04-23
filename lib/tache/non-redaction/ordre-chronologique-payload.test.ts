@@ -66,10 +66,10 @@ describe("ordre-chronologique-payload", () => {
     expect(p!.consigneTheme).toBe("");
   });
 
-  it("buildOrdreChronologiqueIntroHtml contient les jetons {{doc_*}} et le thème échappé", () => {
+  it("buildOrdreChronologiqueIntroHtml contient les jetons {{doc_N}} et le thème échappé", () => {
     const h = buildOrdreChronologiqueIntroHtml("la <script>");
-    expect(h).toContain("{{doc_A}}");
-    expect(h).toContain("{{doc_D}}");
+    expect(h).toContain("{{doc_1}}");
+    expect(h).toContain("{{doc_4}}");
     expect(h).toContain("la &lt;script&gt;");
     expect(h).not.toContain("<script>");
   });
@@ -87,7 +87,7 @@ describe("ordre-chronologique-payload", () => {
       manualTieBreakSequence: null,
     });
     expect(html).toContain("data-ordre-chrono-student");
-    expect(html).toContain("{{doc_A}}");
+    expect(html).toContain("{{doc_1}}");
     expect(html).not.toContain("<!--eduqcia:");
     const iIntro = html.indexOf("ordre-chrono-student-intro");
     const iGrid = html.indexOf("ordre-chrono-student-grid");

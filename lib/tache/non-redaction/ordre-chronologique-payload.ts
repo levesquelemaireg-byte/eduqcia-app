@@ -94,7 +94,7 @@ function coerceOptionsJustification(v: unknown): string {
 
 /**
  * Libellé du jeton « documents » dans le wizard (tâche seule : plage 1–N).
- * Ne pas utiliser dans le HTML publié — utiliser `{{doc_A}}`…`{{doc_D}}`.
+ * Ne pas utiliser dans le HTML publié — utiliser `{{doc_1}}`…`{{doc_N}}`.
  */
 export function formatOrdreWizardDocTokenLabel(docCount: number): string {
   const prefix = NR_ORDRE_WIZARD_DOC_TOKEN_PREFIX;

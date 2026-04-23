@@ -172,10 +172,10 @@ export function isLigneDuTempsStep5SegmentComplete(p: LigneDuTempsPayload): bool
   return isLigneDuTempsCorrectLetterValid(p);
 }
 
-/** Intro HTML — consigne fixe ; `{{doc_A}}` résolu à l’affichage / impression. */
+/** Intro HTML — consigne fixe ; `{{doc_1}}` résolu à l’affichage / impression. */
 export function buildLigneDuTempsIntroHtml(segmentCount: LigneDuTempsSegmentCount): string {
   const range = segmentCount === 3 ? NR_LIGNE_TEMPS_LETTERS_THREE : NR_LIGNE_TEMPS_LETTERS_FOUR;
-  const inner = `Sur la ligne du temps ci-dessous, quelle lettre (${range}) correspond à la période où se situent les faits présentés dans le document {{doc_A}} ?`;
+  const inner = `Sur la ligne du temps ci-dessous, quelle lettre (${range}) correspond à la période où se situent les faits présentés dans le document {{doc_1}} ?`;
   return `<p class="ligne-temps-student-intro">${inner}</p>`;
 }
 
