@@ -34,6 +34,7 @@ import {
   type RedactionSlice,
 } from "@/lib/tache/redaction-helpers";
 import { nonRedactionFromDbColumn } from "@/lib/tache/non-redaction/non-redaction-edit-hydrate";
+import { sanitizeSchemaCd1FromDb } from "@/lib/tache/schema-cd1/sanitize-from-db";
 import { TACHE_FORM_STEP_COUNT, type TacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { TacheVersionSnapshot } from "@/lib/tache/publish-tache-types";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
@@ -54,6 +55,8 @@ type TacheEditRow = {
   discipline_id: number | null;
   aspects_societe: string[] | null;
   non_redaction_data: unknown | null;
+  type_tache?: string | null;
+  schema_cd1_data?: unknown | null;
 };
 
 function asNiveauCode(code: string): NiveauCode | null {
@@ -156,6 +159,8 @@ export async function fetchTacheFormStateForEdit(
         "discipline_id",
         "aspects_societe",
         "non_redaction_data",
+        "type_tache",
+        "schema_cd1_data",
       ].join(", "),
     )
     .eq("id", tacheId)
@@ -187,7 +192,7 @@ export async function fetchTacheFormStateForEdit(
       supabase.from("tache_collaborateurs").select("user_id").eq("tae_id", tacheId),
       supabase
         .from("tache_documents")
-        .select("slot, document_id, ordre")
+        .select("slot, document_id, ordre, est_leurre, cases_associees")
         .eq("tae_id", tacheId)
         .order("ordre", {
           ascending: true,
@@ -236,8 +241,23 @@ export async function fetchTacheFormStateForEdit(
 
   const modeConception: "" | "seul" | "equipe" = t.conception_mode === "equipe" ? "equipe" : "seul";
 
-  const links = linksRes.data as { slot: string; document_id: string; ordre: number }[] | null;
+  const links = linksRes.data as
+    | {
+        slot: string;
+        document_id: string;
+        ordre: number;
+        est_leurre?: boolean;
+        cases_associees?: string[];
+      }[]
+    | null;
   const docIds = links?.map((l) => l.document_id) ?? [];
+  const pertinenceBySlot = new Map<string, { estLeurre: boolean; cases: string[] }>();
+  for (const l of links ?? []) {
+    pertinenceBySlot.set(l.slot, {
+      estLeurre: Boolean(l.est_leurre),
+      cases: Array.isArray(l.cases_associees) ? l.cases_associees : [],
+    });
+  }
   const docById = new Map<
     string,
     {
@@ -278,7 +298,26 @@ export async function fetchTacheFormStateForEdit(
       const sid = rawSlot as DocumentSlotId;
       const doc = docById.get(l.document_id);
       if (!doc) return null;
-      documents[sid] = slotDataForReuse(doc);
+      const pertinence = pertinenceBySlot.get(rawSlot);
+      const base = slotDataForReuse(doc);
+      documents[sid] = {
+        ...base,
+        estLeurre: pertinence?.estLeurre ?? false,
+        casesAssociees: (pertinence?.cases ?? []).filter(
+          (c): c is import("@/lib/tache/schema-cd1/types").CleCase =>
+            (
+              [
+                "objet",
+                "blocA.pivot",
+                "blocA.precision1",
+                "blocA.precision2",
+                "blocB.pivot",
+                "blocB.precision1",
+                "blocB.precision2",
+              ] as const
+            ).includes(c as import("@/lib/tache/schema-cd1/types").CleCase),
+        ),
+      };
     }
   }
 
@@ -343,6 +382,13 @@ export async function fetchTacheFormStateForEdit(
     if (!documents[slotId]) return null;
   }
 
+  const rawTypeTache = t.type_tache;
+  const typeTache =
+    rawTypeTache === "section_a" || rawTypeTache === "section_b" || rawTypeTache === "section_c"
+      ? rawTypeTache
+      : ("section_a" as const);
+  const schemaCd1 = typeTache === "section_b" ? sanitizeSchemaCd1FromDb(t.schema_cd1_data) : null;
+
   const state: TacheFormState = {
     currentStep: TACHE_FORM_STEP_COUNT - 1,
     highestReachedStep: TACHE_FORM_STEP_COUNT - 1,
@@ -353,7 +399,7 @@ export async function fetchTacheFormStateForEdit(
     bloc2: {
       niveau,
       discipline,
-      typeTache: "section_a",
+      typeTache,
       oiId: t.oi_id,
       comportementId: t.comportement_id,
       nbLignes: t.nb_lignes ?? BLUEPRINT_INITIAL_NB_LIGNES,
@@ -379,7 +425,7 @@ export async function fetchTacheFormStateForEdit(
         getWizardBlocConfig(t.comportement_id ?? "")?.bloc3.type === "pur"
           ? "personnalisee"
           : "gabarit",
-      schemaCd1: null,
+      schemaCd1,
     },
     bloc4: {
       documents,

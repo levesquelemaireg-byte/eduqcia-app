@@ -7,6 +7,11 @@ import { buildCollaborateursUserIdsForPayload } from "@/lib/tache/collaborateur-
 import { getSlotData, isPublicHttpUrl } from "@/lib/tache/document-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotData } from "@/lib/tache/document-helpers";
+import type { Json } from "@/lib/types/database";
+import {
+  POINTS_TOTAL_SCHEMA_CD1,
+  construireCorrigeTabulaire,
+} from "@/lib/tache/schema-cd1/corrige-tabulaire";
 import {
   migrateMomentsToSlots,
   migratePerspectivesToSlots,
@@ -52,10 +57,47 @@ import {
 
 function aspectsToPgArray(state: TacheFormState): string[] {
   const out: string[] = [];
-  for (const [k, v] of Object.entries(state.bloc7.aspects) as [AspectSocieteKey, boolean][]) {
+  const aspects = { ...state.bloc7.aspects };
+  // Aspects imposés par la consigne de caractérisation Section B — toujours cochés.
+  if (state.bloc2.typeTache === "section_b") {
+    if (state.bloc2.aspectA) aspects[state.bloc2.aspectA] = true;
+    if (state.bloc2.aspectB) aspects[state.bloc2.aspectB] = true;
+  }
+  for (const [k, v] of Object.entries(aspects) as [AspectSocieteKey, boolean][]) {
     if (v) out.push(ASPECT_LABEL[k]);
   }
   return out;
+}
+
+function buildSchemaCd1Texts(state: TacheFormState): {
+  consigne: string;
+  guidage: string;
+  corrige: string;
+} | null {
+  const schema = state.bloc3.schemaCd1;
+  if (!schema || state.bloc2.typeTache !== "section_b") return null;
+
+  const aspectA = state.bloc2.aspectA ? ASPECT_LABEL[state.bloc2.aspectA].toLowerCase() : "";
+  const aspectB = state.bloc2.aspectB ? ASPECT_LABEL[state.bloc2.aspectB].toLowerCase() : "";
+  const chapeau = `<p><strong>Décrivez ${schema.chapeauObjet.trim()} ${schema.chapeauPeriode.trim()} sous ses aspects ${aspectA} et ${aspectB}.</strong></p>`;
+
+  const corrige = construireCorrigeTabulaire({
+    schema,
+    aspectA: state.bloc2.aspectA,
+    aspectB: state.bloc2.aspectB,
+    documentSlots: state.bloc2.documentSlots,
+    documents: state.bloc4.documents,
+  });
+
+  const rows = corrige.lignes
+    .map(
+      (l) =>
+        `<tr><th scope="row">${l.libelleComplet}</th><td>${l.guidageHtml || "—"}</td><td>${l.reponse || "—"}</td><td>/${l.points}</td><td>${l.documentsLettres.join(", ") || "—"}</td></tr>`,
+    )
+    .join("");
+  const corrigeHtml = `<table><thead><tr><th>Case</th><th>Énoncé de guidage</th><th>Réponse attendue</th><th>Points</th><th>Documents</th></tr></thead><tbody>${rows}<tr><td colspan="3"><strong>Total</strong></td><td><strong>/${POINTS_TOTAL_SCHEMA_CD1}</strong></td><td></td></tr></tbody></table>`;
+
+  return { consigne: chapeau, guidage: schema.preambule, corrige: corrigeHtml };
 }
 
 export function buildPublishPayload(
@@ -89,27 +131,34 @@ export function buildPublishPayload(
       state.bloc4.documents,
     );
 
-  const consigneTache = avantReady
-    ? buildAvantApresConsigneHtml(avantNorm)
-    : ordrePayload
-      ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
-      : lignePayload
-        ? buildLigneDuTempsConsigneHtml(lignePayload)
-        : state.bloc3.consigne;
-  const guidageTache = avantReady
-    ? buildAvantApresGuidageHtml()
-    : ordrePayload
-      ? buildOrdreChronologiqueGuidageHtml()
-      : lignePayload
-        ? buildLigneDuTempsGuidageHtml()
-        : state.bloc3.guidage;
-  const corrigeTache = avantReady
-    ? buildAvantApresCorrigeHtml(avantNorm)
-    : ordrePayload
-      ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
-      : lignePayload
-        ? buildLigneDuTempsCorrigeHtml(lignePayload)
-        : state.bloc5.corrige;
+  const schemaTexts = buildSchemaCd1Texts(state);
+  const consigneTache = schemaTexts
+    ? schemaTexts.consigne
+    : avantReady
+      ? buildAvantApresConsigneHtml(avantNorm)
+      : ordrePayload
+        ? buildOrdreChronologiqueConsigneHtml(ordrePayload)
+        : lignePayload
+          ? buildLigneDuTempsConsigneHtml(lignePayload)
+          : state.bloc3.consigne;
+  const guidageTache = schemaTexts
+    ? schemaTexts.guidage
+    : avantReady
+      ? buildAvantApresGuidageHtml()
+      : ordrePayload
+        ? buildOrdreChronologiqueGuidageHtml()
+        : lignePayload
+          ? buildLigneDuTempsGuidageHtml()
+          : state.bloc3.guidage;
+  const corrigeTache = schemaTexts
+    ? schemaTexts.corrige
+    : avantReady
+      ? buildAvantApresCorrigeHtml(avantNorm)
+      : ordrePayload
+        ? buildOrdreChronologiqueCorrigeHtml(ordrePayload)
+        : lignePayload
+          ? buildLigneDuTempsCorrigeHtml(lignePayload)
+          : state.bloc5.corrige;
 
   // Mode groupé (perspectives / moments) : convertir en slots documents à la volée.
   // En mode séparé les données vivent déjà dans state.bloc4.documents.
@@ -133,6 +182,14 @@ export function buildPublishPayload(
     const slot = getSlotData(resolvedDocuments, slotId);
     const ordre = slots.length;
 
+    const schemaCd1Fields =
+      state.bloc2.typeTache === "section_b"
+        ? {
+            est_leurre: slot.estLeurre,
+            cases_associees: [...slot.casesAssociees],
+          }
+        : {};
+
     if (slot.mode === "reuse") {
       if (!slot.source_document_id) return { error: "validation" };
       slots.push({
@@ -140,6 +197,7 @@ export function buildPublishPayload(
         ordre,
         mode: "reuse",
         document_id: slot.source_document_id,
+        ...schemaCd1Fields,
       });
       continue;
     }
@@ -197,6 +255,7 @@ export function buildPublishPayload(
       ordre,
       mode: "create",
       newIndex: createIdx,
+      ...schemaCd1Fields,
     });
     createIdx += 1;
   }
@@ -220,6 +279,10 @@ export function buildPublishPayload(
       niveau_id: ctx.niveauId,
       discipline_id: ctx.disciplineId,
       aspects_societe: aspectsPg,
+      type_tache: state.bloc2.typeTache,
+      ...(state.bloc2.typeTache === "section_b"
+        ? { schema_cd1_data: (state.bloc3.schemaCd1 ?? null) as Json | null }
+        : {}),
       ...(isActiveAvantApresVariant(state)
         ? {
             non_redaction_data:

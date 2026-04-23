@@ -65,6 +65,16 @@ export type PublishTacheRpcPayload = {
     aspects_societe: string[];
     /** Présent pour les parcours NR structurés (ex. 1.3) ; omis pour les autres. */
     non_redaction_data?: Json | null;
+    /**
+     * Parcours pédagogique — section_a (OI standard), section_b (schéma CD1) ou section_c.
+     * Défaut côté RPC : section_a.
+     */
+    type_tache?: "section_a" | "section_b" | "section_c";
+    /**
+     * Données du schéma de caractérisation — Section B uniquement.
+     * Persisté dans `tache.schema_cd1_data` (JSONB).
+     */
+    schema_cd1_data?: Json | null;
   };
   documents_new: Array<{
     titre: string;
@@ -84,6 +94,10 @@ export type PublishTacheRpcPayload = {
     mode: "reuse" | "create";
     document_id?: string;
     newIndex?: number;
+    /** Section B — document hors cadre des aspects ciblés. */
+    est_leurre?: boolean;
+    /** Section B — clés canoniques des cases du schéma alimentées par le document. */
+    cases_associees?: string[];
   }>;
   /** Profils actifs (`profiles.id`), exclus `auteur_id` — requis côté RPC si `tache.conception_mode` = équipe. */
   collaborateurs_user_ids: string[];

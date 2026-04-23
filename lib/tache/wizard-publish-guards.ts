@@ -16,6 +16,7 @@ import {
   isMomentsStepComplete,
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
+import { estSchemaCd1Complet } from "@/lib/tache/schema-cd1/garde-publication";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import {
   isAvantApresDocumentsPublishable,
@@ -141,10 +142,16 @@ function documentsCompleteButUrlsBlocked(state: TacheFormState): boolean {
 /** Toutes les étapes requises avant `is_published = true` côté serveur. */
 export function isWizardPublishReady(state: TacheFormState): boolean {
   if (!conceptionOkForPublish(state.bloc1)) return false;
-  // Bloqué pour Section B (Phase 3) et Section C (future)
-  if (state.bloc2.typeTache !== "section_a") return false;
+  // Section C : non implémenté.
+  if (state.bloc2.typeTache === "section_c") return false;
   const b = state.bloc2;
   if (!b.blueprintLocked || !isBlueprintFieldsComplete(b)) return false;
+  // Section B (schéma de caractérisation) : checklist dédiée + exigences propres.
+  if (state.bloc2.typeTache === "section_b") {
+    if (!estSchemaCd1Complet(state)) return false;
+    if (!isCdStepComplete(state)) return false;
+    return true;
+  }
   if (!redactionStepOkForPublish(state)) return false;
   if (!documentsStepOkForPublish(state)) return false;
   if (isActiveLigneDuTempsVariant(state)) {

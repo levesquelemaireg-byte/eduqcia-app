@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from "react";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { LabelWithInfo } from "@/components/tache/wizard/bloc2/LabelWithInfo";
+import { ChecklistPublicationCd1 } from "@/components/tache/wizard/bloc5/checklist-publication-cd1";
 import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import {
   BLOC5_NOTES_CORRECTEUR_HELP,
@@ -176,6 +177,8 @@ export default function CorrigeSchemaCd1({ state, dispatch }: Bloc5Props) {
           minHeight={80}
         />
       </section>
+
+      <ChecklistPublicationCd1 />
 
       <SimpleModal
         open={helpOpen}

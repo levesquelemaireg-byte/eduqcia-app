@@ -33,6 +33,8 @@ import type { DocumentElementJson } from "@/lib/types/document-element-json";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import { nonRedactionFromDbColumn } from "@/lib/tache/non-redaction/non-redaction-edit-hydrate";
 import { initialAspects, type AspectSocieteKey } from "@/lib/tache/redaction-helpers";
+import { sanitizeSchemaCd1FromDb } from "@/lib/tache/schema-cd1/sanitize-from-db";
+import type { SchemaCd1Data } from "@/lib/tache/schema-cd1/types";
 
 const ASPECT_DB_TO_KEY: Record<string, AspectSocieteKey> = {
   Économique: "economique",
@@ -91,7 +93,7 @@ export async function loadTacheFormStateForEdit(
   const { data: t, error } = await supabase
     .from("tache")
     .select(
-      "id, auteur_id, consigne, guidage, corrige, nb_lignes, oi_id, comportement_id, niveau_id, discipline_id, cd_id, connaissances_ids, aspects_societe, version, is_published, non_redaction_data, conception_mode",
+      "id, auteur_id, consigne, guidage, corrige, nb_lignes, oi_id, comportement_id, niveau_id, discipline_id, cd_id, connaissances_ids, aspects_societe, version, is_published, non_redaction_data, conception_mode, type_tache, schema_cd1_data",
     )
     .eq("id", tacheId)
     .maybeSingle();
@@ -113,7 +115,10 @@ export async function loadTacheFormStateForEdit(
           .eq("id", String(row.comportement_id))
           .maybeSingle()
       : Promise.resolve({ data: null }),
-    supabase.from("tache_documents").select("slot, document_id, ordre").eq("tae_id", tacheId),
+    supabase
+      .from("tache_documents")
+      .select("slot, document_id, ordre, est_leurre, cases_associees")
+      .eq("tae_id", tacheId),
     supabase.from("tache_collaborateurs").select("user_id").eq("tae_id", tacheId),
   ]);
   const nRow = nRes.data;
@@ -137,9 +142,19 @@ export async function loadTacheFormStateForEdit(
         );
 
   const docBySlot = new Map<string, string>();
+  const pertinenceBySlot = new Map<string, { estLeurre: boolean; cases: string[] }>();
   for (const l of linksRes.data ?? []) {
-    const link = l as { slot: string; document_id: string };
+    const link = l as {
+      slot: string;
+      document_id: string;
+      est_leurre?: boolean;
+      cases_associees?: string[];
+    };
     docBySlot.set(link.slot, link.document_id);
+    pertinenceBySlot.set(link.slot, {
+      estLeurre: Boolean(link.est_leurre),
+      cases: Array.isArray(link.cases_associees) ? link.cases_associees : [],
+    });
   }
   const docIds = [...new Set(docBySlot.values())];
 
@@ -203,6 +218,7 @@ export async function loadTacheFormStateForEdit(
           : null;
       const typeIcono = parseTypeIconographique(firstEl?.categorie_iconographique);
       const categorieTextuelle = parseCategorieTextuelle(firstEl?.categorie_textuelle);
+      const pertinence = pertinenceBySlot.get(slotId);
 
       const baseSlot = {
         ...emptyDocumentSlot(),
@@ -221,6 +237,21 @@ export async function loadTacheFormStateForEdit(
         annee_normalisee: anneeN,
         type_iconographique: typeIcono,
         categorie_textuelle: categorieTextuelle,
+        estLeurre: pertinence?.estLeurre ?? false,
+        casesAssociees: (pertinence?.cases ?? []).filter(
+          (c): c is import("@/lib/tache/schema-cd1/types").CleCase =>
+            (
+              [
+                "objet",
+                "blocA.pivot",
+                "blocA.precision1",
+                "blocA.precision2",
+                "blocB.pivot",
+                "blocB.precision1",
+                "blocB.precision2",
+              ] as const
+            ).includes(c as import("@/lib/tache/schema-cd1/types").CleCase),
+        ),
       };
 
       if (sourceId) {
@@ -317,6 +348,16 @@ export async function loadTacheFormStateForEdit(
   }
 
   const modeConception = row.conception_mode === "equipe" ? "equipe" : "seul";
+  const rawTypeTache = row.type_tache;
+  const typeTache =
+    rawTypeTache === "section_a" || rawTypeTache === "section_b" || rawTypeTache === "section_c"
+      ? rawTypeTache
+      : ("section_a" as const);
+
+  let schemaCd1: SchemaCd1Data | null = null;
+  if (typeTache === "section_b") {
+    schemaCd1 = sanitizeSchemaCd1FromDb(row.schema_cd1_data);
+  }
 
   return {
     currentStep: TACHE_FORM_STEP_COUNT - 1,
@@ -328,7 +369,7 @@ export async function loadTacheFormStateForEdit(
     bloc2: {
       niveau: niveauCode as NiveauCode,
       discipline,
-      typeTache: "section_a",
+      typeTache,
       oiId: typeof row.oi_id === "string" ? row.oi_id : "",
       comportementId: typeof row.comportement_id === "string" ? row.comportement_id : "",
       nbLignes: typeof row.nb_lignes === "number" ? row.nb_lignes : 5,
@@ -355,7 +396,7 @@ export async function loadTacheFormStateForEdit(
           ?.bloc3.type === "pur"
           ? "personnalisee"
           : "gabarit",
-      schemaCd1: null,
+      schemaCd1,
     },
     bloc4: {
       documents,
