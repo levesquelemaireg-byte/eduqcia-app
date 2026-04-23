@@ -22,6 +22,11 @@ const Bloc5IntrusDynamic: ComponentType<Bloc5Props> = dynamic(
   { ssr: false },
 );
 
+const CorrigeSchemaCd1Dynamic: ComponentType<Bloc5Props> = dynamic(
+  () => import("@/components/tache/wizard/bloc5/corrige-schema-cd1"),
+  { ssr: false },
+);
+
 /**
  * Bloc 5 — corrigé / options.
  * Vérifie d'abord `WizardBlocConfig` (perspectives intrus),
@@ -31,8 +36,11 @@ export function Bloc5() {
   const { state, dispatch } = useTacheForm();
 
   const parcours = resoudreParcours(state.bloc2.typeTache);
-  if (parcours.bloc5Type === "corrige_cd1" || parcours.bloc5Type === "corrige_cd2") {
-    // Sections B et C — composants non implémentés, le parent rend un squelette.
+  if (parcours.bloc5Type === "corrige_cd1") {
+    return <CorrigeSchemaCd1Dynamic dispatch={dispatch} state={state} />;
+  }
+  if (parcours.bloc5Type === "corrige_cd2") {
+    // Section C — composant non implémenté, le parent rend un squelette.
     return null;
   }
 
