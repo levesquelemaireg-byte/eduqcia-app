@@ -192,6 +192,8 @@ export interface DocHeaderData {
   titre: string;
   typeLabel: string;
   structureLabel: string;
+  /** Glyphe Material Symbols Outlined — source `iconForDocumentStructure()`. */
+  structureIcon: string;
   sourceTypeLabel: string;
 }
 

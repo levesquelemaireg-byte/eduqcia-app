@@ -3,6 +3,7 @@ import { MetaPill } from "@/components/tache/fiche/MetaPill";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import type { RendererDocument } from "@/lib/types/document-renderer";
+import { iconForDocumentStructure } from "@/lib/ui/icons/document-structure-icon";
 import {
   FICHE_BODY_SECTION_PB,
   FICHE_BODY_SECTION_PT,
@@ -79,6 +80,7 @@ export function DocumentCardReader({ document: doc, meta }: DocumentCardReaderPr
       ? DOCUMENT_MODULE_SOURCE_PRIMAIRE
       : DOCUMENT_MODULE_SOURCE_SECONDAIRE;
   const structureLabel = documentStructureBadgeLabel(doc.structure, doc.elements.length);
+  const structureIcon = iconForDocumentStructure(doc.structure, doc.elements.length);
 
   return (
     <article
@@ -114,7 +116,7 @@ export function DocumentCardReader({ document: doc, meta }: DocumentCardReaderPr
           </h1>
           <div className="mt-3 flex flex-wrap gap-2">
             <MetaPill icon="category" label={`${DOCUMENT_FICHE_TYPE_DOCUMENT} — ${typeLabel}`} />
-            <MetaPill icon="view_column" label={structureLabel} />
+            <MetaPill icon={structureIcon} label={structureLabel} />
             <MetaPill
               icon="bookmark"
               label={`${DOCUMENT_FICHE_SOURCE_TYPE} — ${sourceTypeLabel}`}

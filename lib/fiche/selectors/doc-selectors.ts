@@ -6,6 +6,7 @@
 import { ready, sanitize } from "@/lib/fiche/helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
+import { iconForDocumentStructure } from "@/lib/ui/icons/document-structure-icon";
 import {
   DOCUMENT_MODULE_TYPE_TEXT,
   DOCUMENT_MODULE_TYPE_IMAGE,
@@ -35,6 +36,10 @@ export function selectDocHeader(
     titre: state.document.titre,
     typeLabel: docType === "textuel" ? DOCUMENT_MODULE_TYPE_TEXT : DOCUMENT_MODULE_TYPE_IMAGE,
     structureLabel: documentStructureBadgeLabel(
+      state.document.structure,
+      state.document.elements.length,
+    ),
+    structureIcon: iconForDocumentStructure(
       state.document.structure,
       state.document.elements.length,
     ),

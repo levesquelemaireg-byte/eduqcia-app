@@ -70,6 +70,7 @@ En **copy interface** et **textes publics** ([FAQ.md](./FAQ.md)), l’entité qu
 - Pas de couleur en dur — tokens Tailwind / CSS du projet.
 - Icônes : Material Symbols Outlined ; pas d’icône devant le **titre d’étape** du wizard — glyphes pour **libellés de champs** (voir [UI-COPY.md](./UI-COPY.md) conventions liées et [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md)).
 - **Cohérence d’icône doc / tâche (règle absolue)** : toute métadonnée partagée entre un document et une tâche utilise **la même icône partout** (rail, header, sommaire, miniature, etc.). Niveau = `school`, Discipline = `menu_book`, Aspects de société = `deployed_code`, Auteur = `person`, Date création = `calendar_today`, Date mise à jour = `history`, Utilisation = `link`, Connaissances = `lightbulb`, Ancrage temporel = `anchor`. Tableau complet : `docs/specs/SPEC-SOMMAIRE-DOCUMENT.md §5`.
+- **Icônes des structures de document (règle absolue)** : Document simple = `crop_square`, 2 perspectives = `view_column_2`, **3 perspectives = `view_column`**, deux temps = `view_column_2`. Source de vérité : `lib/ui/icons/document-structure-icon.ts` — helper `iconForDocumentStructure(structure, elementCount)`. Jamais de glyphe en dur lié à la structure ; le changement à un endroit se répercute sur toutes les surfaces. Détail : [DESIGN-SYSTEM.md](./DESIGN-SYSTEM.md#icônes-des-structures-de-document).
 - TypeScript strict — pas de `any`.
 - Pas d’appel Supabase depuis un Client Component.
 

@@ -86,6 +86,19 @@ Les types de document ont des icônes **fixes** utilisées de manière cohérent
 
 **Toggle Type de source** (Primaire / Secondaire) : icônes `counter_1` et `counter_2`, lues via `getDocumentTypeSource()` depuis le même JSON. Aucun hardcoding ailleurs dans le code.
 
+#### Icônes des structures de document
+
+Les structures de document ont des icônes **fixes** utilisées partout où la structure est rendue (sommaire wizard, fiche lecture, miniature, pastilles). Source de vérité unique : `iconForDocumentStructure()` dans `lib/ui/icons/document-structure-icon.ts`.
+
+| Structure                     | Icône Material Symbols Outlined |
+| ----------------------------- | ------------------------------- |
+| Document **simple**           | `crop_square`                   |
+| Document à **2 perspectives** | `view_column_2`                 |
+| Document à **3 perspectives** | `view_column`                   |
+| Document à **deux temps**     | `view_column_2`                 |
+
+**Toute utilisation** d'une icône liée à la structure d'un document doit passer par le helper `iconForDocumentStructure(structure, elementCount)` — jamais de glyphe en dur. Le mapping est canonique et s'applique à toutes les surfaces (rail, header, sommaire, miniature, impression).
+
 #### Glyphes OI (données `oi.json` / fiche / liste)
 
 - **Composant unique :** `components/ui/MaterialSymbolOiGlyph.tsx` — enveloppe **`material-symbols-outlined`** et pose **`data-oi-glyph="{nom}"`** pour tout glyphe issu du **catalogue OI** (listes Bloc 2, en-tête fiche, `TacheCard`, modales d’aide).

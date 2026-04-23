@@ -27,7 +27,7 @@ export function DocFicheHeader({ data, mode }: Props) {
         </div>
         <ChipBar className="mt-2">
           <MetaChip icon="category" label={data.typeLabel} {...chipProps} />
-          <MetaChip icon="view_column" label={data.structureLabel} {...chipProps} />
+          <MetaChip icon={data.structureIcon} label={data.structureLabel} {...chipProps} />
           <MetaChip icon="bookmark" label={data.sourceTypeLabel} {...chipProps} />
         </ChipBar>
       </div>
@@ -53,7 +53,7 @@ export function DocFicheHeader({ data, mode }: Props) {
         </h1>
         <ChipBar className="mt-3">
           <MetaChip icon="category" label={data.typeLabel} {...chipProps} />
-          <MetaChip icon="view_column" label={data.structureLabel} {...chipProps} />
+          <MetaChip icon={data.structureIcon} label={data.structureLabel} {...chipProps} />
           <MetaChip icon="bookmark" label={data.sourceTypeLabel} {...chipProps} />
         </ChipBar>
       </div>

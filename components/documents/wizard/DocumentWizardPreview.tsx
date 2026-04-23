@@ -13,6 +13,7 @@ import {
   getDocumentCategorieTextuelle,
 } from "@/lib/tache/document-categories-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { iconForDocumentStructure } from "@/lib/ui/icons/document-structure-icon";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DisciplineOption, NiveauOption } from "@/lib/queries/document-ref-data";
 import type {
@@ -96,7 +97,7 @@ export function DocumentWizardPreview({ niveaux, disciplines, authorName }: Prop
         <DocTitle value={titre} />
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-deep">
           <TypeChip docType={docType} />
-          <StructureChip structure={structure} />
+          <StructureChip structure={structure} elementCount={values.elements.length} />
           <PeriodeChip label={periodeLabel} />
         </div>
       </header>
@@ -218,7 +219,13 @@ function TypeChip({ docType }: { docType: "textuel" | "iconographique" | null })
   return <Chip icon={icon} label={label} isEmpty={isEmpty} isFocused={focused} />;
 }
 
-function StructureChip({ structure }: { structure: AutonomousDocumentFormValues["structure"] }) {
+function StructureChip({
+  structure,
+  elementCount,
+}: {
+  structure: AutonomousDocumentFormValues["structure"];
+  elementCount: number;
+}) {
   const focused = useIsFieldActive("structure");
   const isEmpty = structure == null;
   const label = isEmpty
@@ -228,7 +235,7 @@ function StructureChip({ structure }: { structure: AutonomousDocumentFormValues[
       : structure === "deux_temps"
         ? DOC_STRUCTURE_DEUX_TEMPS_TITLE
         : DOC_STRUCTURE_SIMPLE_TITLE;
-  const icon = structure === "simple" || structure == null ? "crop_square" : "view_column_2";
+  const icon = iconForDocumentStructure(structure, elementCount);
   return <Chip icon={icon} label={label} isEmpty={isEmpty} isFocused={focused} />;
 }
 
