@@ -52,9 +52,14 @@ describe("resolveDocPlaceholders", () => {
     expect(resolveDocPlaceholders("", 2)).toBe("");
   });
 
-  it("replaces data-doc-ref spans with letter", () => {
+  it("convertit un data-doc-ref legacy (lettre) en numéro", () => {
     const html = '<span data-doc-ref="A">Document A</span>';
-    expect(resolveDocPlaceholders(html, 1)).toBe("A");
+    expect(resolveDocPlaceholders(html, 1)).toBe("1");
+  });
+
+  it("remplace un data-doc-ref numérique par son numéro", () => {
+    const html = '<span data-doc-ref="3">Document 3</span>';
+    expect(resolveDocPlaceholders(html, 3)).toBe("3");
   });
 
   it("is case-insensitive for mustache placeholders", () => {

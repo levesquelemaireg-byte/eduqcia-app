@@ -6,7 +6,7 @@ import {
   canAccessDocumentSlot,
   computeSlotStatus,
   getSlotData,
-  slotLetter,
+  numeroAffiche,
   type DocumentSlotData,
 } from "@/lib/tache/document-helpers";
 import { useTacheForm } from "@/components/tache/wizard/FormState";
@@ -31,7 +31,7 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
   const { state, dispatch } = useTacheForm();
   const slot = getSlotData(state.bloc4.documents, slotId);
   const status = computeSlotStatus(slot);
-  const letter = slotLetter(slotId);
+  const numero = numeroAffiche(slotId);
   const locked = !canAccessDocumentSlot(orderedIds, slotIndex, state.bloc4.documents);
 
   const { expandedSlotId, toggleSlot } = useDocumentSlotsAccordion();
@@ -109,7 +109,7 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
   };
 
   if (locked) {
-    return <DocumentSlotLockedCard letter={letter} />;
+    return <DocumentSlotLockedCard numero={numero} />;
   }
 
   const parcours = resoudreParcours(state.bloc2.typeTache);
@@ -124,7 +124,7 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
     <div className="overflow-hidden rounded-2xl bg-panel shadow-sm ring-1 ring-border/50">
       <DocumentSlotPanelHeader
         slotId={slotId}
-        letter={letter}
+        numero={numero}
         status={status}
         open={open}
         onToggle={toggleSlot}
@@ -144,7 +144,7 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
             <DocumentSlotCreateForm
               slot={slot}
               slotId={slotId}
-              letter={letter}
+              numero={numero}
               titreId={titreId}
               sourceId={sourceId}
               contenuId={contenuId}

@@ -8,7 +8,7 @@ import { SECTION_B_DOC_LEURRE_BADGE } from "@/lib/ui/ui-copy";
 
 type Props = {
   slotId: DocumentSlotId;
-  letter: string;
+  numero: number;
   status: SlotUiStatus;
   open: boolean;
   onToggle: (slotId: DocumentSlotId) => void;
@@ -39,7 +39,7 @@ function BadgePertinence({ pertinence }: { pertinence: NonNullable<Props["pertin
 
 export function DocumentSlotPanelHeader({
   slotId,
-  letter,
+  numero,
   status,
   open,
   onToggle,
@@ -53,8 +53,8 @@ export function DocumentSlotPanelHeader({
       className="flex w-full items-center justify-between gap-3 bg-panel-alt/70 px-4 py-3.5 text-left transition-colors hover:bg-panel-alt"
     >
       <div className="flex min-w-0 items-center gap-3">
-        <span className={documentSlotLetterBadgeClass(status)}>{letter}</span>
-        <span className="truncate text-sm font-semibold text-deep">Document {letter}</span>
+        <span className={documentSlotLetterBadgeClass(status)}>{numero}</span>
+        <span className="truncate text-sm font-semibold text-deep">Document {numero}</span>
         {pertinence ? <BadgePertinence pertinence={pertinence} /> : null}
       </div>
       <div className="flex shrink-0 items-center gap-2.5">

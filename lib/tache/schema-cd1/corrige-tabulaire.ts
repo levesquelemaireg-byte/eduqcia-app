@@ -14,7 +14,7 @@
 
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotData } from "@/lib/tache/document-helpers";
-import { slotLetter } from "@/lib/tache/document-helpers";
+import { numeroAffiche } from "@/lib/tache/document-helpers";
 import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
 import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import {
@@ -32,13 +32,13 @@ export type LigneCorrige = {
   guidageHtml: string;
   reponse: string;
   points: number;
-  documentsLettres: string[];
+  documentsNumeros: number[];
 };
 
 export type CorrigeTabulaire = {
   lignes: LigneCorrige[];
   total: number;
-  leurresLettres: string[];
+  leurresNumeros: number[];
 };
 
 const POINTS_OBJET = 2;
@@ -95,23 +95,23 @@ type ArgsCorrige = {
 export function construireCorrigeTabulaire(args: ArgsCorrige): CorrigeTabulaire {
   const { schema, aspectA, aspectB, documentSlots, documents } = args;
 
-  // Mapping CleCase → lettres de documents qui l'alimentent
-  const documentsParCase = new Map<CleCase, string[]>();
+  // Mapping CleCase → numéros de documents qui l'alimentent
+  const documentsParCase = new Map<CleCase, number[]>();
   for (const cle of TOUTES_LES_CASES) documentsParCase.set(cle, []);
 
-  const leurresLettres: string[] = [];
+  const leurresNumeros: number[] = [];
 
   for (const { slotId } of documentSlots) {
     const doc = documents[slotId];
     if (!doc || doc.mode === "idle") continue;
-    const lettre = slotLetter(slotId);
+    const numero = numeroAffiche(slotId);
     if (doc.estLeurre) {
-      leurresLettres.push(lettre);
+      leurresNumeros.push(numero);
       continue;
     }
     for (const cle of doc.casesAssociees) {
       const existant = documentsParCase.get(cle) ?? [];
-      existant.push(lettre);
+      existant.push(numero);
       documentsParCase.set(cle, existant);
     }
   }
@@ -125,13 +125,13 @@ export function construireCorrigeTabulaire(args: ArgsCorrige): CorrigeTabulaire 
       guidageHtml: c.guidage,
       reponse: c.reponse,
       points: pointsPourCle(cle),
-      documentsLettres: documentsParCase.get(cle) ?? [],
+      documentsNumeros: documentsParCase.get(cle) ?? [],
     };
   });
 
   return {
     lignes,
     total: POINTS_TOTAL_SCHEMA_CD1,
-    leurresLettres,
+    leurresNumeros,
   };
 }

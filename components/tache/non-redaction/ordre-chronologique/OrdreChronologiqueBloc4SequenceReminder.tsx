@@ -1,7 +1,7 @@
 "use client";
 
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
-import { slotLetter } from "@/lib/tache/document-helpers";
+import { numeroAffiche } from "@/lib/tache/document-helpers";
 import {
   ordreChronologiqueCorrectPermutation,
   type OrdreChronologiquePayload,
@@ -50,7 +50,7 @@ export function OrdreChronologiqueBloc4SequenceReminder({ payload, orderedSlotId
         <ul className="list-inside list-disc space-y-0.5 pl-0.5">
           {orderedSlotIds.map((slotId, index) => (
             <li key={slotId}>
-              {formatNrOrdreBloc4ReminderDigitDocLine(index + 1, slotLetter(slotId))}
+              {formatNrOrdreBloc4ReminderDigitDocLine(index + 1, numeroAffiche(slotId))}
             </li>
           ))}
         </ul>

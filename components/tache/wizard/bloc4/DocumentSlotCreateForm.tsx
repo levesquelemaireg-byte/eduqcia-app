@@ -34,7 +34,7 @@ import {
 type Props = {
   slot: DocumentSlotData;
   slotId: DocumentSlotId;
-  letter: string;
+  numero: number;
   titreId: string;
   sourceId: string;
   contenuId: string;
@@ -49,7 +49,7 @@ type Props = {
 export function DocumentSlotCreateForm({
   slot,
   slotId,
-  letter,
+  numero,
   titreId,
   sourceId,
   contenuId,
@@ -168,7 +168,7 @@ export function DocumentSlotCreateForm({
             </p>
             <DocumentSlotImageField
               slot={slot}
-              letter={letter}
+              numero={numero}
               fileRef={fileRef}
               imageUploading={imageUploading}
               onFile={onImageFile}

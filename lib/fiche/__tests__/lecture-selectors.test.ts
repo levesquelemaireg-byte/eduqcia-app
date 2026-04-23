@@ -48,8 +48,8 @@ function makeFiche(overrides: Partial<TacheFicheData> = {}): TacheFicheData {
     ],
     documents: [
       {
-        letter: "A",
-        titre: "Document A",
+        numero: 1,
+        titre: "Document 1",
         contenu: "Texte du document",
         source_citation: "<p>Source</p>",
         type: "textuel",
@@ -134,7 +134,7 @@ describe("selectLectureDocuments", () => {
     expect(result.status).toBe("ready");
     if (result.status !== "ready") return;
     expect(result.data.documents).toHaveLength(1);
-    expect(result.data.documents[0].letter).toBe("A");
+    expect(result.data.documents[0].numero).toBe(1);
   });
 
   it("returns ready even with empty documents", () => {

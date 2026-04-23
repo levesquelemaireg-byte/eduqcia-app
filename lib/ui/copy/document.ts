@@ -353,10 +353,10 @@ export const INJECT_DOC_MODAL_ACTION_RESET_HINT =
 export const INJECT_DOC_MODAL_CANCEL = "Annuler";
 
 /** Deep-link — toasts d'injection. */
-export const TOAST_INJECT_DOC_REPLACED = "Document injecté dans le slot A.";
-export const TOAST_INJECT_DOC_FIRST_EMPTY = (slot: string) =>
-  `Document injecté dans le slot ${slot}.`;
-export const TOAST_INJECT_DOC_RESET = "Nouveau brouillon démarré avec ce document en slot A.";
+export const TOAST_INJECT_DOC_REPLACED = "Document injecté dans le document 1.";
+export const TOAST_INJECT_DOC_FIRST_EMPTY = (numero: number) =>
+  `Document injecté dans le document ${numero}.`;
+export const TOAST_INJECT_DOC_RESET = "Nouveau brouillon démarré avec ce document en position 1.";
 export const TOAST_INJECT_DOC_NOT_FOUND = "Document introuvable ou inaccessible.";
 
 /** Bloc 2 — alerte douce si nb_documents passe en-dessous du nombre de slots remplis. */

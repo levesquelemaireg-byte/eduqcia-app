@@ -24,8 +24,8 @@ describe("consigne-helpers — shouldShowGuidageOnStudentSheet", () => {
 
 describe("docRefSpan", () => {
   it("produit un span data-doc-ref avec placeholder numérique", () => {
-    expect(docRefSpan("A")).toBe('<span data-doc-ref="A">{{doc_1}}</span>');
-    expect(docRefSpan("C")).toBe('<span data-doc-ref="C">{{doc_3}}</span>');
+    expect(docRefSpan(1)).toBe('<span data-doc-ref="1">{{doc_1}}</span>');
+    expect(docRefSpan(3)).toBe('<span data-doc-ref="3">{{doc_3}}</span>');
   });
 });
 
@@ -33,16 +33,16 @@ describe("docRefSpan", () => {
 
 describe("buildAmorceDocumentaireHtml", () => {
   it("génère l'amorce pour 1 document", () => {
-    expect(buildAmorceDocumentaireHtml(1)).toContain('data-doc-ref="A"');
+    expect(buildAmorceDocumentaireHtml(1)).toContain('data-doc-ref="1"');
     expect(buildAmorceDocumentaireHtml(1)).toMatch(/^Consultez le document /);
   });
 
   it("génère l'amorce pour 3 documents avec virgules et « et »", () => {
     const html = buildAmorceDocumentaireHtml(3);
-    expect(html).toContain('data-doc-ref="A"');
-    expect(html).toContain('data-doc-ref="B"');
-    expect(html).toContain('data-doc-ref="C"');
-    expect(html).not.toContain('data-doc-ref="D"');
+    expect(html).toContain('data-doc-ref="1"');
+    expect(html).toContain('data-doc-ref="2"');
+    expect(html).toContain('data-doc-ref="3"');
+    expect(html).not.toContain('data-doc-ref="4"');
     expect(html).toContain(" et ");
   });
 });

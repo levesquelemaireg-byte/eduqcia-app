@@ -92,7 +92,7 @@ function buildSchemaCd1Texts(state: TacheFormState): {
   const rows = corrige.lignes
     .map(
       (l) =>
-        `<tr><th scope="row">${l.libelleComplet}</th><td>${l.guidageHtml || "—"}</td><td>${l.reponse || "—"}</td><td>/${l.points}</td><td>${l.documentsLettres.join(", ") || "—"}</td></tr>`,
+        `<tr><th scope="row">${l.libelleComplet}</th><td>${l.guidageHtml || "—"}</td><td>${l.reponse || "—"}</td><td>/${l.points}</td><td>${l.documentsNumeros.join(", ") || "—"}</td></tr>`,
     )
     .join("");
   const corrigeHtml = `<table><thead><tr><th>Case</th><th>Énoncé de guidage</th><th>Réponse attendue</th><th>Points</th><th>Documents</th></tr></thead><tbody>${rows}<tr><td colspan="3"><strong>Total</strong></td><td><strong>/${POINTS_TOTAL_SCHEMA_CD1}</strong></td><td></td></tr></tbody></table>`;

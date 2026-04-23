@@ -3,17 +3,18 @@
 import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 
 /**
- * NodeView React du nœud `docRef` — badge visuel (icône `article` + lettre).
- * Le HTML sérialisé est `<span data-doc-ref="A">{{doc_1}}</span>` (lettre conservée
- * pour l'affichage dans l'éditeur, placeholder numérique pour la publication ; cf. extensionDocRef.ts) ;
- * seul le rendu DANS l'éditeur change. Atomique : flèches sautent, Backspace supprime entier.
+ * NodeView React du nœud `docRef` — badge visuel (icône `article` + numéro).
+ * Le HTML sérialisé est `<span data-doc-ref="1">{{doc_1}}</span>` (numéro 1-based) ;
+ * seul le rendu DANS l'éditeur change. Atomique : flèches sautent, Backspace
+ * supprime entier.
  */
 export function DocRefNodeView({ node }: NodeViewProps) {
-  const letter = (node.attrs.letter as string) || "A";
+  const raw = node.attrs.numero;
+  const numero = typeof raw === "number" && Number.isFinite(raw) && raw >= 1 ? Math.trunc(raw) : 1;
   return (
     <NodeViewWrapper
       as="span"
-      data-doc-ref={letter}
+      data-doc-ref={String(numero)}
       className="tiptap-doc-ref inline-flex select-none items-center gap-1 rounded border border-accent/40 bg-accent/10 px-1.5 py-0 align-baseline text-accent"
       style={{ cursor: "default" }}
     >
@@ -21,7 +22,7 @@ export function DocRefNodeView({ node }: NodeViewProps) {
         article
       </span>
       <span className="text-[12px] text-accent">
-        document <span className="font-bold">{letter}</span>
+        document <span className="font-bold">{numero}</span>
       </span>
     </NodeViewWrapper>
   );

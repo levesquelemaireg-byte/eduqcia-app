@@ -36,18 +36,18 @@ function CellReponse({ texte }: { texte: string }) {
   return <span className="text-sm leading-snug text-deep">{texte}</span>;
 }
 
-function CellDocuments({ lettres }: { lettres: string[] }) {
-  if (lettres.length === 0) {
+function CellDocuments({ numeros }: { numeros: number[] }) {
+  if (numeros.length === 0) {
     return <span className="italic text-muted">—</span>;
   }
   return (
     <div className="flex flex-wrap gap-1">
-      {lettres.map((l) => (
+      {numeros.map((n) => (
         <span
-          key={l}
+          key={n}
           className="inline-flex h-6 min-w-[1.5rem] items-center justify-center rounded-full bg-accent/10 px-2 text-[11px] font-semibold text-accent ring-1 ring-inset ring-accent/20"
         >
-          {l}
+          {n}
         </span>
       ))}
     </div>
@@ -128,7 +128,7 @@ export default function CorrigeSchemaCd1({ state, dispatch }: Bloc5Props) {
                     /{ligne.points}
                   </td>
                   <td className="border-b border-border/60 px-3 py-2">
-                    <CellDocuments lettres={ligne.documentsLettres} />
+                    <CellDocuments numeros={ligne.documentsNumeros} />
                   </td>
                 </tr>
               ))}
@@ -154,7 +154,7 @@ export default function CorrigeSchemaCd1({ state, dispatch }: Bloc5Props) {
           {SECTION_B_CORRIGE_LEURRES_TITRE}
         </p>
         <p className="text-sm leading-relaxed text-muted">
-          {SECTION_B_CORRIGE_LEURRES_CORPS(corrige.leurresLettres.join(", "))}
+          {SECTION_B_CORRIGE_LEURRES_CORPS(corrige.leurresNumeros.join(", "))}
         </p>
       </section>
 

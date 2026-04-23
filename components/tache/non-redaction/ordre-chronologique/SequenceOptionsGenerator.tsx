@@ -248,7 +248,7 @@ export function SequenceOptionsGenerator({ value, onChange, orderedSlotIds, docu
       return (
         <div className="space-y-2 rounded-lg border border-warning/30 bg-warning/6 p-4">
           <p className="text-sm leading-relaxed text-deep">
-            {NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(yearRes.slotLetters)}
+            {NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(yearRes.slotNumeros)}
           </p>
         </div>
       );

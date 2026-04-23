@@ -9,9 +9,9 @@ import {
   insertAmorceDocumentaire,
 } from "@/components/tache/wizard/tiptap/insertAmorce";
 import { RichTextEditorShell } from "@/components/ui/RichTextEditorShell";
-import { getMissingDocLetters } from "@/lib/tache/consigne-helpers";
+import { getMissingDocNumeros } from "@/lib/tache/consigne-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
-import { slotLetter } from "@/lib/tache/document-helpers";
+import { numeroAffiche } from "@/lib/tache/document-helpers";
 
 const AUTOSAVE_KEY = "eduqcia-tache-consigne-new";
 
@@ -112,15 +112,15 @@ export function ConsigneTipTapEditor({
   }, [editor, nbDocuments]);
 
   const html = editor?.getHTML() ?? value;
-  const missing = getMissingDocLetters(html, nbDocuments);
+  const missing = getMissingDocNumeros(html, nbDocuments);
 
   const docInsertButtons = documentSlotIds.map((slotId) => {
-    const letter = slotLetter(slotId);
+    const numero = numeroAffiche(slotId);
     return {
       slot: slotId,
-      label: `Document ${letter}`,
+      label: `Document ${numero}`,
       onInsert: () => {
-        editor?.chain().focus().insertContent({ type: "docRef", attrs: { letter } }).run();
+        editor?.chain().focus().insertContent({ type: "docRef", attrs: { numero } }).run();
       },
     };
   });

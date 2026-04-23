@@ -3,7 +3,7 @@ import type { SectionState, DocumentsData, SelectorRefs } from "@/lib/fiche/type
 import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { DocumentFiche } from "@/lib/types/fiche";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
-import { getSlotData, slotLetter, type DocumentSlotData } from "@/lib/tache/document-helpers";
+import { getSlotData, numeroAffiche, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import {
   getDocumentCategorieTextuelle,
   documentCategorieIconographiqueLabel,
@@ -21,7 +21,7 @@ function documentSlotToFiche(slotId: DocumentSlotId, slot: DocumentSlotData): Do
         ? (documentCategorieIconographiqueLabel(slot.type_iconographique) ?? null)
         : null;
   return {
-    letter: slotLetter(slotId),
+    numero: numeroAffiche(slotId),
     titre: slot.titre,
     contenu: slot.contenu,
     source_citation: slot.source_citation,

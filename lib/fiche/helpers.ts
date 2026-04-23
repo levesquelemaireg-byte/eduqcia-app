@@ -77,8 +77,9 @@ export function createSelector(
 /* ─── Résolution des placeholders documents ────────────────────── */
 
 /**
- * Remplace les placeholders `{{doc_N}}` (nouveau, numérique) et `{{doc_A}}` (legacy, alphabétique)
- * par les numéros 1…N. Puis remplace les spans `data-doc-ref="X"` par la lettre seule.
+ * Remplace les placeholders `{{doc_N}}` (courant, numérique) et `{{doc_A}}` (legacy,
+ * alphabétique) par les numéros 1…N. Puis remplace les spans `data-doc-ref="X"`
+ * par leur numéro d'affichage (accepte chiffres et lettres legacy).
  * Reproduit `consigne-helpers.ts:resolveDocPlaceholdersForSingleTask`.
  */
 export function resolveDocPlaceholders(html: string, nbDocuments: number): string {
@@ -86,22 +87,26 @@ export function resolveDocPlaceholders(html: string, nbDocuments: number): strin
   const n = Math.max(nbDocuments, 0);
   let s = html;
 
-  // Format numérique (nouveau) : {{doc_1}}, {{doc_2}}, … (insensible à la casse sur « doc »).
+  // Format numérique (courant) : {{doc_1}}, {{doc_2}}, … (insensible à la casse sur « doc »).
   s = s.replace(/\{\{doc_(\d+)\}\}/gi, (match, num: string) => {
     const idx = parseInt(num, 10) - 1;
     return idx >= 0 && idx < n ? String(idx + 1) : match;
   });
 
-  // Format alphabétique (legacy, rétrocompat) : {{doc_A}} → 1, {{doc_B}} → 2, …
+  // Format alphabétique (legacy) : {{doc_A}} → 1, {{doc_B}} → 2, …
   s = s.replace(/\{\{doc_([A-Za-z])\}\}/gi, (match, letter: string) => {
     const idx = letter.toUpperCase().charCodeAt(0) - 65;
     return idx >= 0 && idx < n ? String(idx + 1) : match;
   });
 
-  // <span data-doc-ref="A">...</span> → A
+  // <span data-doc-ref="1">...</span> ou legacy <span data-doc-ref="A">...</span>
   s = s.replace(
-    /<span[^>]*\bdata-doc-ref=["']([A-Za-z])["'][^>]*>[\s\S]*?<\/span>/gi,
-    (_, letter: string) => letter.toUpperCase(),
+    /<span[^>]*\bdata-doc-ref=["']([0-9A-Za-z]+)["'][^>]*>[\s\S]*?<\/span>/gi,
+    (_, ref: string) => {
+      if (/^\d+$/.test(ref)) return ref;
+      const idx = ref.toUpperCase().charCodeAt(0) - 64;
+      return idx >= 1 ? String(idx) : ref;
+    },
   );
 
   return s;

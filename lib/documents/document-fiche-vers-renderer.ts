@@ -19,7 +19,7 @@ import type {
 export function documentFicheVersRenderer(doc: DocumentFiche): RendererDocument {
   if (doc.rendererDocument) return doc.rendererDocument;
 
-  const id = `fiche_${doc.letter}`;
+  const id = `fiche_${doc.numero}`;
   const elementId = `${id}_0`;
 
   const base = {

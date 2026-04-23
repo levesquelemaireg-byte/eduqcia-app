@@ -6,8 +6,8 @@ import type { RendererDocument } from "@/lib/types/document-renderer";
 export type AspectSociete = "economique" | "politique" | "social" | "culturel" | "territorial";
 
 export type DocumentFiche = {
-  /** Lettre d'affichage (A, B, C, …) dérivée de l'index du slot. */
-  letter: string;
+  /** Numéro d'affichage (1, 2, 3, …) dérivé de l'index du slot. */
+  numero: number;
   titre: string;
   contenu: string;
   source_citation: string;

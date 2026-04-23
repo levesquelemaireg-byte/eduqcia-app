@@ -6,7 +6,7 @@ import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { useAvantApresPayloadBootstrap } from "@/components/tache/non-redaction/avant-apres/useAvantApresPayloadBootstrap";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import { getAnneePourComparaison } from "@/lib/tache/document-annee";
-import { getSlotData, slotLetter } from "@/lib/tache/document-helpers";
+import { getSlotData, numeroAffiche } from "@/lib/tache/document-helpers";
 import {
   avantApresDocYearNeedsOverride,
   clearedAvantApresOptionsPatch,
@@ -48,7 +48,7 @@ function sortDocSlotPair(a: DocumentSlotId, b: DocumentSlotId): [DocumentSlotId,
 
 function formatDocPairLabel(slots: [DocumentSlotId, DocumentSlotId]): string {
   const [x, y] = sortDocSlotPair(slots[0], slots[1]);
-  return `${slotLetter(x)} et ${slotLetter(y)}`;
+  return `${numeroAffiche(x)} et ${numeroAffiche(y)}`;
 }
 
 function toastForGenerationError(code: string): void {
@@ -128,8 +128,11 @@ export default function Bloc5AvantApres({ state, dispatch }: Bloc5Props) {
           <p className="text-sm text-muted">{NR_AVANT_APRES_OVERRIDE_SECTION_HELP}</p>
           <ul className="space-y-3">
             {tieSlots.map((slotId) => {
-              const letter = slotLetter(slotId);
-              const label = NR_AVANT_APRES_OVERRIDE_SLOT_LABEL.replace("{{letter}}", letter);
+              const numero = numeroAffiche(slotId);
+              const label = NR_AVANT_APRES_OVERRIDE_SLOT_LABEL.replace(
+                "{{numero}}",
+                String(numero),
+              );
               const val = p.overrides[slotId] ?? "";
               return (
                 <li

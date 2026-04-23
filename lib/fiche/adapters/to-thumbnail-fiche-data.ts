@@ -25,7 +25,7 @@ export type ThumbnailInput = {
 /** Construit un TacheFicheData valide pour le mode thumbnail uniquement. */
 export function toThumbnailFicheData(input: ThumbnailInput): TacheFicheData {
   const fakeDocs = Array.from({ length: input.nbDocuments }, (_, i) => ({
-    letter: (["A", "B", "C", "D"] as const)[i] ?? ("A" as const),
+    numero: i + 1,
     titre: "",
     contenu: "",
     source_citation: "",

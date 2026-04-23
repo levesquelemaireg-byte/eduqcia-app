@@ -22,7 +22,7 @@ import {
   etatWizardVersTache,
   type GrilleEvaluationEntree,
 } from "@/lib/tache/contrats/etat-wizard-vers-tache";
-import { getSlotData, slotLetter } from "@/lib/tache/document-helpers";
+import { getSlotData, numeroAffiche } from "@/lib/tache/document-helpers";
 import { isActiveNonRedactionVariant } from "@/lib/tache/non-redaction/wizard-variant";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { DocumentFiche, TacheFicheData } from "@/lib/types/fiche";
@@ -114,7 +114,7 @@ function PrintableFicheDocumentsSection({ tache }: { tache: TacheFicheData }) {
     <div className={styles.sectionBlock}>
       <div className={cn(styles.docsGrid, hasIcono && styles.docsGridHasIcono)}>
         {tache.documents.map((doc) => (
-          <DocumentCardPrint key={doc.letter} document={documentFicheVersRenderer(doc)} />
+          <DocumentCardPrint key={doc.numero} document={documentFicheVersRenderer(doc)} />
         ))}
       </div>
     </div>
@@ -331,7 +331,7 @@ export function PrintableFichePreview({
       const hasLegend = legendTrim.length > 0;
       const pos = slot.image_legende_position;
       return {
-        letter: slotLetter(slotId),
+        numero: numeroAffiche(slotId),
         titre: slot.titre,
         contenu: slot.contenu,
         source_citation: slot.source_citation,

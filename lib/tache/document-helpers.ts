@@ -112,15 +112,9 @@ export function slotIndex(id: DocumentSlotId): number {
   return Number.isFinite(n) && n >= 1 ? n - 1 : 0;
 }
 
-/** Lettre d'affichage pour un index (base 0). 0 → "A", 1 → "B", 25 → "Z". */
-export function lettreAffichee(index: number): string {
-  const safe = Math.max(0, Math.trunc(index));
-  return String.fromCharCode(65 + safe);
-}
-
-/** Lettre d'affichage directe depuis un SlotId. "doc_1" → "A", "doc_3" → "C". */
-export function slotLetter(id: DocumentSlotId): string {
-  return lettreAffichee(slotIndex(id));
+/** Numéro d'affichage depuis un SlotId (1-based). "doc_1" → 1, "doc_3" → 3. */
+export function numeroAffiche(id: DocumentSlotId): number {
+  return slotIndex(id) + 1;
 }
 
 export function slotStatusLabel(status: SlotUiStatus): string {

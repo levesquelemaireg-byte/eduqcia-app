@@ -5,7 +5,7 @@
 
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { getAnneePourComparaison } from "@/lib/tache/document-annee";
-import { getSlotData, slotLetter, type DocumentSlotData } from "@/lib/tache/document-helpers";
+import { getSlotData, numeroAffiche, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import type {
   OrdreOptionRow,
   OrdrePermutation,
@@ -13,7 +13,7 @@ import type {
 import { isCompleteOrdrePermutation } from "@/lib/tache/non-redaction/ordre-chronologique-permutations";
 
 export type OrdreYearResolution =
-  | { kind: "missing_years"; slotLetters: string[] }
+  | { kind: "missing_years"; slotNumeros: number[] }
   | { kind: "tie" }
   | { kind: "ok"; sequence: OrdrePermutation };
 
@@ -27,10 +27,10 @@ export function computeOrdreSequenceFromYears(
   documents: Partial<Record<DocumentSlotId, DocumentSlotData>>,
 ): OrdreYearResolution {
   if (orderedSlotIds.length === 0) {
-    return { kind: "missing_years", slotLetters: [] };
+    return { kind: "missing_years", slotNumeros: [] };
   }
 
-  const missing: string[] = [];
+  const missing: number[] = [];
   const entries: { docNum: 1 | 2 | 3 | 4; year: number }[] = [];
 
   orderedSlotIds.forEach((slotId, idx) => {
@@ -38,14 +38,14 @@ export function computeOrdreSequenceFromYears(
     const docNum = (idx + 1) as 1 | 2 | 3 | 4;
     const y = getAnneePourComparaison(slot);
     if (y === null) {
-      missing.push(slotLetter(slotId));
+      missing.push(numeroAffiche(slotId));
     } else {
       entries.push({ docNum, year: Math.trunc(y) });
     }
   });
 
   if (missing.length > 0) {
-    return { kind: "missing_years", slotLetters: missing };
+    return { kind: "missing_years", slotNumeros: missing };
   }
 
   const byYear = new Map<number, (1 | 2 | 3 | 4)[]>();
@@ -62,7 +62,7 @@ export function computeOrdreSequenceFromYears(
 
   const sorted = [...entries].sort((a, b) => a.year - b.year || a.docNum - b.docNum);
   if (sorted.length !== 4) {
-    return { kind: "missing_years", slotLetters: [] };
+    return { kind: "missing_years", slotNumeros: [] };
   }
   const sequence: OrdrePermutation = [
     sorted[0]!.docNum,

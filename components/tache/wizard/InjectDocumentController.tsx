@@ -10,7 +10,7 @@ import {
   type InjectAction,
 } from "@/components/tache/wizard/InjectDocumentModal";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
-import { slotLetter, type DocumentSlotData } from "@/lib/tache/document-helpers";
+import { numeroAffiche, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import {
   TOAST_INJECT_DOC_FIRST_EMPTY,
   TOAST_INJECT_DOC_NOT_FOUND,
@@ -109,7 +109,7 @@ export function InjectDocumentController({ pendingInjection, injectionError }: P
         return;
       }
       dispatch({ type: "INJECT_DOCUMENT_SLOT_FIRST_EMPTY", data });
-      toast.success(TOAST_INJECT_DOC_FIRST_EMPTY(slotLetter(target)));
+      toast.success(TOAST_INJECT_DOC_FIRST_EMPTY(numeroAffiche(target)));
     } else {
       dispatch({ type: "RESET_DRAFT_AND_INJECT_DOCUMENT", data });
       toast.success(TOAST_INJECT_DOC_RESET);

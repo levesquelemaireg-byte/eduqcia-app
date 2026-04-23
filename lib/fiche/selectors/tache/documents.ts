@@ -27,7 +27,7 @@ export function selectDocuments(state: TacheFicheData): DocumentsSectionData | n
     sectionLabel: ficheDocumentsSectionTitle(state.documents.length),
     cards: state.documents.map((doc, i) => ({
       numero: i + 1,
-      docId: `${state.id}_doc_${doc.letter}`,
+      docId: `${state.id}_doc_${doc.numero}`,
       document: documentFicheVersRenderer(doc),
     })),
   };

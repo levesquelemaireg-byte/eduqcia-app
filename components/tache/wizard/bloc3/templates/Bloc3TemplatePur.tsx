@@ -133,7 +133,7 @@ function VarianteTriple({
     const autres = perspectiveTypeAutres(typePerspectives);
     const ctx = contexte.trim() ? ` ${contexte.trim()}` : "";
     const html =
-      `<p>Le document ${docRefSpan("A")} présente trois points de vue ${partitif}${ctx}. ` +
+      `<p>Le document ${docRefSpan(1)} présente trois points de vue ${partitif}${ctx}. ` +
       `Nommez l'${singulier} qui présente un point de vue différent. ` +
       `Puis, comparez ce point de vue à celui des ${autres}.</p>`;
     dispatch({ type: "SET_CONSIGNE", value: html });
@@ -267,9 +267,9 @@ function VarianteOi6({
     const e = enjeu.trim() ? enjeu.trim() : "[enjeu]";
     const html =
       modeStructure === "separe"
-        ? `<p>À partir des documents ${docRefSpan("A")} et ${docRefSpan("B")}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
+        ? `<p>À partir des documents ${docRefSpan(1)} et ${docRefSpan(2)}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
           `Justifiez votre réponse. Indiquez un repère de temps.</p>`
-        : `<p>À partir du document ${docRefSpan("A")}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
+        : `<p>À partir du document ${docRefSpan(1)}, indiquez s'il y a changement ou continuité quant à ${e}. ` +
           `Justifiez votre réponse. Indiquez un repère de temps.</p>`;
     dispatch({ type: "SET_CONSIGNE", value: html });
   }, [dispatch, enjeu, modeStructure]);

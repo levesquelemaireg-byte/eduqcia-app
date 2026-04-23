@@ -1,28 +1,30 @@
 /**
  * docs/WORKFLOWS.md + CONSIGNE-EDITOR.md — amorce documentaire, prévisualisation sommaire, validation texte HTML.
+ *
+ * Convention d'affichage : chiffres 1..N partout (wizard, fiche, impression, aperçu).
+ * Les anciens formats alphabétiques (`{{doc_A}}`, `data-doc-ref="A"`) sont acceptés
+ * en lecture pour la rétrocompatibilité des brouillons et TAÉ publiées avant la
+ * migration Phase 1 — toute nouvelle écriture utilise des chiffres.
  */
-
-import { lettreAffichee } from "@/lib/tache/document-helpers";
 
 /** docs/WORKFLOWS.md §4 — amorce documentaire (italique sous le bandeau). */
 export function buildAmorceDocumentaire(nbDocs: number): string {
   if (nbDocs <= 0) return "";
-  const lettres = Array.from({ length: nbDocs }, (_, i) => lettreAffichee(i));
-  if (nbDocs === 1) return `Consultez le document ${lettres[0]}.`;
-  const derniere = lettres.pop()!;
-  return `Consultez les documents ${lettres.join(", ")} et ${derniere}.`;
+  const numeros = Array.from({ length: nbDocs }, (_, i) => String(i + 1));
+  if (nbDocs === 1) return `Consultez le document ${numeros[0]}.`;
+  const dernier = numeros.pop()!;
+  return `Consultez les documents ${numeros.join(", ")} et ${dernier}.`;
 }
 
 /**
- * Span HTML `data-doc-ref` pour une lettre de slot — parsé par TipTap comme nœud `docRef`.
+ * Span HTML `data-doc-ref` pour un numéro de slot — parsé par TipTap comme nœud `docRef`.
  * Source unique : tout HTML qui référence un document doit passer par ce helper.
  * Sérialise le placeholder au format numérique `{{doc_N}}` ; le `data-doc-ref`
- * conserve la lettre pour l'affichage dans l'éditeur.
+ * contient le même chiffre pour l'affichage dans l'éditeur.
  */
-export function docRefSpan(letter: string): string {
-  const numero = (letter.toUpperCase().charCodeAt(0) - 64) | 0;
-  const safe = numero >= 1 ? numero : 1;
-  return `<span data-doc-ref="${letter}">{{doc_${safe}}}</span>`;
+export function docRefSpan(numero: number): string {
+  const safe = Number.isFinite(numero) && numero >= 1 ? Math.trunc(numero) : 1;
+  return `<span data-doc-ref="${safe}">{{doc_${safe}}}</span>`;
 }
 
 /**
@@ -31,7 +33,7 @@ export function docRefSpan(letter: string): string {
  */
 export function buildAmorceDocumentaireHtml(nbDocs: number): string {
   if (nbDocs <= 0) return "";
-  const spans = Array.from({ length: nbDocs }, (_, i) => docRefSpan(lettreAffichee(i)));
+  const spans = Array.from({ length: nbDocs }, (_, i) => docRefSpan(i + 1));
   if (nbDocs === 1) return `Consultez le document ${spans[0]}`;
   const dernier = spans.pop()!;
   return `Consultez les documents ${spans.join(", ")} et ${dernier}`;
@@ -47,7 +49,7 @@ function escapeRegExp(s: string): string {
  */
 export function stripAmorceDocumentaireForMiniature(plainText: string): string {
   const s = plainText.trim();
-  for (const n of [3, 2, 1] as const) {
+  for (const n of [4, 3, 2, 1] as const) {
     const phrase = buildAmorceDocumentaire(n);
     const re = new RegExp(`^${escapeRegExp(phrase)}\\s*`);
     if (re.test(s)) return s.replace(re, "").trim();
@@ -56,7 +58,7 @@ export function stripAmorceDocumentaireForMiniature(plainText: string): string {
 }
 
 /**
- * Texte brut pour aperçu carte / liste : refs doc → lettres / numéros, sans HTML, sans amorce documentaire.
+ * Texte brut pour aperçu carte / liste : refs doc → numéros, sans HTML, sans amorce documentaire.
  * `nbDocuments` optionnel : résolution des `{{doc_*}}` (défaut 4 si absent).
  */
 export function plainConsigneForMiniature(
@@ -79,14 +81,19 @@ export function stripHtml(html: string): string {
 }
 
 /**
- * Remplace les spans `data-doc-ref` par la lettre seule (aperçu fiche / sommaire).
- * Une seule implémentation (regex) : le chemin DOM divergeait du SSR et cassait l’hydratation React (page blanche après navigation).
+ * Remplace les spans `data-doc-ref` par le numéro seul (aperçu fiche / sommaire).
+ * Accepte les chiffres (format courant) et les lettres (legacy, converties en chiffres).
  */
 export function resolveDocRefsForPreview(html: string): string {
   if (!html) return "";
   return html.replace(
-    /<span[^>]*\bdata-doc-ref=["']([A-Za-z])["'][^>]*>[\s\S]*?<\/span>/gi,
-    (_, letter: string) => letter.toUpperCase(),
+    /<span[^>]*\bdata-doc-ref=["']([0-9A-Za-z]+)["'][^>]*>[\s\S]*?<\/span>/gi,
+    (_, ref: string) => {
+      if (/^\d+$/.test(ref)) return ref;
+      // Legacy : lettre → numéro (A=1, B=2, …).
+      const idx = ref.toUpperCase().charCodeAt(0) - 64;
+      return idx >= 1 ? String(idx) : ref;
+    },
   );
 }
 
@@ -98,7 +105,7 @@ export function resolveDocRefsForPreview(html: string): string {
 export function resolveDocPlaceholdersForSingleTask(html: string, nbDocuments = 4): string {
   if (!html) return "";
   const n = Math.max(nbDocuments, 0);
-  // Format numérique (nouveau) : {{doc_1}}, {{doc_2}}, … (insensible à la casse sur « doc »).
+  // Format numérique (courant) : {{doc_1}}, {{doc_2}}, … (insensible à la casse sur « doc »).
   let s = html.replace(/\{\{doc_(\d+)\}\}/gi, (match, num: string) => {
     const idx = parseInt(num, 10) - 1;
     return idx >= 0 && idx < n ? String(idx + 1) : match;
@@ -135,23 +142,35 @@ export function shouldShowGuidageOnStudentSheet(
   return htmlHasMeaningfulText(guidageHtml);
 }
 
-/** Lettres doc manquantes (références attendues selon nb_documents). BLOC3 §5.5 */
-export function getMissingDocLetters(html: string, nbDocuments: number): string[] {
+/** Numéros de documents manquants (références attendues selon nb_documents). BLOC3 §5.5 */
+export function getMissingDocNumeros(html: string, nbDocuments: number): number[] {
   if (nbDocuments <= 0) return [];
-  const expected = Array.from({ length: nbDocuments }, (_, i) => lettreAffichee(i));
-  const present = new Set<string>();
-  // Spans data-doc-ref (lettre)
-  const reAttr = /data-doc-ref=["']?([A-Za-z])["']?/g;
+  const expected = Array.from({ length: nbDocuments }, (_, i) => i + 1);
+  const present = new Set<number>();
+  // Spans data-doc-ref (chiffre — format courant).
+  const reAttrNum = /data-doc-ref=["']?(\d+)["']?/g;
   let m: RegExpExecArray | null;
-  while ((m = reAttr.exec(html)) !== null) present.add(m[1]!.toUpperCase());
-  // Placeholders numériques : {{doc_1}} → A, {{doc_2}} → B, …
+  while ((m = reAttrNum.exec(html)) !== null) {
+    const n = parseInt(m[1]!, 10);
+    if (Number.isFinite(n) && n >= 1) present.add(n);
+  }
+  // Spans data-doc-ref (lettre — legacy).
+  const reAttrLetter = /data-doc-ref=["']?([A-Za-z])["']?/g;
+  while ((m = reAttrLetter.exec(html)) !== null) {
+    const n = m[1]!.toUpperCase().charCodeAt(0) - 64;
+    if (n >= 1) present.add(n);
+  }
+  // Placeholders numériques : {{doc_1}} → 1, {{doc_2}} → 2, …
   const rePhNum = /\{\{doc_(\d+)\}\}/g;
   while ((m = rePhNum.exec(html)) !== null) {
-    const idx = parseInt(m[1]!, 10) - 1;
-    if (idx >= 0) present.add(lettreAffichee(idx));
+    const n = parseInt(m[1]!, 10);
+    if (Number.isFinite(n) && n >= 1) present.add(n);
   }
   // Placeholders alphabétiques (legacy) : {{doc_A}}
   const rePhLetter = /\{\{doc_([A-Za-z])\}\}/g;
-  while ((m = rePhLetter.exec(html)) !== null) present.add(m[1]!.toUpperCase());
+  while ((m = rePhLetter.exec(html)) !== null) {
+    const n = m[1]!.toUpperCase().charCodeAt(0) - 64;
+    if (n >= 1) present.add(n);
+  }
   return expected.filter((x) => !present.has(x));
 }

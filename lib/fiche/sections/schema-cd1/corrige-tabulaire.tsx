@@ -66,14 +66,14 @@ export function SectionCorrigeTabulaire({ data, mode: _mode }: Props) {
                     /{l.points}
                   </td>
                   <td className="border-b border-border/60 px-2 py-1.5">
-                    {l.documentsLettres.length > 0 ? (
+                    {l.documentsNumeros.length > 0 ? (
                       <div className="flex flex-wrap gap-1">
-                        {l.documentsLettres.map((lettre) => (
+                        {l.documentsNumeros.map((numero) => (
                           <span
-                            key={lettre}
+                            key={numero}
                             className="inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-accent/10 px-1.5 text-[10px] font-semibold text-accent ring-1 ring-inset ring-accent/20"
                           >
-                            {lettre}
+                            {numero}
                           </span>
                         ))}
                       </div>
@@ -105,7 +105,7 @@ export function SectionCorrigeTabulaire({ data, mode: _mode }: Props) {
           {SECTION_B_CORRIGE_LEURRES_TITRE}
         </p>
         <p className="mt-1 text-xs leading-relaxed text-muted">
-          {SECTION_B_CORRIGE_LEURRES_CORPS(corrige.leurresLettres.join(", "))}
+          {SECTION_B_CORRIGE_LEURRES_CORPS(corrige.leurresNumeros.join(", "))}
         </p>
       </div>
 

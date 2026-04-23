@@ -137,11 +137,11 @@ export const NR_ORDRE_BLOC5_AUTO_SEQUENCE_LEAD =
 export const NR_ORDRE_BLOC5_YEAR_TIE_WARNING =
   "Deux documents ou plus partagent la même année normalisée. Saisissez ci-dessous la bonne séquence chronologique (une case par position), puis générez les options.";
 export const NR_ORDRE_JUSTIFICATION_LABEL = "Justification";
-export function NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(letters: string[]): string {
-  if (letters.length === 0) {
+export function NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL(numeros: number[]): string {
+  if (numeros.length === 0) {
     return "Année manquante pour au moins un document.";
   }
-  const joined = letters.join(", ");
+  const joined = numeros.join(", ");
   return `Année manquante ou invalide pour le ou les documents : ${joined}.`;
 }
 export const NR_ORDRE_STEP4_TITLE = "Étape 4 · Dossier documentaire";
@@ -152,8 +152,8 @@ export const NR_ORDRE_STEP4_DESCRIPTION =
 export const NR_ORDRE_BLOC4_REMINDER_TITLE = "Rappel — séquence chronologique et dossier";
 export const NR_ORDRE_BLOC4_REMINDER_LEAD =
   "La bonne suite chronologique retenue est « {{suite}} ». Sur le questionnaire (deuxième feuillet à l'impression), cette suite apparaît sous l'option {{letter}}). Les chiffres 1 à 4 dans les suites correspondent aux documents du dossier (premier feuillet), dans l'ordre de saisie ci-dessous :";
-/** Placeholders : {{d}} = chiffre 1–4, {{L}} = lettre A–D. */
-export const NR_ORDRE_BLOC4_REMINDER_DIGIT_DOC = "Chiffre {{d}} — document {{L}}";
+/** Placeholders : {{d}} = position dans la suite (1–4), {{n}} = numéro du document (1–4). */
+export const NR_ORDRE_BLOC4_REMINDER_DIGIT_DOC = "Chiffre {{d}} — document {{n}}";
 
 export function formatNrOrdreBloc4ReminderLead(
   suiteDisplay: string,
@@ -165,10 +165,10 @@ export function formatNrOrdreBloc4ReminderLead(
   );
 }
 
-export function formatNrOrdreBloc4ReminderDigitDocLine(digit: number, slotLetter: string): string {
+export function formatNrOrdreBloc4ReminderDigitDocLine(digit: number, slotNumero: number): string {
   return NR_ORDRE_BLOC4_REMINDER_DIGIT_DOC.replace("{{d}}", String(digit)).replace(
-    "{{L}}",
-    slotLetter,
+    "{{n}}",
+    String(slotNumero),
   );
 }
 
@@ -303,7 +303,7 @@ export const NR_AVANT_APRES_ANNEE_HELP =
 export const NR_AVANT_APRES_OVERRIDE_SECTION_TITLE = "Repère sur une année ou une période";
 export const NR_AVANT_APRES_OVERRIDE_SECTION_HELP =
   "Si l'année d'un document coïncide avec l'année pivot, ou se situe dans la période début–fin du repère, indiquez s'il doit être traité comme antérieur ou postérieur pour constituer la partition correcte 2 / 2.";
-export const NR_AVANT_APRES_OVERRIDE_SLOT_LABEL = "Document {{letter}}";
+export const NR_AVANT_APRES_OVERRIDE_SLOT_LABEL = "Document {{numero}}";
 export const NR_AVANT_APRES_OVERRIDE_AVANT = "Avant le repère";
 export const NR_AVANT_APRES_OVERRIDE_APRES = "Après le repère";
 export const NR_AVANT_APRES_BLOC5_TITLE = "Corrigé et options de réponse (tableau 4 × 3)";

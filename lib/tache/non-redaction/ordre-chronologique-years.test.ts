@@ -55,7 +55,7 @@ describe("ordre-chronologique-years", () => {
     const r = computeOrdreSequenceFromYears(ids, documents);
     expect(r.kind).toBe("missing_years");
     if (r.kind !== "missing_years") return;
-    expect(r.slotLetters).toContain("C");
+    expect(r.slotNumeros).toContain(3);
   });
 
   it("signale une égalité d’années", () => {

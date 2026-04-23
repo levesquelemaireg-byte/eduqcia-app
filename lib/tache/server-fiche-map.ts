@@ -11,7 +11,11 @@ import type {
 } from "@/lib/types/fiche";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { canonicalOiIcone } from "@/lib/tache/oi-canonical";
-import { parseDocumentLegendPosition, slotIndex, slotLetter } from "@/lib/tache/document-helpers";
+import {
+  numeroAffiche,
+  parseDocumentLegendPosition,
+  slotIndex,
+} from "@/lib/tache/document-helpers";
 import {
   getDocumentCategorieTextuelle,
   documentCategorieIconographiqueLabel,
@@ -181,7 +185,7 @@ export async function fetchTacheFicheBundle(
             ? (documentCategorieIconographiqueLabel(firstEl.categorie_iconographique) ?? null)
             : null;
       bySlot.set(l.slot, {
-        letter: slotLetter(l.slot),
+        numero: numeroAffiche(l.slot),
         titre: d.titre,
         contenu,
         source_citation: sourceCitation,
