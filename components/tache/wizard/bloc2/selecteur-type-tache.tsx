@@ -28,6 +28,7 @@ export function SelecteurTypeTache() {
     value: p.id,
     label: p.label,
     description: p.description,
+    icon: p.icone,
     disabled: !p.actif,
     badge: p.actif ? undefined : "Bientôt disponible",
   }));

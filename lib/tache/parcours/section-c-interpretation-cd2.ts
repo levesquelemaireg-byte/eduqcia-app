@@ -10,9 +10,10 @@ import type { ParcoursTache } from "./types";
  */
 export const PARCOURS_SECTION_C_INTERPRETATION_CD2: ParcoursTache = {
   id: "section-c-interpretation-cd2",
-  label: "Interprétation",
+  label: "Tâche complexe d'interprétation (réponse développée)",
   critereOfficiel: "Rigueur de l'interprétation",
-  description: "Explication des transformations d'une réalité sociale (texte ~150 mots)",
+  description:
+    "Ce type de tâche est entièrement consacré à la mobilisation des compétences disciplinaires 2 : interpréter les réalités sociales à l'aide de la méthode historique au premier cycle, et interpréter une réalité sociale au deuxième cycle. Il vise à amener l'élève à élaborer une explication rigoureuse mettant en évidence les continuités ou transformations culturelles, économiques, politiques, sociales ou territoriales d'une société.\n\nAlors que la tâche précédente de caractérisation s'attache à décrire « comment étaient les choses », l'interprétation exige de l'élève qu'il explique pourquoi elles étaient ainsi et comment elles ont évolué. Par la rédaction d'un texte argumenté, l'élève doit mettre en relation des facteurs explicatifs et des conséquences afin de produire un raisonnement historique qui donne un sens aux changements et aux continuités d'une période.",
   actif: false,
   oiPertinente: false,
   cdAutoAssignee: true,

@@ -172,7 +172,9 @@ export function RadioCardGroup({
                   ) : null}
                 </span>
                 {opt.description ? (
-                  <span className="pl-0 text-xs leading-relaxed text-muted">{opt.description}</span>
+                  <span className="whitespace-pre-line pl-0 text-xs leading-relaxed text-muted">
+                    {opt.description}
+                  </span>
                 ) : null}
               </span>
             </button>
