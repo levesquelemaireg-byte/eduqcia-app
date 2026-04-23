@@ -57,7 +57,101 @@ function WizardConnaissancesSection({ data, mode }: { data: ConnaissancesData; m
   return <SectionConnaissances data={data} mode={mode} onRemoveRow={onRemoveRow} />;
 }
 
-/* ─── Config TAÉ ───────────────────────────────────────────────── */
+/* ─── Sections communes (partagées entre Section A et Section B) ─ */
+
+export const SECTION_HEADER = defineSection<TacheFormState, import("@/lib/fiche/types").HeaderData>(
+  {
+    id: "header",
+    stepId: null,
+    selector: selectHeaderMeta,
+    component: FicheHeader,
+  },
+);
+
+export const SECTION_CONSIGNE = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/types").ConsigneData
+>({
+  id: "consigne",
+  stepId: "consigne",
+  selector: selectConsigne,
+  component: SectionConsigne,
+  skeleton: SkeletonConsigneBody,
+});
+
+export const SECTION_GUIDAGE = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/types").GuidageData
+>({
+  id: "guidage",
+  stepId: "consigne",
+  selector: selectGuidage,
+  component: SectionGuidage,
+  skeleton: SkeletonGuidageBlock,
+});
+
+export const SECTION_DOCUMENTS = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/types").DocumentsData
+>({
+  id: "documents",
+  stepId: "documents",
+  selector: selectDocuments,
+  component: SectionDocuments,
+});
+
+export const SECTION_CORRIGE = defineSection<
+  TacheFormState,
+  import("@/lib/fiche/types").CorrigeData
+>({
+  id: "corrige",
+  stepId: "corrige",
+  selector: selectCorrige,
+  component: SectionCorrige,
+  skeleton: SkeletonCorrigeBlock,
+});
+
+export const SECTION_GRILLE = defineSection<TacheFormState, import("@/lib/fiche/types").GrilleData>(
+  {
+    id: "grille",
+    stepId: "parametres",
+    selector: selectGrille,
+    component: SectionGrille,
+    visibleIn: ["sommaire", "lecture"],
+  },
+);
+
+export const SECTION_CD = defineSection<TacheFormState, import("@/lib/fiche/types").CompetenceData>(
+  {
+    id: "cd",
+    stepId: "cd",
+    selector: selectCD,
+    component: SectionCD,
+    skeleton: SkeletonCDTree,
+    visibleIn: ["sommaire", "lecture"],
+  },
+);
+
+export const SECTION_CONNAISSANCES = defineSection<TacheFormState, ConnaissancesData>({
+  id: "connaissances",
+  stepId: "connaissances",
+  selector: selectConnaissances,
+  component: WizardConnaissancesSection,
+  skeleton: SkeletonConnaissancesTree,
+  visibleIn: ["sommaire", "lecture"],
+});
+
+export const SECTION_FOOTER = defineSection<TacheFormState, import("@/lib/fiche/types").FooterData>(
+  {
+    id: "footer",
+    stepId: null,
+    selector: selectFooter,
+    component: FicheFooter,
+    visibleIn: ["sommaire", "lecture"],
+  },
+);
+
+/* ─── Config TAÉ — Section A (parcours par défaut) ─────────────── */
 
 /**
  * RÉORDONNER = déplacer un élément.
@@ -69,67 +163,13 @@ function WizardConnaissancesSection({ data, mode }: { data: ConnaissancesData; m
  * travaille à l'étape 3 du wizard.
  */
 export const TACHE_FICHE_SECTIONS = [
-  defineSection<TacheFormState, import("@/lib/fiche/types").HeaderData>({
-    id: "header",
-    stepId: null,
-    selector: selectHeaderMeta,
-    component: FicheHeader,
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").ConsigneData>({
-    id: "consigne",
-    stepId: "consigne",
-    selector: selectConsigne,
-    component: SectionConsigne,
-    skeleton: SkeletonConsigneBody,
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").GuidageData>({
-    id: "guidage",
-    stepId: "consigne",
-    selector: selectGuidage,
-    component: SectionGuidage,
-    skeleton: SkeletonGuidageBlock,
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").DocumentsData>({
-    id: "documents",
-    stepId: "documents",
-    selector: selectDocuments,
-    component: SectionDocuments,
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").CorrigeData>({
-    id: "corrige",
-    stepId: "corrige",
-    selector: selectCorrige,
-    component: SectionCorrige,
-    skeleton: SkeletonCorrigeBlock,
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").GrilleData>({
-    id: "grille",
-    stepId: "parametres",
-    selector: selectGrille,
-    component: SectionGrille,
-    visibleIn: ["sommaire", "lecture"],
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").CompetenceData>({
-    id: "cd",
-    stepId: "cd",
-    selector: selectCD,
-    component: SectionCD,
-    skeleton: SkeletonCDTree,
-    visibleIn: ["sommaire", "lecture"],
-  }),
-  defineSection<TacheFormState, ConnaissancesData>({
-    id: "connaissances",
-    stepId: "connaissances",
-    selector: selectConnaissances,
-    component: WizardConnaissancesSection,
-    skeleton: SkeletonConnaissancesTree,
-    visibleIn: ["sommaire", "lecture"],
-  }),
-  defineSection<TacheFormState, import("@/lib/fiche/types").FooterData>({
-    id: "footer",
-    stepId: null,
-    selector: selectFooter,
-    component: FicheFooter,
-    visibleIn: ["sommaire", "lecture"],
-  }),
+  SECTION_HEADER,
+  SECTION_CONSIGNE,
+  SECTION_GUIDAGE,
+  SECTION_DOCUMENTS,
+  SECTION_CORRIGE,
+  SECTION_GRILLE,
+  SECTION_CD,
+  SECTION_CONNAISSANCES,
+  SECTION_FOOTER,
 ] as const;
