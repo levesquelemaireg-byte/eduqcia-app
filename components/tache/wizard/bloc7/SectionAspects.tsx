@@ -17,11 +17,13 @@ const ASPECT_ORDER: AspectSocieteKey[] = [
 
 type Props = {
   aspects: Record<AspectSocieteKey, boolean>;
+  /** Aspects pré-cochés non désactivables (imposés par le parcours, ex. Section B). */
+  aspectsImposes?: ReadonlySet<AspectSocieteKey>;
   onToggle: (key: AspectSocieteKey) => void;
   onInfoClick: () => void;
 };
 
-export function SectionAspects({ aspects, onToggle, onInfoClick }: Props) {
+export function SectionAspects({ aspects, aspectsImposes, onToggle, onInfoClick }: Props) {
   return (
     <section className="space-y-2 border-t border-border pt-5">
       <div className="flex items-center justify-between gap-2">
@@ -49,19 +51,30 @@ export function SectionAspects({ aspects, onToggle, onInfoClick }: Props) {
       <p className="text-xs text-muted">{BLOC7_ASPECTS_HELP}</p>
       <div className="mt-2 flex flex-wrap gap-2">
         {ASPECT_ORDER.map((key) => {
-          const isSelected = aspects[key];
+          const impose = aspectsImposes?.has(key) ?? false;
+          const isSelected = impose || aspects[key];
           return (
             <button
               key={key}
               type="button"
               role="checkbox"
               aria-checked={isSelected}
-              onClick={() => onToggle(key)}
+              aria-disabled={impose || undefined}
+              disabled={impose}
+              title={
+                impose
+                  ? "Imposé par le type de tâche (deux aspects sélectionnés à l'étape 2)."
+                  : undefined
+              }
+              onClick={() => {
+                if (impose) return;
+                onToggle(key);
+              }}
               className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
                 isSelected
                   ? "border-accent bg-accent text-white"
                   : "border-border bg-panel text-steel hover:border-accent/50"
-              }`}
+              } ${impose ? "cursor-not-allowed opacity-80" : ""}`}
             >
               {isSelected ? (
                 <span className="material-symbols-outlined mr-1 text-[0.9em]" aria-hidden="true">

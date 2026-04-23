@@ -15,6 +15,7 @@ import {
   isPerspectivesStepComplete,
   isMomentsStepComplete,
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import {
   isAvantApresDocumentsPublishable,
@@ -65,7 +66,17 @@ function redactionStepOkForPublish(state: TacheFormState): boolean {
     const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
     return p !== null && isLigneDuTempsStep3Complete(p);
   }
-  return isRedactionStepComplete(getRedactionSliceForPreview(state));
+  // Les aspects imposés par le parcours (ex. Section B) satisfont la garde « au moins un aspect »
+  // sans que l'enseignant ait à les re-cocher au Bloc 7.
+  const parcours = resoudreParcours(state.bloc2.typeTache);
+  const slice = getRedactionSliceForPreview(state);
+  if (parcours.aspectsRequis) {
+    const aspects = { ...slice.aspects };
+    if (state.bloc2.aspectA) aspects[state.bloc2.aspectA] = true;
+    if (state.bloc2.aspectB) aspects[state.bloc2.aspectB] = true;
+    return isRedactionStepComplete({ ...slice, aspects });
+  }
+  return isRedactionStepComplete(slice);
 }
 
 function documentsStepOkForPublish(state: TacheFormState): boolean {

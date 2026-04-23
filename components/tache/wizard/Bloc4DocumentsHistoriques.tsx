@@ -11,14 +11,16 @@ import { DocumentSlotsAccordionSync } from "@/components/tache/wizard/bloc4/Docu
 import { getRedactionSliceForPreview, useTacheForm } from "@/components/tache/wizard/FormState";
 import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { isRedactionSliceConsigneReady } from "@/lib/tache/redaction-helpers";
 import { BLOC4_GATE_WIZARD } from "@/lib/ui/ui-copy";
 
 export function Bloc4DocumentsHistoriques() {
-  const { state } = useTacheForm();
+  const { state, dispatch } = useTacheForm();
   const b = state.bloc2;
   const nb = b.nbDocuments;
   const slots = b.documentSlots;
+  const parcours = resoudreParcours(b.typeTache);
 
   const orderedIds = useMemo(() => slots.map((s) => s.slotId) as DocumentSlotId[], [slots]);
 
@@ -67,6 +69,19 @@ export function Bloc4DocumentsHistoriques() {
           ))}
         </div>
       </DocumentSlotsAccordionProvider>
+
+      {parcours.oiAutoAssignee && slots.length < parcours.documentsMax ? (
+        <button
+          type="button"
+          onClick={() => dispatch({ type: "ADD_DOCUMENT_SLOT" })}
+          className="inline-flex min-h-11 items-center gap-2 rounded-md border border-border bg-panel px-3 text-sm font-semibold text-deep hover:bg-panel-alt"
+        >
+          <span className="material-symbols-outlined text-lg" aria-hidden="true">
+            add
+          </span>
+          Ajouter un document
+        </button>
+      ) : null}
 
       <div className="icon-lead rounded-xl border-l-4 border-warning bg-warning/[0.07] py-3.5 pl-4 pr-4 text-sm text-steel shadow-sm ring-1 ring-warning/15">
         <span

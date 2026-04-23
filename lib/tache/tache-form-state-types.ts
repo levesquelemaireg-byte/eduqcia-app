@@ -183,7 +183,8 @@ export type TacheFormAction =
   | { type: "SET_INTRUS_POINT_COMMUN"; value: string }
   | { type: "INJECT_DOCUMENT_SLOT_REPLACE"; slotId: DocumentSlotId; data: DocumentSlotData }
   | { type: "INJECT_DOCUMENT_SLOT_FIRST_EMPTY"; data: DocumentSlotData }
-  | { type: "RESET_DRAFT_AND_INJECT_DOCUMENT"; data: DocumentSlotData };
+  | { type: "RESET_DRAFT_AND_INJECT_DOCUMENT"; data: DocumentSlotData }
+  | { type: "ADD_DOCUMENT_SLOT" };
 
 export const initialBlueprint: BlueprintSlice = {
   niveau: "",

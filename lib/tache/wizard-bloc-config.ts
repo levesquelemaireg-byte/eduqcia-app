@@ -14,25 +14,26 @@
  */
 
 import type { ConsigneTemplateKey } from "@/lib/tache/consigne-templates";
+import type { Bloc3Type, Bloc4Type, Bloc5Type } from "@/lib/tache/parcours/types";
 
 // ---------------------------------------------------------------------------
 // Types de configuration par bloc
 // ---------------------------------------------------------------------------
 
 export type Bloc3Config =
-  | { type: "modele_souple"; templateKey: ConsigneTemplateKey }
-  | { type: "structure"; variante: "compare" | "triple" }
-  | { type: "pur"; variante: "triple" | "oi6" | "oi7" };
+  | { type: Extract<Bloc3Type, "modele_souple">; templateKey: ConsigneTemplateKey }
+  | { type: Extract<Bloc3Type, "structure">; variante: "compare" | "triple" }
+  | { type: Extract<Bloc3Type, "pur">; variante: "triple" | "oi6" | "oi7" };
 
 export type Bloc4Config =
-  | { type: "standard" }
-  | { type: "perspectives"; count: 2 | 3; modeGroupeDefaut: boolean }
-  | { type: "moments"; count: 2; modeGroupeDefaut: boolean };
+  | { type: Extract<Bloc4Type, "standard"> }
+  | { type: Extract<Bloc4Type, "perspectives">; count: 2 | 3; modeGroupeDefaut: boolean }
+  | { type: Extract<Bloc4Type, "moments">; count: 2; modeGroupeDefaut: boolean };
 
 export type Bloc5Config =
-  | { type: "standard" }
-  | { type: "intrus"; perspectiveCount: 3 }
-  | { type: "redactionnel"; templateKey: string };
+  | { type: Extract<Bloc5Type, "standard"> }
+  | { type: Extract<Bloc5Type, "intrus">; perspectiveCount: 3 }
+  | { type: Extract<Bloc5Type, "redactionnel">; templateKey: string };
 
 export type WizardBlocConfig = {
   bloc3: Bloc3Config;

@@ -2,6 +2,7 @@ import {
   disciplinesForNiveau,
   documentSlotsFromCount,
   type DisciplineCode,
+  type DocumentSlotId,
   type NiveauCode,
 } from "@/lib/tache/blueprint-helpers";
 import { emptyDocumentSlot } from "@/lib/tache/document-helpers";
@@ -518,6 +519,20 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
         bloc4: {
           ...initialTacheFormState.bloc4,
           documents: { doc_1: action.data },
+        },
+      };
+    }
+    case "ADD_DOCUMENT_SLOT": {
+      const parcours = resoudreParcours(state.bloc2.typeTache);
+      const currentCount = state.bloc2.documentSlots.length;
+      if (currentCount >= parcours.documentsMax) return state;
+      const newSlotId = `doc_${currentCount + 1}` as DocumentSlotId;
+      return {
+        ...state,
+        bloc2: {
+          ...state.bloc2,
+          documentSlots: [...state.bloc2.documentSlots, { slotId: newSlotId }],
+          nbDocuments: currentCount + 1,
         },
       };
     }

@@ -16,6 +16,7 @@ import { Bloc4OrdreChronologique } from "@/components/tache/non-redaction/ordre-
 import { assertNever } from "@/lib/tache/assert-never";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import type { TacheNonRedactionVariantSlug } from "@/lib/tache/non-redaction/variant-slugs";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import {
   TACHE_DOCUMENTS_STEP_INDEX,
@@ -58,6 +59,11 @@ export function resolveWizardBlocComponent(
   state: TacheFormState,
 ): ComponentType | null {
   if (stepIndex !== TACHE_REDACTION_STEP_INDEX && stepIndex !== TACHE_DOCUMENTS_STEP_INDEX) {
+    return null;
+  }
+  const parcours = resoudreParcours(state.bloc2.typeTache);
+  if (parcours.bloc3Type === "schema_cd1" || parcours.bloc3Type === "interpretation_cd2") {
+    // Sections B et C — composants non implémentés, le parent rend un squelette.
     return null;
   }
   const slug = getVariantSlugForComportementId(state.bloc2.comportementId);

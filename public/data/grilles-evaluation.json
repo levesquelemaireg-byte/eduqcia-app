@@ -627,6 +627,34 @@
         }
       ]
     }
+  },
+  {
+    "id": "CD1_SCHEMA",
+    "oi": "CD1",
+    "comportement_id": "CD1.schema",
+    "operation": "Caractériser une période de l'histoire du Québec et du Canada",
+    "comportement_enonce": "À l'aide d'un schéma, l'élève décrit une réalité sociale sous deux aspects en indiquant l'objet de la description, des éléments centraux et des éléments de précision.",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 8,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "Objet de la description",
+          "description": "Correctement identifié."
+        },
+        {
+          "points": 3,
+          "label": "Première mise en relation",
+          "description": "Élément central et précisions."
+        },
+        {
+          "points": 3,
+          "label": "Deuxième mise en relation",
+          "description": "Élément central et précisions."
+        }
+      ]
+    }
   }
 ]
 

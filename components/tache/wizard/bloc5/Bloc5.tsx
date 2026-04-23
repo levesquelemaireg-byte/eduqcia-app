@@ -12,6 +12,7 @@ import dynamic from "next/dynamic";
 import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { resolveComportementSlug } from "@/lib/tache/behaviours/comportement-slug";
 import { BLOC5_DYNAMIC_BY_SLUG } from "@/lib/tache/behaviours/registry";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
 import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import type { ComponentType } from "react";
@@ -28,6 +29,12 @@ const Bloc5IntrusDynamic: ComponentType<Bloc5Props> = dynamic(
  */
 export function Bloc5() {
   const { state, dispatch } = useTacheForm();
+
+  const parcours = resoudreParcours(state.bloc2.typeTache);
+  if (parcours.bloc5Type === "corrige_cd1" || parcours.bloc5Type === "corrige_cd2") {
+    // Sections B et C — composants non implémentés, le parent rend un squelette.
+    return null;
+  }
 
   const config = getWizardBlocConfig(state.bloc2.comportementId);
   if (config?.bloc5?.type === "intrus") {

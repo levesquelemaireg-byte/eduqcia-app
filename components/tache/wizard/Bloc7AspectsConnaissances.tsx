@@ -21,6 +21,7 @@ import {
   type HqcConnRow,
 } from "@/lib/tache/connaissances-helpers";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import {
   BLOC7_CONNAISSANCES_HELP,
@@ -47,6 +48,15 @@ export function Bloc7AspectsConnaissances() {
 
   const gateOk = isConnaissancesStepGateOk(state);
   const aspects = state.bloc7.aspects;
+
+  const aspectsImposes = useMemo(() => {
+    const set = new Set<AspectSocieteKey>();
+    const parcours = resoudreParcours(state.bloc2.typeTache);
+    if (!parcours.aspectsRequis) return set;
+    if (state.bloc2.aspectA) set.add(state.bloc2.aspectA);
+    if (state.bloc2.aspectB) set.add(state.bloc2.aspectB);
+    return set;
+  }, [state.bloc2.typeTache, state.bloc2.aspectA, state.bloc2.aspectB]);
 
   const selectedIds = useMemo(
     () => new Set(state.bloc7.connaissances.map((c) => c.rowId)),
@@ -168,6 +178,7 @@ export function Bloc7AspectsConnaissances() {
 
       <SectionAspects
         aspects={aspects}
+        aspectsImposes={aspectsImposes}
         onToggle={toggleAspect}
         onInfoClick={() => setModalAspects(true)}
       />
