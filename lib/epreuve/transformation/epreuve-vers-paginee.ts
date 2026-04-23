@@ -6,7 +6,7 @@
  *
  * Centralise :
  * - Renumérotation globale des documents
- * - Résolution des placeholders `{{doc_A}}` dans consignes et guidages
+ * - Résolution des placeholders `{{doc_N}}` (et `{{doc_A}}` legacy) dans consignes et guidages
  * - Composition par mode (formatif / sommatif-standard / épreuve-ministérielle)
  * - Application du flag `estCorrige`
  * - Règles de visibilité (guidage et titres de documents)

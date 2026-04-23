@@ -3,7 +3,7 @@
  * - ready / skeleton / hidden : constructeurs SectionState
  * - sanitize : wrapper DOMPurify
  * - createSelector : mémoïsation légère maison (2-3 inputs, shallow compare)
- * - resolveDocPlaceholders : remplacement {{doc_A}} → numéros
+ * - resolveDocPlaceholders : remplacement {{doc_N}} (et {{doc_A}} legacy) → numéros
  */
 
 import DOMPurify from "isomorphic-dompurify";

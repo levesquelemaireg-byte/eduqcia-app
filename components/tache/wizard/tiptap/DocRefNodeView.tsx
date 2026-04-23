@@ -4,7 +4,8 @@ import { NodeViewWrapper, type NodeViewProps } from "@tiptap/react";
 
 /**
  * NodeView React du nœud `docRef` — badge visuel (icône `article` + lettre).
- * Le HTML sérialisé reste `<span data-doc-ref="A">{{doc_A}}</span>` (cf. extensionDocRef.ts) ;
+ * Le HTML sérialisé est `<span data-doc-ref="A">{{doc_1}}</span>` (lettre conservée
+ * pour l'affichage dans l'éditeur, placeholder numérique pour la publication ; cf. extensionDocRef.ts) ;
  * seul le rendu DANS l'éditeur change. Atomique : flèches sautent, Backspace supprime entier.
  */
 export function DocRefNodeView({ node }: NodeViewProps) {

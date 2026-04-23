@@ -26,7 +26,7 @@ export function selectConsigne(
 
   // Strip éléments feuille élève (réponse, ancre guidage) pour affichage enseignant
   const teacherHtml = prepareNonRedactionConsigneForTeacherDisplay(rawHtml);
-  // Résolution placeholders : {{doc_A}} → 1 + data-doc-ref → lettre
+  // Résolution placeholders : {{doc_N}} (et {{doc_A}} legacy) → 1 + data-doc-ref → lettre
   const resolved = resolveDocPlaceholders(teacherHtml, nbDocs);
   const html = sanitize(resolved);
 
