@@ -13,6 +13,10 @@ export type RadioCardOption = {
   description?: string;
   /** Nom du glyphe Material Symbols Outlined (ex. "person"). */
   icon?: string;
+  /** Option non sélectionnable (grisée, non focusable). */
+  disabled?: boolean;
+  /** Badge court affiché en fin de ligne (ex. « Bientôt disponible »). */
+  badge?: string;
 };
 
 type Props = {
@@ -24,6 +28,8 @@ type Props = {
   required?: boolean;
   /** Label visible au-dessus du groupe (rendu comme `<legend>`). */
   label?: string;
+  /** Désactive l'ensemble du groupe (blueprintLocked, submit en cours, etc.). */
+  disabled?: boolean;
 };
 
 // ---------------------------------------------------------------------------
@@ -38,27 +44,41 @@ export function RadioCardGroup({
   columns = 2,
   required,
   label,
+  disabled: groupDisabled,
 }: Props) {
   const groupId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      const idx = options.findIndex((o) => o.value === value);
-      let next = idx;
-      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
-        next = (idx + 1) % options.length;
-      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
-        next = (idx - 1 + options.length) % options.length;
-      } else {
+      if (groupDisabled) return;
+      const isSelectable = (opt: RadioCardOption) => !opt.disabled;
+      const current = options.findIndex((o) => o.value === value);
+      const count = options.length;
+      if (count === 0) return;
+      let next = current;
+      const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : -1;
+      if (
+        !(
+          e.key === "ArrowRight" ||
+          e.key === "ArrowDown" ||
+          e.key === "ArrowLeft" ||
+          e.key === "ArrowUp"
+        )
+      ) {
         return;
       }
+      for (let i = 0; i < count; i++) {
+        next = (next + step + count) % count;
+        if (isSelectable(options[next]!)) break;
+      }
+      if (!isSelectable(options[next]!)) return;
       e.preventDefault();
       onChange(options[next]!.value);
       const cards = containerRef.current?.querySelectorAll<HTMLElement>("[role='radio']");
       cards?.[next]?.focus();
     },
-    [options, value, onChange],
+    [options, value, onChange, groupDisabled],
   );
 
   const colClass =
@@ -86,19 +106,26 @@ export function RadioCardGroup({
       >
         {options.map((opt) => {
           const checked = opt.value === value;
+          const optDisabled = Boolean(groupDisabled || opt.disabled);
           return (
             <button
               key={opt.value}
               type="button"
               role="radio"
               aria-checked={checked}
-              tabIndex={checked ? 0 : -1}
-              onClick={() => onChange(opt.value)}
+              aria-disabled={optDisabled || undefined}
+              disabled={optDisabled}
+              tabIndex={optDisabled ? -1 : checked ? 0 : -1}
+              onClick={() => {
+                if (optDisabled) return;
+                onChange(opt.value);
+              }}
               className={cn(
                 "flex items-start gap-2 rounded-md px-3 py-2.5 text-left transition-colors duration-150",
                 checked
                   ? "border-[1.5px] border-[color:var(--color-border-success)] bg-[color:var(--color-background-success)]"
                   : "border-[0.5px] border-[color:var(--color-border)] bg-surface hover:border-[color:var(--color-border-secondary)]",
+                optDisabled && "cursor-not-allowed opacity-60 hover:border-(--color-border)",
               )}
             >
               {/* Cercle indicateur */}
@@ -138,6 +165,11 @@ export function RadioCardGroup({
                     </span>
                   ) : null}
                   <span className="text-[13px] font-medium text-deep">{opt.label}</span>
+                  {opt.badge ? (
+                    <span className="ml-auto rounded-full border border-border bg-panel px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted">
+                      {opt.badge}
+                    </span>
+                  ) : null}
                 </span>
                 {opt.description ? (
                   <span className="pl-0 text-xs leading-relaxed text-muted">{opt.description}</span>

@@ -8,6 +8,8 @@ import {
 import { Bloc2EspaceProductionReadonly } from "@/components/tache/wizard/bloc2/Bloc2EspaceProductionReadonly";
 import { ComportementPicker } from "@/components/tache/wizard/bloc2/ComportementPicker";
 import { DISCIPLINE_LABEL, NIVEAU_SELECT_OPTIONS } from "@/components/tache/wizard/bloc2/constants";
+import { SelecteurAspects } from "@/components/tache/wizard/bloc2/selecteur-aspects";
+import { SelecteurTypeTache } from "@/components/tache/wizard/bloc2/selecteur-type-tache";
 import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { InlineWarning } from "@/components/ui/InlineWarning";
 import { ListboxField } from "@/components/ui/ListboxField";
@@ -15,6 +17,7 @@ import { RequiredMark } from "@/components/ui/RequiredMark";
 import { BLOC2_SOFT_WARNING_NB_DOCUMENTS } from "@/lib/ui/copy/document";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
 import { isDisciplineAutoAssignedForNiveau } from "@/lib/tache/blueprint-helpers";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { OiPicker } from "@/components/tache/wizard/bloc2/OiPicker";
 import type { BlueprintSlice } from "@/components/tache/wizard/FormState";
 import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
@@ -78,6 +81,8 @@ export function Bloc2EditFields({
     (d) => d !== undefined && d.mode !== "idle",
   ).length;
   const showSoftWarning = b.nbDocuments != null && filledSlots > b.nbDocuments;
+
+  const parcours = resoudreParcours(b.typeTache);
 
   return (
     <div className="space-y-6">
@@ -165,23 +170,31 @@ export function Bloc2EditFields({
         </div>
       </div>
 
-      <OiPicker
-        oiList={oiList}
-        oiId={b.oiId}
-        disciplineSet={Boolean(b.discipline)}
-        selectedOi={selectedOi}
-        onSelectOi={onSetOi}
-        onInfoClick={() => onModalOiOpenChange(true)}
-      />
+      <SelecteurTypeTache />
 
-      <ComportementPicker
-        comportements={comportementsSelectable}
-        comportementId={b.comportementId}
-        disabled={!selectedOi}
-        oiSelected={Boolean(selectedOi)}
-        onSelectComportement={onSetComportement}
-        onInfoClick={() => onModalComportementOpenChange(true)}
-      />
+      {parcours.aspectsRequis ? <SelecteurAspects /> : null}
+
+      {!parcours.oiAutoAssignee ? (
+        <>
+          <OiPicker
+            oiList={oiList}
+            oiId={b.oiId}
+            disciplineSet={Boolean(b.discipline)}
+            selectedOi={selectedOi}
+            onSelectOi={onSetOi}
+            onInfoClick={() => onModalOiOpenChange(true)}
+          />
+
+          <ComportementPicker
+            comportements={comportementsSelectable}
+            comportementId={b.comportementId}
+            disabled={!selectedOi}
+            oiSelected={Boolean(selectedOi)}
+            onSelectComportement={onSetComportement}
+            onInfoClick={() => onModalComportementOpenChange(true)}
+          />
+        </>
+      ) : null}
 
       {showSoftWarning ? (
         <InlineWarning icon="warning">

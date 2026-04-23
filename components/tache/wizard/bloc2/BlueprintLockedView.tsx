@@ -4,6 +4,8 @@ import { WarningModal } from "@/components/ui/WarningModal";
 import type { BlueprintSlice } from "@/components/tache/wizard/FormState";
 import { DISCIPLINE_LABEL, NIVEAUX } from "@/components/tache/wizard/bloc2/constants";
 import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
+import { ASPECT_LABEL } from "@/lib/tache/aspect-labels";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import type { ComportementAttenduJson, OiEntryJson } from "@/lib/types/oi";
 import {
   BLOC2_BLUEPRINT_LOCKED_LBL_COMPORTEMENT,
@@ -40,6 +42,7 @@ export function BlueprintLockedView({
   onUnlockModalOpenChange,
   onConfirmUnlock,
 }: Props) {
+  const parcours = resoudreParcours(b.typeTache);
   return (
     <div className="space-y-4">
       <div className="rounded-lg border border-border bg-panel-alt/60 p-4 text-sm">
@@ -56,13 +59,28 @@ export function BlueprintLockedView({
               : "—"}
           </li>
           <li>
-            <span className="font-medium text-deep">{BLOC2_BLUEPRINT_LOCKED_LBL_OI}</span>{" "}
-            {selectedOi?.titre ?? b.oiId}
+            <span className="font-medium text-deep">Type de tâche :</span> {parcours.label}
           </li>
-          <li>
-            <span className="font-medium text-deep">{BLOC2_BLUEPRINT_LOCKED_LBL_COMPORTEMENT}</span>{" "}
-            {selectedComportement?.enonce ?? b.comportementId}
-          </li>
+          {parcours.aspectsRequis && b.aspectA && b.aspectB ? (
+            <li>
+              <span className="font-medium text-deep">Aspects de société :</span>{" "}
+              {ASPECT_LABEL[b.aspectA]}, {ASPECT_LABEL[b.aspectB]}
+            </li>
+          ) : null}
+          {parcours.oiAutoAssignee ? null : (
+            <>
+              <li>
+                <span className="font-medium text-deep">{BLOC2_BLUEPRINT_LOCKED_LBL_OI}</span>{" "}
+                {selectedOi?.titre ?? b.oiId}
+              </li>
+              <li>
+                <span className="font-medium text-deep">
+                  {BLOC2_BLUEPRINT_LOCKED_LBL_COMPORTEMENT}
+                </span>{" "}
+                {selectedComportement?.enonce ?? b.comportementId}
+              </li>
+            </>
+          )}
           {hideNbLignesSummary ? null : (
             <li>
               <span className="font-medium text-deep">{BLOC2_BLUEPRINT_LOCKED_LBL_NB_LIGNES}</span>{" "}
