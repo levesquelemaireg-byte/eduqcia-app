@@ -41,7 +41,8 @@ export const TACHE_FICHE_SECTIONS_B = [
   forcerSkeleton(SECTION_DOCUMENTS),
   forcerSkeleton(SECTION_CORRIGE),
   SECTION_GRILLE,
-  forcerSkeleton(SECTION_CD),
+  // SECTION_CD : pas de skeleton forcé — le selector dérive la CD auto-assignée dès l'étape 2.
+  SECTION_CD,
   forcerSkeleton(SECTION_CONNAISSANCES),
   SECTION_FOOTER,
 ] as const;

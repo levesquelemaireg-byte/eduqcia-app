@@ -110,8 +110,8 @@ export interface FicheSectionEntry<TState> {
 
 export interface HeaderData {
   oi: { id: string; titre: string; icone: string } | null;
-  /** Parcours affiché à la place de l'OI quand celle-ci n'est pas pertinente (Section B/C). */
-  parcours: { label: string; icone: string } | null;
+  /** Parcours affiché à la place de l'OI quand celle-ci n'est pas pertinente (Schéma, Interprétation). */
+  parcours: { label: string; icone: string; iconMirror?: boolean } | null;
   comportement: { id: string; enonce: string } | null;
   niveau: string;
   discipline: string;
@@ -145,6 +145,11 @@ export interface GrilleData {
 
 export interface CompetenceData {
   cd: CdSelection;
+  /**
+   * Note affichée à la place des composante/critère quand la compétence est
+   * auto-assignée par le parcours (l'ensemble des composantes et critères est mobilisé).
+   */
+  note?: string;
 }
 
 export interface ConnaissancesData {

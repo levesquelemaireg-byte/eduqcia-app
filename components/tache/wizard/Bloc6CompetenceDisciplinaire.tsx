@@ -10,6 +10,7 @@ import {
   parseCdJsonArray,
   type CdCompetenceNode,
 } from "@/lib/tache/cd-helpers";
+import { CD_TITRE_AUTO_ASSIGNEE } from "@/lib/tache/parcours/cd-titres-auto-assignes";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import {
   BLOC5_CD_GATE_WIZARD,
@@ -22,15 +23,20 @@ import {
 export function Bloc6CompetenceDisciplinaire() {
   const { state, dispatch } = useTacheForm();
   const discipline = state.bloc2.discipline as DisciplineCode;
-  const [rows, setRows] = useState<CdCompetenceNode[] | null>(null);
-  const [loadError, setLoadError] = useState(false);
+  const parcours = resoudreParcours(state.bloc2.typeTache);
 
   const gateOk = isCdStepGateOk(state);
   const dataUrl = cdDataUrlForDiscipline(discipline);
-  const parcours = resoudreParcours(state.bloc2.typeTache);
+
+  // Hooks déclarés inconditionnellement avant tout retour — respect des règles React.
+  const [rows, setRows] = useState<CdCompetenceNode[] | null>(null);
+  const [loadError, setLoadError] = useState(false);
+
+  // Pas de fetch si la compétence est auto-assignée (titre hardcodé dans le lookup).
+  const skipFetch = parcours.cdAutoAssignee;
 
   useEffect(() => {
-    if (!dataUrl) return;
+    if (!dataUrl || skipFetch) return;
     let cancelled = false;
     fetch(dataUrl)
       .then((r) => {
@@ -48,10 +54,37 @@ export function Bloc6CompetenceDisciplinaire() {
     return () => {
       cancelled = true;
     };
-  }, [dataUrl]);
+  }, [dataUrl, skipFetch]);
 
   if (!gateOk) {
     return <p className="text-sm leading-relaxed text-muted">{BLOC5_CD_GATE_WIZARD}</p>;
+  }
+
+  // Compétence imposée par le parcours (Schéma, Interprétation) — lecture seule, lookup synchrone.
+  if (parcours.cdAutoAssignee) {
+    const cdId = parcours.cdParNiveau?.[state.bloc2.niveau];
+    const titre = cdId ? CD_TITRE_AUTO_ASSIGNEE[cdId] : undefined;
+    if (!titre) {
+      return (
+        <p className="text-sm text-error" role="alert">
+          Compétence disciplinaire introuvable pour ce niveau.
+        </p>
+      );
+    }
+    return (
+      <div className="rounded-lg border border-border bg-panel-alt/60 p-4">
+        <p className="icon-text text-sm font-semibold text-deep">
+          <span className="material-symbols-outlined text-[1em] text-muted" aria-hidden="true">
+            lock
+          </span>
+          <span>{titre}</span>
+        </p>
+        <p className="mt-2 text-xs leading-relaxed text-muted">
+          L’ensemble des composantes et critères de cette compétence est mobilisé par le schéma de
+          caractérisation.
+        </p>
+      </div>
+    );
   }
 
   if (discipline === "geo") {
@@ -72,28 +105,6 @@ export function Bloc6CompetenceDisciplinaire() {
 
   if (rows.length === 0) {
     return <p className="text-sm text-muted">Aucun élément pour le moment.</p>;
-  }
-
-  // Compétence imposée par le parcours (Section B/C) — dérivation Pull.
-  if (parcours.cdAutoAssignee) {
-    const cdId = parcours.cdParNiveau?.[state.bloc2.niveau];
-    const competence = cdId ? rows.find((r) => r.id === cdId) : undefined;
-    if (!competence) {
-      return (
-        <p className="text-sm text-error" role="alert">
-          Compétence disciplinaire introuvable pour ce niveau.
-        </p>
-      );
-    }
-    return (
-      <div className="rounded-lg border border-border bg-panel-alt/60 p-4">
-        <p className="text-sm font-semibold text-deep">{competence.titre}</p>
-        <p className="mt-2 text-xs leading-relaxed text-muted">
-          Compétence imposée par le type de tâche — sélectionnée automatiquement selon le niveau
-          scolaire.
-        </p>
-      </div>
-    );
   }
 
   return (

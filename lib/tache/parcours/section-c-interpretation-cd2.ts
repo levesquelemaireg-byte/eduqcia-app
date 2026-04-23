@@ -10,7 +10,7 @@ import type { ParcoursTache } from "./types";
  */
 export const PARCOURS_SECTION_C_INTERPRETATION_CD2: ParcoursTache = {
   id: "section-c-interpretation-cd2",
-  label: "Section C — Interprétation",
+  label: "Interprétation",
   critereOfficiel: "Rigueur de l'interprétation",
   description: "Explication des transformations d'une réalité sociale (texte ~150 mots)",
   actif: false,

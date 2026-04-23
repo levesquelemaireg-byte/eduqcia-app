@@ -23,6 +23,7 @@ import {
   isPerspectivesStepComplete,
   isMomentsStepComplete,
 } from "@/lib/tache/oi-perspectives/perspectives-helpers";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { isRedactionSliceReadyForCdGate } from "@/lib/tache/redaction-helpers";
 import { getRedactionSliceForPreview } from "@/lib/tache/tache-form-state-types";
 import { getWizardBlocConfig } from "@/lib/tache/wizard-bloc-config";
@@ -34,6 +35,9 @@ import {
 
 /** Géographie : pas de fichier CD — étape considérée complète sans sélection (BLOC5-CD.md §2). */
 export function isCdStepComplete(state: TacheFormState): boolean {
+  // Compétence auto-assignée par le parcours — étape toujours complète.
+  const parcours = resoudreParcours(state.bloc2.typeTache);
+  if (parcours.cdAutoAssignee) return true;
   const disc = state.bloc2.discipline as DisciplineCode;
   if (disc === "geo") return true;
   const sel = state.bloc6.cd.selection;

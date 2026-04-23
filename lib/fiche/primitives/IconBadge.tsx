@@ -17,6 +17,8 @@ type Props = {
   accent?: boolean;
   /** Animation douce d'apparition au chargement. */
   animate?: boolean;
+  /** Miroir horizontal du glyphe (`scaleX(-1)`). */
+  mirror?: boolean;
 };
 
 /**
@@ -24,7 +26,16 @@ type Props = {
  * Taille adaptée au mode (plus petite en thumbnail).
  * En mode `boxed`, rend une boîte carrée avec fond panel-alt (ou accent si `accent`) et radius 12px.
  */
-export function IconBadge({ glyph, mode, boxed, size = 52, glyphSize, accent, animate }: Props) {
+export function IconBadge({
+  glyph,
+  mode,
+  boxed,
+  size = 52,
+  glyphSize,
+  accent,
+  animate,
+  mirror,
+}: Props) {
   if (boxed) {
     const resolvedGlyphSize = glyphSize ?? Math.round(size / 2);
     return (
@@ -39,7 +50,11 @@ export function IconBadge({ glyph, mode, boxed, size = 52, glyphSize, accent, an
       >
         <MaterialSymbolOiGlyph
           glyph={glyph}
-          className={cn("leading-none", accent ? "text-white" : "text-accent")}
+          className={cn(
+            "leading-none",
+            accent ? "text-white" : "text-accent",
+            mirror && "-scale-x-100",
+          )}
           style={{
             fontSize: `${resolvedGlyphSize}px`,
             fontVariationSettings: '"FILL" 0, "wght" 300, "GRAD" 200, "opsz" 48',
@@ -56,7 +71,7 @@ export function IconBadge({ glyph, mode, boxed, size = 52, glyphSize, accent, an
   return (
     <MaterialSymbolOiGlyph
       glyph={glyph}
-      className="leading-none text-accent opacity-[0.88]"
+      className={cn("leading-none text-accent opacity-[0.88]", mirror && "-scale-x-100")}
       style={{
         fontSize,
         fontVariationSettings: '"FILL" 0, "wght" 300, "GRAD" 200, "opsz" 48',

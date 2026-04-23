@@ -42,7 +42,9 @@ export function selectHeaderMeta(
 
   return ready({
     oi: oiEntry ? { id: oiEntry.id, titre: oiEntry.titre, icone: oiEntry.icone } : null,
-    parcours: parcours.oiPertinente ? null : { label: parcours.label, icone: parcours.icone },
+    parcours: parcours.oiPertinente
+      ? null
+      : { label: parcours.label, icone: parcours.icone, iconMirror: parcours.iconMirror },
     comportement: comportement ? { id: comportement.id, enonce: comportement.enonce } : null,
     niveau: niveauLabel,
     discipline: disciplineLabel,

@@ -2,13 +2,14 @@ import type { ParcoursTache } from "./types";
 
 export const PARCOURS_SECTION_B_SCHEMA_CD1: ParcoursTache = {
   id: "section-b-schema-cd1",
-  label: "Section B — Caractérisation",
+  label: "Schéma de caractérisation",
   critereOfficiel: "Représentation cohérente d'une période de l'histoire du Québec et du Canada",
   description: "Schéma de caractérisation — description d'une période sous deux aspects de société",
   actif: true,
   oiPertinente: false,
   cdAutoAssignee: true,
-  icone: "flowchart",
+  icone: "schema",
+  iconMirror: true,
   cdParNiveau: {
     sec1: "HEC-CD1",
     sec2: "HEC-CD1",

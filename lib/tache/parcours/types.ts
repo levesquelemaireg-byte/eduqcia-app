@@ -29,6 +29,8 @@ export type ParcoursTache = {
   grilleFixe?: string;
   /** Icône Material Symbols Outlined — pastille du Sommaire quand l'OI n'est pas pertinente. */
   icone: string;
+  /** Appliquer `scaleX(-1)` à l'icône pour obtenir un miroir horizontal. */
+  iconMirror?: boolean;
   documentsMin: number;
   documentsMax: number;
   aspectsRequis: boolean;

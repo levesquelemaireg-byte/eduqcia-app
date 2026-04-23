@@ -29,17 +29,24 @@ export function FicheHeader({ data, mode }: Props) {
   const chipProps = chipPropsForFicheMode(mode);
 
   const badgeGlyph = data.oi?.icone ?? data.parcours?.icone ?? null;
+  const badgeMirror = data.oi ? false : Boolean(data.parcours?.iconMirror);
+  const parcoursChipIconClass = data.parcours?.iconMirror ? "-scale-x-100" : undefined;
 
   if (mode === "thumbnail") {
     return (
       <div className="flex items-center gap-3 px-4 pt-3 pb-2">
-        {badgeGlyph ? <IconBadge glyph={badgeGlyph} mode={mode} /> : null}
+        {badgeGlyph ? <IconBadge glyph={badgeGlyph} mode={mode} mirror={badgeMirror} /> : null}
         {hasAnyPill ? (
           <ChipBar className="gap-1.5">
             {showOiPill ? (
               <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
             ) : showParcoursPill ? (
-              <MetaChip icon={data.parcours!.icone} label={data.parcours!.label} {...chipProps} />
+              <MetaChip
+                icon={data.parcours!.icone}
+                label={data.parcours!.label}
+                iconClassName={parcoursChipIconClass}
+                {...chipProps}
+              />
             ) : null}
             {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
           </ChipBar>
@@ -52,7 +59,7 @@ export function FicheHeader({ data, mode }: Props) {
     <header className="relative grid min-w-0 grid-cols-[96px_minmax(0,1fr)] items-stretch">
       <div className="relative flex items-center justify-center px-1 py-0">
         {badgeGlyph ? (
-          <IconBadge glyph={badgeGlyph} mode={mode} />
+          <IconBadge glyph={badgeGlyph} mode={mode} mirror={badgeMirror} />
         ) : (
           <div
             className="h-14 w-14 shrink-0 rounded-full border-2 border-dashed border-border animate-pulse"
@@ -71,7 +78,12 @@ export function FicheHeader({ data, mode }: Props) {
             {showOiPill ? (
               <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
             ) : showParcoursPill ? (
-              <MetaChip icon={data.parcours!.icone} label={data.parcours!.label} {...chipProps} />
+              <MetaChip
+                icon={data.parcours!.icone}
+                label={data.parcours!.label}
+                iconClassName={parcoursChipIconClass}
+                {...chipProps}
+              />
             ) : null}
             {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
             {data.discipline ? (

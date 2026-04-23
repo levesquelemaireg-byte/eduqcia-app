@@ -12,6 +12,8 @@ type Props = {
   label?: string;
   className?: string;
   ariaLabel?: string;
+  /** Classes ajoutées au glyphe (ex : `-scale-x-100` pour un miroir horizontal). */
+  iconClassName?: string;
   /** Contenu alternatif à `label` — utilisé quand la chip a une structure interne (ex : breadcrumb). */
   children?: ReactNode;
   /** Troncature dure en caractères (avec `…`). Sinon la troncature est gérée par CSS (ellipsis). */
@@ -26,6 +28,7 @@ export function MetaChip({
   label,
   className,
   ariaLabel,
+  iconClassName,
   children,
   maxChars,
   hideWhenEmpty,
@@ -43,7 +46,7 @@ export function MetaChip({
       role={iconOnly ? "img" : undefined}
     >
       <span
-        className="material-symbols-outlined shrink-0 text-[0.9em] text-accent"
+        className={cn("material-symbols-outlined shrink-0 text-[0.9em] text-accent", iconClassName)}
         aria-hidden="true"
       >
         {icon}
