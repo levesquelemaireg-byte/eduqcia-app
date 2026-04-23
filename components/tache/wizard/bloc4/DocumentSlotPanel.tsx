@@ -19,6 +19,7 @@ import { DocumentSlotPanelModals } from "@/components/tache/wizard/bloc4/Documen
 import { DocumentSlotReuseBlock } from "@/components/tache/wizard/bloc4/DocumentSlotReuseBlock";
 import { useDocumentSlotImageUpload } from "@/components/tache/wizard/bloc4/useDocumentSlotImageUpload";
 import type { BanqueDocStub } from "@/components/tache/wizard/bloc4/BanqueDocumentsStub";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 
 type Props = {
   slotId: DocumentSlotId;
@@ -111,6 +112,14 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
     return <DocumentSlotLockedCard letter={letter} />;
   }
 
+  const parcours = resoudreParcours(state.bloc2.typeTache);
+  const pertinence =
+    parcours.bloc4Type === "dossier_cd1" && slot.mode !== "idle"
+      ? slot.estLeurre
+        ? ({ type: "leurre" } as const)
+        : { type: "pertinent" as const, nbCases: slot.casesAssociees.length }
+      : null;
+
   return (
     <div className="overflow-hidden rounded-2xl bg-panel shadow-sm ring-1 ring-border/50">
       <DocumentSlotPanelHeader
@@ -119,6 +128,7 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
         status={status}
         open={open}
         onToggle={toggleSlot}
+        pertinence={pertinence}
       />
 
       {open ? (
@@ -133,6 +143,7 @@ export function DocumentSlotPanel({ slotId, slotIndex, orderedIds }: Props) {
           {slot.mode === "create" ? (
             <DocumentSlotCreateForm
               slot={slot}
+              slotId={slotId}
               letter={letter}
               titreId={titreId}
               sourceId={sourceId}

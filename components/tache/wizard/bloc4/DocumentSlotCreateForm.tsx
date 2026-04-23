@@ -12,10 +12,15 @@ import { Textarea } from "@/components/ui/Textarea";
 import { DocumentSlotImageField } from "@/components/tache/wizard/bloc4/DocumentSlotImageField";
 import { DocumentSlotLegendBlock } from "@/components/tache/wizard/bloc4/DocumentSlotLegendBlock";
 import { DocumentSlotSourceTypeFieldset } from "@/components/tache/wizard/bloc4/DocumentSlotSourceTypeFieldset";
+import { AssociationsCases } from "@/components/tache/wizard/bloc4/associations-cases";
+import { ToggleLeurre } from "@/components/tache/wizard/bloc4/toggle-leurre";
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
+import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { getDocumentTypeIcon } from "@/lib/tache/document-categories-helpers";
+import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotData } from "@/lib/tache/document-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import {
   BLOC4_WARNING_NO_SOURCE,
   BLOC4_WARNING_NO_TITLE,
@@ -28,6 +33,7 @@ import {
 } from "@/lib/ui/ui-copy";
 type Props = {
   slot: DocumentSlotData;
+  slotId: DocumentSlotId;
   letter: string;
   titreId: string;
   sourceId: string;
@@ -42,6 +48,7 @@ type Props = {
 
 export function DocumentSlotCreateForm({
   slot,
+  slotId,
   letter,
   titreId,
   sourceId,
@@ -53,6 +60,9 @@ export function DocumentSlotCreateForm({
   onRequestChangeMode,
   legendError = null,
 }: Props) {
+  const { state } = useTacheForm();
+  const parcours = resoudreParcours(state.bloc2.typeTache);
+  const estDossierCd1 = parcours.bloc4Type === "dossier_cd1";
   const typeDocGroupId = useId();
   const iconoCategoryId = useId();
   const sourceHintId = `${sourceId}-hint`;
@@ -200,6 +210,13 @@ export function DocumentSlotCreateForm({
       </div>
 
       <DocumentSlotSourceTypeFieldset slot={slot} patch={patch} />
+
+      {estDossierCd1 ? (
+        <div className="space-y-4 rounded-lg border border-accent/30 bg-accent/5 p-4">
+          <ToggleLeurre slotId={slotId} />
+          {!slot.estLeurre ? <AssociationsCases slotId={slotId} /> : null}
+        </div>
+      ) : null}
 
       <div className="pt-1">
         <button

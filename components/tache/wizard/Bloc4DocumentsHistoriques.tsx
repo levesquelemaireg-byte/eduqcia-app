@@ -13,6 +13,7 @@ import { isBlueprintFieldsComplete } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { isRedactionSliceConsigneReady } from "@/lib/tache/redaction-helpers";
+import { isSchemaCd1ChapeauReady } from "@/lib/tache/schema-cd1/types";
 import { BLOC4_GATE_WIZARD } from "@/lib/ui/ui-copy";
 
 export function Bloc4DocumentsHistoriques() {
@@ -25,7 +26,10 @@ export function Bloc4DocumentsHistoriques() {
   const orderedIds = useMemo(() => slots.map((s) => s.slotId) as DocumentSlotId[], [slots]);
 
   const blueprintGate = isBlueprintFieldsComplete(b) && b.blueprintLocked;
-  const redactionOk = isRedactionSliceConsigneReady(getRedactionSliceForPreview(state));
+  const redactionOk =
+    parcours.bloc3Type === "schema_cd1"
+      ? isSchemaCd1ChapeauReady(state.bloc3.schemaCd1)
+      : isRedactionSliceConsigneReady(getRedactionSliceForPreview(state));
 
   if (!blueprintGate || !redactionOk) {
     return <p className="text-sm leading-relaxed text-muted">{BLOC4_GATE_WIZARD}</p>;

@@ -128,3 +128,9 @@ export function compterCasesCompletes(data: SchemaCd1Data): number {
   }
   return n;
 }
+
+/** La consigne de caractérisation est prête (chapeau objet + période saisis). */
+export function isSchemaCd1ChapeauReady(data: SchemaCd1Data | null): boolean {
+  if (!data) return false;
+  return data.chapeauObjet.trim().length > 0 && data.chapeauPeriode.trim().length > 0;
+}
