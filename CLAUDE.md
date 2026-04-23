@@ -49,6 +49,33 @@ Ne jamais modifier un fichier `docs/` de sa propre initiative. Exception : une d
 | Bibliothèque / Répertoire     | Banque collaborative                  |
 | 5 blocs                       | 7 étapes                              |
 
+### Terminologie — code et SQL : `tae` → `tache`
+
+Depuis le **22 avril 2026** (Phase 0), tout identifiant technique utilise **`tache`** (sans accent, français court). Le préfixe alpha `tae` est retiré :
+
+| Contexte            | Forme courante                                                                                                                                                                                                   |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tables SQL          | `tache`, `tache_documents`, `tache_wizard_drafts`, `tache_versions`, `tache_collaborateurs`, `tache_usages`, `evaluation_tache`                                                                                  |
+| Fonctions / RPC     | `publish_tache_transaction`, `update_tache_transaction`, `bump_tache_version`, `record_tache_usage`, `auth_can_edit_tache`, `apply_tache_collaborateurs_from_payload`, `tache_user_can_access_for_document_link` |
+| Vue                 | `banque_tache`                                                                                                                                                                                                   |
+| Répertoires         | `lib/tache/`, `components/tache/`                                                                                                                                                                                |
+| Symboles TS / React | `Tache*`, `TacheForm`, `TacheFicheData`, `DonneesTache` (jamais `Tae*` ni `Task*`)                                                                                                                               |
+| Clé JSONB payload   | `p_payload->'tache'`                                                                                                                                                                                             |
+
+**Accents :** **`Tâche`** / **`tâche`** (avec accent) en **UI / copy / texte visible** uniquement. Les identifiants techniques (SQL, TS, variables, chemins) utilisent **`tache`** sans accent — les accents ne sont pas admissibles dans les identifiants.
+
+**Survivances acceptées** (pas renommées pour minimiser la churn ; voir `docs/DECISIONS.md` § Terminologie code) :
+
+- Colonne FK **`tae_id`** dans les tables liées (`tache_documents.tae_id`, etc.)
+- Paramètre RPC **`p_tae_id`** (signatures alignées sur la colonne)
+- Bucket Storage Supabase **`tae-document-images`** (renommer un bucket = migrer les URLs stockées)
+- Valeurs de type dans `notifications.type` : **`tae_modified`**, **`tae_commented`**
+- Route Next.js **`/questions`** (URL publique)
+
+**Grandfathering dans la doc :** les entrées de **`docs/BACKLOG-HISTORY.md`** et **`docs/journal-developpement.md`** antérieures au 22 avril 2026 citent les tables / RPC sous leur nom historique (`tae`, `tae_documents`, `publish_tae_transaction`, etc.). **Ne pas les réécrire.** Tout le reste de la doc (`ARCHITECTURE.md`, `FEATURES.md`, `WORKFLOWS.md`, `UI-COPY.md`, `DECISIONS.md`, `DOMAIN_MODEL.md`, `README.md`, `FAQ.md`, `RLS-CHECKLIST.md`, `BACKLOG.md`) doit refléter l'état courant : `tache`.
+
+**Nouveau code :** toujours `tache` — jamais `tae` (sauf survivance explicite listée ci-dessus).
+
 ### Données JSON `public/data/`
 
 `oi.json`, `grilles-evaluation.json`, `hec-cd.json`, `hec-sec1-2.json`, `hqc-cd.json`, `hqc-sec3-4.json`, `css.json`, `css-ecoles.json` sont des **référentiels immuables**. Pas de reformulation, traduction ou correction des énoncés pédagogiques officiels.
@@ -102,7 +129,7 @@ export default async function Page() {
 }
 
 // ✅ Parallel fetching — éviter les waterfalls
-const [tae, documents, grilles] = await Promise.all([
+const [tache, documents, grilles] = await Promise.all([
   getTache(id),
   getDocuments(id),
   getGrilles(),
@@ -276,7 +303,7 @@ export const err = <E = string>(error: E): Result<never, E> => ({ ok: false, err
 
 // Usage dans lib/ — pas de try/catch partout dans les composants
 async function publishTache(payload: TachePayload): Promise<Result<string>> {
-  const { data, error } = await supabase.rpc("publish_tae_transaction", { p_payload: payload });
+  const { data, error } = await supabase.rpc("publish_tache_transaction", { p_payload: payload });
   if (error) return err(normalizeRpcError(error));
   return ok(data);
 }
@@ -304,15 +331,15 @@ import { createBrowserClient } from "@/lib/supabase/client";
 ### Queries — patterns typés et sécurisés
 
 ```typescript
-// lib/queries/tae.ts
+// lib/queries/tache.ts
 
 // ✅ Toujours typer le retour depuis database.types.ts
 import type { Database } from "@/lib/types/database";
-type TacheRow = Database["public"]["Tables"]["tae"]["Row"];
+type TacheRow = Database["public"]["Tables"]["tache"]["Row"];
 
 // ✅ Sélection explicite des colonnes — jamais select('*') en prod
 const { data, error } = await supabase
-  .from("tae")
+  .from("tache")
   .select("id, consigne, is_published, created_at, auteur_id")
   .eq("auteur_id", userId)
   .order("created_at", { ascending: false });
@@ -330,19 +357,19 @@ if (error)
 // ✅ RLS comme seule ligne de défense — jamais filtrer côté app seulement
 // La query échoue ou retourne vide si RLS bloque — c'est voulu
 
-// ✅ Transactions complexes → RPC (déjà en place : publish_tae_transaction, etc.)
+// ✅ Transactions complexes → RPC (déjà en place : publish_tache_transaction, etc.)
 ```
 
 ### Mutations — via Server Actions uniquement
 
 ```typescript
 // ❌ Jamais depuis un Client Component
-const { error } = await supabase.from('tae').insert(...)  // dans un composant
+const { error } = await supabase.from('tache').insert(...)  // dans un composant
 
 // ✅ Server Action → lib/queries/ ou RPC directement
 'use server'
 const supabase = await createServerClient()
-const { error } = await supabase.rpc('publish_tae_transaction', { p_payload })
+const { error } = await supabase.rpc('publish_tache_transaction', { p_payload })
 ```
 
 ### Migrations — discipline stricte
@@ -371,7 +398,7 @@ Page (app/)
                     └── Fonctions pures (lib/)
 ```
 
-**Règle de dépendance :** les couches ne dépendent que des couches inférieures. Un composant `ui/` ne connaît pas `tae/`. Une primitive ne connaît pas les règles métier.
+**Règle de dépendance :** les couches ne dépendent que des couches inférieures. Un composant `ui/` ne connaît pas `tache/`. Une primitive ne connaît pas les règles métier.
 
 ### Taille et découpage
 
@@ -423,13 +450,13 @@ type DocumentSlotProps =
 // 3. Profilage Profiler confirme un problème réel
 
 // ✅ React.memo pour les lignes de liste avec props stables
-const TacheCard = React.memo(function TacheCard({ tae }: { tae: TacheData }) {
+const TacheCard = React.memo(function TacheCard({ tache }: { tache: TacheData }) {
   return (/* ... */)
 })
 
 // ✅ useMemo pour les calculs coûteux
 const filteredTaches = useMemo(
-  () => taes.filter(filterFn),
+  () => taches.filter(filterFn),
   [taes, filterFn]  // dépendances précises
 )
 
@@ -698,7 +725,7 @@ app/
 components/
   ui/              # primitives : Button, Field, ListboxField, SimpleModal, RichTextEditor…
   layout/          # AppShell, Sidebar
-  tae/             # TacheForm (wizard), FicheTache, grilles, print, non-redaction
+  tache/           # TacheForm (wizard), FicheTache, grilles, print, non-redaction
   documents/       # AutonomousDocumentWizard, étapes, aperçu
   evaluations/     # EvaluationCompositionEditor
   bank/            # BankTasksPanel, BankDocumentsPanel, BankEvaluationsPanel
@@ -706,7 +733,7 @@ components/
 lib/
   actions/         # Server Actions — auth vérifiée en premier, Zod safeParse, Result<T>
   queries/         # lectures Supabase — select explicite, pas de select('*')
-  tae/             # helpers métier, publish, hydrate, print, non-redaction
+  tache/           # helpers métier, publish, hydrate, print, non-redaction
   ui/              # ui-copy.ts, colon.ts, fichiers copy dédiés
   schemas/         # Zod — source de vérité des types de formulaire
   types/           # TypeScript — database.ts généré, types métier
@@ -1040,7 +1067,7 @@ type(scope): description courte en français
 
 Ex: feat(wizard): ajouter repère temporel au Bloc 4
     fix(grilles): corriger fusion cellules OI3_SO5
-    docs(architecture): documenter RPC update_tae_transaction
+    docs(architecture): documenter RPC update_tache_transaction
 ```
 
 ---

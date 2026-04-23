@@ -195,7 +195,7 @@ Route `app/(app)/error.tsx` : affiché lorsqu'une erreur non gérée survient da
 
 - Aperçu sans consigne : « Création en cours — reprendre le formulaire »
 - Même badge **Brouillon** ; **Voir** et **Modifier** ouvrent la page **Créer une tâche** (`/questions/new`) pour reprendre le formulaire.
-- Tâche enregistrée (ligne `tae`) : **Modifier** ouvre le wizard sur `/questions/[id]/edit` (réhydratation des sept étapes).
+- Tâche enregistrée (ligne `tache`) : **Modifier** ouvre le wizard sur `/questions/[id]/edit` (réhydratation des sept étapes).
 
 ### Modale — supprimer le brouillon wizard
 
@@ -531,10 +531,10 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 - **Étape 3 :** **template de consigne ministérielle inline** (`ConsigneTemplateCard`, `OrdreChronologiqueConsigneTemplate`) — glyphe section consigne **`BLOC3_SECTION_ICON.consigne`** (`quiz`) comme le Bloc 3 rédactionnel ; badge **`NR_ORDRE_CONSIGNE_MINISTERIAL_BADGE`** + **`lock`** ; **`NR_ORDRE_CONSIGNE_HELP`** ; jeton wizard **`NR_ORDRE_WIZARD_DOC_TOKEN_*`** + **`settings`** ; zone thème **`NR_ORDRE_THEME_*`** (max 80 car., pilule **`LimitCounterPill`** sous la carte, alignée à droite, rampe warning à partir de 66 caractères ; plein à 80 sans état danger — `showDangerAtMax={false}`, `NR_ORDRE_THEME_REQUIRED`) ; légende **`NR_ORDRE_TEMPLATE_*`** ; note **`NR_ORDRE_TEMPLATE_RENUMBER_NOTE`** ; **pas** de bloc « APERÇU » dans la carte (aperçu = fiche sommaire). Donnée **`consigne_theme`** ; HTML publié : intro `{{doc_1}}`…`{{doc_4}}` (format numérique depuis Phase 1, 22 avril 2026 ; `NR_ORDRE_PUBLISHED_INTRO_*`). Puis **Guidage complémentaire** — `NR_ORDRE_GUIDAGE_FORM_LEAD`, encadré lecture seule (`buildOrdreChronologiqueGuidageHtml`), modale **`NR_ORDRE_GUIDAGE_INFO_MODAL_BODY`**, titre modale `BLOC3_MODAL_GUIDAGE_TITLE`. Les **aspects de société** se traitent à l’**étape 7** (`Bloc7AspectsConnaissances`). Synchronisation **`SET_GUIDAGE`** avec le HTML fixe dans `Bloc3OrdreChronologique`. **Pas** de générateur d’options A–D à cette étape (voir étape 5).
 - **Étape 5 (Bloc 5) :** **`SequenceOptionsGenerator`** — gates `NR_ORDRE_GATE_BLOC5_PRE_CONSIGNE`, `NR_ORDRE_GATE_BLOC5_OPTIONS` ; **séquence correcte** et complétude des années alignées sur **`getAnneePourComparaison`** (`computeOrdreSequenceFromYears` / `ordre-chronologique-years.ts`, `areOrdreChronologiqueDocumentYearsComplete`) ; année absente sans extraction depuis le repère → message `NR_ORDRE_BLOC5_YEARS_MISSING_DETAIL` dans le générateur ; **égalité d’années** : message `NR_ORDRE_BLOC5_YEAR_TIE_WARNING` + PIN manuel ; champs payload `optionsJustification`, `manualTieBreakSequence` ; **Générer** / **Régénérer les distracteurs** (`NR_ORDRE_REGENERATE_*`) ; étape 2 — affichage immédiat si brouillon déjà généré (`syncedFromValue` / `activeResult`), justification, `clearedOrdreOptionsPatch`. Composant `Bloc5OrdreChronologique`. (La constante **`NR_ORDRE_GATE_BLOC5_ANNEES`** reste dans le registre pour compatibilité ; elle n’est plus utilisée comme gate Bloc 5.)
-- **Corrigé :** lettre + **justification** (HTML `tae.corrige` via `buildOrdreChronologiqueCorrigeHtml`) ; `NR_ORDRE_CORRECT_*` conservés pour cohérence registre / futures erreurs.
-- **Guidage publié (`tae.guidage`) — élève :** texte **fixe** `NR_ORDRE_STUDENT_GUIDAGE`. **Options A–D (enseignant) :** `NR_ORDRE_OPTIONS_HELP`.
+- **Corrigé :** lettre + **justification** (HTML `tache.corrige` via `buildOrdreChronologiqueCorrigeHtml`) ; `NR_ORDRE_CORRECT_*` conservés pour cohérence registre / futures erreurs.
+- **Guidage publié (`tache.guidage`) — élève :** texte **fixe** `NR_ORDRE_STUDENT_GUIDAGE`. **Options A–D (enseignant) :** `NR_ORDRE_OPTIONS_HELP`.
 - **Étape 4 :** titre et description d’étape dédiés (`NR_ORDRE_STEP4_TITLE`, `NR_ORDRE_STEP4_DESCRIPTION`) ; bannière `NR_ORDRE_BLOC4_INFO` ; **rappel séquence** (`NR_ORDRE_BLOC4_REMINDER_*`, `formatNrOrdreBloc4ReminderLead`, `formatNrOrdreBloc4ReminderDigitDocLine`) lorsque la bonne suite et la lettre du corrigé sont connues ; formulaire par document : type, titre, **contenu (texte) ou image** (et légende le cas échéant), puis **source** et **type de source** ; pas de champ « date ou repère temporel » (repère lu dans le document par l’élève) ; messages de gate `NR_ORDRE_GATE_*`.
-- **Feuille élève (publication) :** `tae.consigne` = intro + **ancre** (`ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR`) + grille + réponse ; **`tae.guidage`** = texte élève fixe (`NR_ORDRE_STUDENT_GUIDAGE`). L’impression compose intro → guidage → grille selon `shouldShowGuidageOnStudentSheet`.
+- **Feuille élève (publication) :** `tache.consigne` = intro + **ancre** (`ORDRE_CHRONO_STUDENT_SHEET_GUIDAGE_ANCHOR`) + grille + réponse ; **`tache.guidage`** = texte élève fixe (`NR_ORDRE_STUDENT_GUIDAGE`). L’impression compose intro → guidage → grille selon `shouldShowGuidageOnStudentSheet`.
 
 **Note :** les anciennes constantes `NR_ORDRE_OPTION_*_PLACEHOLDER` ne décrivent plus une saisie libre ; l’affichage public des suites est `formatOrdreOptionRowDisplay` → `1 - 2 - 3 - 4`.
 
@@ -544,7 +544,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 **Registre :** constantes **`NR_LIGNE_TEMPS_*`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 2). **Branchement wizard / publication** : slug `ligne-du-temps` — `TACHE_NON_REDACTION_WIZARD_BLOCS`, `buildPublishPayload` / `ligne-du-temps-payload.ts`, `NON_REDACTION_PATCH_LIGNE_TEMPS`.
 
-- **Guidage publié (`tae.guidage`) — élève :** texte **fixe** `NR_LIGNE_TEMPS_STUDENT_GUIDAGE` (validé produit).
+- **Guidage publié (`tache.guidage`) — élève :** texte **fixe** `NR_LIGNE_TEMPS_STUDENT_GUIDAGE` (validé produit).
 - **Bloc 3 — Consigne (en-tête) :** aligné sur l’ordre chronologique — `NR_ORDRE_CONSIGNE_LABEL`, `NR_ORDRE_CONSIGNE_HELP`, modale d’aide titre `NR_ORDRE_CONSIGNE_LABEL`, **`OrdreChronologiqueConsigneMinisterialBadge`** (`NR_ORDRE_CONSIGNE_MINISTERIAL_BADGE`).
 - **Bloc 3 — Aperçu frise (sans choix du segment) :** `LigneDuTempsFrisePicker` avec `interactive={false}` — **`NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_LEAD`**, **`NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_HINT`** ; le segment corrigé se définit à l’**étape 5** (`Bloc5LigneDuTemps`).
 - **Bloc 3 :** `NR_LIGNE_TEMPS_GUIDAGE_FORM_LEAD` sous **Guidage complémentaire** ; modale info — **`NR_LIGNE_TEMPS_GUIDAGE_INFO_MODAL_BODY`**, titre aligné sur `BLOC3_MODAL_GUIDAGE_TITLE`.
@@ -553,12 +553,12 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ### Parcours non rédactionnel — avant / après (OI1 · comportement 1.3)
 
-**Registre :** constantes **`NR_AVANT_APRES_*`** et toast **`TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 3). **Branchement :** slug `avant-apres` — `TACHE_NON_REDACTION_WIZARD_BLOCS`, `Bloc3AvantApres`, `Bloc4AvantApres`, `Bloc5AvantApres`, `NON_REDACTION_PATCH_AVANT_APRES`, `avant-apres-payload.ts` / `avant-apres-helpers.ts`, colonne **`tae.non_redaction_data`**.
+**Registre :** constantes **`NR_AVANT_APRES_*`** et toast **`TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID`** dans `lib/ui/ui-copy.ts` (spec [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) parcours 3). **Branchement :** slug `avant-apres` — `TACHE_NON_REDACTION_WIZARD_BLOCS`, `Bloc3AvantApres`, `Bloc4AvantApres`, `Bloc5AvantApres`, `NON_REDACTION_PATCH_AVANT_APRES`, `avant-apres-payload.ts` / `avant-apres-helpers.ts`, colonne **`tache.non_redaction_data`**.
 
 - **Étape 3 :** consigne ministérielle (jetons `{{doc_*}}`, thème, repère, **année ou période AAAA–AAAA**) — **`NR_AVANT_APRES_*`** (labels repère / année, aide consigne, guidage complémentaire, modale guidage) ; alignement visuel sur l’ordre chronologique (`OrdreChronologiqueConsigneMinisterialBadge`, `NR_ORDRE_CONSIGNE_*` réutilisés où indiqué dans le code).
 - **Étape 4 :** quatre documents — **`NR_AVANT_APRES_BLOC4_INFO`**, gates documents / repère.
 - **Étape 5 :** tableau 4×3 (AVANT | repère | APRÈS), **Générer** / **Régénérer**, overrides **année pivot ou inclusion dans la période repère**, justification, gate options — clés **`NR_AVANT_APRES_BLOC5_*`** ; accessibilité tableau / radios — **`NR_AVANT_APRES_TABLE_*`**, **`NR_AVANT_APRES_OVERRIDE_*`**.
-- **Guidage publié (`tae.guidage`) — élève :** **`NR_AVANT_APRES_STUDENT_GUIDAGE`**.
+- **Guidage publié (`tache.guidage`) — élève :** **`NR_AVANT_APRES_STUDENT_GUIDAGE`**.
 - **Feuille élève (impression) :** intro publiée **`NR_AVANT_APRES_PUBLISHED_INTRO_*`** ; tableau des options — en-têtes **`NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_AVANT`** / **`NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES`**, **`NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR`** (colonne pivot sans titre visible) ; **`NR_AVANT_APRES_STUDENT_SHEET_*`** ; styles **`[data-avant-apres-student="true"]`** (`app/globals.css`). **Wizard Bloc 5 :** en-têtes explicites **`NR_AVANT_APRES_TABLE_COL_*`** (distincts de la feuille élève).
 - **Réhydratation JSON invalide (édition) :** **`TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID`**.
 
@@ -672,7 +672,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 - Modifications enregistrées avec succès (après édition d’une tâche déjà enregistrée)
 - Impossible d'enregistrer les modifications : la tâche figure dans une ou plusieurs épreuves. Retirez-la des épreuves concernées, puis réessayez.
 - Impossible de publier la tâche. Réessayez.
-- Mise à jour impossible : la fonction SQL update_tae_transaction est absente sur Supabase. Exécutez la migration supabase/migrations/20250325180000_update_tae_transaction.sql (SQL Editor ou supabase db push), puis réessayez.
+- Mise à jour impossible : la fonction SQL update_tache_transaction est absente sur Supabase. Exécutez la migration supabase/migrations/20250325180000_update_tae_transaction.sql (SQL Editor ou supabase db push), puis réessayez.
 - Impossible d'enregistrer le brouillon. Réessayez.
 - Après publication : message complémentaire si des **documents nouveaux** ont été créés avec la tâche et ne sont **pas encore visibles** dans la banque (`TOAST_TACHE_PUBLISH_UNPUBLISHED_DOCS` — `toast.message` après le succès).
 
@@ -976,7 +976,7 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 
 ### Texte « Utilisé dans X tâches »
 
-- Indique combien de tâches réutilisent ce document ; calculé à partir des liaisons **`tae_documents`** — **uniquement les TAÉ publiées**, une fois par tâche ([FEATURES.md](./FEATURES.md) §5.4). Formulations : voir `copyDocumentPublishedTacheUsageCount` dans `lib/ui/ui-copy.ts`.
+- Indique combien de tâches réutilisent ce document ; calculé à partir des liaisons **`tache_documents`** — **uniquement les TAÉ publiées**, une fois par tâche ([FEATURES.md](./FEATURES.md) §5.4). Formulations : voir `copyDocumentPublishedTacheUsageCount` dans `lib/ui/ui-copy.ts`.
 
 ---
 
