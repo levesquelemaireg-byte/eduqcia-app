@@ -355,6 +355,7 @@ export async function loadTacheFormStateForEdit(
           ?.bloc3.type === "pur"
           ? "personnalisee"
           : "gabarit",
+      schemaCd1: null,
     },
     bloc4: {
       documents,

@@ -9,6 +9,12 @@ import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import { emptyDocumentSlot, type DocumentSlotData } from "@/lib/tache/document-helpers";
 import { sanitizeCdFormSlice } from "@/lib/tache/cd-helpers";
 import { sanitizeConnaissances } from "@/lib/tache/connaissances-helpers";
+import {
+  SCHEMA_CD1_INITIAL,
+  TOUTES_LES_CASES,
+  type CleCase,
+  type SchemaCd1Data,
+} from "@/lib/tache/schema-cd1/types";
 import { normalizeAvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
 import { normalizeLigneDuTempsPayload } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import { normalizeOrdreChronologiquePayload } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
@@ -76,6 +82,62 @@ function normalizeSlotKey(key: string): DocumentSlotId | null {
   return LEGACY_SLOT_MAPPING[key] ?? null;
 }
 
+function isCleCase(v: unknown): v is CleCase {
+  return typeof v === "string" && (TOUTES_LES_CASES as readonly string[]).includes(v);
+}
+
+function sanitizeCasesAssociees(raw: unknown): CleCase[] {
+  if (!Array.isArray(raw)) return [];
+  const out: CleCase[] = [];
+  const seen = new Set<CleCase>();
+  for (const v of raw) {
+    if (isCleCase(v) && !seen.has(v)) {
+      out.push(v);
+      seen.add(v);
+    }
+  }
+  return out;
+}
+
+function sanitizeCaseSchema(raw: unknown): { guidage: string; reponse: string } {
+  if (!raw || typeof raw !== "object") return { guidage: "", reponse: "" };
+  const o = raw as Record<string, unknown>;
+  return {
+    guidage: typeof o.guidage === "string" ? o.guidage : "",
+    reponse: typeof o.reponse === "string" ? o.reponse : "",
+  };
+}
+
+function sanitizeBlocSchema(raw: unknown) {
+  if (!raw || typeof raw !== "object") {
+    return {
+      pivot: { guidage: "", reponse: "" },
+      precision1: { guidage: "", reponse: "" },
+      precision2: { guidage: "", reponse: "" },
+    };
+  }
+  const o = raw as Record<string, unknown>;
+  return {
+    pivot: sanitizeCaseSchema(o.pivot),
+    precision1: sanitizeCaseSchema(o.precision1),
+    precision2: sanitizeCaseSchema(o.precision2),
+  };
+}
+
+function sanitizeSchemaCd1(raw: unknown): SchemaCd1Data | null {
+  if (raw === null || raw === undefined) return null;
+  if (typeof raw !== "object") return null;
+  const o = raw as Record<string, unknown>;
+  return {
+    preambule: typeof o.preambule === "string" ? o.preambule : "",
+    chapeauObjet: typeof o.chapeauObjet === "string" ? o.chapeauObjet : "",
+    chapeauPeriode: typeof o.chapeauPeriode === "string" ? o.chapeauPeriode : "",
+    caseObjet: sanitizeCaseSchema(o.caseObjet),
+    blocA: sanitizeBlocSchema(o.blocA),
+    blocB: sanitizeBlocSchema(o.blocB),
+  };
+}
+
 function sanitizeDocumentsSlice(raw: unknown): Partial<Record<DocumentSlotId, DocumentSlotData>> {
   if (!raw || typeof raw !== "object") return {};
   const out: Partial<Record<DocumentSlotId, DocumentSlotData>> = {};
@@ -134,6 +196,10 @@ function sanitizeDocumentsSlice(raw: unknown): Partial<Record<DocumentSlotId, Do
           ? Math.trunc(s.annee_normalisee)
           : null,
       type_iconographique: parseTypeIconographique(s.type_iconographique),
+      estLeurre: Boolean(s.estLeurre),
+      casesAssociees: sanitizeCasesAssociees(
+        (s as Partial<DocumentSlotData> & { casesAssociees?: unknown }).casesAssociees,
+      ),
     };
   }
   return out;
@@ -276,6 +342,7 @@ export function sanitizeHydratedState(raw: unknown): TacheFormState | null {
 
   const b3 = o.bloc3 as Record<string, unknown>;
   const rawPerspMode = b3.perspectivesMode;
+  const hydratedSchema = sanitizeSchemaCd1(b3.schemaCd1);
   const bloc3 = {
     consigne: typeof b3.consigne === "string" ? b3.consigne : "",
     guidage: typeof b3.guidage === "string" ? b3.guidage : "",
@@ -293,6 +360,8 @@ export function sanitizeHydratedState(raw: unknown): TacheFormState | null {
     oi7Element3: typeof b3.oi7Element3 === "string" ? b3.oi7Element3 : "",
     consigneMode:
       b3.consigneMode === "personnalisee" ? ("personnalisee" as const) : ("gabarit" as const),
+    // En Section B on garantit une structure minimale si absente (ancienne version du brouillon).
+    schemaCd1: typeTache === "section_b" ? (hydratedSchema ?? SCHEMA_CD1_INITIAL) : hydratedSchema,
   };
 
   const b4 = o.bloc4 as { documents?: unknown };

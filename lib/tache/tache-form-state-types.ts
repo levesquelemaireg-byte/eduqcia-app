@@ -9,6 +9,7 @@ import type { DocumentSlotData } from "@/lib/tache/document-helpers";
 import type { CdFormSlice, CdSelectionWithIds } from "@/lib/tache/cd-helpers";
 import { initialCdFormSlice } from "@/lib/tache/cd-helpers";
 import type { ConnaissanceSelectionWithIds } from "@/lib/tache/connaissances-helpers";
+import type { CleCase, SchemaCd1Data } from "@/lib/tache/schema-cd1/types";
 import {
   initialAspects,
   type AspectSocieteKey,
@@ -71,6 +72,8 @@ export type Bloc3Slice = {
   oi7Element2: string;
   oi7Element3: string;
   consigneMode: "gabarit" | "personnalisee";
+  /** Données du schéma de caractérisation — Section B uniquement. `null` pour Section A. */
+  schemaCd1: SchemaCd1Data | null;
 };
 
 export type Bloc4Slice = {
@@ -151,6 +154,21 @@ export type TacheFormAction =
   | { type: "SET_CONSIGNE"; value: string }
   | { type: "SET_ASPECT"; aspect: AspectSocieteKey; value: boolean }
   | { type: "SET_GUIDAGE"; value: string }
+  | { type: "SET_SCHEMA_PREAMBULE"; value: string }
+  | { type: "SET_SCHEMA_CHAPEAU_OBJET"; value: string }
+  | { type: "SET_SCHEMA_CHAPEAU_PERIODE"; value: string }
+  | {
+      type: "SET_SCHEMA_CASE";
+      cleCase: CleCase;
+      champ: "guidage" | "reponse";
+      value: string;
+    }
+  | { type: "SET_DOCUMENT_LEURRE"; slotId: DocumentSlotId; value: boolean }
+  | {
+      type: "SET_DOCUMENT_CASES_ASSOCIEES";
+      slotId: DocumentSlotId;
+      value: CleCase[];
+    }
   | { type: "SET_CORRIGE"; value: string }
   | { type: "SET_NOTES_CORRECTEUR"; value: string }
   | {
@@ -218,6 +236,7 @@ export const initialBloc3: Bloc3Slice = {
   oi7Element2: "",
   oi7Element3: "",
   consigneMode: "gabarit",
+  schemaCd1: null,
 };
 
 export const initialBloc5: Bloc5Slice = {

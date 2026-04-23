@@ -12,6 +12,8 @@ import { sanitizeConnaissances } from "@/lib/tache/connaissances-helpers";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { reinitialiserBlocsEnAval } from "@/lib/tache/reinitialiser-blocs-en-aval";
+import { mettreAJourCase } from "@/lib/tache/schema-cd1/mise-a-jour-case";
+import { SCHEMA_CD1_INITIAL } from "@/lib/tache/schema-cd1/types";
 import {
   initialAvantApresPayload,
   mergeAvantApresPayload,
@@ -206,6 +208,12 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
       // Lignes de réponse : 0 si non rédactionnel (Section B/C), sinon null (fixé par comportement).
       const nbLignes = !parcours.oiPertinente ? 0 : null;
 
+      const blocsEnAval = reinitialiserBlocsEnAval(state);
+      const bloc3 =
+        typeTache === "section_b"
+          ? { ...blocsEnAval.bloc3, schemaCd1: SCHEMA_CD1_INITIAL }
+          : blocsEnAval.bloc3;
+
       return {
         ...state,
         bloc2: {
@@ -220,7 +228,8 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
           aspectA: null,
           aspectB: null,
         },
-        ...reinitialiserBlocsEnAval(state),
+        ...blocsEnAval,
+        bloc3,
       };
     }
     case "SET_ASPECT_A": {
@@ -297,6 +306,71 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
         ...state,
         bloc3: { ...state.bloc3, guidage: action.value },
       };
+    case "SET_SCHEMA_PREAMBULE": {
+      const schema = state.bloc3.schemaCd1;
+      if (!schema) return state;
+      return {
+        ...state,
+        bloc3: { ...state.bloc3, schemaCd1: { ...schema, preambule: action.value } },
+      };
+    }
+    case "SET_SCHEMA_CHAPEAU_OBJET": {
+      const schema = state.bloc3.schemaCd1;
+      if (!schema) return state;
+      return {
+        ...state,
+        bloc3: { ...state.bloc3, schemaCd1: { ...schema, chapeauObjet: action.value } },
+      };
+    }
+    case "SET_SCHEMA_CHAPEAU_PERIODE": {
+      const schema = state.bloc3.schemaCd1;
+      if (!schema) return state;
+      return {
+        ...state,
+        bloc3: { ...state.bloc3, schemaCd1: { ...schema, chapeauPeriode: action.value } },
+      };
+    }
+    case "SET_SCHEMA_CASE": {
+      const schema = state.bloc3.schemaCd1;
+      if (!schema) return state;
+      return {
+        ...state,
+        bloc3: {
+          ...state.bloc3,
+          schemaCd1: mettreAJourCase(schema, action.cleCase, action.champ, action.value),
+        },
+      };
+    }
+    case "SET_DOCUMENT_LEURRE": {
+      const prev = state.bloc4.documents[action.slotId] ?? emptyDocumentSlot();
+      return {
+        ...state,
+        bloc4: {
+          ...state.bloc4,
+          documents: {
+            ...state.bloc4.documents,
+            [action.slotId]: {
+              ...prev,
+              estLeurre: action.value,
+              casesAssociees: action.value ? [] : prev.casesAssociees,
+            },
+          },
+        },
+      };
+    }
+    case "SET_DOCUMENT_CASES_ASSOCIEES": {
+      const prev = state.bloc4.documents[action.slotId] ?? emptyDocumentSlot();
+      return {
+        ...state,
+        bloc4: {
+          ...state.bloc4,
+          documents: {
+            ...state.bloc4.documents,
+            [action.slotId]: { ...prev, casesAssociees: action.value },
+          },
+        },
+      };
+    }
     case "SET_CORRIGE":
       return {
         ...state,

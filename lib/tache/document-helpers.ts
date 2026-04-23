@@ -1,5 +1,6 @@
 import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuelle";
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
+import type { CleCase } from "@/lib/tache/schema-cd1/types";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import type { RendererDocument } from "@/lib/types/document-renderer";
@@ -61,6 +62,17 @@ export type DocumentSlotData = {
   type_iconographique: DocumentTypeIconoSlug | null;
   /** Catégorie didactique — documents textuels uniquement. */
   categorie_textuelle: CategorieTextuelleValue | null;
+  /**
+   * Section B (schéma de caractérisation) — marque ce document comme leurre :
+   * historiquement authentique mais non pertinent pour les aspects ciblés.
+   * Toujours `false` en Section A.
+   */
+  estLeurre: boolean;
+  /**
+   * Section B — cases du schéma que ce document alimente. Vide si leurre ou non associé.
+   * Utilisé pour générer automatiquement la colonne « Documents » du corrigé tabulaire.
+   */
+  casesAssociees: CleCase[];
 };
 
 export type SlotUiStatus = "empty" | "in_progress" | "complete";
@@ -89,6 +101,8 @@ export function emptyDocumentSlot(): DocumentSlotData {
     annee_normalisee: null,
     type_iconographique: null,
     categorie_textuelle: null,
+    estLeurre: false,
+    casesAssociees: [],
   };
 }
 

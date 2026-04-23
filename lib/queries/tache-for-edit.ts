@@ -379,6 +379,7 @@ export async function fetchTacheFormStateForEdit(
         getWizardBlocConfig(t.comportement_id ?? "")?.bloc3.type === "pur"
           ? "personnalisee"
           : "gabarit",
+      schemaCd1: null,
     },
     bloc4: {
       documents,
