@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils/cn";
+import { HoverTip } from "@/components/ui/HoverTip";
 import {
   FICHE_BARRE_RETOUR,
   FICHE_BARRE_AJOUTER_EPREUVE,
@@ -101,35 +102,38 @@ export function TacheBarreActions({ tacheId, estAuteur }: Props) {
       {/* ─── Droite : actions ────────────────────────────────── */}
       <div className="flex items-center gap-1.5">
         {/* Ajouter à une épreuve — bouton primaire, icône seule sur mobile */}
-        <button
-          type="button"
-          onClick={surAjouterEpreuve}
-          className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-accent px-2.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent/90 md:px-3.5"
-          title={FICHE_BARRE_AJOUTER_EPREUVE}
-        >
-          <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
-            snippet_folder
-          </span>
-          <span className="hidden md:inline">{FICHE_BARRE_AJOUTER_EPREUVE}</span>
-        </button>
+        <HoverTip label={FICHE_BARRE_AJOUTER_EPREUVE}>
+          <button
+            type="button"
+            onClick={surAjouterEpreuve}
+            aria-label={FICHE_BARRE_AJOUTER_EPREUVE}
+            className="inline-flex min-h-11 items-center gap-1.5 rounded-lg bg-accent px-2.5 py-2 text-[13px] font-medium text-white transition-colors hover:bg-accent/90 md:px-3.5"
+          >
+            <span className="material-symbols-outlined text-[1em]" aria-hidden="true">
+              snippet_folder
+            </span>
+            <span className="hidden md:inline">{FICHE_BARRE_AJOUTER_EPREUVE}</span>
+          </button>
+        </HoverTip>
 
         {/* Épingler — bouton icône toggle, masqué sur mobile (dans kebab) */}
-        <button
-          type="button"
-          onClick={surEpingler}
-          className={cn(boutonIcone, "hidden md:flex", epinglee && "bg-panel-alt")}
-          title={FICHE_BARRE_EPINGLER}
-          aria-label={FICHE_BARRE_EPINGLER}
-          aria-pressed={epinglee}
-        >
-          <span
-            className={cn("material-symbols-outlined text-[1.1em]", epinglee && "text-accent")}
-            aria-hidden="true"
-            style={epinglee ? { fontVariationSettings: "'FILL' 1" } : undefined}
+        <HoverTip label={FICHE_BARRE_EPINGLER}>
+          <button
+            type="button"
+            onClick={surEpingler}
+            className={cn(boutonIcone, "hidden md:flex", epinglee && "bg-panel-alt")}
+            aria-label={FICHE_BARRE_EPINGLER}
+            aria-pressed={epinglee}
           >
-            file_save
-          </span>
-        </button>
+            <span
+              className={cn("material-symbols-outlined text-[1.1em]", epinglee && "text-accent")}
+              aria-hidden="true"
+              style={epinglee ? { fontVariationSettings: "'FILL' 1" } : undefined}
+            >
+              file_save
+            </span>
+          </button>
+        </HoverTip>
 
         {/* Modifier — auteur uniquement, masqué sur mobile (dans kebab) */}
         {estAuteur ? (
@@ -146,19 +150,21 @@ export function TacheBarreActions({ tacheId, estAuteur }: Props) {
 
         {/* Kebab — menu secondaire */}
         <div className="relative">
-          <button
-            ref={kebabTriggerRef}
-            type="button"
-            onClick={() => setKebabOuvert((v) => !v)}
-            className={boutonIcone}
-            aria-label="Actions"
-            aria-haspopup="menu"
-            aria-expanded={kebabOuvert}
-          >
-            <span className="material-symbols-outlined text-[1.1em]" aria-hidden="true">
-              more_vert
-            </span>
-          </button>
+          <HoverTip label={kebabOuvert ? null : "Actions"}>
+            <button
+              ref={kebabTriggerRef}
+              type="button"
+              onClick={() => setKebabOuvert((v) => !v)}
+              className={boutonIcone}
+              aria-label="Actions"
+              aria-haspopup="menu"
+              aria-expanded={kebabOuvert}
+            >
+              <span className="material-symbols-outlined text-[1.1em]" aria-hidden="true">
+                more_vert
+              </span>
+            </button>
+          </HoverTip>
 
           {kebabOuvert ? (
             <>

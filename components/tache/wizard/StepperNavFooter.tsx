@@ -17,6 +17,7 @@ import {
   isWizardPublishReady,
 } from "@/lib/tache/wizard-publish-guards";
 import { isStepReadyForNext, TOAST_NEXT_COMPLETER } from "@/lib/tache/wizard-step-next-gate";
+import { HoverTip } from "@/components/ui/HoverTip";
 import type { PublishTacheFailureCode } from "@/lib/tache/publish-tache";
 import { detectMajorChangeFromFormState } from "@/lib/tache/publish-tache-version";
 import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
@@ -201,19 +202,20 @@ export function StepperNavFooter() {
             Précédent
           </button>
           {canNext ? (
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={nextDisabled}
-              title={nextTitle}
-              aria-disabled={nextDisabled || undefined}
-              className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              Suivant
-              <span className="material-symbols-outlined text-lg" aria-hidden="true">
-                arrow_forward
-              </span>
-            </button>
+            <HoverTip label={nextTitle} placement="top">
+              <button
+                type="button"
+                onClick={handleNext}
+                disabled={nextDisabled}
+                aria-disabled={nextDisabled || undefined}
+                className="inline-flex min-h-11 min-w-[7.5rem] items-center justify-center gap-2 rounded-lg bg-accent px-4 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95 disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                Suivant
+                <span className="material-symbols-outlined text-lg" aria-hidden="true">
+                  arrow_forward
+                </span>
+              </button>
+            </HoverTip>
           ) : null}
         </div>
         <div className="flex flex-wrap items-center gap-2 sm:justify-end sm:gap-3">
@@ -234,22 +236,26 @@ export function StepperNavFooter() {
               Sauvegarder
             </button>
           ) : null}
-          <button
-            type="button"
-            disabled={!canPublish || publishing}
-            onClick={handlePublish}
-            aria-busy={publishing}
-            title={publishTitleImageOnly ? PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE : undefined}
-            className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-45"
+          <HoverTip
+            label={publishTitleImageOnly ? PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE : null}
+            placement="top"
           >
-            <span
-              className={`material-symbols-outlined text-lg ${publishing ? "animate-pulse" : ""}`}
-              aria-hidden="true"
+            <button
+              type="button"
+              disabled={!canPublish || publishing}
+              onClick={handlePublish}
+              aria-busy={publishing}
+              className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-panel px-4 text-sm font-semibold text-deep shadow-sm transition-colors hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-45"
             >
-              upload
-            </span>
-            {editingTacheId ? WIZARD_EDIT_SAVE_CTA : WIZARD_PUBLISH_CTA}
-          </button>
+              <span
+                className={`material-symbols-outlined text-lg ${publishing ? "animate-pulse" : ""}`}
+                aria-hidden="true"
+              >
+                upload
+              </span>
+              {editingTacheId ? WIZARD_EDIT_SAVE_CTA : WIZARD_PUBLISH_CTA}
+            </button>
+          </HoverTip>
         </div>
       </div>
     </>

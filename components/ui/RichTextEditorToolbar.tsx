@@ -1,6 +1,7 @@
 "use client";
 
 import type { Editor } from "@tiptap/core";
+import { HoverTip } from "@/components/ui/HoverTip";
 
 type Cmd = "bold" | "italic" | "underline" | "bulletList";
 
@@ -25,28 +26,29 @@ function ToolbarBtn({
   pressed: boolean;
 }) {
   return (
-    <button
-      type="button"
-      title={title}
-      aria-label={title}
-      aria-pressed={pressed}
-      className={`${TOOLBAR_BTN_BASE} ${
-        pressed ? "bg-accent/15 text-accent" : "text-[color:var(--color-text-secondary)]"
-      }`}
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={() => {
-        if (!editor) return;
-        const chain = editor.chain().focus();
-        if (cmd === "bold") chain.toggleBold().run();
-        else if (cmd === "italic") chain.toggleItalic().run();
-        else if (cmd === "underline") chain.toggleUnderline().run();
-        else if (cmd === "bulletList") chain.toggleBulletList().run();
-      }}
-    >
-      <span className="material-symbols-outlined text-[12px]" aria-hidden="true">
-        {icon}
-      </span>
-    </button>
+    <HoverTip label={title}>
+      <button
+        type="button"
+        aria-label={title}
+        aria-pressed={pressed}
+        className={`${TOOLBAR_BTN_BASE} ${
+          pressed ? "bg-accent/15 text-accent" : "text-[color:var(--color-text-secondary)]"
+        }`}
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={() => {
+          if (!editor) return;
+          const chain = editor.chain().focus();
+          if (cmd === "bold") chain.toggleBold().run();
+          else if (cmd === "italic") chain.toggleItalic().run();
+          else if (cmd === "underline") chain.toggleUnderline().run();
+          else if (cmd === "bulletList") chain.toggleBulletList().run();
+        }}
+      >
+        <span className="material-symbols-outlined text-[12px]" aria-hidden="true">
+          {icon}
+        </span>
+      </button>
+    </HoverTip>
   );
 }
 

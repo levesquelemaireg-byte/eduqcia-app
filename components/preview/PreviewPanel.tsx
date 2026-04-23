@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { usePreviewModes } from "@/components/preview/usePreviewModes";
 import type { PreviewMode } from "@/components/preview/types";
 import { cn } from "@/lib/utils/cn";
+import { HoverTip } from "@/components/ui/HoverTip";
 import {
   PREVIEW_PANEL_FEUILLET_ARIA,
   PREVIEW_PANEL_MODE_ARIA,
@@ -127,7 +128,7 @@ function GroupeOnglets({
       {options.map((option) => {
         const isActive = option.id === activeId;
         const shortLabel = shortLabelsById?.[option.id];
-        return (
+        const buttonEl = (
           <button
             key={option.id}
             id={`${idPrefix}-tab-${option.id}`}
@@ -138,7 +139,6 @@ function GroupeOnglets({
             aria-disabled={option.disabled ? "true" : undefined}
             aria-label={forceIconOnly ? option.label : undefined}
             tabIndex={isActive || (!activeId && !option.disabled) ? 0 : -1}
-            title={forceIconOnly ? option.label : undefined}
             disabled={option.disabled}
             onClick={() => onChange(option.id)}
             onKeyDown={(event) => handleKeyDown(event, option.id)}
@@ -175,6 +175,13 @@ function GroupeOnglets({
               <span>{option.label}</span>
             )}
           </button>
+        );
+        return forceIconOnly ? (
+          <HoverTip key={option.id} label={option.label}>
+            {buttonEl}
+          </HoverTip>
+        ) : (
+          buttonEl
         );
       })}
     </div>
