@@ -24,12 +24,7 @@ export function EditeurPreambule() {
 
   return (
     <section className="space-y-2">
-      <LabelWithInfo
-        labelText={SECTION_B_PREAMBULE_LABEL}
-        onInfoClick={() => setHelpOpen(true)}
-        leadingIcon="menu_book"
-        leadingIconTitle={SECTION_B_PREAMBULE_LABEL}
-      />
+      <LabelWithInfo labelText={SECTION_B_PREAMBULE_LABEL} onInfoClick={() => setHelpOpen(true)} />
       <p className="text-xs italic text-muted">{SECTION_B_PREAMBULE_PLACEHOLDER}</p>
       <RichTextEditor
         id="preambule-schema-cd1"

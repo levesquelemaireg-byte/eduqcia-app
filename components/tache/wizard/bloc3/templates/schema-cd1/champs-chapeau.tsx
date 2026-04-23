@@ -23,12 +23,7 @@ export function ChampsChapeau() {
 
   return (
     <section className="space-y-3">
-      <LabelWithInfo
-        labelText={SECTION_B_CONSIGNE_LABEL}
-        onInfoClick={() => setHelpOpen(true)}
-        leadingIcon="quiz"
-        leadingIconTitle={SECTION_B_CONSIGNE_LABEL}
-      />
+      <LabelWithInfo labelText={SECTION_B_CONSIGNE_LABEL} onInfoClick={() => setHelpOpen(true)} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="space-y-1">

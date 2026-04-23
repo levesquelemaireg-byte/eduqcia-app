@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { LabelWithInfo } from "@/components/tache/wizard/bloc2/LabelWithInfo";
+import { BLOC3_SECTION_ICON } from "@/components/tache/wizard/bloc3-stepper-icons";
 import {
   SECTION_B_DEMARCHE_ETAPES,
   SECTION_B_DEMARCHE_LABEL,
@@ -17,7 +18,7 @@ export function DemarcheInvariable() {
       <LabelWithInfo
         labelText={SECTION_B_DEMARCHE_LABEL}
         onInfoClick={() => setHelpOpen(true)}
-        leadingIcon="tooltip_2"
+        leadingIcon={BLOC3_SECTION_ICON.guidage}
         leadingIconTitle={SECTION_B_DEMARCHE_LABEL}
         showAsterisk={false}
       />

@@ -15,7 +15,7 @@ export const SECTION_B_PREAMBULE_PLACEHOLDER = "En [année], [acteur ou événem
 
 /* ─── Consigne de caractérisation (chapeau) ───────────────────── */
 
-export const SECTION_B_CONSIGNE_LABEL = "Consigne de caractérisation";
+export const SECTION_B_CONSIGNE_LABEL = "Consigne";
 export const SECTION_B_CONSIGNE_TOOLTIP =
   "La commande de description que l'élève lira en caractères gras. Elle est générée automatiquement à partir de l'objet d'étude, de l'intervalle temporel et des deux aspects de société sélectionnés à l'étape précédente, conformément au format prescrit par le programme : Décrivez [objet] [période] sous ses aspects [A] et [B].";
 

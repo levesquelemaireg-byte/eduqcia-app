@@ -6,6 +6,7 @@ import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { Textarea } from "@/components/ui/Textarea";
 import { useTacheForm } from "@/components/tache/wizard/FormState";
+import { BLOC3_SECTION_ICON } from "@/components/tache/wizard/bloc3-stepper-icons";
 import { obtenirCase, type CleCase } from "@/lib/tache/schema-cd1/types";
 import {
   SECTION_B_CHAMP_GUIDAGE_HINT,
@@ -73,7 +74,7 @@ export function ModaleEditionCase({ cle, onClose }: Props) {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <ChampInfoIcon
-              icone="visibility"
+              icone={BLOC3_SECTION_ICON.consigne}
               title={SECTION_B_POPOVER_ICONE_VISIBLE_ELEVE}
               aria={SECTION_B_POPOVER_ICONE_VISIBLE_ELEVE}
             />
@@ -105,7 +106,7 @@ export function ModaleEditionCase({ cle, onClose }: Props) {
         <div className="space-y-2 rounded-md border border-border bg-panel-alt/50 p-3">
           <div className="flex items-center gap-2">
             <ChampInfoIcon
-              icone="lock"
+              icone={BLOC3_SECTION_ICON.corrige}
               title={SECTION_B_POPOVER_ICONE_PRIVE_ENSEIGNANT}
               aria={SECTION_B_POPOVER_ICONE_PRIVE_ENSEIGNANT}
             />
