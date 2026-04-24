@@ -3,10 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
-import {
-  CARROUSEL_APERCU_COPY,
-  EVAL_PRINT_SECTION_COPY,
-} from "@/components/tache/wizard/preview/wizard-print-preview-copy";
+import { CARROUSEL_APERCU_COPY, FEUILLET_LABELS_COPY } from "./copy";
 import { cn } from "@/lib/utils/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -27,31 +24,21 @@ export type CarrouselApercuProps = {
   pagesParFeuillet: Record<TypeFeuillet, number>;
   /** Empreinte FNV-1a des PNG affichés. */
   empreintePng: string;
-  /** Empreinte FNV-1a calculée localement depuis le wizard. */
+  /** Empreinte FNV-1a calculée localement depuis le contenu courant. */
   empreinteWizard: string;
   /** Callback pour regénérer les PNG. */
   surRegenerer: () => void;
 };
 
 /* -------------------------------------------------------------------------- */
-/*  Labels feuillets                                                          */
+/*  Construction des feuillets actifs                                         */
 /* -------------------------------------------------------------------------- */
-
-const LABELS_FEUILLETS: Record<TypeFeuillet, string> = {
-  "dossier-documentaire": EVAL_PRINT_SECTION_COPY.dossierDocumentaire,
-  questionnaire: EVAL_PRINT_SECTION_COPY.questionnaire,
-  "cahier-reponses": "Cahier de réponses",
-};
 
 const ORDRE_FEUILLETS: TypeFeuillet[] = [
   "dossier-documentaire",
   "questionnaire",
   "cahier-reponses",
 ];
-
-/* -------------------------------------------------------------------------- */
-/*  Construction des feuillets actifs                                         */
-/* -------------------------------------------------------------------------- */
 
 function construireFeuillets(
   pages: string[],
@@ -65,7 +52,7 @@ function construireFeuillets(
     if (count > 0) {
       feuillets.push({
         type,
-        label: LABELS_FEUILLETS[type],
+        label: FEUILLET_LABELS_COPY[type],
         pages: pages.slice(offset, offset + count),
         debutIndex: offset,
       });
@@ -204,7 +191,7 @@ export function CarrouselApercu({
   const [feuilletActifIndex, setFeuilletActifIndex] = useState(0);
   const feuilletActif = feuillets[feuilletActifIndex] ?? feuillets[0];
 
-  // BUG-4 — Persistance de la position par feuillet au changement d'onglet
+  // Persistance de la position par feuillet au changement d'onglet
   const positionsRef = useRef<Partial<Record<TypeFeuillet, number>>>({});
   const [indexInitialActuel, setIndexInitialActuel] = useState(0);
   const surChangementPage = useCallback((type: TypeFeuillet, index: number) => {

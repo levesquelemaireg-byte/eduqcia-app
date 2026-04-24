@@ -15,7 +15,7 @@ import { extractFootnotes } from "@/lib/documents/extract-footnotes";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import { sanitize } from "@/lib/fiche/helpers";
 import type { DocumentElement } from "@/lib/types/document-renderer";
-import styles from "@/components/tache/wizard/preview/printable-fiche-preview.module.css";
+import styles from "./printable-fiche-preview.module.css";
 
 type Props = {
   element: DocumentElement;

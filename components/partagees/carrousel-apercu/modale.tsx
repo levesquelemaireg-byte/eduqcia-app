@@ -1,50 +1,35 @@
 "use client";
 
 import { useEffect, useId } from "react";
-import {
-  WIZARD_PRINT_PREVIEW_COPY,
-  CARROUSEL_APERCU_COPY,
-} from "@/components/tache/wizard/preview/wizard-print-preview-copy";
-import { CarrouselApercu } from "@/components/epreuve/apercu/carrousel";
-import { useApercuPng } from "@/hooks/epreuve/use-apercu-png";
-import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
+import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-apercu-png";
 import { Button } from "@/components/ui/Button";
-import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import { CarrouselApercu } from "./index";
+import { CARROUSEL_APERCU_COPY } from "./copy";
 
-export type PrintPreviewModalProps = {
+export type CarrouselApercuModaleProps = {
   open: boolean;
   onClose: () => void;
   payload: PayloadImpression;
-  mode: ModeImpression;
-  estCorrige: boolean;
 };
 
 /**
- * Modale plein écran — aperçu impression carrousel PNG (print-engine D5).
- * Remplace l'ancien aperçu HTML par des PNG rasterisés depuis le PDF réel.
+ * Overlay modal partagé — bouton imprimante des vues détaillées
+ * (tâche, document, épreuve). Génère les PNG via `useApercuPng`
+ * et les présente dans `CarrouselApercu` avec chrome modal
+ * (header, fermeture, footer télécharger PDF).
  */
-export function PrintPreviewModal({
-  open,
-  onClose,
-  payload,
-  mode,
-  estCorrige,
-}: PrintPreviewModalProps) {
+export function CarrouselApercuModale({ open, onClose, payload }: CarrouselApercuModaleProps) {
   const titleId = useId();
-  const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } = useApercuPng(
-    payload,
-    mode,
-    estCorrige,
-  );
+  const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } = useApercuPng(payload);
 
-  // Générer automatiquement à l'ouverture
+  // Génération automatique à l'ouverture
   useEffect(() => {
     if (open && etat.statut === "idle") {
       generer();
     }
   }, [open, etat.statut, generer]);
 
-  // Bloquer le scroll du body
+  // Verrou scroll body
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -54,7 +39,7 @@ export function PrintPreviewModal({
     };
   }, [open]);
 
-  // Fermer avec Escape
+  // Escape pour fermer
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -71,7 +56,7 @@ export function PrintPreviewModal({
       <button
         type="button"
         className="absolute inset-0 bg-black/50"
-        aria-label="Fermer la fenêtre"
+        aria-label={CARROUSEL_APERCU_COPY.boutonFermer}
         onClick={onClose}
       />
       <div
@@ -83,13 +68,13 @@ export function PrintPreviewModal({
         {/* Header */}
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-4 py-3 shadow-sm sm:px-5">
           <h2 id={titleId} className="text-lg font-semibold text-deep">
-            {WIZARD_PRINT_PREVIEW_COPY.modalTitle}
+            {CARROUSEL_APERCU_COPY.modalTitle}
           </h2>
           <button
             type="button"
             onClick={onClose}
             className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep"
-            aria-label={WIZARD_PRINT_PREVIEW_COPY.close}
+            aria-label={CARROUSEL_APERCU_COPY.boutonFermer}
           >
             <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
               close
@@ -117,7 +102,7 @@ export function PrintPreviewModal({
         {/* Footer */}
         <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
           <Button type="button" variant="ghost" onClick={onClose}>
-            {WIZARD_PRINT_PREVIEW_COPY.close}
+            {CARROUSEL_APERCU_COPY.boutonFermer}
           </Button>
           <Button
             type="button"
@@ -133,10 +118,10 @@ export function PrintPreviewModal({
                 >
                   progress_activity
                 </span>
-                {WIZARD_PRINT_PREVIEW_COPY.downloadPdf}
+                {CARROUSEL_APERCU_COPY.boutonTelechargerPdf}
               </span>
             ) : (
-              WIZARD_PRINT_PREVIEW_COPY.downloadPdf
+              CARROUSEL_APERCU_COPY.boutonTelechargerPdf
             )}
           </Button>
         </footer>

@@ -6,6 +6,7 @@ import { VueDetailleeLayout } from "@/components/partagees/vue-detaillee/layout"
 import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions";
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
+import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
 import { SectionHero } from "@/components/epreuve/vue-detaillee/sections/hero";
 import { SectionPileTaches } from "@/components/epreuve/vue-detaillee/sections/pile-taches";
 import { EpreuveRail } from "@/components/epreuve/vue-detaillee/rail";
@@ -37,6 +38,7 @@ export function EpreuveVueDetaillee({
 }: Props) {
   const router = useRouter();
   const [ongletActif, setOngletActif] = useState<OngletId>("sommaire");
+  const [carrouselOuvert, setCarrouselOuvert] = useState(false);
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
 
@@ -45,60 +47,72 @@ export function EpreuveVueDetaillee({
   const niveauLabel = premiereTache?.niveau.label;
   const disciplineLabel = premiereTache?.discipline.label;
   const payloadImpression = useMemo(
-    () => ({ type: "epreuve", donnees: donnees }) as const,
+    () =>
+      ({
+        type: "epreuve",
+        donnees: donnees,
+        mode: "formatif",
+        estCorrige: false,
+      }) as const,
     [donnees],
   );
 
   return (
-    <VueDetailleeLayout
-      layout={layout}
-      barreActions={
-        <BarreActions
-          estAuteur={estAuteur}
-          estEpinglee={false}
-          entite="epreuve"
-          retour={retour}
-          surModifier={() => router.push(`/evaluations/${donnees.id}/edit`)}
-          surEpingler={() => {
-            /* TODO */
-          }}
-          surCopierLien={copierLien}
-          surOuvrirVisionneuse={() => {
-            /* TODO */
-          }}
-          surSupprimer={() => {
-            /* TODO */
-          }}
-          layout={layout}
-        />
-      }
-      header={
-        <SectionHero
-          titre={donnees.titre}
-          estPubliee={estPubliee}
-          nbTaches={donnees.taches.length}
-          niveauLabel={niveauLabel}
-          disciplineLabel={disciplineLabel}
-        />
-      }
-      onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
-      contenuPrincipal={
-        ongletActif === "sommaire" ? (
-          <SectionPileTaches taches={donnees.taches} />
-        ) : (
-          <ApercuImprimeInline payload={payloadImpression} />
-        )
-      }
-      rail={
-        <EpreuveRail
-          titre={donnees.titre}
-          taches={donnees.taches}
-          estPubliee={estPubliee}
-          auteurNom={auteurNom}
-          niveauLabel={niveauLabel}
-          disciplineLabel={disciplineLabel}
-        />
-      }
-    />
+    <>
+      <VueDetailleeLayout
+        layout={layout}
+        barreActions={
+          <BarreActions
+            estAuteur={estAuteur}
+            estEpinglee={false}
+            entite="epreuve"
+            retour={retour}
+            surModifier={() => router.push(`/evaluations/${donnees.id}/edit`)}
+            surEpingler={() => {
+              /* TODO */
+            }}
+            surCopierLien={copierLien}
+            surOuvrirVisionneuse={() => setCarrouselOuvert(true)}
+            surSupprimer={() => {
+              /* TODO */
+            }}
+            layout={layout}
+          />
+        }
+        header={
+          <SectionHero
+            titre={donnees.titre}
+            estPubliee={estPubliee}
+            nbTaches={donnees.taches.length}
+            niveauLabel={niveauLabel}
+            disciplineLabel={disciplineLabel}
+          />
+        }
+        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
+        contenuPrincipal={
+          ongletActif === "sommaire" ? (
+            <SectionPileTaches taches={donnees.taches} />
+          ) : (
+            <ApercuImprimeInline payload={payloadImpression} />
+          )
+        }
+        rail={
+          <EpreuveRail
+            titre={donnees.titre}
+            taches={donnees.taches}
+            estPubliee={estPubliee}
+            auteurNom={auteurNom}
+            niveauLabel={niveauLabel}
+            disciplineLabel={disciplineLabel}
+          />
+        }
+      />
+
+      <CarrouselApercuModale
+        open={carrouselOuvert}
+        onClose={() => setCarrouselOuvert(false)}
+        payload={payloadImpression}
+      />
+    </>
   );
 }

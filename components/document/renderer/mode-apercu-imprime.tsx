@@ -1,7 +1,7 @@
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import type { RendererDocument } from "@/lib/types/document-renderer";
-import styles from "@/components/tache/wizard/preview/printable-fiche-preview.module.css";
+import styles from "./printable-fiche-preview.module.css";
 import { cn } from "@/lib/utils/cn";
 import { DocumentElementRenderer } from "./element-renderer";
 

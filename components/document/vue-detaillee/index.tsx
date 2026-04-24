@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { VueDetailleeLayout } from "@/components/partagees/vue-detaillee/layout";
 import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions";
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
+import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
+import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
 import { SectionHero } from "@/components/document/vue-detaillee/sections/hero";
 import { SectionContenu } from "@/components/document/vue-detaillee/sections/contenu";
 import { DocumentRail } from "@/components/document/vue-detaillee/rail";
-import { DocumentRenderer } from "@/components/document/renderer";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
 import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
 import type { DocFicheData } from "@/lib/fiche/types";
@@ -38,6 +39,7 @@ export function DocumentVueDetaillee({
 }: Props) {
   const router = useRouter();
   const [ongletActif, setOngletActif] = useState<OngletId>("sommaire");
+  const [carrouselOuvert, setCarrouselOuvert] = useState(false);
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
 
@@ -51,65 +53,65 @@ export function DocumentVueDetaillee({
         ? "Deux temps"
         : "Simple";
 
+  const payloadImpression = useMemo(
+    () => ({ type: "document", donnees: data.document }) as const,
+    [data.document],
+  );
+
   return (
-    <VueDetailleeLayout
-      layout={layout}
-      barreActions={
-        <BarreActions
-          estAuteur={estAuteur}
-          estEpinglee={estEpinglee}
-          entite="document"
-          retour={retour}
-          surModifier={surModifier ?? (() => router.push(`/documents/${data.document.id}/edit`))}
-          surEpingler={
-            surEpingler ??
-            (() => {
-              /* TODO */
-            })
-          }
-          surCopierLien={copierLien}
-          surOuvrirVisionneuse={() => {
-            /* TODO — brancher sur CarrouselApercu au Lot 3 (même pattern que tâche et épreuve). */
-          }}
-          surSupprimer={
-            surSupprimer ??
-            (() => {
-              /* TODO */
-            })
-          }
-          layout={layout}
-        />
-      }
-      header={
-        <SectionHero
-          titre={data.document.titre}
-          estPublie={data.isPublished}
-          typeLabel={typeLabel}
-          structureLabel={structureLabel}
-          niveauLabels={data.niveauLabels}
-          disciplineLabels={data.disciplineLabels}
-        />
-      }
-      onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
-      contenuPrincipal={
-        ongletActif === "sommaire" ? (
-          <SectionContenu document={data.document} />
-        ) : (
-          <div className="space-y-3">
-            {/* Aperçu imprimé — rendu canonique via DocumentRenderer */}
-            <div className="mx-auto max-w-[600px]">
-              <div className="border border-deep">
-                <DocumentRenderer document={data.document} mode="sommaire" numero={1} />
-              </div>
-            </div>
-            <p className="text-center text-[11px] text-muted">
-              Le numéro <span className="font-medium">1</span> est provisoire. Il sera recalculé
-              selon le rang du document dans chaque épreuve.
-            </p>
-          </div>
-        )
-      }
-      rail={<DocumentRail data={data} />}
-    />
+    <>
+      <VueDetailleeLayout
+        layout={layout}
+        barreActions={
+          <BarreActions
+            estAuteur={estAuteur}
+            estEpinglee={estEpinglee}
+            entite="document"
+            retour={retour}
+            surModifier={surModifier ?? (() => router.push(`/documents/${data.document.id}/edit`))}
+            surEpingler={
+              surEpingler ??
+              (() => {
+                /* TODO */
+              })
+            }
+            surCopierLien={copierLien}
+            surOuvrirVisionneuse={() => setCarrouselOuvert(true)}
+            surSupprimer={
+              surSupprimer ??
+              (() => {
+                /* TODO */
+              })
+            }
+            layout={layout}
+          />
+        }
+        header={
+          <SectionHero
+            titre={data.document.titre}
+            estPublie={data.isPublished}
+            typeLabel={typeLabel}
+            structureLabel={structureLabel}
+            niveauLabels={data.niveauLabels}
+            disciplineLabels={data.disciplineLabels}
+          />
+        }
+        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
+        contenuPrincipal={
+          ongletActif === "sommaire" ? (
+            <SectionContenu document={data.document} />
+          ) : (
+            <ApercuImprimeInline payload={payloadImpression} />
+          )
+        }
+        rail={<DocumentRail data={data} />}
+      />
+
+      <CarrouselApercuModale
+        open={carrouselOuvert}
+        onClose={() => setCarrouselOuvert(false)}
+        payload={payloadImpression}
+      />
+    </>
   );
 }

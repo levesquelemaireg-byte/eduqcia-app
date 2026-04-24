@@ -12,6 +12,7 @@ import { VueDetailleeLayout } from "@/components/partagees/vue-detaillee/layout"
 import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions";
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
+import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
 import { FluxLecture } from "@/components/tache/vue-detaillee/flux-lecture";
 import { TacheRail } from "@/components/tache/vue-detaillee/rail";
 import { FicheModale } from "@/components/partagees/fiche-modale";
@@ -47,6 +48,7 @@ export function TacheVueDetaillee({
   const heroRef = useRef<HTMLHeadingElement>(null);
   const [ongletActif, setOngletActif] = useState<OngletId>("sommaire");
   const [docPanneauId, setDocPanneauId] = useState<string | null>(null);
+  const [carrouselOuvert, setCarrouselOuvert] = useState(false);
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
 
@@ -68,7 +70,15 @@ export function TacheVueDetaillee({
 
   const contexte = [tache.niveau.label, tache.discipline.label].filter(Boolean).join(" · ");
   const payloadImpression = useMemo(
-    () => (donneesTache ? ({ type: "tache", donnees: donneesTache } as const) : null),
+    () =>
+      donneesTache
+        ? ({
+            type: "tache",
+            donnees: donneesTache,
+            mode: "formatif",
+            estCorrige: false,
+          } as const)
+        : null,
     [donneesTache],
   );
 
@@ -87,9 +97,7 @@ export function TacheVueDetaillee({
               /* TODO */
             }}
             surCopierLien={copierLien}
-            surOuvrirVisionneuse={() => {
-              /* TODO */
-            }}
+            surOuvrirVisionneuse={() => setCarrouselOuvert(true)}
             surSupprimer={() => {
               /* TODO */
             }}
@@ -141,6 +149,14 @@ export function TacheVueDetaillee({
 
       {docPanneauId && (
         <DocumentPanneauDetail docId={docPanneauId} surFermer={() => setDocPanneauId(null)} />
+      )}
+
+      {payloadImpression && (
+        <CarrouselApercuModale
+          open={carrouselOuvert}
+          onClose={() => setCarrouselOuvert(false)}
+          payload={payloadImpression}
+        />
       )}
     </>
   );

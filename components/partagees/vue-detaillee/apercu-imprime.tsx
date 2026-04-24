@@ -1,25 +1,21 @@
 "use client";
 
 import { useEffect } from "react";
-import { useApercuPng } from "@/hooks/epreuve/use-apercu-png";
-import type { PayloadImpression } from "@/hooks/epreuve/use-apercu-png";
-import { CARROUSEL_APERCU_COPY } from "@/components/tache/wizard/preview/wizard-print-preview-copy";
+import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-apercu-png";
+import { CARROUSEL_APERCU_COPY } from "@/components/partagees/carrousel-apercu/copy";
 import { Button } from "@/components/ui/Button";
-import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 
 type Props = {
   payload: PayloadImpression;
-  mode?: ModeImpression;
-  estCorrige?: boolean;
 };
 
 /**
  * Contenu inline de l'onglet « Aperçu de l'imprimé ».
  * Génère les PNG via le pipeline impression et les affiche empilés verticalement.
- * Partagé par les vues détaillées tâche et épreuve.
+ * Partagé par les vues détaillées tâche, document et épreuve.
  */
-export function ApercuImprimeInline({ payload, mode = "formatif", estCorrige = false }: Props) {
-  const { etat, generer, telechargerPdf, pdfEnCours } = useApercuPng(payload, mode, estCorrige);
+export function ApercuImprimeInline({ payload }: Props) {
+  const { etat, generer, telechargerPdf, pdfEnCours } = useApercuPng(payload);
 
   /* Génération automatique au montage */
   useEffect(() => {
@@ -91,7 +87,7 @@ export function ApercuImprimeInline({ payload, mode = "formatif", estCorrige = f
               >
                 progress_activity
               </span>
-              Télécharger le PDF
+              {CARROUSEL_APERCU_COPY.boutonTelechargerPdf}
             </span>
           ) : (
             <span className="inline-flex items-center gap-[0.35em]">
@@ -101,7 +97,7 @@ export function ApercuImprimeInline({ payload, mode = "formatif", estCorrige = f
               >
                 download
               </span>
-              Télécharger le PDF
+              {CARROUSEL_APERCU_COPY.boutonTelechargerPdf}
             </span>
           )}
         </Button>

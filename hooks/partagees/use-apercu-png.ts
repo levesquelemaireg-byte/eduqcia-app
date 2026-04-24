@@ -6,8 +6,10 @@ import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression, TypeFeuillet } from "@/lib/epreuve/pagination/types";
 import type { RenduImprimable } from "@/lib/impression/types";
+import type { RendererDocument } from "@/lib/types/document-renderer";
 import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
+import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
 import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 
 /* -------------------------------------------------------------------------- */
@@ -34,10 +36,11 @@ export type UseApercuPngRetour = {
   pdfEnCours: boolean;
 };
 
-/** Payload discriminé pour le hook : tâche ou épreuve. */
+/** Payload discriminé pour le hook : document, tâche ou épreuve. */
 export type PayloadImpression =
-  | { type: "tache"; donnees: DonneesTache }
-  | { type: "epreuve"; donnees: DonneesEpreuve };
+  | { type: "document"; donnees: RendererDocument }
+  | { type: "tache"; donnees: DonneesTache; mode: ModeImpression; estCorrige: boolean }
+  | { type: "epreuve"; donnees: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                   */
@@ -59,30 +62,55 @@ function extrairePagesParFeuillet(
 }
 
 /** Calcule le RenduImprimable pour l'empreinte locale. */
-function calculerRendu(
-  payload: PayloadImpression,
-  mode: ModeImpression,
-  estCorrige: boolean,
-): RenduImprimable {
+function calculerRendu(payload: PayloadImpression): RenduImprimable {
   switch (payload.type) {
+    case "document":
+      return documentVersImprimable(payload.donnees, mesurerBlocImpression);
     case "tache":
-      return tacheVersImprimable(payload.donnees, { mode, estCorrige }, mesurerBlocImpression);
+      return tacheVersImprimable(
+        payload.donnees,
+        { mode: payload.mode, estCorrige: payload.estCorrige },
+        mesurerBlocImpression,
+      );
     case "epreuve":
-      return epreuveVersImprimable(payload.donnees, { mode, estCorrige }, mesurerBlocImpression);
+      return epreuveVersImprimable(
+        payload.donnees,
+        { mode: payload.mode, estCorrige: payload.estCorrige },
+        mesurerBlocImpression,
+      );
   }
 }
 
 /** Construit le body pour POST /api/impression/token-draft. */
-function construireBodyTokenDraft(
-  payload: PayloadImpression,
-  mode: ModeImpression,
-  estCorrige: boolean,
-): unknown {
+function construireBodyTokenDraft(payload: PayloadImpression): unknown {
   switch (payload.type) {
+    case "document":
+      return { type: "document", payload: payload.donnees };
     case "tache":
-      return { type: "tache", payload: payload.donnees, mode, estCorrige };
+      return {
+        type: "tache",
+        payload: payload.donnees,
+        mode: payload.mode,
+        estCorrige: payload.estCorrige,
+      };
     case "epreuve":
-      return { type: "epreuve", payload: payload.donnees, mode, estCorrige };
+      return {
+        type: "epreuve",
+        payload: payload.donnees,
+        mode: payload.mode,
+        estCorrige: payload.estCorrige,
+      };
+  }
+}
+
+function nomFichierPdf(type: PayloadImpression["type"]): string {
+  switch (type) {
+    case "document":
+      return "document.pdf";
+    case "tache":
+      return "tache.pdf";
+    case "epreuve":
+      return "epreuve.pdf";
   }
 }
 
@@ -91,39 +119,32 @@ function construireBodyTokenDraft(
 /* -------------------------------------------------------------------------- */
 
 /**
- * Orchestre le flux complet : token-draft -> apercu-png -> affichage carrousel.
- * Calcule aussi l'empreinte wizard locale pour la détection d'invalidation.
+ * Orchestre le flux complet : token-draft → apercu-png → affichage carrousel.
+ * Calcule aussi l'empreinte locale pour la détection d'invalidation.
  *
- * Supporte les payloads tâche et épreuve via `PayloadImpression`.
+ * Supporte les payloads document, tâche et épreuve via `PayloadImpression`.
+ * Pour les tâches et épreuves, `mode` et `estCorrige` font partie du payload.
  */
-export function useApercuPng(
-  payload: PayloadImpression,
-  mode: ModeImpression,
-  estCorrige: boolean,
-): UseApercuPngRetour {
+export function useApercuPng(payload: PayloadImpression): UseApercuPngRetour {
   const [etat, setEtat] = useState<EtatApercu>({ statut: "idle" });
   const [pdfEnCours, setPdfEnCours] = useState(false);
   const tokenRef = useRef<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const estEnCoursRef = useRef(false);
 
-  // Correctif 5 — useMemo sur calculerRendu
-  const rendu = useMemo(
-    () => calculerRendu(payload, mode, estCorrige),
-    [payload, mode, estCorrige],
-  );
+  const rendu = useMemo(() => calculerRendu(payload), [payload]);
   const empreinteWizard = rendu.ok ? rendu.empreinte : "";
 
   // Détection d'invalidation
   const estInvalide =
     etat.statut === "pret" && empreinteWizard !== "" && etat.empreintePng !== empreinteWizard;
 
-  // Correctif 4 — Reset tokenRef au changement de deps
+  // Reset tokenRef au changement de payload
   useEffect(() => {
     tokenRef.current = null;
-  }, [payload, mode, estCorrige]);
+  }, [payload]);
 
-  // Correctif 1 — Cleanup AbortController au démontage
+  // Cleanup AbortController au démontage
   useEffect(() => {
     return () => {
       abortRef.current?.abort();
@@ -139,7 +160,7 @@ export function useApercuPng(
     const res = await fetch("/api/impression/token-draft", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(construireBodyTokenDraft(payload, mode, estCorrige)),
+      body: JSON.stringify(construireBodyTokenDraft(payload)),
       signal,
     });
     if (!res.ok) {
@@ -152,16 +173,16 @@ export function useApercuPng(
 
   const generer = useCallback(
     async (tentative = 1) => {
-      // Correctif 6 — Guard anti double-clic
+      // Guard anti double-clic
       if (estEnCoursRef.current) return;
       estEnCoursRef.current = true;
 
-      // Correctif 1 — AbortController
+      // AbortController
       abortRef.current?.abort();
       const controller = new AbortController();
       abortRef.current = controller;
 
-      // Correctif 8 — Timeout PNG 45s (Puppeteer côté API = 30s + marge réseau)
+      // Timeout PNG 45s (Puppeteer côté API = 30s + marge réseau)
       let estTimeout = false;
       const timeout = setTimeout(() => {
         estTimeout = true;
@@ -180,7 +201,7 @@ export function useApercuPng(
           signal: controller.signal,
         });
 
-        // Correctif 3 — Retry sur token expiré (410)
+        // Retry sur token expiré (410)
         if (res.status === 410 && tentative < 2) {
           tokenRef.current = null;
           estEnCoursRef.current = false;
@@ -194,7 +215,6 @@ export function useApercuPng(
 
         const data = (await res.json()) as { pages: string[]; empreinte: string };
 
-        // Correctif 5 — utiliser le rendu mémoïsé
         const pagesParFeuillet = rendu.ok
           ? extrairePagesParFeuillet(rendu)
           : { "dossier-documentaire": 0, questionnaire: 0, "cahier-reponses": 0 };
@@ -208,7 +228,6 @@ export function useApercuPng(
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") {
           if (estTimeout) {
-            // Correctif 8 — Timeout atteint, afficher l'erreur
             setEtat({
               statut: "erreur",
               message: "La génération a pris trop de temps. Réessayez.",
@@ -236,7 +255,7 @@ export function useApercuPng(
   const telechargerPdf = useCallback(async () => {
     setPdfEnCours(true);
 
-    // Correctif 2 — Timeout PDF 30s
+    // Timeout PDF 30s
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30_000);
 
@@ -263,13 +282,12 @@ export function useApercuPng(
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = payload.type === "tache" ? "tache.pdf" : "epreuve.pdf";
+      a.download = nomFichierPdf(payload.type);
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (err) {
-      // Correctif 7 — Toast erreur PDF
       if (err instanceof DOMException && err.name === "AbortError") {
         toast.error("Le téléchargement a pris trop de temps. Réessayez.");
         return;

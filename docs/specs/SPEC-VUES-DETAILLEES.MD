@@ -33,8 +33,10 @@ components/partagees/vue-detaillee/layout.tsx            → VueDetailleeLayout
 components/partagees/vue-detaillee/barre-actions.tsx      → BarreActions
 components/partagees/vue-detaillee/onglets.tsx            → Onglets
 components/partagees/vue-detaillee/rail-layout.tsx        → RailLayout
+components/partagees/vue-detaillee/apercu-imprime.tsx     → ApercuImprimeInline
 components/partagees/panneau-lateral/index.tsx            → PanneauLateral
-components/partagees/visionneuse/index.tsx               → Visionneuse
+components/partagees/carrousel-apercu/index.tsx           → CarrouselApercu
+components/partagees/carrousel-apercu/modale.tsx          → CarrouselApercuModale
 ```
 
 ### Document
