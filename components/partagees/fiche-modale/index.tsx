@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState, useId } from "react";
 import Link from "next/link";
-import { DocumentFicheLecture } from "@/components/documents/DocumentFicheLecture";
+import { DocumentFicheLecture } from "@/components/document/fiche/lecture";
 import { fetchDocFicheDataAction } from "@/lib/actions/fetch-doc-fiche-data";
 import type { DocFicheData } from "@/lib/fiche/types";
 import {
