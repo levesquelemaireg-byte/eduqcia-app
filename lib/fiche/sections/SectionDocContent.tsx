@@ -2,7 +2,7 @@
 
 import type { DocContentData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
-import { DocumentCard } from "@/components/documents/DocumentCard";
+import { DocumentRenderer } from "@/components/document/renderer";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
 import { FICHE_SECTION_TITLE_DOCUMENT } from "@/lib/ui/ui-copy";
@@ -19,7 +19,7 @@ export function SectionDocContent({ data, mode: _mode }: Props) {
       <SectionLabel icon="description">{FICHE_SECTION_TITLE_DOCUMENT}</SectionLabel>
       <div className={FICHE_SECTION_BODY_INSET}>
         <div className="rounded-xl border border-border bg-panel-alt p-4 sm:p-5">
-          <DocumentCard document={data.document} />
+          <DocumentRenderer document={data.document} mode="sommaire" />
         </div>
       </div>
     </section>

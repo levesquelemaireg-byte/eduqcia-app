@@ -8,7 +8,7 @@ import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/ong
 import { SectionHero } from "@/components/document/vue-detaillee/sections/hero";
 import { SectionContenu } from "@/components/document/vue-detaillee/sections/contenu";
 import { DocumentRail } from "@/components/document/vue-detaillee/rail";
-import { DocumentCard } from "@/components/documents/DocumentCard";
+import { DocumentRenderer } from "@/components/document/renderer";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
 import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
 import type { DocFicheData } from "@/lib/fiche/types";
@@ -96,10 +96,10 @@ export function DocumentVueDetaillee({
           <SectionContenu document={data.document} />
         ) : (
           <div className="space-y-3">
-            {/* Aperçu imprimé — rendu canonique via DocumentCard mode print */}
+            {/* Aperçu imprimé — rendu canonique via DocumentRenderer */}
             <div className="mx-auto max-w-[600px]">
               <div className="border border-deep">
-                <DocumentCard document={data.document} numero={1} />
+                <DocumentRenderer document={data.document} mode="sommaire" numero={1} />
               </div>
             </div>
             <p className="text-center text-[11px] text-muted">

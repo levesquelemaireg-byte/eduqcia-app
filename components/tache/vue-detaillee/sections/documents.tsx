@@ -2,7 +2,7 @@
 
 import type { DocumentsSectionData } from "@/lib/fiche/selectors/tache/documents";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
-import { DocumentCard } from "@/components/documents/DocumentCard";
+import { DocumentRenderer } from "@/components/document/renderer";
 
 type Props = {
   data: DocumentsSectionData;
@@ -22,7 +22,12 @@ export function SectionDocuments({ data, surClicDocument }: Props) {
       <div className="flex flex-col gap-3">
         {data.cards.map((card) => {
           const content = (
-            <DocumentCard key={card.docId} document={card.document} numero={card.numero} />
+            <DocumentRenderer
+              key={card.docId}
+              document={card.document}
+              mode="sommaire"
+              numero={card.numero}
+            />
           );
 
           if (surClicDocument) {

@@ -3,7 +3,7 @@
 import type { DocumentsData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
-import { DocumentCard } from "@/components/documents/DocumentCard";
+import { DocumentRenderer } from "@/components/document/renderer";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import { ficheDocumentsSectionTitle } from "@/lib/ui/ui-copy";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
@@ -21,7 +21,7 @@ export function SectionDocuments({ data, mode: _mode }: Props) {
       <div className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}>
         {data.documents.map((doc) => (
           <div key={doc.numero} className="rounded-lg border border-border bg-panel p-4">
-            <DocumentCard document={documentFicheVersRenderer(doc)} />
+            <DocumentRenderer document={documentFicheVersRenderer(doc)} mode="sommaire" />
           </div>
         ))}
       </div>
