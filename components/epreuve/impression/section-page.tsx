@@ -45,7 +45,7 @@ export function SectionPage({ enTete, numeroPage, totalPages, children }: Sectio
         lineHeight: 1.5,
         color: "#000",
         background: "#fff",
-        overflow: "visible",
+        overflow: "hidden",
         pageBreakAfter: "always",
         breakAfter: "page",
       }}
@@ -58,7 +58,7 @@ export function SectionPage({ enTete, numeroPage, totalPages, children }: Sectio
         className="page-content"
         style={{
           maxHeight: `${MAX_CONTENT_HEIGHT_PX}px`,
-          overflow: "visible",
+          overflow: "hidden",
         }}
       >
         {children}

@@ -1,15 +1,18 @@
 /*
  * Conteneur scrollable de l'aperçu impression temps réel (wizard tâche).
  *
- * Hauteur contrainte au panneau parent (100%) + scroll vertical interne.
- * Pages Letter US empilées verticalement avec gap et ombre portée écran ;
- * tout est neutralisé à l'impression physique pour rester fidèle au PDF.
+ * Modèle mental : PDF viewer navigateur. Fond gris qui remplit l'espace,
+ * pages blanches Letter US empilées avec gap, seul le fond scrolle. Les
+ * pages elles-mêmes ne scrollent jamais (height fixe + flex-shrink 0 +
+ * overflow hidden). Tout est neutralisé en @media print.
  */
 
 .canvas {
   height: 100%;
   overflow-y: auto;
   overscroll-behavior-y: contain;
+  background: var(--color-surface, #f0f2f5);
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -17,6 +20,8 @@
 }
 
 .canvas :global(.page) {
+  flex-shrink: 0;
+  overflow: hidden;
   box-shadow: 0 4px 16px rgb(0 0 0 / 0.14);
 }
 
@@ -24,6 +29,8 @@
   .canvas {
     height: auto;
     overflow: visible;
+    background: none;
+    padding: 0;
     gap: 0;
   }
 
