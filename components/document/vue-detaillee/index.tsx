@@ -68,9 +68,9 @@ export function DocumentVueDetaillee({
             })
           }
           surCopierLien={copierLien}
-          surOuvrirVisionneuse={() => {
-            /* TODO: visionneuse document */
-          }}
+          surOuvrirVisionneuse={() =>
+            window.open(`/documents/${data.document.id}/print`, "_blank", "noopener,noreferrer")
+          }
           surSupprimer={
             surSupprimer ??
             (() => {
