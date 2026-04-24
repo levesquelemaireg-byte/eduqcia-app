@@ -1,37 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(npm run *)",
-      "Bash(npx tsc *)",
-      "Bash(npx tsc --noEmit)",
-      "Bash(sed *)",
-      "Bash(cat *)",
-      "Bash(head *)",
-      "Bash(tail *)",
-      "Bash(grep *)",
-      "Bash(ls *)",
-      "Bash(find *)",
-      "Bash(wc *)",
-      "Bash(awk *)",
-      "Bash(tree *)",
-      "Bash(file *)",
-      "Bash(rm *)",
-      "Bash(mkdir *)",
-      "Bash(cp *)",
-      "Bash(mv *)",
-      "Bash(git mv *)",
-      "Bash(git add *)",
-      "Bash(git commit *)",
-      "Bash(git diff *)",
-      "Bash(git log *)",
-      "Bash(git status *)",
-      "Read(*)",
-      "Glob(*)",
-      "Write(*)",
-      "Edit(*)",
-      "Bash(for *)",
-      "Bash(git reset *)",
-      "Bash(git *)"
-    ]
+    "allow": ["Bash(*)", "Read(*)", "Glob(*)", "Write(*)", "Edit(*)", "Grep(*)"]
   }
 }
