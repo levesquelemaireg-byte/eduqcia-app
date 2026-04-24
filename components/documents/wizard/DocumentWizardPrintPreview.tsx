@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext, useWatch } from "react-hook-form";
-import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+import { DocumentRenderer } from "@/components/document/renderer";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DocumentElement, RendererDocument } from "@/lib/types/document-renderer";
 import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
@@ -57,5 +57,5 @@ export function DocumentWizardPrintPreview() {
     elements: els,
   };
 
-  return <DocumentCardPrint document={rendererDoc} numero={1} />;
+  return <DocumentRenderer document={rendererDoc} mode="apercu-imprime" numero={1} />;
 }

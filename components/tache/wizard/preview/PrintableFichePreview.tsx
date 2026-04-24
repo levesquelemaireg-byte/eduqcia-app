@@ -10,7 +10,7 @@ import {
   TachePrintFeuilletToggle,
   type TachePrintFeuilletId,
 } from "@/components/tache/wizard/preview/TachePrintFeuilletToggle";
-import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+import { DocumentRenderer } from "@/components/document/renderer";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import {
   resolveConsigneHtmlForDisplay,
@@ -114,7 +114,11 @@ function PrintableFicheDocumentsSection({ tache }: { tache: TacheFicheData }) {
     <div className={styles.sectionBlock}>
       <div className={cn(styles.docsGrid, hasIcono && styles.docsGridHasIcono)}>
         {tache.documents.map((doc) => (
-          <DocumentCardPrint key={doc.numero} document={documentFicheVersRenderer(doc)} />
+          <DocumentRenderer
+            key={doc.numero}
+            document={documentFicheVersRenderer(doc)}
+            mode="apercu-imprime"
+          />
         ))}
       </div>
     </div>

@@ -1,10 +1,10 @@
 /**
- * SectionDocument — délègue au renderer canonique DocumentCardPrint.
+ * SectionDocument — délègue au renderer canonique DocumentRenderer.
  *
- * Invariant #5 du print-engine : ApercuImpression → SectionDocument → DocumentCardPrint.
+ * Invariant #5 du print-engine : ApercuImpression → SectionDocument → DocumentRenderer (mode apercu-imprime).
  */
 
-import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+import { DocumentRenderer } from "@/components/document/renderer";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 
 export type ContenuDocument = {
@@ -17,5 +17,11 @@ export type SectionDocumentProps = {
 };
 
 export function SectionDocument({ contenu }: SectionDocumentProps) {
-  return <DocumentCardPrint document={contenu.document} numero={contenu.numeroGlobal} />;
+  return (
+    <DocumentRenderer
+      document={contenu.document}
+      mode="apercu-imprime"
+      numero={contenu.numeroGlobal}
+    />
+  );
 }

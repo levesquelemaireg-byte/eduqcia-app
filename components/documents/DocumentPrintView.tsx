@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { toast } from "sonner";
-import { DocumentCardPrint } from "@/components/documents/DocumentCardPrint";
+import { DocumentRenderer } from "@/components/document/renderer";
 import { Button } from "@/components/ui/Button";
 import { WIZARD_PRINT_PREVIEW_COPY } from "@/components/tache/wizard/preview/wizard-print-preview-copy";
 import type { RendererDocument } from "@/lib/types/document-renderer";
@@ -63,7 +63,7 @@ export function DocumentPrintView({ documentId, document: doc, numero }: Props) 
       </div>
 
       <div className="tache-print-page-main flex flex-1 justify-center px-4 py-8 sm:px-8">
-        <DocumentCardPrint document={doc} numero={numero} />
+        <DocumentRenderer document={doc} mode="apercu-imprime" numero={numero} />
       </div>
     </div>
   );
