@@ -68,9 +68,9 @@ export function DocumentVueDetaillee({
             })
           }
           surCopierLien={copierLien}
-          surOuvrirVisionneuse={() =>
-            window.open(`/documents/${data.document.id}/print`, "_blank", "noopener,noreferrer")
-          }
+          surOuvrirVisionneuse={() => {
+            /* TODO — brancher sur CarrouselApercu au Lot 3 (même pattern que tâche et épreuve). */
+          }}
           surSupprimer={
             surSupprimer ??
             (() => {

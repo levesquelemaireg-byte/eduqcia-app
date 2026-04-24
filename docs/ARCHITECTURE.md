@@ -28,7 +28,6 @@ Les colonnes **`repere_temporel`** et **`annee_normalisee`** sur **`documents`**
 app/
   (auth)/          # login, register, activate
   (app)/           # shell connecté : dashboard, questions, documents, bank, evaluations, profile, collaborateurs
-  (print)/         # routes d'impression sans AppShell (questions, documents)
   (apercu)/        # route SSR /apercu/[token] + route de test /apercu/test/[slug]
   api/             # route handlers HTTP
     collaborateurs/search/
@@ -54,7 +53,7 @@ components/
 lib/
   actions/         # Server Actions (auth, tache, documents, evaluations, impression)
   queries/         # lectures Supabase
-  auth/            # `require-active-app-user.ts` — garde-fou session + profil actif (layouts `(app)` et `(print)`)
+  auth/            # `require-active-app-user.ts` — garde-fou session + profil actif (layout `(app)`)
   supabase/        # client navigateur/serveur, admin, helper middleware
   server/          # utilitaires server-only (`rate-limit`)
   utils/           # helpers transverses (`cn`, profile-display, dates, etc.)
@@ -82,7 +81,7 @@ supabase/migrations/ # SQL incrémental (ex. RPC manquante sur projet existant)
 - **Données Supabase** : préférer Server Components, Server Actions ou route handlers. Éviter les appels Supabase directs dans les Client Components.
 - **Garde d’accès** : `proxy.ts` protège `/dashboard`, `/questions`, `/documents`, `/bank`, `/evaluations`, `/profile`, `/collaborateurs` et gère les redirections `/login`/`/register` quand l’utilisateur est déjà connecté.
 - **Session Supabase** : `lib/supabase/middleware.ts` rafraîchit les cookies et retourne l’utilisateur courant pour `proxy.ts`.
-- **Profil actif requis** : `requireActiveAppUser()` est appliqué dans les layouts `(app)` et `(print)`.
+- **Profil actif requis** : `requireActiveAppUser()` est appliqué dans le layout `(app)`.
 
 ## Routes App Router
 
@@ -95,12 +94,10 @@ supabase/migrations/ # SQL incrémental (ex. RPC manquante sur projet existant)
 | `/questions/new`                                                        | Wizard création TAÉ (7 étapes).                                                                                                                                 |
 | `/questions/[id]`                                                       | Vue détaillée tâche via `TacheVueDetaillee` (onglets Sommaire / Aperçu de l’imprimé).                                                                           |
 | `/questions/[id]/edit`                                                  | Wizard édition TAÉ (`fetchTacheFormStateForEdit`, RPC `update_tache_transaction`).                                                                              |
-| `/questions/[id]/print`                                                 | Impression tâche (segment `(print)`, hors AppShell, garde `requireActiveAppUser`).                                                                              |
 | `/documents`                                                            | Liste « Mes documents ».                                                                                                                                        |
 | `/documents/new`                                                        | Wizard document autonome (3 étapes, split formulaire/sommaire).                                                                                                 |
 | `/documents/[id]`                                                       | Vue détaillée document via `DocumentVueDetaillee` (onglets Sommaire / Aperçu de l’imprimé).                                                                     |
 | `/documents/[id]/edit`                                                  | Édition document via le même wizard que la création.                                                                                                            |
-| `/documents/[id]/print`                                                 | Impression document (segment `(print)`, garde `requireActiveAppUser`).                                                                                          |
 | `/bank`                                                                 | Banque collaborative (onglets tâches, documents, épreuves).                                                                                                     |
 | `/evaluations`, `/evaluations/new`, `/evaluations/[id]/edit`            | Liste et composition d’épreuves (RPC `save_evaluation_composition`).                                                                                            |
 | `/evaluations/[id]`                                                     | Vue détaillée épreuve via `EpreuveVueDetaillee` (onglets Sommaire / Aperçu de l’imprimé).                                                                       |

@@ -1,5 +1,5 @@
 /*
- * Conteneur scrollable de l'aperçu impression temps réel (wizard tâche).
+ * Conteneur scrollable de l'aperçu impression temps réel (wizard tâche + document).
  *
  * Modèle mental : PDF viewer navigateur. Fond gris qui remplit l'espace,
  * pages blanches Letter US empilées avec gap, seul le fond scrolle. Les

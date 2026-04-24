@@ -9,7 +9,7 @@ import { Bloc4DocumentsHistoriques } from "@/components/tache/wizard/Bloc4Docume
 import { Bloc6CompetenceDisciplinaire } from "@/components/tache/wizard/Bloc6CompetenceDisciplinaire";
 import { Bloc7AspectsConnaissances } from "@/components/tache/wizard/Bloc7AspectsConnaissances";
 import { Bloc5 } from "@/components/tache/wizard/bloc5/Bloc5";
-import { ApercuImprimeLiveTache } from "@/components/tache/wizard/preview/ApercuImprimeLive";
+import { ApercuImprimeLiveTache } from "@/components/partagees/apercu-imprime-live";
 import { FicheSommaireColumn } from "@/components/tache/wizard/sommaire";
 import { PreviewPanel } from "@/components/preview/PreviewPanel";
 import type { PreviewMode } from "@/components/preview/types";

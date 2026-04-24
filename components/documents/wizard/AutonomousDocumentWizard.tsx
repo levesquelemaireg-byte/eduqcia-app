@@ -16,7 +16,7 @@ import {
 import { ActiveFieldProvider } from "@/components/documents/wizard/active-field-context";
 import { DocumentWizardNavFooter } from "@/components/documents/wizard/DocumentWizardNavFooter";
 import { DocumentWizardPreview } from "@/components/documents/wizard/DocumentWizardPreview";
-import { DocumentWizardPrintPreview } from "@/components/documents/wizard/DocumentWizardPrintPreview";
+import { ApercuImprimeLiveDocument } from "@/components/partagees/apercu-imprime-live";
 import { PreviewPanel } from "@/components/preview/PreviewPanel";
 import type { PreviewMode } from "@/components/preview/types";
 import { StepClassification } from "@/components/documents/wizard/steps/StepClassification";
@@ -348,13 +348,9 @@ export function AutonomousDocumentWizard({
               topBarClassName="sticky top-0 z-10"
               className="relative min-h-0 flex-1"
             >
-              {(modeId, _subModeId, _subSubModeId) =>
+              {(modeId) =>
                 modeId === "impression" ? (
-                  <div className="tache-wizard-preview-canvas flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
-                    <aside className="min-w-0 w-full max-w-(--tache-print-sheet-width)">
-                      <DocumentWizardPrintPreview />
-                    </aside>
-                  </div>
+                  <ApercuImprimeLiveDocument />
                 ) : (
                   <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain bg-panel p-4 sm:p-6 xl:px-12 xl:pt-8">
                     <DocumentWizardPreview
