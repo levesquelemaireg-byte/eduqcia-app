@@ -345,7 +345,7 @@ const bodySchema = z.discriminatedUnion("type", [
 ### Carrousel
 
 ```typescript
-// components/epreuve/apercu/carrousel.tsx
+// components/partagees/carrousel-apercu/index.tsx
 // Onglets par feuillet SEULEMENT si contexte.type === 'epreuve'
 // Sinon : carrousel simple sans onglets
 ```
@@ -387,7 +387,7 @@ lib/epreuve/pagination/types.ts
 components/epreuve/impression/index.tsx
   → consomme RenduImprimable au lieu de EpreuvePaginee
 
-components/epreuve/apercu/carrousel.tsx
+components/partagees/carrousel-apercu/index.tsx
   → onglets conditionnels selon contexte.type
 
 app/(apercu)/apercu/[token]/page.tsx

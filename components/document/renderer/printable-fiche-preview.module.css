@@ -171,15 +171,11 @@
   background: var(--color-panel);
 }
 
-.documentCellFull {
-  grid-column: 1 / -1;
-}
-
 /*
  * Iconographique : bordure extérieure de la carte = largeur du contenu (image / titre / source),
- * pas toute la colonne de la grille. Exclut `.documentCellFull` (texte dense pleine largeur).
+ * pas toute la colonne de la grille.
  */
-.documentCell[data-doc-type="iconographique"]:not(.documentCellFull) {
+.documentCell[data-doc-type="iconographique"] {
   box-sizing: border-box;
   width: max-content;
   max-width: 100%;
@@ -393,9 +389,8 @@
   }
 
   /*
-   * Géométrie feuille : variables `--tache-print-sheet-*` ; impression : `@page` marges + `#tache-wizard-printable-fiche` sans padding (`globals.css`).
-   * `@page` : `lib/tache/print-page-css.ts`.
-   * Typo feuille : 11pt / 1.5 via `globals.css` (spécificité id + contexte print).
+   * Géométrie feuille : variables `--tache-print-sheet-*` (`globals.css`).
+   * Impression Puppeteer : `@page { margin: 2cm }` dans `styles/impression.css`.
    * Ne pas surcharger le padding de `.paper` ici (aligné sur les mêmes variables / globals).
    */
   .paper {

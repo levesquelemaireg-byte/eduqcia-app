@@ -423,12 +423,12 @@
 
 ### E1 — Exporter l'épreuve en PDF 🔴 À construire
 
-- **État actuel :** aucun pipeline de génération PDF côté serveur. L'utilisateur peut uniquement faire Ctrl+P → « Enregistrer en PDF » via le navigateur, avec résultats inconsistants
-- **Infrastructure existante :**
-  - Routes print : `/questions/[id]/print`, `/evaluations/[id]/print`, `/documents/[id]/print`
-  - Shell print : `app/(print)/layout.tsx` — shell minimal sans AppShell
-  - CSS print : `lib/tache/print-page-css.ts` — `@page { size: letter portrait; margin: 2cm; }`, police Arial 11pt
-  - Composants HTML : `PrintableFichePreview.tsx`, `EvaluationPrintableBody.tsx`
+- **État actuel (audit pré-print-engine — historique) :** aucun pipeline de génération PDF côté serveur. L'utilisateur peut uniquement faire Ctrl+P → « Enregistrer en PDF » via le navigateur, avec résultats inconsistants. **Cette section est obsolète depuis la livraison du print-engine (PDF-1 à PDF-13) et du refactoring rendu imprimé du 24 avril 2026 (Lots 1-5)** — voir [BACKLOG-HISTORY.md](../BACKLOG-HISTORY.md) et [print-engine.md](./print-engine.md).
+- **Infrastructure historique (supprimée par les Lots 1-3 du refactoring) :**
+  - Routes print legacy : `/questions/[id]/print`, `/evaluations/[id]/print`, `/documents/[id]/print` (toutes supprimées Lots 1-2)
+  - Shell print legacy : `app/(print)/layout.tsx` (supprimé Lot 2)
+  - CSS print legacy : `lib/tache/print-page-css.ts` (supprimé Lot 2 — remplacé par `styles/impression.css` statique consommé par le layout SSR `app/(apercu)/apercu/layout.tsx`)
+  - Composants HTML legacy : `PrintableFichePreview.tsx`, `EvaluationPrintableBody.tsx` (supprimés Lots 1-2 — remplacés par `ApercuImpression`)
 - **Ce qui manque :**
   - **Puppeteer / Chromium headless** — non installé (`puppeteer-core` + `@sparticuz/chromium-min` pour Vercel)
   - **Route API** `/api/evaluations/[id]/pdf` pour la génération serveur

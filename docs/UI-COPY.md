@@ -791,7 +791,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ## Page — Créer / modifier une épreuve (composition)
 
-Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id]/print` (aperçu / impression, nouvel onglet depuis **Aperçu**). Constantes `lib/ui/ui-copy.ts` : `EVAL_COMP_*`, `EVAL_PRINT_BACK_TO_EDIT`, `EVAL_BANK_MODAL_*`, `EVAL_LIST_LINK_EDIT`, `BANK_TASK_ADD_TO_EVALUATION`, `TOAST_EVAL_*` ; sections imprimées : `EVAL_PRINT_SECTION_COPY` + libellés impression partagés `WIZARD_PRINT_PREVIEW_COPY` dans `wizard-print-preview-copy.ts`. Détail parcours : [WORKFLOWS.md](./WORKFLOWS.md#création--édition-dépreuve-composition), règles métier : [FEATURES.md](./FEATURES.md) §10.2.1.
+Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id]` (vue détaillée). L'aperçu / téléchargement PDF se fait depuis le carrousel modal de la vue détaillée (bouton imprimante de la barre d'actions partagée). Constantes `lib/ui/ui-copy.ts` : `EVAL_COMP_*`, `EVAL_BANK_MODAL_*`, `EVAL_LIST_LINK_EDIT`, `BANK_TASK_ADD_TO_EVALUATION`, `TOAST_EVAL_*` ; libellés carrousel et feuillets dans `components/partagees/carrousel-apercu/copy.ts` (`CARROUSEL_APERCU_COPY`, `FEUILLET_LABELS_COPY`). Détail parcours : [WORKFLOWS.md](./WORKFLOWS.md#création--édition-dépreuve-composition), règles métier : [FEATURES.md](./FEATURES.md) §10.2.1.
 
 ### Titres et liste
 
@@ -815,16 +815,9 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 - Déjà ajoutée
 - Charger plus
 - Enregistrer le brouillon
-- Aperçu (panier — sauvegarde brouillon puis ouverture `/evaluations/[id]/print`)
+- Aperçu (panier — sauvegarde brouillon puis ouverture de la vue détaillée pour aperçu / téléchargement PDF via le carrousel modal)
 - Publier
 - Monter / Descendre / Retirer (panier)
-
-### Route `/evaluations/[id]/print` (hors coquille)
-
-- Retour à l'édition (`EVAL_PRINT_BACK_TO_EDIT`)
-- Imprimer (`WIZARD_PRINT_PREVIEW_COPY.print`)
-- Bandeau aide en-têtes / pieds navigateur (`WIZARD_PRINT_PREVIEW_COPY.printHeadersFootersHint`)
-- Titres dans la feuille : **Dossier documentaire**, **Questionnaire**, **Question** _n_ ; états vides : « Aucun document dans cette épreuve. » / « Aucune tâche d’apprentissage et d’évaluation dans cette épreuve. » (`EVAL_PRINT_SECTION_COPY`)
 
 ### États vides et aide
 
@@ -995,38 +988,29 @@ Toutes les constantes vivent dans `lib/ui/ui-copy.ts`.
 
 ## Impression — modale et contenu
 
-### Modale — Aperçu avant impression
+Source de vérité : `components/partagees/carrousel-apercu/copy.ts` (`CARROUSEL_APERCU_COPY`, `FEUILLET_LABELS_COPY`).
 
-- Titre : Aperçu avant impression
-- Imprimer
-- Fermer
-- Télécharger le PDF — **PROVISOIRE** : tant que l’export PDF natif n’est pas livré, le bouton est inactif ; texte d’aide : « Pour obtenir un PDF, utilisez Imprimer puis la destination Enregistrer au format PDF du navigateur. »
-- Barre d’outils (aperçu) : Aperçu impression (`WIZARD_PRINT_PREVIEW_COPY.toolbarPrint`)
+### Carrousel modal — `CarrouselApercuModale`
 
-### Carrousel d'aperçu PNG (`CARROUSEL_APERCU_COPY`)
+Wrapper d'overlay partagé par les 3 vues détaillées (tâche, document, épreuve), ouvert depuis le bouton imprimante de la barre d'actions.
 
-- Skeleton titre : Préparation de l'aperçu…
-- Skeleton sous-titre : Mise en page et génération des visuels
-- Bannière d'invalidation : L'aperçu ne reflète plus le contenu actuel du formulaire.
-- Bouton regénérer : Mettre à jour l'aperçu
-- Erreur génération : La génération a échoué
-- Bouton réessayer : Réessayer
-- Indicateur de page : Page {n} sur {total}
-- Alt text image : Page {n} sur {total} — {nom du feuillet}
-- Labels onglets feuillets : réutilise `EVAL_PRINT_SECTION_COPY.dossierDocumentaire` et `EVAL_PRINT_SECTION_COPY.questionnaire`
+- Titre dialog : Aperçu avant impression (`modalTitle`)
+- Bouton fermer : Fermer (`boutonFermer`)
+- Bouton télécharger PDF : Télécharger le PDF (`boutonTelechargerPdf`)
+- Skeleton titre : Préparation de l'aperçu… (`skeletonTitre`)
+- Skeleton sous-titre : Mise en page et génération des visuels (`skeletonSousTitre`)
+- Bannière d'invalidation : L'aperçu ne reflète plus le contenu actuel du formulaire. (`banniereInvalidation`)
+- Bouton regénérer : Mettre à jour l'aperçu (`boutonRegenerer`)
+- Erreur génération : La génération a échoué (`erreurGeneration`)
+- Bouton réessayer : Réessayer (`boutonReessayer`)
+- Indicateur de page : Page {n} sur {total} (`indicateurPage(n, total)`)
+- Alt text image : Page {n} sur {total} — {nom du feuillet} (`altImage(n, total, nomFeuillet)`)
 
-### Astuce en-têtes / pieds du navigateur
+### Labels onglets feuillets (`FEUILLET_LABELS_COPY`)
 
-- « Les bandeaux (date, URL, pagination, titre) sont ajoutés par le navigateur, pas par l’application. Dans la fenêtre d’impression, ouvrez « Plus de paramètres » et décochez « En-têtes et pieds de page » (Chrome / Edge). »
-
-### Sections — `aria-label` / structure imprimable (`PRINTABLE_FICHE_SECTION_COPY`)
-
-- Documents
-- Questionnaire (feuillet questionnaire — `questionnaireFeuillet`)
-- Consigne
-- Guidage complémentaire
-- Espace de réponse de l’élève
-- `answerSectionAria(n)` : Espace de réponse de l’élève, N ligne(s) vierges
+- `dossier-documentaire` : Dossier documentaire
+- `questionnaire` : Questionnaire
+- `cahier-reponses` : Cahier de réponses
 - Grille de correction
 - Préfixe source imprimée : Source :
 - Emplacement vide : —

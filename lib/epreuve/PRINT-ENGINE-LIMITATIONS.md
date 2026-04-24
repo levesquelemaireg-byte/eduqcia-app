@@ -47,7 +47,7 @@ Donc il peut subsister des ecarts marginaux sur des cas extremes :
 | Fichier                                          | Role                                            |
 | ------------------------------------------------ | ----------------------------------------------- |
 | `lib/impression/mesure-estimation.ts`            | Mesureur heuristique partage                    |
-| `hooks/epreuve/use-apercu-png.ts`                | Pagination client apercu PNG                    |
+| `hooks/partagees/use-apercu-png.ts`              | Pagination client apercu PNG                    |
 | `app/(apercu)/apercu/[token]/page.tsx`           | Pagination SSR tokenisee                        |
 | `app/api/impression/apercu-png/route.ts`         | Pagination serveur avant generation PNG         |
 | `components/epreuve/impression/section-page.tsx` | Suppression clipping destructif (`overflow`)    |
