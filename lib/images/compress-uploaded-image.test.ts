@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import sharp from "sharp";
-import { ResizeImageError, resizeImage } from "@/lib/images/resize-image";
-import { computeFinalDimensionsForUploadBox } from "@/lib/images/upload-image-max-box";
+import {
+  CompressUploadedImageError,
+  compressUploadedImage,
+} from "@/lib/images/compress-uploaded-image";
 
-describe("resizeImage", () => {
-  it("ne grossit pas une petite image PNG", async () => {
+describe("compressUploadedImage", () => {
+  it("conserve les dimensions d'une petite image PNG (pas de compression)", async () => {
     const buf = await sharp({
       create: {
         width: 10,
@@ -15,15 +17,15 @@ describe("resizeImage", () => {
     })
       .png()
       .toBuffer();
-    const r = await resizeImage(buf, "image/png");
+    const r = await compressUploadedImage(buf, "image/png");
     expect(r.width).toBe(10);
     expect(r.height).toBe(10);
-    expect(r.wasResized).toBe(false);
+    expect(r.wasCompressed).toBe(false);
     expect(r.contentType).toBe("image/png");
     expect(r.fileSizeBytes).toBeGreaterThan(0);
   });
 
-  it("réduit une grande image et aligne les dimensions sur la formule boîte max", async () => {
+  it("conserve les dimensions originales d'une grande image (plus de resize)", async () => {
     const buf = await sharp({
       create: {
         width: 2000,
@@ -34,29 +36,28 @@ describe("resizeImage", () => {
     })
       .jpeg()
       .toBuffer();
-    const r = await resizeImage(buf, "image/jpeg");
-    const expected = computeFinalDimensionsForUploadBox(2000, 200);
-    expect(r.width).toBe(expected.width);
-    expect(r.height).toBe(expected.height);
-    expect(r.width).toBeLessThanOrEqual(660);
-    expect(r.height).toBeLessThanOrEqual(400);
-    expect(r.wasResized).toBe(true);
+    const r = await compressUploadedImage(buf, "image/jpeg");
+    expect(r.width).toBe(2000);
+    expect(r.height).toBe(200);
+    expect(r.wasCompressed).toBe(false);
     expect(r.contentType).toBe("image/jpeg");
   });
 
   it("rejette un format non accepté", async () => {
-    await expect(resizeImage(Buffer.from("x"), "image/gif")).rejects.toMatchObject({
+    await expect(compressUploadedImage(Buffer.from("x"), "image/gif")).rejects.toMatchObject({
       code: "FORMAT_NOT_ACCEPTED",
     });
   });
 
   it("rejette un buffer non image", async () => {
-    await expect(resizeImage(Buffer.from("not an image"), "image/png")).rejects.toMatchObject({
+    await expect(
+      compressUploadedImage(Buffer.from("not an image"), "image/png"),
+    ).rejects.toMatchObject({
       code: "IMAGE_UNREADABLE",
     });
   });
 
-  it("accepte le WebP", async () => {
+  it("accepte le WebP et conserve ses dimensions", async () => {
     const buf = await sharp({
       create: {
         width: 8,
@@ -67,15 +68,17 @@ describe("resizeImage", () => {
     })
       .webp()
       .toBuffer();
-    const r = await resizeImage(buf, "image/webp");
+    const r = await compressUploadedImage(buf, "image/webp");
     expect(r.contentType).toBe("image/webp");
-    expect(r.wasResized).toBe(false);
+    expect(r.width).toBe(8);
+    expect(r.height).toBe(8);
+    expect(r.wasCompressed).toBe(false);
   });
 });
 
-describe("ResizeImageError", () => {
+describe("CompressUploadedImageError", () => {
   it("expose le code", () => {
-    const e = new ResizeImageError("FORMAT_NOT_ACCEPTED");
+    const e = new CompressUploadedImageError("FORMAT_NOT_ACCEPTED");
     expect(e).toBeInstanceOf(Error);
     expect(e.code).toBe("FORMAT_NOT_ACCEPTED");
   });

@@ -207,9 +207,10 @@
 
   /*
    * Documents iconographiques — fiche / aperçu (`printable-fiche-preview.module.css`).
-   * Plafond hauteur sur l’`<img>` (images déjà bornées côté serveur ~400 px) ; `--tache-doc-print-figure-scale` défaut 1.
+   * Plafond hauteur sur l’`<img>` ; aligné sur `PRINT_IMAGE_MAX_HEIGHT_PX = 350` (`lib/impression/constantes-image.ts`)
+   * — soit ~9.3 cm à 96 dpi. L'image téléversée garde sa taille originale ; le rendu CSS borne la hauteur.
    */
-  --tache-print-document-figure-max-height: 11cm;
+  --tache-print-document-figure-max-height: 9.3cm;
 }
 
 /*

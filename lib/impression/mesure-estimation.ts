@@ -1,9 +1,11 @@
 import type { Bloc } from "@/lib/epreuve/pagination/types";
 import { htmlHasMeaningfulText, stripHtml } from "@/lib/tache/consigne-helpers";
 import type { RendererDocument, DocumentElement } from "@/lib/types/document-renderer";
+import {
+  PRINT_IMAGE_MAX_HEIGHT_PX,
+  PRINT_IMAGE_MAX_WIDTH_PX,
+} from "@/lib/impression/constantes-image";
 
-const MAX_IMAGE_HEIGHT_PX = 416;
-const MAX_IMAGE_WIDTH_PX = 620;
 const MIN_IMAGE_HEIGHT_PX = 140;
 const DEFAULT_IMAGE_HEIGHT_PX = 270;
 
@@ -33,9 +35,9 @@ function estimerHauteurImage(
     return DEFAULT_IMAGE_HEIGHT_PX;
   }
 
-  const projectedByWidth = (h / w) * MAX_IMAGE_WIDTH_PX;
-  const projected = Math.min(h, projectedByWidth, MAX_IMAGE_HEIGHT_PX);
-  return clamp(Math.round(projected), MIN_IMAGE_HEIGHT_PX, MAX_IMAGE_HEIGHT_PX);
+  const projectedByWidth = (h / w) * PRINT_IMAGE_MAX_WIDTH_PX;
+  const projected = Math.min(h, projectedByWidth, PRINT_IMAGE_MAX_HEIGHT_PX);
+  return clamp(Math.round(projected), MIN_IMAGE_HEIGHT_PX, PRINT_IMAGE_MAX_HEIGHT_PX);
 }
 
 function estimerHauteurSource(source: string): number {

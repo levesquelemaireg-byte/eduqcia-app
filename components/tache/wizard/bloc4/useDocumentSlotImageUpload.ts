@@ -106,7 +106,7 @@ export function useDocumentSlotImageUpload(patch: PatchFn) {
           imageUploadMeta: {
             width: result.width,
             height: result.height,
-            wasResized: result.wasResized,
+            wasCompressed: result.wasCompressed,
             fileSizeBytes: result.fileSizeBytes,
           },
         });

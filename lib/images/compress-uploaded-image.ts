@@ -2,35 +2,34 @@ import "server-only";
 
 import sharp from "sharp";
 
-import { UPLOAD_IMAGE_MAX_HEIGHT, UPLOAD_IMAGE_MAX_WIDTH } from "@/lib/images/upload-image-max-box";
+/** Plafond après encodage / compression. */
+export const COMPRESS_IMAGE_MAX_OUTPUT_BYTES = 2 * 1024 * 1024;
 
-/** Plafond après redimensionnement / compression — aligné spec lot upload. */
-export const RESIZE_IMAGE_MAX_OUTPUT_BYTES = 2 * 1024 * 1024;
+export type CompressUploadedImageContentType = "image/jpeg" | "image/png" | "image/webp";
 
-export type ResizeImageContentType = "image/jpeg" | "image/png" | "image/webp";
-
-export type ResizeImageResult = {
+export type CompressUploadedImageResult = {
   buffer: Buffer;
   width: number;
   height: number;
-  wasResized: boolean;
+  /** `true` si la compression JPEG dégressive a été déclenchée pour passer sous le plafond. */
+  wasCompressed: boolean;
   fileSizeBytes: number;
-  contentType: ResizeImageContentType;
+  contentType: CompressUploadedImageContentType;
 };
 
-export class ResizeImageError extends Error {
+export class CompressUploadedImageError extends Error {
   constructor(
     public readonly code:
       | "FORMAT_NOT_ACCEPTED"
-      | "FILE_TOO_LARGE_AFTER_RESIZE"
+      | "FILE_TOO_LARGE_AFTER_COMPRESSION"
       | "IMAGE_UNREADABLE",
   ) {
     super(code);
-    this.name = "ResizeImageError";
+    this.name = "CompressUploadedImageError";
   }
 }
 
-function normalizeInputMime(mimeType: string): ResizeImageContentType | null {
+function normalizeInputMime(mimeType: string): CompressUploadedImageContentType | null {
   const m = mimeType.trim().toLowerCase();
   if (m === "image/jpg" || m === "image/jpeg") return "image/jpeg";
   if (m === "image/png") return "image/png";
@@ -38,16 +37,16 @@ function normalizeInputMime(mimeType: string): ResizeImageContentType | null {
   return null;
 }
 
-async function encodeResized(
+async function encodeOriginal(
   pipeline: sharp.Sharp,
-  contentType: ResizeImageContentType,
+  contentType: CompressUploadedImageContentType,
 ): Promise<{ buffer: Buffer; width: number; height: number }> {
   if (contentType === "image/png") {
     const out = await pipeline.png({ compressionLevel: 9 }).toBuffer({ resolveWithObject: true });
     const w = out.info.width;
     const h = out.info.height;
     if (w == null || h == null || w < 1 || h < 1) {
-      throw new ResizeImageError("IMAGE_UNREADABLE");
+      throw new CompressUploadedImageError("IMAGE_UNREADABLE");
     }
     return { buffer: out.data, width: w, height: h };
   }
@@ -56,7 +55,7 @@ async function encodeResized(
     const w = out.info.width;
     const h = out.info.height;
     if (w == null || h == null || w < 1 || h < 1) {
-      throw new ResizeImageError("IMAGE_UNREADABLE");
+      throw new CompressUploadedImageError("IMAGE_UNREADABLE");
     }
     return { buffer: out.data, width: w, height: h };
   }
@@ -66,7 +65,7 @@ async function encodeResized(
   const w = out.info.width;
   const h = out.info.height;
   if (w == null || h == null || w < 1 || h < 1) {
-    throw new ResizeImageError("IMAGE_UNREADABLE");
+    throw new CompressUploadedImageError("IMAGE_UNREADABLE");
   }
   return { buffer: out.data, width: w, height: h };
 }
@@ -80,56 +79,57 @@ async function compressToMaxBytes(buffer: Buffer): Promise<Buffer> {
     const next = await sharp(buffer, { failOn: "error" })
       .jpeg({ quality: q, mozjpeg: true })
       .toBuffer();
-    if (next.byteLength <= RESIZE_IMAGE_MAX_OUTPUT_BYTES) {
+    if (next.byteLength <= COMPRESS_IMAGE_MAX_OUTPUT_BYTES) {
       return next;
     }
   }
-  throw new ResizeImageError("FILE_TOO_LARGE_AFTER_RESIZE");
+  throw new CompressUploadedImageError("FILE_TOO_LARGE_AFTER_COMPRESSION");
 }
 
 /**
- * Redimensionnement dans la boîte max, sans upscale ni déformation (fit `inside`), compression ciblée si > 2 Mo.
+ * Conserve les dimensions originales de l'image. Compression JPEG dégressive
+ * uniquement si l'encodage initial dépasse 2 Mo (pour respecter le plafond
+ * stockage). Les dimensions retournées sont les dimensions natives lues par
+ * Sharp, pour que le rendu CSS (`max-width` / `max-height`) fasse le travail
+ * de mise à l'échelle visuelle.
  */
-export async function resizeImage(
+export async function compressUploadedImage(
   inputBuffer: Buffer,
   mimeType: string,
-): Promise<ResizeImageResult> {
+): Promise<CompressUploadedImageResult> {
   const normalizedMime = normalizeInputMime(mimeType);
   if (!normalizedMime) {
-    throw new ResizeImageError("FORMAT_NOT_ACCEPTED");
+    throw new CompressUploadedImageError("FORMAT_NOT_ACCEPTED");
   }
 
   let meta: sharp.Metadata;
   try {
     meta = await sharp(inputBuffer, { failOn: "error" }).metadata();
   } catch {
-    throw new ResizeImageError("IMAGE_UNREADABLE");
+    throw new CompressUploadedImageError("IMAGE_UNREADABLE");
   }
 
   const ow = meta.width;
   const oh = meta.height;
   if (ow == null || oh == null || ow < 1 || oh < 1) {
-    throw new ResizeImageError("IMAGE_UNREADABLE");
+    throw new CompressUploadedImageError("IMAGE_UNREADABLE");
   }
 
-  const pipeline = sharp(inputBuffer, { failOn: "error" }).resize(
-    UPLOAD_IMAGE_MAX_WIDTH,
-    UPLOAD_IMAGE_MAX_HEIGHT,
-    { fit: "inside", withoutEnlargement: true },
-  );
+  const pipeline = sharp(inputBuffer, { failOn: "error" });
 
-  let { buffer, width, height } = await encodeResized(pipeline, normalizedMime);
-  let contentType: ResizeImageContentType = normalizedMime;
-  const wasResized = width !== ow || height !== oh;
+  let { buffer, width, height } = await encodeOriginal(pipeline, normalizedMime);
+  let contentType: CompressUploadedImageContentType = normalizedMime;
+  let wasCompressed = false;
 
-  if (buffer.byteLength > RESIZE_IMAGE_MAX_OUTPUT_BYTES) {
+  if (buffer.byteLength > COMPRESS_IMAGE_MAX_OUTPUT_BYTES) {
     buffer = await compressToMaxBytes(buffer);
     contentType = "image/jpeg";
+    wasCompressed = true;
     const m = await sharp(buffer, { failOn: "error" }).metadata();
     const w = m.width;
     const h = m.height;
     if (w == null || h == null || w < 1 || h < 1) {
-      throw new ResizeImageError("IMAGE_UNREADABLE");
+      throw new CompressUploadedImageError("IMAGE_UNREADABLE");
     }
     width = w;
     height = h;
@@ -139,7 +139,7 @@ export async function resizeImage(
     buffer,
     width,
     height,
-    wasResized,
+    wasCompressed,
     fileSizeBytes: buffer.byteLength,
     contentType,
   };

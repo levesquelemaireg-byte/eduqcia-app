@@ -8,7 +8,10 @@ import {
   CLIENT_IMAGE_ALLOWED_TYPES,
   IMAGE_UPLOAD_MAX_BYTES,
 } from "@/lib/images/image-upload-constants";
-import { ResizeImageError, resizeImage } from "@/lib/images/resize-image";
+import {
+  CompressUploadedImageError,
+  compressUploadedImage,
+} from "@/lib/images/compress-uploaded-image";
 import type { UploadTacheDocumentImageResult } from "@/lib/types/upload-tache-document-image";
 import { createClient } from "@/lib/supabase/server";
 
@@ -46,15 +49,15 @@ export async function uploadTacheDocumentImageAction(
 
   const raw = Buffer.from(await file.arrayBuffer());
 
-  let processed: Awaited<ReturnType<typeof resizeImage>>;
+  let processed: Awaited<ReturnType<typeof compressUploadedImage>>;
   try {
-    processed = await resizeImage(raw, file.type);
+    processed = await compressUploadedImage(raw, file.type);
   } catch (e) {
-    if (e instanceof ResizeImageError) {
+    if (e instanceof CompressUploadedImageError) {
       if (e.code === "FORMAT_NOT_ACCEPTED") {
         return { ok: false, code: "validation", validationReason: "format" };
       }
-      if (e.code === "FILE_TOO_LARGE_AFTER_RESIZE") {
+      if (e.code === "FILE_TOO_LARGE_AFTER_COMPRESSION") {
         return { ok: false, code: "validation", validationReason: "file_too_large" };
       }
       return { ok: false, code: "validation", validationReason: "unreadable" };
@@ -87,7 +90,7 @@ export async function uploadTacheDocumentImageAction(
     publicUrl: pub.publicUrl,
     width: processed.width,
     height: processed.height,
-    wasResized: processed.wasResized,
+    wasCompressed: processed.wasCompressed,
     fileSizeBytes: processed.fileSizeBytes,
   };
 }

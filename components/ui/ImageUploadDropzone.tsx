@@ -8,7 +8,7 @@ import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload"
 import {
   DOCUMENT_WIZARD_IMAGE_DROP_HINT,
   IMAGE_UPLOAD_ACCEPT_ATTR,
-  IMAGE_UPLOAD_BADGE_AUTO_RESIZED,
+  IMAGE_UPLOAD_BADGE_AUTO_COMPRESSED,
   IMAGE_UPLOAD_FINAL_DIMS_LABEL,
   IMAGE_UPLOAD_FINAL_SIZE_LABEL,
   IMAGE_UPLOAD_FORMATS_INFO,
@@ -55,7 +55,7 @@ export function ImageUploadDropzone({
       return;
     }
     if (!onUploadSuccess) return;
-    const key = `${uploadMeta.width}x${uploadMeta.height}-${uploadMeta.wasResized}-${uploadMeta.fileSizeBytes}`;
+    const key = `${uploadMeta.width}x${uploadMeta.height}-${uploadMeta.wasCompressed}-${uploadMeta.fileSizeBytes}`;
     if (key === lastMetaKey.current) return;
     lastMetaKey.current = key;
     onUploadSuccess(uploadMeta);
@@ -145,9 +145,9 @@ export function ImageUploadDropzone({
               </li>
             </ul>
           ) : null}
-          {uploadMeta?.wasResized && !imageUploading ? (
+          {uploadMeta?.wasCompressed && !imageUploading ? (
             <p className="mt-2 inline-flex items-center rounded-md bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent ring-1 ring-inset ring-accent/25">
-              {IMAGE_UPLOAD_BADGE_AUTO_RESIZED}
+              {IMAGE_UPLOAD_BADGE_AUTO_COMPRESSED}
             </p>
           ) : null}
         </div>

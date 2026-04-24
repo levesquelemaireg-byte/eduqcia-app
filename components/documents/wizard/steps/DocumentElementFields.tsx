@@ -205,7 +205,7 @@ export function DocumentElementFields({
       setImageUploadMeta({
         width: r.width,
         height: r.height,
-        wasResized: r.wasResized,
+        wasCompressed: r.wasCompressed,
         fileSizeBytes: r.fileSizeBytes,
       });
     },

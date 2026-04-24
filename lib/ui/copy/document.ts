@@ -181,14 +181,14 @@ export const DOCUMENT_MODULE_CONNAISSANCES_LOOKUP_ERROR =
   "Une ou plusieurs connaissances sélectionnées ne correspondent pas au référentiel. Modifiez la sélection puis réessayez.";
 export const DOCUMENT_WIZARD_IMAGE_FILE_LABEL = "Fichier du document";
 export const DOCUMENT_WIZARD_IMAGE_DROP_HINT = "Glisser un fichier ici ou choisir";
-/** Texte permanent sous la zone de dépôt — JPG / PNG / WebP, 10 Mo, redimensionnement 660×400. */
+/** Texte permanent sous la zone de dépôt — JPG / PNG / WebP, 10 Mo, image conservée taille originale, compression auto si > 2 Mo. */
 export const IMAGE_UPLOAD_FORMATS_INFO =
-  "Formats acceptés : JPG, PNG, WebP — taille maximale 10 Mo. Si votre image dépasse 660 × 400 px, elle sera redimensionnée automatiquement pour optimiser l'impression. La qualité visuelle est préservée.";
+  "Formats acceptés : JPG, PNG, WebP — taille maximale 10 Mo. Votre image est conservée à sa taille originale. Si elle dépasse 2 Mo après envoi, elle sera compressée automatiquement pour respecter le plafond de stockage.";
 export const DOCUMENT_WIZARD_IMAGE_FORMATS_HINT = IMAGE_UPLOAD_FORMATS_INFO;
 export const IMAGE_UPLOAD_ACCEPT_ATTR = "image/jpeg,image/png,image/webp";
 export const IMAGE_UPLOAD_FINAL_DIMS_LABEL = "Dimensions finales :";
 export const IMAGE_UPLOAD_FINAL_SIZE_LABEL = "Poids du fichier final :";
-export const IMAGE_UPLOAD_BADGE_AUTO_RESIZED = "Redimensionnée automatiquement";
+export const IMAGE_UPLOAD_BADGE_AUTO_COMPRESSED = "Compressée automatiquement";
 export const TOAST_DOCUMENT_IMAGE_TOO_LARGE_CLIENT =
   "Le fichier dépasse 10 Mo. Choisissez une image plus légère.";
 export const IMAGE_UPLOAD_ERROR_FORMAT_NOT_ACCEPTED =

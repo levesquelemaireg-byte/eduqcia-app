@@ -39,7 +39,13 @@ function sanitizeImageUploadMeta(raw: unknown): DocumentSlotData["imageUploadMet
   const o = raw as Record<string, unknown>;
   const w = o.width;
   const h = o.height;
-  const wr = o.wasResized;
+  // Rétrocompat brouillons sessionStorage : ancien champ `wasResized` accepté en lecture.
+  const compressed =
+    typeof o.wasCompressed === "boolean"
+      ? o.wasCompressed
+      : typeof o.wasResized === "boolean"
+        ? o.wasResized
+        : null;
   const fs = o.fileSizeBytes;
   if (
     typeof w === "number" &&
@@ -48,7 +54,7 @@ function sanitizeImageUploadMeta(raw: unknown): DocumentSlotData["imageUploadMet
     typeof h === "number" &&
     Number.isFinite(h) &&
     h > 0 &&
-    typeof wr === "boolean" &&
+    compressed !== null &&
     typeof fs === "number" &&
     Number.isFinite(fs) &&
     fs >= 0
@@ -56,7 +62,7 @@ function sanitizeImageUploadMeta(raw: unknown): DocumentSlotData["imageUploadMet
     return {
       width: Math.floor(w),
       height: Math.floor(h),
-      wasResized: wr,
+      wasCompressed: compressed,
       fileSizeBytes: Math.floor(fs),
     };
   }

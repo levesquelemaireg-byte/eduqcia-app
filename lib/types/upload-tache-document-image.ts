@@ -10,7 +10,7 @@ export type UploadTacheDocumentImageResult =
       publicUrl: string;
       width: number;
       height: number;
-      wasResized: boolean;
+      wasCompressed: boolean;
       fileSizeBytes: number;
     }
   | {

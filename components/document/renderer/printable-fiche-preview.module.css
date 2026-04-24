@@ -295,8 +295,10 @@
 }
 
 /*
- * Figure iconographique — cadre serré sur l’image (redimensionnement serveur max 660×400 px).
- * `inline-block` + `max-width: 100%` : boîte = dimensions rendues de l’image (pas d’étirement en largeur).
+ * Figure iconographique — cadre serré sur l'image rendue.
+ * L'image téléversée conserve sa taille originale ; les bornes max-width / max-height
+ * (`PRINT_IMAGE_MAX_WIDTH_PX` / `PRINT_IMAGE_MAX_HEIGHT_PX`, `lib/impression/constantes-image.ts`)
+ * contrôlent la taille rendue sans déformation (`object-fit: contain`).
  */
 .documentFigure {
   position: relative;
@@ -313,12 +315,11 @@
 .documentFigureImg {
   display: block;
   box-sizing: border-box;
-  max-width: 100%;
+  /* Borne en parallèle largeur (660px) et hauteur (9.3cm ≈ 350px) — la plus restrictive gagne. */
+  max-width: min(100%, 660px);
   width: auto;
   height: auto;
-  max-height: calc(
-    var(--tache-print-document-figure-max-height) * var(--tache-doc-print-figure-scale, 1)
-  );
+  max-height: var(--tache-print-document-figure-max-height);
   object-fit: contain;
   object-position: center;
 }

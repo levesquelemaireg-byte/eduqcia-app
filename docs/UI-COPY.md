@@ -627,13 +627,13 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 #### Téléversement image (document iconographique, mode création)
 
-- Texte permanent sous la zone de dépôt (verbatim `IMAGE_UPLOAD_FORMATS_INFO`) : formats JPG, PNG, WebP ; 10 Mo max ; redimensionnement automatique si l’image dépasse 660 × 400 px ; qualité visuelle préservée.
-- Après succès : dimensions finales, poids du fichier final, badge « Redimensionnée automatiquement » si applicable (`lib/images/resize-image.ts`, action `uploadTacheDocumentImageAction`).
+- Texte permanent sous la zone de dépôt (verbatim `IMAGE_UPLOAD_FORMATS_INFO`) : formats JPG, PNG, WebP ; 10 Mo max ; image conservée à sa taille originale ; compression automatique si elle dépasse 2 Mo après envoi (plafond stockage).
+- Après succès : dimensions finales, poids du fichier final, badge « Compressée automatiquement » si applicable (`lib/images/compress-uploaded-image.ts`, action `uploadTacheDocumentImageAction`).
 - **Positionnement de la légende** (si légende non vide) : sous-titre ; modale d’aide avec corps `DOCUMENT_MODULE_LEGEND_POSITION_HELP_MODAL_BODY` (voir `lib/ui/ui-copy.ts`) ; **rangée horizontale** de 4 boutons radio iconiques (`role="radiogroup"` / `role="radio"`, flèches / Home / End) — `52×44px`, `gap` 8px, bordures `border-secondary` / `border-info`, états **info** / **secondary** via variables CSS (pas de `SegmentedControl`) ; `aria-label` par coin (pas de `title` natif sur les boutons). Glyphes : voir [DECISIONS.md](./DECISIONS.md#justifications--position-de-la-légende).
 
 #### Réutilisation depuis la banque (document iconographique)
 
-- Plus de ligne « échelle à l’impression » : l’affichage imprimé s’appuie sur le redimensionnement serveur des images (facteur CSS feuille inchangé à 1 — `--tache-doc-print-figure-scale` défaut).
+- Plus de ligne « échelle à l’impression » : la borne d'affichage imprimé est posée par le rendu CSS (`--tache-print-document-figure-max-height = 9.3cm`, alignée sur `PRINT_IMAGE_MAX_HEIGHT_PX = 350` dans `lib/impression/constantes-image.ts`).
 
 ### Étape 5 · Compétence disciplinaire
 
@@ -942,7 +942,7 @@ Routes Next.js : `/evaluations/new`, `/evaluations/[id]/edit`, `/evaluations/[id
 - **Refonte UI étape 1** (`StepDocument.tsx`) : **`SegmentedControl`** (type de document, type de source) ; champs **Fichier**, **Source**, **Catégorie iconographique**, **Contenu**, **Repère** (wizard) : textes d’aide en **modale (i)** — constantes `DOCUMENT_WIZARD_STEP1_PLACEHOLDER_*`, `DOCUMENT_WIZARD_STEP1_HELP_*` (titres + corps) ; `DOCUMENT_WIZARD_STEP1_CONTENU_LABEL` ; `ImageUploadDropzone` prop `hideFormatsHint` ; `RepereTemporelField` : `suppressLabelAndHelp`, `textInputPlaceholder` ; préfixe année extraite `REPERE_TEMPOREL_EXTRACTED_PREFIX` (« ↳ Année extraite : ») en **text-success** ; contenu textuel : **TipTap** (`RichTextEditor`) — aperçu via `sourceCitationDisplayHtml`.
 - Étape 3 — Indexer le document (ancienne étape 2)
 - Étape 4 — Confirmation — Droits d'auteur (ancienne étape 3) — sous-texte : Lisez le cadre légal et confirmez avant d’enregistrer le document.
-- Fichier du document ; Glisser un fichier ici ou choisir ; texte permanent `IMAGE_UPLOAD_FORMATS_INFO` (JPG, PNG, WebP — 10 Mo — redimensionnement 660×400).
+- Fichier du document ; Glisser un fichier ici ou choisir ; texte permanent `IMAGE_UPLOAD_FORMATS_INFO` (JPG, PNG, WebP — 10 Mo — image conservée taille originale, compression auto si > 2 Mo).
 - Optionnel — cochez une ou plusieurs connaissances. / Sélectionnez d’abord une discipline.
 - Aperçu du document
 - Toasts / erreurs : Document enregistré. ; Document enregistré. La base Supabase n’a pas toutes les colonnes… ; Impossible d'enregistrer le document… ; Connectez-vous pour enregistrer un document. ; Brouillon du document enregistré dans ce navigateur. ; messages upload image (`TOAST_DOCUMENT_IMAGE_*`, `IMAGE_UPLOAD_ERROR_*`, `TOAST_DOCUMENT_IMAGE_TOO_LARGE_CLIENT`) — voir `lib/ui/ui-copy.ts` ; Une ou plusieurs connaissances sélectionnées ne correspondent pas au référentiel…
