@@ -553,7 +553,7 @@ export function PreviewPanel({
         id={tabPanelId}
         role="tabpanel"
         aria-labelledby={`${topTabsPrefix}-tab-${currentModeId}`}
-        className="min-h-0 flex-1 overflow-hidden"
+        className="flex min-h-0 flex-1 flex-col overflow-hidden"
       >
         {children(currentModeId, currentSubModeId, currentSubSubModeId)}
       </div>
