@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { GrilleCorrectionModal } from "@/components/tache/fiche/GrilleCorrectionModal";
-import { FICHE_META_PILL_CLASS } from "@/components/tache/fiche/MetaPill";
+import { FICHE_META_PILL_CLASS } from "@/components/partagees/ui/meta-pill";
 import { useGrilles } from "@/components/tache/wizard/bloc2/useBloc2Data";
 import { cn } from "@/lib/utils/cn";
 

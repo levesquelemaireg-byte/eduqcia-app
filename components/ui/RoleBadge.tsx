@@ -1,4 +1,4 @@
-import { MetaPill } from "@/components/tache/fiche/MetaPill";
+import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { getRoleLabel } from "@/lib/utils/role-label";
 
 type Props = {

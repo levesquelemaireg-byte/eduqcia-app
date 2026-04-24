@@ -3,7 +3,7 @@ import { RoleBadge } from "@/components/ui/RoleBadge";
 import { ExperienceBadge, type ExperienceLevel } from "@/components/ui/ExperienceBadge";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { IconButton } from "@/components/ui/IconButton";
-import { MetaPill } from "@/components/tache/fiche/MetaPill";
+import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 import { pluralize } from "@/lib/utils/pluralize";
 import { NIVEAU_LABELS, DISCIPLINE_LABELS } from "@/lib/utils/profile-labels";

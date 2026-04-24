@@ -1,5 +1,5 @@
 import { DocumentCard } from "@/components/documents/DocumentCard";
-import { MetaPill } from "@/components/tache/fiche/MetaPill";
+import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import type { RendererDocument } from "@/lib/types/document-renderer";

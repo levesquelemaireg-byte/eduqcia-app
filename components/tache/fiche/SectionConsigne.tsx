@@ -5,7 +5,7 @@ import { hasFicheContent } from "@/lib/tache/fiche-helpers";
 import { sanitize } from "@/lib/fiche/helpers";
 import type { TacheFicheData } from "@/lib/types/fiche";
 import { GrilleEvaluationMetaButton } from "@/components/tache/fiche/GrilleEvaluationMetaButton";
-import { MetaPill } from "@/components/tache/fiche/MetaPill";
+import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { SkeletonConsigneBody } from "@/components/tache/fiche/FicheSkeletons";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
 import { MaterialSymbolOiGlyph } from "@/components/ui/MaterialSymbolOiGlyph";
