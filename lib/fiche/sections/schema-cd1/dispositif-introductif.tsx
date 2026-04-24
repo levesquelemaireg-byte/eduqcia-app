@@ -5,6 +5,7 @@ import { ContentBlock } from "@/lib/fiche/primitives/ContentBlock";
 import type { FicheMode } from "@/lib/fiche/types";
 import type { DispositifIntroductifData } from "@/lib/fiche/selectors/tache/dispositif-introductif";
 import { SECTION_B_DEMARCHE_LABEL, SECTION_B_PREAMBULE_LABEL } from "@/lib/ui/ui-copy";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: DispositifIntroductifData; mode: FicheMode };
 
@@ -17,13 +18,13 @@ export function SectionDispositifIntroductif({ data, mode: _mode }: Props) {
     <section className="px-5 pt-4 pb-4 space-y-4">
       {data.preambuleHtml ? (
         <div>
-          <SectionLabel icon="menu_book">{SECTION_B_PREAMBULE_LABEL}</SectionLabel>
+          <SectionLabel icon={ICONES_METIER.discipline}>{SECTION_B_PREAMBULE_LABEL}</SectionLabel>
           <ContentBlock html={data.preambuleHtml} className="text-sm leading-relaxed text-steel" />
         </div>
       ) : null}
 
       <div>
-        <SectionLabel icon="quiz">Consigne de caractérisation</SectionLabel>
+        <SectionLabel icon={ICONES_METIER.consigne}>Consigne de caractérisation</SectionLabel>
         <ContentBlock
           html={data.chapeauHtml}
           className="text-base leading-relaxed tracking-tight text-deep"
@@ -31,7 +32,7 @@ export function SectionDispositifIntroductif({ data, mode: _mode }: Props) {
       </div>
 
       <div>
-        <SectionLabel icon="tooltip_2">{SECTION_B_DEMARCHE_LABEL}</SectionLabel>
+        <SectionLabel icon={ICONES_METIER.guidage}>{SECTION_B_DEMARCHE_LABEL}</SectionLabel>
         <ContentBlock
           html={data.demarcheHtml}
           className="text-sm italic leading-relaxed text-muted [&>ol]:list-decimal [&>ol]:pl-5"

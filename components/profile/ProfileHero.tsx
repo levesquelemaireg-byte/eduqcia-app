@@ -7,6 +7,7 @@ import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 import { pluralize } from "@/lib/utils/pluralize";
 import { NIVEAU_LABELS, DISCIPLINE_LABELS } from "@/lib/utils/profile-labels";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   firstName: string;
@@ -109,10 +110,18 @@ export function ProfileHero({
           {(isOwner || hasProfessionalInfo) && (
             <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border/50 pt-4">
               {niveaux.map((code) => (
-                <MetaPill key={code} icon="school" label={NIVEAU_LABELS[code] ?? code} />
+                <MetaPill
+                  key={code}
+                  icon={ICONES_METIER.niveau}
+                  label={NIVEAU_LABELS[code] ?? code}
+                />
               ))}
               {disciplines.map((code) => (
-                <MetaPill key={code} icon="menu_book" label={DISCIPLINE_LABELS[code] ?? code} />
+                <MetaPill
+                  key={code}
+                  icon={ICONES_METIER.discipline}
+                  label={DISCIPLINE_LABELS[code] ?? code}
+                />
               ))}
               {hasExperience && (
                 <MetaPill

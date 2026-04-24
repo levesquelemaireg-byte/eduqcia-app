@@ -10,6 +10,7 @@ import { useFieldFocusHandlers } from "@/components/documents/wizard/active-fiel
 import { DocumentElementFields } from "@/components/documents/wizard/steps/DocumentElementFields";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { cn } from "@/lib/utils/cn";
 import {
   ANCRAGE_TEMPOREL_LABEL,
@@ -105,7 +106,7 @@ export function StepDocument() {
         labelExtra={
           <Tooltip
             title={ANCRAGE_TEMPOREL_TOOLTIP_TITLE}
-            titleIcon="anchor"
+            titleIcon={ICONES_METIER.ancrageTemporel}
             content={ANCRAGE_TEMPOREL_TOOLTIP_BODY}
             examples={ANCRAGE_TEMPOREL_TOOLTIP_EXAMPLES}
             placement="right"

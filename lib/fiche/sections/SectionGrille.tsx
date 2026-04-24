@@ -5,6 +5,7 @@ import type { FicheMode } from "@/lib/fiche/types";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: GrilleData; mode: FicheMode };
 
@@ -12,7 +13,7 @@ type Props = { data: GrilleData; mode: FicheMode };
 export function SectionGrille({ data, mode: _mode }: Props) {
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="table">Grille d&apos;évaluation</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.comportement}>Grille d&apos;évaluation</SectionLabel>
       <div className={FICHE_SECTION_BODY_INSET}>
         <GrilleEvalTable
           entry={data.entry}

@@ -34,6 +34,7 @@ import {
 } from "@/components/tache/wizard/FormState";
 import { TACHE_FORM_STEPS } from "@/components/tache/wizard/step-meta";
 import { resolveWizardBlocComponent } from "@/components/tache/wizard/wizardBlocResolver";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { WizardFichePreviewMeta } from "@/lib/tache/fiche-helpers";
 import type { TacheVersionSnapshot } from "@/lib/tache/publish-tache-types";
@@ -126,7 +127,7 @@ function TacheFormInner({
           label: PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL,
           icon: "two_pager",
         },
-        { id: "corrige", label: PREVIEW_PANEL_PRINT_CORRIGE_LABEL, icon: "task_alt" },
+        { id: "corrige", label: PREVIEW_PANEL_PRINT_CORRIGE_LABEL, icon: ICONES_METIER.corrige },
       ],
     },
   ];

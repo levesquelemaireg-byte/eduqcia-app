@@ -6,6 +6,7 @@ import { IconBadge } from "@/lib/fiche/primitives/IconBadge";
 import { MetaChip, chipPropsForFicheMode } from "@/lib/fiche/primitives/MetaChip";
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { cn } from "@/lib/utils/cn";
 
 type Props = { data: HeaderData; mode: FicheMode };
@@ -39,7 +40,11 @@ export function FicheHeader({ data, mode }: Props) {
         {hasAnyPill ? (
           <ChipBar className="gap-1.5">
             {showOiPill ? (
-              <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
+              <MetaChip
+                icon={ICONES_METIER.operationIntellectuelle}
+                label={data.oi!.titre}
+                {...chipProps}
+              />
             ) : showParcoursPill ? (
               <MetaChip
                 icon={data.parcours!.icone}
@@ -48,7 +53,9 @@ export function FicheHeader({ data, mode }: Props) {
                 {...chipProps}
               />
             ) : null}
-            {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
+            {data.niveau ? (
+              <MetaChip icon={ICONES_METIER.niveau} label={data.niveau} {...chipProps} />
+            ) : null}
           </ChipBar>
         ) : null}
       </div>
@@ -76,7 +83,11 @@ export function FicheHeader({ data, mode }: Props) {
         {hasAnyPill ? (
           <ChipBar>
             {showOiPill ? (
-              <MetaChip icon="psychology" label={data.oi!.titre} {...chipProps} />
+              <MetaChip
+                icon={ICONES_METIER.operationIntellectuelle}
+                label={data.oi!.titre}
+                {...chipProps}
+              />
             ) : showParcoursPill ? (
               <MetaChip
                 icon={data.parcours!.icone}
@@ -85,13 +96,15 @@ export function FicheHeader({ data, mode }: Props) {
                 {...chipProps}
               />
             ) : null}
-            {data.niveau ? <MetaChip icon="school" label={data.niveau} {...chipProps} /> : null}
+            {data.niveau ? (
+              <MetaChip icon={ICONES_METIER.niveau} label={data.niveau} {...chipProps} />
+            ) : null}
             {data.discipline ? (
-              <MetaChip icon="menu_book" label={data.discipline} {...chipProps} />
+              <MetaChip icon={ICONES_METIER.discipline} label={data.discipline} {...chipProps} />
             ) : null}
             {showAspectsPill ? (
               <MetaChip
-                icon="deployed_code"
+                icon={ICONES_METIER.aspectsSociete}
                 label={data.aspectsSociete.join(" · ")}
                 {...chipProps}
               />

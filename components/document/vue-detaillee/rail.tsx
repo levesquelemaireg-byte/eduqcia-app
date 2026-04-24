@@ -4,6 +4,7 @@ import { MetaRowSimple } from "@/lib/fiche/primitives/MetaRow";
 import { SectionRail, RailLayout } from "@/components/partagees/vue-detaillee/rail-layout";
 import type { DocFicheData } from "@/lib/fiche/types";
 import { ANCRAGE_TEMPOREL_LABEL } from "@/lib/ui/ui-copy";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   data: DocFicheData;
@@ -50,12 +51,18 @@ export function DocumentRail({ data }: Props) {
       {(data.niveauLabels || data.disciplineLabels || data.aspectsStr) && (
         <SectionRail titre="Indexation">
           <ChipBar>
-            {data.niveauLabels && <MetaChip icon="school" label={data.niveauLabels} />}
-            {data.disciplineLabels && <MetaChip icon="menu_book" label={data.disciplineLabels} />}
+            {data.niveauLabels && (
+              <MetaChip icon={ICONES_METIER.niveau} label={data.niveauLabels} />
+            )}
+            {data.disciplineLabels && (
+              <MetaChip icon={ICONES_METIER.discipline} label={data.disciplineLabels} />
+            )}
             {data.aspectsStr &&
               data.aspectsStr
                 .split(", ")
-                .map((aspect) => <MetaChip key={aspect} icon="public" label={aspect} />)}
+                .map((aspect) => (
+                  <MetaChip key={aspect} icon={ICONES_METIER.aspectsSociete} label={aspect} />
+                ))}
           </ChipBar>
         </SectionRail>
       )}
@@ -85,8 +92,12 @@ export function DocumentRail({ data }: Props) {
       {/* Auteur */}
       <SectionRail titre="Auteur">
         <div className="space-y-1">
-          {data.authorName && <MetaRowSimple icon="person" label={data.authorName} noBorderTop />}
-          {data.created && <MetaRowSimple icon="calendar_today" label={data.created} noBorderTop />}
+          {data.authorName && (
+            <MetaRowSimple icon={ICONES_METIER.auteur} label={data.authorName} noBorderTop />
+          )}
+          {data.created && (
+            <MetaRowSimple icon={ICONES_METIER.dateCreation} label={data.created} noBorderTop />
+          )}
         </div>
       </SectionRail>
     </RailLayout>

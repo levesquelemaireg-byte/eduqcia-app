@@ -7,6 +7,7 @@ import { MetaChip, chipPropsForFicheMode } from "@/lib/fiche/primitives/MetaChip
 import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
 import { DOCUMENT_FICHE_EYEBROW } from "@/lib/ui/ui-copy";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { cn } from "@/lib/utils/cn";
 
 type Props = { data: DocHeaderData; mode: FicheMode };
@@ -22,7 +23,7 @@ export function DocFicheHeader({ data, mode }: Props) {
     return (
       <div className="px-4 pt-3 pb-2.5">
         <div className="flex items-center gap-3">
-          <IconBadge glyph="article" mode={mode} />
+          <IconBadge glyph={ICONES_METIER.documents} mode={mode} />
           <p className="line-clamp-2 min-w-0 text-sm font-bold text-deep">{data.titre}</p>
         </div>
         <ChipBar className="mt-2">
@@ -37,7 +38,7 @@ export function DocFicheHeader({ data, mode }: Props) {
   return (
     <header className="relative grid min-w-0 grid-cols-[96px_minmax(0,1fr)] items-stretch">
       <div className="relative flex items-center justify-center px-1 py-0">
-        <IconBadge glyph="article" mode={mode} />
+        <IconBadge glyph={ICONES_METIER.documents} mode={mode} />
         <span
           className={cn("absolute right-0 w-px bg-border", FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET)}
           aria-hidden="true"

@@ -84,7 +84,7 @@ Depuis le **22 avril 2026** (Phase 0), tout identifiant technique utilise **`tac
 
 Toute métadonnée partagée entre un document et une tâche utilise **la même icône Material Symbols Outlined partout** (rail de lecture, header, sommaire wizard, miniature, impression). Zéro divergence. Une donnée qui s'appelle « Niveau » a l'icône `school` dans tous les contextes. Changer l'icône d'une métadonnée à un seul endroit = dette visuelle immédiate.
 
-Mapping de référence : Niveau `school`, Discipline `menu_book`, Aspects de société `deployed_code`, Auteur `person`, Date création `calendar_today`, Date mise à jour `history`, Utilisation `link`, Connaissances `lightbulb`, Ancrage temporel `anchor`, Période historique `PeriodeIcon` composite. Tableau complet : `docs/specs/SPEC-SOMMAIRE-DOCUMENT.md §5`.
+Mapping de référence : Niveau `school`, Discipline `menu_book`, Aspects de société `deployed_code`, Auteur `person`, Date création `calendar_today`, Date mise à jour `history`, Utilisation `link`, Connaissances `lightbulb`, Ancrage temporel `pin_history`, Période historique `PeriodeIcon` composite. **Source unique en code : `lib/ui/icons/icones-metier.ts`** — toujours importer `ICONES_METIER.<concept>`, jamais hardcoder le glyphe dans un consommateur.
 
 ### Ce qu'on ne fait jamais sans demander au développeur
 
@@ -762,22 +762,31 @@ supabase/
 
 ## Icônes Material Symbols — mapping clé
 
-| Concept                    | Glyphe                                           |
-| -------------------------- | ------------------------------------------------ |
-| Consigne                   | `quiz`                                           |
-| Guidage                    | `tooltip_2`                                      |
-| Corrigé                    | `task_alt`                                       |
-| Niveau                     | `school`                                         |
-| Discipline                 | `menu_book`                                      |
-| Opération intellectuelle   | `psychology`                                     |
-| Comportement / grille      | `table`                                          |
-| Nombre de lignes           | `format_line_spacing`                            |
-| Documents                  | `article`                                        |
-| Compétence disciplinaire   | `license`                                        |
-| Connaissances              | `lightbulb`                                      |
-| Documentation légale       | `gavel` (exclusif — composant `LegalNoticeIcon`) |
-| Valeur auto-générée        | `settings`                                       |
-| Création document (navbar) | `add_notes`                                      |
+**Source unique en code :** `lib/ui/icons/icones-metier.ts` (constante `ICONES_METIER`). Toujours importer la constante ; jamais hardcoder le glyphe dans un consommateur. Le tableau ci-dessous est la référence textuelle.
+
+| Concept                    | Glyphe                | Clé `ICONES_METIER`          |
+| -------------------------- | --------------------- | ---------------------------- |
+| Consigne                   | `quiz`                | `consigne`                   |
+| Guidage                    | `tooltip_2`           | `guidage`                    |
+| Corrigé                    | `task_alt`            | `corrige`                    |
+| Niveau                     | `school`              | `niveau`                     |
+| Discipline                 | `menu_book`           | `discipline`                 |
+| Opération intellectuelle   | `psychology`          | `operationIntellectuelle`    |
+| Comportement / grille      | `table`               | `comportement`               |
+| Nombre de lignes           | `format_line_spacing` | `nombreLignes`               |
+| Documents                  | `article`             | `documents`                  |
+| Compétence disciplinaire   | `license`             | `competenceDisciplinaire`    |
+| Connaissances              | `lightbulb`           | `connaissances`              |
+| Aspects de société         | `deployed_code`       | `aspectsSociete`             |
+| Auteur                     | `person`              | `auteur`                     |
+| Date création              | `calendar_today`      | `dateCreation`               |
+| Date mise à jour           | `history`             | `dateMiseAJour`              |
+| Utilisation                | `link`                | `utilisation`                |
+| Ancrage temporel           | `pin_history`         | `ancrageTemporel`            |
+| Valeur auto-générée        | `settings`            | `valeurAutoGeneree`          |
+| Création document (navbar) | `add_notes`           | `creationDocument`           |
+| Documentation légale       | `gavel` (composant)   | exclusif — `LegalNoticeIcon` |
+| Période historique         | composite             | exclusif — `PeriodeIcon`     |
 
 Pas d'icône devant le **titre d'étape** (`<h2>`) dans le wizard.
 

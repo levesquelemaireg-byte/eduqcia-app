@@ -112,8 +112,11 @@ export function getCategoryIcon(categorieId: string): string | null {
  * badges et fallbacks « Autre ». Source de vérité unique : ne jamais hardcoder
  * ces icônes ailleurs dans le code.
  *
- * Cf. DESIGN-SYSTEM.md § « Icônes des types de document ».
+ * `image_inset` reste local (variante iconographique du concept Documents,
+ * hors mapping métier). Cf. DESIGN-SYSTEM.md § « Icônes des types de document ».
  */
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
+
 export function getDocumentTypeIcon(type: DocumentType): string {
-  return type === "textuel" ? "article" : "image_inset";
+  return type === "textuel" ? ICONES_METIER.documents : "image_inset";
 }

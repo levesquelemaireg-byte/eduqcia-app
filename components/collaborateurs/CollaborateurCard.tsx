@@ -6,6 +6,7 @@ import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { getDisplayName, getInitials } from "@/lib/utils/profile-display";
 import { pluralize } from "@/lib/utils/pluralize";
 import { NIVEAU_LABELS, DISCIPLINE_LABELS } from "@/lib/utils/profile-labels";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   id: string;
@@ -88,7 +89,7 @@ export function CollaborateurCard({
               {niveaux.map((code) => (
                 <MetaPill
                   key={code}
-                  icon="school"
+                  icon={ICONES_METIER.niveau}
                   label={NIVEAU_LABELS[code] ?? code}
                   className="!min-h-6 !px-2 !py-0.5 !text-[11px]"
                 />
@@ -96,7 +97,7 @@ export function CollaborateurCard({
               {disciplines.map((code) => (
                 <MetaPill
                   key={code}
-                  icon="menu_book"
+                  icon={ICONES_METIER.discipline}
                   label={DISCIPLINE_LABELS[code] ?? code}
                   className="!min-h-6 !px-2 !py-0.5 !text-[11px]"
                 />

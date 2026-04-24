@@ -6,6 +6,7 @@ import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
 import { useGrilles } from "@/components/tache/wizard/bloc2/useBloc2Data";
 import { FICHE_SECTION_TITLE_GRILLE } from "@/lib/ui/ui-copy";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 /** Largeur fixe du tableau de grille (définie dans eval-grid.module.css). */
 const GRILLE_FIXED_WIDTH = 660;
@@ -50,7 +51,7 @@ export function SectionGrille({ data }: Props) {
 
   return (
     <section>
-      <SectionLabel icon="table">{FICHE_SECTION_TITLE_GRILLE}</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.comportement}>{FICHE_SECTION_TITLE_GRILLE}</SectionLabel>
 
       <div className="overflow-hidden rounded-xl border-[0.5px] border-border bg-panel p-4">
         {/* Ref sur ce div sans padding — sa largeur = espace réel pour la grille */}

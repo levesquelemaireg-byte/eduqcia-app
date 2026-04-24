@@ -27,6 +27,7 @@ import {
   FICHE_RAIL_STATUT_PUBLIEE,
   FICHE_RAIL_STATUT_BROUILLON,
 } from "@/lib/ui/ui-copy";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   tache: TacheFicheData;
@@ -68,17 +69,23 @@ export function TacheRail({ tache }: Props) {
       {/* Paramètres — niveau, discipline, aspects */}
       <SectionRail titre="Paramètres">
         <ChipBar>
-          <MetaChip icon="school" label={niveau.label} />
-          <MetaChip icon="menu_book" label={discipline.label} />
+          <MetaChip icon={ICONES_METIER.niveau} label={niveau.label} />
+          <MetaChip icon={ICONES_METIER.discipline} label={discipline.label} />
           {aspects &&
-            aspects.labels.map((label) => <MetaChip key={label} icon="public" label={label} />)}
+            aspects.labels.map((label) => (
+              <MetaChip key={label} icon={ICONES_METIER.aspectsSociete} label={label} />
+            ))}
         </ChipBar>
       </SectionRail>
 
       {/* Outil d'évaluation */}
       {tache.outilEvaluation && (
         <SectionRail titre="Outil d'évaluation">
-          <MetaRowSimple icon="table" label={tache.outilEvaluation} noBorderTop />
+          <MetaRowSimple
+            icon={ICONES_METIER.comportement}
+            label={tache.outilEvaluation}
+            noBorderTop
+          />
         </SectionRail>
       )}
 
@@ -99,7 +106,7 @@ export function TacheRail({ tache }: Props) {
       {/* Nombre de documents */}
       {docsCompte && (
         <SectionRail titre="Documents">
-          <MetaRowSimple icon="article" label={docsCompte.texte} noBorderTop />
+          <MetaRowSimple icon={ICONES_METIER.documents} label={docsCompte.texte} noBorderTop />
         </SectionRail>
       )}
 
@@ -112,7 +119,7 @@ export function TacheRail({ tache }: Props) {
                 className="material-symbols-outlined text-[14px] text-accent"
                 aria-hidden="true"
               >
-                person
+                {ICONES_METIER.auteur}
               </span>
               <Link
                 href={`/profile/${auteur.id}`}
@@ -122,15 +129,15 @@ export function TacheRail({ tache }: Props) {
               </Link>
             </div>
           ) : (
-            <MetaRowSimple icon="person" label={auteur.nom} noBorderTop />
+            <MetaRowSimple icon={ICONES_METIER.auteur} label={auteur.nom} noBorderTop />
           )}
           <MetaRowSimple
-            icon="calendar_today"
+            icon={ICONES_METIER.dateCreation}
             label={`${FICHE_RAIL_DATE_CREATION} ${formatDateFrCaMedium(dates.creation)}`}
             noBorderTop
           />
           <MetaRowSimple
-            icon="history"
+            icon={ICONES_METIER.dateMiseAJour}
             label={`${FICHE_RAIL_DATE_MAJ} ${formatDateFrCaMedium(dates.miseAJour)}`}
             noBorderTop
           />

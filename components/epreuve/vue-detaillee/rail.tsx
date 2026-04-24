@@ -3,6 +3,7 @@ import { ChipBar } from "@/lib/fiche/primitives/ChipBar";
 import { MetaRowSimple, StatusBadge } from "@/lib/fiche/primitives/MetaRow";
 import { RailLayout, SectionRail } from "@/components/partagees/vue-detaillee/rail-layout";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   titre: string;
@@ -48,8 +49,10 @@ export function EpreuveRail({
       {(niveauLabel || disciplineLabel) && (
         <SectionRail titre="Indexation">
           <ChipBar>
-            {niveauLabel && <MetaChip icon="school" label={niveauLabel} />}
-            {disciplineLabel && <MetaChip icon="menu_book" label={disciplineLabel} />}
+            {niveauLabel && <MetaChip icon={ICONES_METIER.niveau} label={niveauLabel} />}
+            {disciplineLabel && (
+              <MetaChip icon={ICONES_METIER.discipline} label={disciplineLabel} />
+            )}
           </ChipBar>
         </SectionRail>
       )}
@@ -57,7 +60,7 @@ export function EpreuveRail({
       {/* Auteur */}
       {auteurNom && (
         <SectionRail titre="Auteur">
-          <MetaRowSimple icon="person" label={auteurNom} noBorderTop />
+          <MetaRowSimple icon={ICONES_METIER.auteur} label={auteurNom} noBorderTop />
         </SectionRail>
       )}
 

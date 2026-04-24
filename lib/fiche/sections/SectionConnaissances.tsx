@@ -6,6 +6,7 @@ import type { ConnaissanceSelection } from "@/lib/types/fiche";
 import { ConnaissanceRemoveButton } from "@/components/tache/fiche/ConnaissanceRemoveButton";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   data: ConnaissancesData;
@@ -81,7 +82,7 @@ export function SectionConnaissances({ data, mode: _mode, onRemoveRow }: Props) 
 
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="lightbulb">Connaissances</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.connaissances}>Connaissances</SectionLabel>
 
       <div className={`${FICHE_SECTION_BODY_INSET} space-y-3`}>
         {groups.map((g) => (

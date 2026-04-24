@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   rang: number;
@@ -48,8 +49,10 @@ export function TacheMiniatureEpreuve({ rang, donnees, surClic }: Props) {
         {/* Pills */}
         <div className="flex flex-wrap items-stretch gap-2">
           <MetaChip icon={donnees.oi.icone} label={donnees.oi.titre} />
-          <MetaChip icon="table" label={donnees.comportement.enonce} />
-          {derniereConnaissance && <MetaChip icon="lightbulb" label={derniereConnaissance} />}
+          <MetaChip icon={ICONES_METIER.comportement} label={donnees.comportement.enonce} />
+          {derniereConnaissance && (
+            <MetaChip icon={ICONES_METIER.connaissances} label={derniereConnaissance} />
+          )}
         </div>
 
         {/* Séparateur + footer */}

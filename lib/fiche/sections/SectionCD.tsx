@@ -4,6 +4,7 @@ import type { CompetenceData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: CompetenceData; mode: FicheMode };
 
@@ -13,7 +14,9 @@ export function SectionCD({ data, mode: _mode }: Props) {
 
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="license">Compétence disciplinaire</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.competenceDisciplinaire}>
+        Compétence disciplinaire
+      </SectionLabel>
       <div className={`${FICHE_SECTION_BODY_INSET} space-y-0.5`}>
         <p className="text-sm font-semibold text-deep">{cd.competence}</p>
         {note ? (

@@ -7,6 +7,7 @@ import { fetchProfileTasks, type ProfileTask } from "@/lib/queries/profile-contr
 import { pluralize } from "@/lib/utils/pluralize";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, "").trim();
@@ -40,7 +41,7 @@ export function ProfileTasksList({ profileId, isOwner, totalCount, initialItems 
   if (totalCount === 0) {
     return (
       <EmptyState
-        icon="quiz"
+        icon={ICONES_METIER.consigne}
         message={
           isOwner
             ? "Vous n'avez pas encore publié de tâche."

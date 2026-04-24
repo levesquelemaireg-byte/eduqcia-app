@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/lib/actions/auth-logout";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type NavItem = {
   href: string;
@@ -44,15 +45,15 @@ const SECTIONS: Section[] = [
   {
     title: "Mes contenus",
     items: [
-      { href: "/documents", label: "Mes documents", icon: "article" },
-      { href: "/questions", label: "Mes tâches", icon: "quiz" },
+      { href: "/documents", label: "Mes documents", icon: ICONES_METIER.documents },
+      { href: "/questions", label: "Mes tâches", icon: ICONES_METIER.consigne },
       { href: "/evaluations", label: "Mes épreuves", icon: "assignment" },
     ],
   },
   {
     title: "Création",
     items: [
-      { href: "/documents/new", label: "Créer un document", icon: "add_notes" },
+      { href: "/documents/new", label: "Créer un document", icon: ICONES_METIER.creationDocument },
       { href: "/questions/new", label: "Créer une tâche", icon: "post_add" },
       { href: "/evaluations/new", label: "Créer une épreuve", icon: "note_add" },
     ],
@@ -66,7 +67,7 @@ const SECTIONS: Section[] = [
   },
   {
     title: "Système",
-    items: [{ href: "/profile", label: "Profil", icon: "person" }],
+    items: [{ href: "/profile", label: "Profil", icon: ICONES_METIER.auteur }],
   },
 ];
 

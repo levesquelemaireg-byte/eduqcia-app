@@ -4,6 +4,7 @@ import { useId } from "react";
 import { LimitCounterPill } from "@/components/ui/LimitCounterPill";
 import { ConsigneTemplateCard } from "@/components/tache/non-redaction/consigne-template/ConsigneTemplateCard";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import {
   formatOrdreWizardDocTokenLabel,
   ORDRE_CONSIGNE_THEME_MAX_LEN,
@@ -63,7 +64,10 @@ export function OrdreChronologiqueConsigneTemplate({
               <span
                 className="material-symbols-outlined text-[1em] text-muted"
                 aria-hidden
-                title={materialIconTooltip("settings") ?? NR_ORDRE_WIZARD_DOC_TOKEN_TITLE}
+                title={
+                  materialIconTooltip(ICONES_METIER.valeurAutoGeneree) ??
+                  NR_ORDRE_WIZARD_DOC_TOKEN_TITLE
+                }
               >
                 settings
               </span>

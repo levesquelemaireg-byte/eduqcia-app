@@ -3,6 +3,7 @@
 import type { HeroData } from "@/lib/fiche/selectors/tache/hero";
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
 import { TIPTAP_HTML_STYLES } from "@/lib/fiche/primitives/tiptap-html-styles";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: HeroData; heroRef?: React.Ref<HTMLHeadingElement> };
 
@@ -18,7 +19,7 @@ export function SectionHero({ data, heroRef }: Props) {
       <div className="mb-2 flex flex-wrap items-center gap-1.5">
         <MetaChip icon={data.oiGlyph} label={data.oiLabel} />
         {data.comportementAttendu ? (
-          <MetaChip icon="psychology" label={data.comportementAttendu} />
+          <MetaChip icon={ICONES_METIER.operationIntellectuelle} label={data.comportementAttendu} />
         ) : null}
       </div>
 

@@ -11,6 +11,7 @@ import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { CollaborateurProfileSearchRow } from "@/lib/queries/collaborateur-profile-search";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 export function Bloc1AuteursTache() {
   const { state, dispatch } = useTacheForm();
@@ -47,7 +48,7 @@ export function Bloc1AuteursTache() {
           {
             value: "seul",
             label: "Seul",
-            icon: "person",
+            icon: ICONES_METIER.auteur,
             description: "Vous êtes l'unique auteur de cette tâche.",
           },
           {

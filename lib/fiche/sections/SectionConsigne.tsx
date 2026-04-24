@@ -4,6 +4,7 @@ import type { ConsigneData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { ContentBlock } from "@/lib/fiche/primitives/ContentBlock";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: ConsigneData; mode: FicheMode };
 
@@ -11,7 +12,7 @@ type Props = { data: ConsigneData; mode: FicheMode };
 export function SectionConsigne({ data, mode }: Props) {
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="quiz">Consigne</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.consigne}>Consigne</SectionLabel>
 
       <ContentBlock
         html={data.html}

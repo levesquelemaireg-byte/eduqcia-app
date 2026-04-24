@@ -13,6 +13,7 @@ import {
   getDocumentCategorieTextuelle,
 } from "@/lib/tache/document-categories-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { iconForDocumentStructure } from "@/lib/ui/icons/document-structure-icon";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import type { DisciplineOption, NiveauOption } from "@/lib/queries/document-ref-data";
@@ -131,7 +132,7 @@ export function DocumentWizardPreview({ niveaux, disciplines, authorName }: Prop
           </section>
 
           <section>
-            <SectionLabel icon="lightbulb" label="Connaissances" />
+            <SectionLabel icon={ICONES_METIER.connaissances} label="Connaissances" />
             <div
               className={cn(
                 "doc-sommaire-element rounded-lg p-2",
@@ -152,13 +153,13 @@ export function DocumentWizardPreview({ niveaux, disciplines, authorName }: Prop
           <section className="flex flex-wrap items-start gap-2">
             <MetaBadge
               fieldKey="niveaux"
-              icon="school"
+              icon={ICONES_METIER.niveau}
               value={niveauLabel}
               placeholder={`${DOCUMENT_MODULE_INDEX_NIVEAU} scolaire`}
             />
             <MetaBadge
               fieldKey="disciplines"
-              icon="menu_book"
+              icon={ICONES_METIER.discipline}
               value={disciplineLabel}
               placeholder={DOCUMENT_MODULE_INDEX_DISCIPLINE}
             />
@@ -171,7 +172,7 @@ export function DocumentWizardPreview({ niveaux, disciplines, authorName }: Prop
             <CategorieBadge docType={docType} info={categorieInfo} />
             <MetaBadge
               fieldKey="repere_temporel"
-              icon="anchor"
+              icon={ICONES_METIER.ancrageTemporel}
               value={repereTemporel}
               placeholder={ANCRAGE_TEMPOREL_LABEL}
             />
@@ -215,7 +216,7 @@ function TypeChip({ docType }: { docType: "textuel" | "iconographique" | null })
     : docType === "textuel"
       ? DOCUMENT_MODULE_TYPE_TEXT
       : DOCUMENT_MODULE_TYPE_IMAGE;
-  const icon = docType === "iconographique" ? "image_inset" : "article";
+  const icon = docType === "iconographique" ? "image_inset" : ICONES_METIER.documents;
   return <Chip icon={icon} label={label} isEmpty={isEmpty} isFocused={focused} />;
 }
 

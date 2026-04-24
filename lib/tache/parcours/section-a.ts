@@ -1,4 +1,5 @@
 import type { ParcoursTache } from "./types";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 export const PARCOURS_SECTION_A: ParcoursTache = {
   id: "section-a",
@@ -9,7 +10,7 @@ export const PARCOURS_SECTION_A: ParcoursTache = {
   actif: true,
   oiPertinente: true,
   cdAutoAssignee: false,
-  icone: "psychology",
+  icone: ICONES_METIER.operationIntellectuelle,
   documentsMin: 0,
   documentsMax: 4,
   aspectsRequis: false,

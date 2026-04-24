@@ -4,6 +4,7 @@ import type { GuidageData } from "@/lib/fiche/types";
 import type { FicheMode } from "@/lib/fiche/types";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { ContentBlock } from "@/lib/fiche/primitives/ContentBlock";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: GuidageData; mode: FicheMode };
 
@@ -11,7 +12,7 @@ type Props = { data: GuidageData; mode: FicheMode };
 export function SectionGuidage({ data, mode }: Props) {
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="tooltip_2">Guidage</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.guidage}>Guidage</SectionLabel>
 
       <ContentBlock
         html={data.html}

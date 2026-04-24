@@ -7,6 +7,7 @@ import { getDisplayName } from "@/lib/utils/profile-display";
 import { SkeletonFooterNbLignes } from "@/components/tache/fiche/FicheSkeletons";
 import { MetaRow } from "@/lib/fiche/primitives/MetaRow";
 import type { MetaRowItem } from "@/lib/fiche/primitives/MetaRow";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: FooterData; mode: FicheMode };
 
@@ -15,12 +16,12 @@ export function FicheFooter({ data, mode: _mode }: Props) {
   const auteurs = data.auteurs.map((a) => getDisplayName(a.first_name, a.last_name)).join(" · ");
 
   const items: MetaRowItem[] = [
-    { icon: "person", label: auteurs || "—" },
-    { icon: "calendar_today", label: formatFicheDate(data.createdAt) },
+    { icon: ICONES_METIER.auteur, label: auteurs || "—" },
+    { icon: ICONES_METIER.dateCreation, label: formatFicheDate(data.createdAt) },
   ];
 
   if (data.showStudentAnswerLines && !data.hideNbLignesSkeleton) {
-    items.push({ icon: "format_line_spacing", label: `${data.nbLignes} lignes` });
+    items.push({ icon: ICONES_METIER.nombreLignes, label: `${data.nbLignes} lignes` });
   }
 
   return (

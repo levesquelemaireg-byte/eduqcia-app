@@ -15,6 +15,7 @@ import {
   SECTION_B_CORRIGE_LEURRES_TITRE,
   SECTION_B_CORRIGE_TOTAL_LABEL,
 } from "@/lib/ui/ui-copy";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: CorrigeTabulaireData; mode: FicheMode };
 
@@ -23,7 +24,7 @@ export function SectionCorrigeTabulaire({ data, mode: _mode }: Props) {
   return (
     <section className="space-y-4 px-5 pt-4 pb-4">
       <div>
-        <SectionLabel icon="task_alt">Corrigé du schéma</SectionLabel>
+        <SectionLabel icon={ICONES_METIER.corrige}>Corrigé du schéma</SectionLabel>
         <div className="overflow-x-auto rounded-md border border-border bg-surface">
           <table className="w-full min-w-[640px] border-collapse text-left text-xs">
             <thead className="bg-panel text-[11px] font-semibold uppercase tracking-wide text-deep">

@@ -9,6 +9,7 @@ import { MetaPill } from "@/components/partagees/ui/meta-pill";
 import { SkeletonConsigneBody } from "@/components/tache/fiche/FicheSkeletons";
 import { FICHE_HAIRLINE_DIVIDER_VERTICAL_INSET } from "@/lib/ui/fiche-layout";
 import { MaterialSymbolOiGlyph } from "@/components/ui/MaterialSymbolOiGlyph";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { cn } from "@/lib/utils/cn";
 
 type Props = {
@@ -102,19 +103,24 @@ export function SectionConsigne({ tache, headerMenu }: Props) {
         {showMetaPills ? (
           <div className="flex flex-wrap items-stretch gap-2">
             {/* Pastille OI : icône générique catégorie ; grand glyphe marge = `MaterialSymbolOiGlyph` + `tache.oi.icone`. */}
-            {showOiPill ? <MetaPill icon="psychology" label={tache.oi.titre} /> : null}
+            {showOiPill ? (
+              <MetaPill icon={ICONES_METIER.operationIntellectuelle} label={tache.oi.titre} />
+            ) : null}
             <GrilleEvaluationMetaButton
               visible={showComportementPill}
               outilEvaluation={tache.outilEvaluation}
             />
             {tache.niveau.label?.trim() ? (
-              <MetaPill icon="school" label={tache.niveau.label} />
+              <MetaPill icon={ICONES_METIER.niveau} label={tache.niveau.label} />
             ) : null}
             {tache.discipline.label?.trim() ? (
-              <MetaPill icon="menu_book" label={tache.discipline.label} />
+              <MetaPill icon={ICONES_METIER.discipline} label={tache.discipline.label} />
             ) : null}
             {showAspectsPill ? (
-              <MetaPill icon="deployed_code" label={tache.aspects_societe.join(" · ")} />
+              <MetaPill
+                icon={ICONES_METIER.aspectsSociete}
+                label={tache.aspects_societe.join(" · ")}
+              />
             ) : null}
           </div>
         ) : null}

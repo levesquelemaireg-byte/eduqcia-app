@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { DashboardWidget } from "@/components/dashboard/DashboardWidget";
 import { getDashboardStats } from "@/lib/queries/dashboard";
 import { getDisplayName } from "@/lib/utils/profile-display";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import {
   CTA_CREER_UNE_TACHE,
   DASHBOARD_INCOMPLETE_DOCUMENTS_COUNT,
@@ -98,7 +99,10 @@ export async function DashboardContent({ userId }: { userId: string }) {
           )}
         </DashboardWidget>
 
-        <DashboardWidget title="Mes tâches d'apprentissage et d'évaluation" icon="quiz">
+        <DashboardWidget
+          title="Mes tâches d'apprentissage et d'évaluation"
+          icon={ICONES_METIER.consigne}
+        >
           {stats.tachePublished === 0 ? (
             <div className="flex flex-col gap-3">
               <p className="text-muted">Aucune tâche d&apos;apprentissage et d&apos;évaluation.</p>

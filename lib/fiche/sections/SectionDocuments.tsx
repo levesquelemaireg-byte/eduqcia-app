@@ -7,6 +7,7 @@ import { DocumentRenderer } from "@/components/document/renderer";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
 import { ficheDocumentsSectionTitle } from "@/lib/ui/ui-copy";
 import { FICHE_SECTION_BODY_INSET } from "@/lib/ui/fiche-layout";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = { data: DocumentsData; mode: FicheMode };
 
@@ -16,7 +17,7 @@ export function SectionDocuments({ data, mode: _mode }: Props) {
 
   return (
     <section className="px-5 pt-4 pb-4">
-      <SectionLabel icon="article">{title}</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.documents}>{title}</SectionLabel>
 
       <div className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}>
         {data.documents.map((doc) => (

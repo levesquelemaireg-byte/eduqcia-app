@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { LoadMoreButton } from "@/components/ui/LoadMoreButton";
 import { loadMoreProfileDocumentsAction } from "@/lib/actions/load-more-profile-documents";
 import type { DocumentEnrichedRow } from "@/lib/types/document-enriched";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   profileId: string;
@@ -41,7 +42,7 @@ export function ProfileDocumentsList({ profileId, isOwner, totalCount, initialIt
   if (totalCount === 0) {
     return (
       <EmptyState
-        icon="article"
+        icon={ICONES_METIER.documents}
         message={
           isOwner
             ? "Vous n'avez pas encore publié de document."

@@ -11,6 +11,7 @@ import {
 } from "@/lib/ui/ui-copy";
 import { BLOC2_STEPPER_ICON } from "@/components/tache/wizard/bloc2-stepper-icons";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   selectedComportement: ComportementAttenduJson | undefined;
@@ -42,7 +43,7 @@ export function Bloc2EspaceProductionReadonly({ selectedComportement }: Props) {
         <span
           className="material-symbols-outlined mt-[0.125em] shrink-0 text-[1em] leading-none text-muted"
           aria-hidden="true"
-          title={materialIconTooltip("settings")}
+          title={materialIconTooltip(ICONES_METIER.valeurAutoGeneree)}
         >
           settings
         </span>

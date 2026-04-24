@@ -3,6 +3,7 @@
 import type { DocumentsSectionData } from "@/lib/fiche/selectors/tache/documents";
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { DocumentRenderer } from "@/components/document/renderer";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   data: DocumentsSectionData;
@@ -17,7 +18,7 @@ type Props = {
 export function SectionDocuments({ data, surClicDocument }: Props) {
   return (
     <section>
-      <SectionLabel icon="article">{data.sectionLabel}</SectionLabel>
+      <SectionLabel icon={ICONES_METIER.documents}>{data.sectionLabel}</SectionLabel>
 
       <div className="flex flex-col gap-3">
         {data.cards.map((card) => {

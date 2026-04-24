@@ -36,6 +36,7 @@ import type {
   DocumentEnrichedRow,
 } from "@/lib/types/document-enriched";
 import type { DocumentElementJson } from "@/lib/types/document-element-json";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 export type DocumentMiniatureContext = "owner" | "profile" | "bank";
 
@@ -330,7 +331,7 @@ export function DocumentMiniature({
     if (context === "bank" && (onReuse || reuseHref)) {
       out.push({
         key: "reuse",
-        icon: "add_notes",
+        icon: ICONES_METIER.creationDocument,
         label: DOC_MINIATURE_ACTION_REUTILISER,
         onClick: onReuse,
         href: onReuse ? undefined : reuseHref,
@@ -373,12 +374,12 @@ export function DocumentMiniature({
         {niveauxLabel || disciplinesLabel ? (
           <div className="flex flex-wrap items-center gap-3 text-[11px] font-bold">
             {niveauxLabel ? (
-              <IconLabel icon="school" className="text-accent">
+              <IconLabel icon={ICONES_METIER.niveau} className="text-accent">
                 <span className="text-deep">{niveauxLabel}</span>
               </IconLabel>
             ) : null}
             {disciplinesLabel ? (
-              <IconLabel icon="menu_book" className="text-accent">
+              <IconLabel icon={ICONES_METIER.discipline} className="text-accent">
                 <span className="text-deep">{disciplinesLabel}</span>
               </IconLabel>
             ) : null}
@@ -396,14 +397,16 @@ export function DocumentMiniature({
           <div className="flex flex-wrap items-center gap-1.5">
             {hasAnchor ? (
               <MetaChip
-                icon="anchor"
+                icon={ICONES_METIER.ancrageTemporel}
                 label={document.repere_temporel ?? (annee !== null ? String(annee) : "")}
               />
             ) : null}
-            {aspectsLabel ? <MetaChip icon="deployed_code" label={aspectsLabel} /> : null}
+            {aspectsLabel ? (
+              <MetaChip icon={ICONES_METIER.aspectsSociete} label={aspectsLabel} />
+            ) : null}
             {connaissanceBranch ? (
               connaissanceBranch.parent ? (
-                <MetaChip icon="lightbulb">
+                <MetaChip icon={ICONES_METIER.connaissances}>
                   <span className="min-w-0 truncate">{connaissanceBranch.parent}</span>
                   <span
                     className="material-symbols-outlined shrink-0 text-[0.85em] text-muted"
@@ -415,7 +418,7 @@ export function DocumentMiniature({
                   <span className="min-w-0 truncate">{connaissanceBranch.leaf}</span>
                 </MetaChip>
               ) : (
-                <MetaChip icon="lightbulb" label={connaissanceBranch.leaf} />
+                <MetaChip icon={ICONES_METIER.connaissances} label={connaissanceBranch.leaf} />
               )
             ) : null}
           </div>
@@ -430,17 +433,26 @@ export function DocumentMiniature({
                 className="hover:text-deep hover:underline"
                 onClick={(e) => e.stopPropagation()}
               >
-                <IconLabel icon="person" label={`${DOC_MINIATURE_AUTEUR_PREFIX} ${auteurNom}`} />
+                <IconLabel
+                  icon={ICONES_METIER.auteur}
+                  label={`${DOC_MINIATURE_AUTEUR_PREFIX} ${auteurNom}`}
+                />
               </Link>
             ) : (
-              <IconLabel icon="person" label={`${DOC_MINIATURE_AUTEUR_PREFIX} ${auteurNom}`} />
+              <IconLabel
+                icon={ICONES_METIER.auteur}
+                label={`${DOC_MINIATURE_AUTEUR_PREFIX} ${auteurNom}`}
+              />
             )
           ) : null}
           {showUsage ? (
-            <IconLabel icon="link" label={formatUsageLabel(document.nb_utilisations)} />
+            <IconLabel
+              icon={ICONES_METIER.utilisation}
+              label={formatUsageLabel(document.nb_utilisations)}
+            />
           ) : null}
           <IconLabel
-            icon="history"
+            icon={ICONES_METIER.dateMiseAJour}
             label={`${DOC_MINIATURE_UPDATED_PREFIX} ${formatDate(document.updated_at)}`}
           />
         </div>

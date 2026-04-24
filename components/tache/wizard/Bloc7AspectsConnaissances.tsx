@@ -21,6 +21,7 @@ import {
   type HqcConnRow,
 } from "@/lib/tache/connaissances-helpers";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import type { AspectSocieteKey } from "@/lib/tache/redaction-helpers";
 import {
@@ -188,7 +189,7 @@ export function Bloc7AspectsConnaissances() {
           <span
             className="material-symbols-outlined text-[1em] text-accent"
             aria-hidden="true"
-            title={materialIconTooltip("lightbulb") ?? undefined}
+            title={materialIconTooltip(ICONES_METIER.connaissances) ?? undefined}
           >
             lightbulb
           </span>

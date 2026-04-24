@@ -16,6 +16,7 @@ import { ListboxField } from "@/components/ui/ListboxField";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { BLOC2_SOFT_WARNING_NB_DOCUMENTS } from "@/lib/ui/copy/document";
 import { materialIconTooltip } from "@/lib/tache/icon-justifications";
+import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { isDisciplineAutoAssignedForNiveau } from "@/lib/tache/blueprint-helpers";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { OiPicker } from "@/components/tache/wizard/bloc2/OiPicker";
@@ -92,7 +93,7 @@ export function Bloc2EditFields({
             <span
               className="material-symbols-outlined text-accent"
               aria-hidden="true"
-              title={materialIconTooltip("school")}
+              title={materialIconTooltip(ICONES_METIER.niveau)}
             >
               school
             </span>
@@ -139,7 +140,7 @@ export function Bloc2EditFields({
                 <span
                   className="material-symbols-outlined text-[1em] leading-none text-muted"
                   aria-hidden="true"
-                  title={materialIconTooltip("settings")}
+                  title={materialIconTooltip(ICONES_METIER.valeurAutoGeneree)}
                 >
                   settings
                 </span>
