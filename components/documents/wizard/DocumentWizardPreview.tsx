@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormContext } from "react-hook-form";
-import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+import { DocumentElementRenderer } from "@/components/document/renderer/element-renderer";
 import { PeriodeIcon } from "@/components/ui/PeriodeIcon";
 import { SkeletonLine, SkeletonRect } from "@/components/ui/SkeletonLine";
 import { useIsFieldActive } from "@/components/documents/wizard/active-field-context";

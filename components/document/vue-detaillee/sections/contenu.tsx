@@ -1,7 +1,7 @@
 "use client";
 
 import type { RendererDocument } from "@/lib/types/document-renderer";
-import { DocumentElementRenderer } from "@/components/documents/DocumentElementRenderer";
+import { DocumentElementRenderer } from "@/components/document/renderer/element-renderer";
 import { sourceCitationDisplayHtml } from "@/lib/documents/source-citation-html";
 
 type Props = {
