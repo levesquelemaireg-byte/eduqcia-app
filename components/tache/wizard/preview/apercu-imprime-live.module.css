@@ -1,0 +1,47 @@
+/*
+ * Canvas d'aperçu impression en temps réel — wizard tâche.
+ *
+ * Pages Letter US (816 × 1056 px) empilées verticalement avec ombre portée
+ * pour simuler l'empilement physique. L'ombre et les gaps sont supprimés
+ * à l'impression — la source de vérité reste le PDF Puppeteer.
+ */
+
+.canvas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.canvas :global(.page) {
+  box-shadow: 0 4px 16px rgb(0 0 0 / 0.14);
+}
+
+@media print {
+  .canvas {
+    gap: 0;
+  }
+
+  .canvas :global(.page) {
+    box-shadow: none;
+  }
+}
+
+.status {
+  display: flex;
+  min-height: 12rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background-color: rgb(255 255 255 / 0.65);
+  padding: 2rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+.error {
+  border-color: var(--color-error);
+  color: var(--color-error);
+  background-color: rgb(255 255 255 / 0.9);
+}

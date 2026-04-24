@@ -9,7 +9,7 @@ import { Bloc4DocumentsHistoriques } from "@/components/tache/wizard/Bloc4Docume
 import { Bloc6CompetenceDisciplinaire } from "@/components/tache/wizard/Bloc6CompetenceDisciplinaire";
 import { Bloc7AspectsConnaissances } from "@/components/tache/wizard/Bloc7AspectsConnaissances";
 import { Bloc5 } from "@/components/tache/wizard/bloc5/Bloc5";
-import { PrintableFichePreview } from "@/components/tache/wizard/preview/PrintableFichePreview";
+import { ApercuImprimeLiveTache } from "@/components/tache/wizard/preview/ApercuImprimeLive";
 import { FicheSommaireColumn } from "@/components/tache/wizard/sommaire";
 import { PreviewPanel } from "@/components/preview/PreviewPanel";
 import type { PreviewMode } from "@/components/preview/types";
@@ -49,8 +49,6 @@ import {
   NR_LIGNE_TEMPS_STEP4_TITLE,
   NR_ORDRE_STEP4_DESCRIPTION,
   NR_ORDRE_STEP4_TITLE,
-  PREVIEW_PANEL_FEUILLET_DOSSIER_LABEL,
-  PREVIEW_PANEL_FEUILLET_QUESTIONNAIRE_LABEL,
   PREVIEW_PANEL_PRINT_CORRIGE_LABEL,
   PREVIEW_PANEL_PRINT_FORMATIF_LABEL,
   PREVIEW_PANEL_PRINT_LABEL,
@@ -127,18 +125,6 @@ function TacheFormInner({
           id: "sommatif-standard",
           label: PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL,
           icon: "two_pager",
-          subModes: [
-            {
-              id: "questionnaire",
-              label: PREVIEW_PANEL_FEUILLET_QUESTIONNAIRE_LABEL,
-              icon: "edit_square",
-            },
-            {
-              id: "dossier",
-              label: PREVIEW_PANEL_FEUILLET_DOSSIER_LABEL,
-              icon: "article",
-            },
-          ],
         },
         { id: "corrige", label: PREVIEW_PANEL_PRINT_CORRIGE_LABEL, icon: "task_alt" },
       ],
@@ -218,26 +204,21 @@ function TacheFormInner({
             topBarClassName="sticky top-0 z-10"
             className="relative min-h-0 flex-1"
           >
-            {(modeId, subModeId, subSubModeId) => {
+            {(modeId, subModeId) => {
               const isImpressionMode = modeId === "impression";
               const varianteActive = subModeId ?? "formatif";
               const estCorrige = varianteActive === "corrige";
               const modeImpression: ModeImpression =
                 varianteActive === "formatif" ? "formatif" : "sommatif-standard";
-              const feuilletSommatif =
-                varianteActive === "sommatif-standard"
-                  ? ((subSubModeId as "dossier" | "questionnaire") ?? "questionnaire")
-                  : undefined;
 
               return (
                 <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
                   <aside className="min-w-0 w-full max-w-(--tache-print-sheet-width)">
                     {isImpressionMode ? (
-                      <PrintableFichePreview
+                      <ApercuImprimeLiveTache
                         previewMeta={wizardPreviewMeta}
                         mode={modeImpression}
                         estCorrige={estCorrige}
-                        feuillet={feuilletSommatif}
                       />
                     ) : (
                       <FicheSommaireColumn previewMeta={wizardPreviewMeta} />

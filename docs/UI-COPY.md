@@ -711,9 +711,9 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 - Navigation principale (desktop et mobile) : **Sommaire détaillé** ; **Aperçu de l'imprimé**.
 - Raccourcis mobiles (très petits écrans) : **Sommaire** ; **Imprimé**.
 - Wizard tâche — variantes d'impression visibles lorsque **Aperçu de l'imprimé** est actif : **Formatif** ; **Sommatif standard** ; **Corrigé**.
-- Wizard tâche — feuillets visibles lorsque **Sommatif standard** est actif : **Questionnaire** ; **Dossier documentaire**.
+- Wizard tâche — pas de toggle de feuillet : les pages Letter US sont empilées verticalement avec scroll dans l'onglet **Aperçu de l'imprimé** (rendu canonique `ApercuImpression` partagé avec Puppeteer).
 - Wizard document — pas de variante secondaire (Sommaire détaillé / Aperçu de l'imprimé uniquement).
-- Mobile (sous `md`) : bouton options (icône `tune`) ouvrant une feuille basse **Options** pour choisir variante et feuillet.
+- Mobile (sous `md`) : bouton options (icône `tune`) ouvrant une feuille basse **Options** pour choisir la variante.
 - Accessibilité : `Mode d'aperçu` ; `Variante d'aperçu imprimé` ; `Feuillet d'aperçu imprimé` ; `Afficher les options d'aperçu` ; `Fermer les options d'aperçu`.
 
 ---
@@ -1002,8 +1002,6 @@ Toutes les constantes vivent dans `lib/ui/ui-copy.ts`.
 - Fermer
 - Télécharger le PDF — **PROVISOIRE** : tant que l’export PDF natif n’est pas livré, le bouton est inactif ; texte d’aide : « Pour obtenir un PDF, utilisez Imprimer puis la destination Enregistrer au format PDF du navigateur. »
 - Barre d’outils (aperçu) : Aperçu impression (`WIZARD_PRINT_PREVIEW_COPY.toolbarPrint`)
-- **Feuillets (écran uniquement) :** onglets **Dossier documentaire** et **Questionnaire** — mêmes libellés que l’impression épreuve (`EVAL_PRINT_SECTION_COPY.dossierDocumentaire`, `EVAL_PRINT_SECTION_COPY.questionnaire`) ; `aria-label` du groupe : `WIZARD_PRINT_PREVIEW_COPY.feuilletToolbarAriaLabel`. À l’impression physique, **les deux feuillets** sont inclus (saut de page entre dossier et questionnaire).
-- Page `/questions/[id]/print` : Retour à la fiche
 
 ### Carrousel d'aperçu PNG (`CARROUSEL_APERCU_COPY`)
 
