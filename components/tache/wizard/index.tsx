@@ -211,18 +211,20 @@ function TacheFormInner({
               const modeImpression: ModeImpression =
                 varianteActive === "formatif" ? "formatif" : "sommatif-standard";
 
+              if (isImpressionMode) {
+                return (
+                  <ApercuImprimeLiveTache
+                    previewMeta={wizardPreviewMeta}
+                    mode={modeImpression}
+                    estCorrige={estCorrige}
+                  />
+                );
+              }
+
               return (
                 <div className="flex min-h-0 min-w-0 flex-1 justify-center overflow-y-auto overscroll-y-contain p-4 sm:p-6 xl:p-20 xl:pt-16">
                   <aside className="min-w-0 w-full max-w-(--tache-print-sheet-width)">
-                    {isImpressionMode ? (
-                      <ApercuImprimeLiveTache
-                        previewMeta={wizardPreviewMeta}
-                        mode={modeImpression}
-                        estCorrige={estCorrige}
-                      />
-                    ) : (
-                      <FicheSommaireColumn previewMeta={wizardPreviewMeta} />
-                    )}
+                    <FicheSommaireColumn previewMeta={wizardPreviewMeta} />
                   </aside>
                 </div>
               );
