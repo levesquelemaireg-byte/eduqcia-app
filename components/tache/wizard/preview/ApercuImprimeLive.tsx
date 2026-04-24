@@ -12,25 +12,23 @@ import {
 } from "@/lib/tache/contrats/etat-wizard-vers-tache";
 import type { WizardFichePreviewMeta } from "@/lib/tache/fiche-helpers";
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
-import { cn } from "@/lib/utils/cn";
 import styles from "./apercu-imprime-live.module.css";
 
 type Props = {
   previewMeta: WizardFichePreviewMeta;
   mode: ModeImpression;
   estCorrige: boolean;
-  className?: string;
 };
 
 /**
  * Aperçu impression temps réel — wizard tâche (contexte 1).
  *
  * Transforme l'état du wizard en `RenduImprimable` via le même pipeline que
- * Puppeteer (`etatWizardVersTache` → `tacheVersImprimable`) puis rend
- * `ApercuImpression` — le composant canonique partagé avec la route SSR
- * `/apercu/[token]`. Pages empilées verticalement avec scroll.
+ * Puppeteer (`etatWizardVersTache` → `tacheVersImprimable`), puis délègue à
+ * `ApercuImpression` (composant canonique partagé avec la route SSR
+ * `/apercu/[token]`). Réactif au changement de mode via les props.
  */
-export function ApercuImprimeLiveTache({ previewMeta, mode, estCorrige, className }: Props) {
+export function ApercuImprimeLiveTache({ previewMeta, mode, estCorrige }: Props) {
   const { state } = useTacheForm();
   const { oiList } = useOiData();
   const grilles = useGrilles();
@@ -50,29 +48,7 @@ export function ApercuImprimeLiveTache({ previewMeta, mode, estCorrige, classNam
     return tacheVersImprimable(donnees, { mode, estCorrige }, mesurerBlocImpression);
   }, [state, oiList, grilles, previewMeta, mode, estCorrige]);
 
-  if (!rendu) {
-    return (
-      <div
-        className={cn(styles.canvas, className)}
-        aria-busy="true"
-        aria-label="Chargement de l’aperçu"
-      >
-        <div className={styles.status}>Chargement de l’aperçu…</div>
-      </div>
-    );
-  }
-
-  if (!rendu.ok) {
-    return (
-      <div className={cn(styles.canvas, className)} role="alert">
-        <div className={cn(styles.status, styles.error)}>{rendu.erreur.suggestion}</div>
-      </div>
-    );
-  }
-
   return (
-    <div className={cn(styles.canvas, className)}>
-      <ApercuImpression rendu={rendu} />
-    </div>
+    <div className={styles.canvas}>{rendu?.ok ? <ApercuImpression rendu={rendu} /> : null}</div>
   );
 }
