@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { Editor } from "@tiptap/core";
-import styles from "@/components/documents/tiptap/document-content-editor.module.css";
+import styles from "@/components/partagees/tiptap/document-content-editor.module.css";
 
 type NoteEntry = {
   pos: number;

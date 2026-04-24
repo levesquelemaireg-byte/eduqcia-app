@@ -7,9 +7,9 @@ import { DocumentCategorieTextuelleSelect } from "@/components/documents/Documen
 import { DocumentLegendPositionGrid } from "@/components/documents/DocumentLegendPositionGrid";
 import { DocumentLegendTextField } from "@/components/documents/DocumentLegendTextField";
 import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
-import { DocumentContentToolbarButtons } from "@/components/documents/tiptap/DocumentContentToolbarButtons";
-import { FootnotesPanel } from "@/components/documents/tiptap/FootnotesPanel";
-import editorStyles from "@/components/documents/tiptap/document-content-editor.module.css";
+import { DocumentContentToolbarButtons } from "@/components/partagees/tiptap/DocumentContentToolbarButtons";
+import { FootnotesPanel } from "@/components/partagees/tiptap/FootnotesPanel";
+import editorStyles from "@/components/partagees/tiptap/document-content-editor.module.css";
 import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";

@@ -1,7 +1,7 @@
 import StarterKit from "@tiptap/starter-kit";
 import { DocRef } from "@/components/tache/wizard/tiptap/extensionDocRef";
-import { FootnoteNode } from "@/components/documents/tiptap/extensionFootnote";
-import { CitationEllipsis } from "@/components/documents/tiptap/extensionEllipsis";
+import { FootnoteNode } from "@/components/partagees/tiptap/extensionFootnote";
+import { CitationEllipsis } from "@/components/partagees/tiptap/extensionEllipsis";
 
 export function consigneExtensions() {
   return [
