@@ -785,6 +785,7 @@ supabase/
 | Ancrage temporel           | `pin_history`         | `ancrageTemporel`            |
 | Valeur auto-générée        | `settings`            | `valeurAutoGeneree`          |
 | Création document (navbar) | `add_notes`           | `creationDocument`           |
+| Onglet Sommaire            | `topic`               | `sommaire`                   |
 | Documentation légale       | `gavel` (composant)   | exclusif — `LegalNoticeIcon` |
 | Période historique         | composite             | exclusif — `PeriodeIcon`     |
 

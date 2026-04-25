@@ -168,6 +168,7 @@ Textes d’infobulle : `lib/tache/icon-justifications.ts` (`MATERIAL_ICON_TOOLTI
 - **`reorder`** — Encadré rappel Bloc 4 **ordre chronologique** : suite chronologique retenue et lien chiffres 1–4 ↔ documents du dossier (`OrdreChronologiqueBloc4SequenceReminder`).
 - **`settings`** — Valeur **générée automatiquement** par l’application (numérotation des documents, calculs, jetons système). Affichage **décoratif inline** : glyphe `1em`, `text-muted`, à côté de la valeur concernée, avec `title` / infobulle expliquant ce qui est généré. **Ne pas** utiliser pour des paramètres ou réglages utilisateur — réserver strictement aux valeurs auto-générées (ex. jeton « Doc 1–4 » du template de consigne non rédactionnelle).
 - **`person` / `groups`** — Bloc 1 conception seul / équipe.
+- **`topic`** — Onglet **Sommaire** des vues détaillées (tâche / document / épreuve) — sous-navbar `Onglets` partagée. L'onglet voisin **Aperçu de l'imprimé** utilise **`print`** (cohérence avec le bouton « Ouvrir la visionneuse » de la `BarreActions`).
 
 ### Navigation — création (documents historiques)
 
