@@ -36,26 +36,29 @@
 }
 
 /*
- * Wrapper du cadre bordé + source bibliographique. La source est enfant
- * direct de ce wrapper (et non d'un wrapper englobant le titre) : sa
- * largeur est naturellement contrainte à celle du wrapper, qui prend la
- * largeur du cadre. Le titre reste à l'extérieur — il peut être plus large
- * que l'image sans pousser le cadre.
+ * Wrapper interne englobant titre + cadre + source.
  *
- * Pour les documents simples iconographiques, le wrapper rétrécit à la
- * largeur de l'image (`max-content`). Pour les autres structures
- * (textuel simple, perspectives, deux_temps), il prend la largeur naturelle
- * du flow (full-width de la cellule).
+ * `width: fit-content` + `max-width: 100%` :
+ * - Titre court + image : wrapper rétrécit à la largeur du cadre (= image).
+ *   Le titre tient sur une ligne, la source wrappe à la largeur de l'image.
+ * - Titre long + image étroite : le titre clampé à 100% (largeur cellule)
+ *   pousse fit-content au max-width. Le titre wrappe sur plusieurs lignes,
+ *   le cadre image reste compact à gauche, la source wrappe à la cellule.
+ *
+ * Le calcul fonctionne **uniquement** avec `overflow-wrap: anywhere` sur
+ * la source (cf. `.documentSource` dans `printable-fiche-preview.module.css`) :
+ * sans ça, le `max-content` de la source non-wrappée ferait déborder le
+ * wrapper bien au-delà du cadre.
  */
-.cadreEtSource[data-doc-type="iconographique"] {
-  width: max-content;
+.celluleInner {
+  width: fit-content;
   max-width: 100%;
 }
 
 /*
  * Cadre bordé du contenu (zone entre le titre et la source).
  * Bordure 1 px noire uniquement autour du contenu — la source vit hors du
- * cadre dans le wrapper parent `.cadreEtSource`.
+ * cadre, sibling dans `.celluleInner`.
  */
 .cadre {
   border: 1px solid #000;

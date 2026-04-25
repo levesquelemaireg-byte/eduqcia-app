@@ -39,26 +39,25 @@ export function DossierCellule({ document: doc, numero, span, titreVisible }: Pr
   const isSingle = doc.structure === "simple";
   const showAuteur = doc.structure === "perspectives";
   const showRepereTemporel = doc.structure === "deux_temps";
-  // Cadre compact pour les documents simples iconographiques (largeur de l'image).
-  // Composites : pleine largeur (sous-colonnes intra-cadre).
-  const firstElementType = isSingle ? doc.elements[0]?.type : undefined;
 
   return (
     <div className={cn(styles.cellule, span === 2 && styles.celluleSpan2)}>
-      {afficherTitre ? (
-        <div className={styles.ligneTitre}>
-          <span className={styles.numero} aria-label={`Document ${numero}`}>
-            {numero}
-          </span>
-          <p className={styles.titre}>{titre}</p>
-        </div>
-      ) : null}
+      {/* Wrapper interne `width: fit-content` — titre, cadre et source y
+          sont enfants directs. Combiné à `overflow-wrap: anywhere` sur la
+          source, le wrapper prend la largeur du cadre quand le titre est
+          court, ou la largeur de la cellule quand le titre est long
+          (titre wrappé). */}
+      <div className={styles.celluleInner}>
+        {afficherTitre ? (
+          <div className={styles.ligneTitre}>
+            <span className={styles.numero} aria-label={`Document ${numero}`}>
+              {numero}
+            </span>
+            <p className={styles.titre}>{titre}</p>
+          </div>
+        ) : null}
 
-      {/* Wrapper cadre + source : compact à la largeur de l'image pour
-          les iconographiques simples ; la source à l'intérieur prend la
-          largeur du wrapper et wrappe naturellement, sans déborder. */}
-      <div className={styles.cadreEtSource} data-doc-type={firstElementType}>
-        <div className={styles.cadre} data-doc-structure={doc.structure}>
+        <div className={styles.cadre}>
           {isSingle ? (
             doc.elements[0] ? (
               <DocumentElementRenderer

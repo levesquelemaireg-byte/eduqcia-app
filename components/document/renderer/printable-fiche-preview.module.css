@@ -133,12 +133,18 @@
  * Couleur pilotée par `--document-source-color` : noir pur en contexte print
  * (défini sur `.cellule` dans `cellule.module.css`), gris discret par défaut
  * (sommaire à l'écran — fallback `--color-steel`).
+ *
+ * `overflow-wrap: anywhere` rend la source contraignable au minimum (mot
+ * le plus long), nécessaire pour que `width: fit-content` du wrapper
+ * `.celluleInner` (cellule.module.css) calcule sa largeur sur le cadre
+ * plutôt que sur la longueur d'un texte de source non wrappé.
  */
 .documentSource {
   margin: 0.35em 0 0;
   font-size: 7pt;
   line-height: 1.15;
   color: var(--document-source-color, var(--color-steel));
+  overflow-wrap: anywhere;
 }
 
 .documentSourceValue {

@@ -19,7 +19,7 @@ export function ModeSommaire({ document: doc, numero }: Props) {
   const titre = doc.titre.trim();
 
   return (
-    <div className={styles.documentCell} data-doc-structure={doc.structure}>
+    <div className={styles.documentCell}>
       {/* En-tête : numéro + titre */}
       <p className={styles.documentHeaderLine}>
         {numero != null ? `Document ${numero} — ` : ""}
