@@ -50,7 +50,7 @@
     "id": "OI2",
     "titre": "Situer dans l'espace",
     "icone": "map_search",
-    "status": "coming_soon",
+    "status": "active",
     "comportements_attendus": [
       {
         "id": "2.1",

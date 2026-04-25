@@ -25,6 +25,13 @@ import {
   normalizeAvantApresPayload,
 } from "@/lib/tache/non-redaction/avant-apres-payload";
 import {
+  isCarteHistoriqueDocumentsPublishable,
+  isCarteHistoriqueDocumentsStepComplete,
+  isCarteHistoriqueStep3Complete,
+  isCarteHistoriqueStep5Complete,
+  normalizeCarteHistoriquePayload,
+} from "@/lib/tache/non-redaction/carte-historique-payload";
+import {
   isLigneDuTempsStep3Complete,
   isLigneDuTempsStep5SegmentComplete,
   normalizeLigneDuTempsPayload,
@@ -37,6 +44,7 @@ import {
 } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
 import {
   isActiveAvantApresVariant,
+  isActiveCarteHistoriqueVariant,
   isActiveLigneDuTempsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tache/non-redaction/wizard-variant";
@@ -44,6 +52,7 @@ import { isRedactionStepComplete } from "@/lib/tache/redaction-helpers";
 import { getRedactionSliceForPreview } from "@/lib/tache/tache-form-state-types";
 import {
   nonRedactionAvantApresPayload,
+  nonRedactionCartePayload,
   nonRedactionLignePayload,
   nonRedactionOrdrePayload,
 } from "@/lib/tache/wizard-state-nr";
@@ -66,6 +75,10 @@ function redactionStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveLigneDuTempsVariant(state)) {
     const p = normalizeLigneDuTempsPayload(nonRedactionLignePayload(state));
     return p !== null && isLigneDuTempsStep3Complete(p);
+  }
+  if (isActiveCarteHistoriqueVariant(state)) {
+    const p = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
+    return p !== null && isCarteHistoriqueStep3Complete(p);
   }
   // Les aspects imposés par le parcours (ex. Section B) satisfont la garde « au moins un aspect »
   // sans que l'enseignant ait à les re-cocher au Bloc 7.
@@ -106,6 +119,9 @@ function documentsStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveAvantApresVariant(state)) {
     return isAvantApresDocumentsPublishable(b.documentSlots, state.bloc4.documents);
   }
+  if (isActiveCarteHistoriqueVariant(state)) {
+    return isCarteHistoriqueDocumentsPublishable(b.documentSlots, state.bloc4.documents);
+  }
   return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
 }
 
@@ -134,6 +150,12 @@ function documentsCompleteButUrlsBlocked(state: TacheFormState): boolean {
     return (
       isAvantApresDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
       !isAvantApresDocumentsPublishable(b.documentSlots, state.bloc4.documents)
+    );
+  }
+  if (isActiveCarteHistoriqueVariant(state)) {
+    return (
+      isCarteHistoriqueDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
+      !isCarteHistoriqueDocumentsPublishable(b.documentSlots, state.bloc4.documents)
     );
   }
   return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
@@ -171,6 +193,10 @@ export function isWizardPublishReady(state: TacheFormState): boolean {
       return false;
     }
   }
+  if (isActiveCarteHistoriqueVariant(state)) {
+    const p = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
+    if (p === null || !isCarteHistoriqueStep5Complete(p)) return false;
+  }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;
   return true;
@@ -199,6 +225,10 @@ export function isPublishBlockedOnlyByIconographicUrls(state: TacheFormState): b
     ) {
       return false;
     }
+  }
+  if (isActiveCarteHistoriqueVariant(state)) {
+    const p = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
+    if (p === null || !isCarteHistoriqueStep5Complete(p)) return false;
   }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;

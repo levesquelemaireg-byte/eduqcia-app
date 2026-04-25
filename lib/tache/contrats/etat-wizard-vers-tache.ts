@@ -22,12 +22,14 @@ import { sortAuteursByFamilyName, splitDisplayName } from "@/lib/tache/auteur-di
 import type { OiEntryJson } from "@/lib/types/oi";
 import {
   isActiveAvantApresVariant,
+  isActiveCarteHistoriqueVariant,
   isActiveLigneDuTempsVariant,
   isActiveNonRedactionVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tache/non-redaction/wizard-variant";
 import {
   nonRedactionAvantApresPayload,
+  nonRedactionCartePayload,
   nonRedactionLignePayload,
   nonRedactionOrdrePayload,
 } from "@/lib/tache/wizard-state-nr";
@@ -37,6 +39,11 @@ import {
   buildAvantApresGuidageHtml,
   normalizeAvantApresPayload,
 } from "@/lib/tache/non-redaction/avant-apres-payload";
+import {
+  buildCarteHistoriqueConsigneHtml,
+  buildCarteHistoriqueCorrigeHtml,
+  normalizeCarteHistoriquePayload,
+} from "@/lib/tache/non-redaction/carte-historique-payload";
 import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
@@ -112,7 +119,7 @@ export function resoudreOutilEvaluation(
 
 /** Déduit l'espace de production depuis l'état du wizard. */
 function deduireEspaceProduction(state: TacheFormState): EspaceProduction {
-  if (isActiveOrdreChronologiqueVariant(state)) {
+  if (isActiveOrdreChronologiqueVariant(state) || isActiveCarteHistoriqueVariant(state)) {
     return { type: "cases", options: ["A", "B", "C", "D"] };
   }
   if (isActiveLigneDuTempsVariant(state) || isActiveAvantApresVariant(state)) {
@@ -139,6 +146,11 @@ function construireGuidage(state: TacheFormState): Guidage {
       const html = buildAvantApresGuidageHtml();
       return html ? { content: html } : null;
     }
+    if (isActiveCarteHistoriqueVariant(state)) {
+      // Guidage libre saisi par l'enseignant — peut être vide.
+      const text = state.bloc3.guidage.trim();
+      return text ? { content: text } : null;
+    }
     return null;
   }
 
@@ -160,6 +172,10 @@ function construireConsigne(state: TacheFormState): string {
   if (isActiveAvantApresVariant(state) && avantNorm) {
     return supprimerAncres(buildAvantApresConsigneHtml(avantNorm));
   }
+  const carteNorm = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
+  if (isActiveCarteHistoriqueVariant(state) && carteNorm) {
+    return supprimerAncres(buildCarteHistoriqueConsigneHtml(carteNorm));
+  }
   return getRedactionSliceForPreview(state).consigne;
 }
 
@@ -176,6 +192,10 @@ function construireCorrige(state: TacheFormState): string {
   const avantNorm = normalizeAvantApresPayload(nonRedactionAvantApresPayload(state));
   if (isActiveAvantApresVariant(state) && avantNorm) {
     return buildAvantApresCorrigeHtml(avantNorm);
+  }
+  const carteNorm = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
+  if (isActiveCarteHistoriqueVariant(state) && carteNorm) {
+    return buildCarteHistoriqueCorrigeHtml(carteNorm);
   }
   return getRedactionSliceForPreview(state).corrige;
 }

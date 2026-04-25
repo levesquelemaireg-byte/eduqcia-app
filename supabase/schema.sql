@@ -541,7 +541,7 @@ INSERT INTO disciplines (code, label, cd_json_file, conn_json_file) VALUES
 INSERT INTO oi (id, titre, icone, status, ordre) VALUES
   ('OI0', 'Établir des faits',                             'document_search', 'active',      0),
   ('OI1', 'Situer dans le temps',                          'hourglass',       'active',      1),
-  ('OI2', 'Situer dans l''espace',                         'map_search',      'coming_soon', 2),
+  ('OI2', 'Situer dans l''espace',                         'map_search',      'active',      2),
   ('OI3', 'Dégager des différences et des similitudes',    'text_compare',    'active',      3),
   ('OI4', 'Déterminer des causes et des conséquences',     'manufacturing',   'active',      4),
   ('OI5', 'Mettre en relation des faits',                  'graph_3',         'coming_soon', 5),
@@ -554,6 +554,9 @@ INSERT INTO comportements (id, oi_id, enonce, nb_documents, outil_evaluation, st
   ('1.1', 'OI1', 'Ordonner chronologiquement des faits en tenant compte de repères de temps',                                                                   4, 'OI1_SO1', 'active',      0),
   ('1.2', 'OI1', 'Situer des faits sur une ligne du temps',                                                                                                     1, 'OI1_SO2', 'active',      1),
   ('1.3', 'OI1', 'Classer des faits selon qu''ils sont antérieurs ou postérieurs à un repère de temps',                                                         4, 'OI1_SO3', 'active',      2),
+  ('2.1', 'OI2', 'Identifier sur une carte un élément géographique ou un territoire',                                                                          1, 'OI2_SO1', 'active',      0),
+  ('2.2', 'OI2', 'Identifier sur une carte une association d''éléments géographiques',                                                                         1, 'OI2_SO2', 'active',      1),
+  ('2.3', 'OI2', 'Identifier sur une carte plusieurs éléments géographiques',                                                                                  1, 'OI2_SO3', 'active',      2),
   ('3.1', 'OI3', 'Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison',                                                          1, 'OI3_SO1', 'active',      0),
   ('3.2', 'OI3', 'Indiquer ce qui est semblable par rapport à un ou plusieurs objets de comparaison',                                                          1, 'OI3_SO2', 'active',      1),
   ('3.3', 'OI3', 'Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence)',                                            2, 'OI3_SO3', 'active',      2),
