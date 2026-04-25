@@ -1,20 +1,20 @@
 /**
  * Orchestrateur de builders — couche 1.
  *
- * Assemble les blocs d'une tâche (documents + quadruplet + corrigé optionnel)
- * selon le mode d'impression et le flag corrigé.
+ * Assemble les blocs d'une tâche selon le mode d'impression et le flag corrigé :
+ *   1. Dossier (1 bloc dossier-page par page de grille bicolonnée)
+ *   2. Quadruplet (consigne + guidage + espace prod + outil eval)
+ *   3. Corrigé (optionnel, si `estCorrige` et corrigé non vide)
  *
- * Réutilisé par :
- * - `tacheVersImprimable` (tâche seule — tous les blocs paginés ensemble)
- * - `epreuveVersImprimable` (épreuve — blocs séparés ensuite par feuillet)
- *
- * Spec : docs/specs/spec-impression-tache-seule.md §3, couche 1.
+ * Réutilisé par `tacheVersImprimable` (tâche seule — tous les blocs paginés
+ * ensemble) et indirectement par `epreuveVersImprimable` via les builders
+ * homologues du feuillet épreuve.
  */
 
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression, Bloc } from "@/lib/epreuve/pagination/types";
 import { reglesVisibilite } from "./regles-visibilite";
-import { construireBlocDocument } from "./blocs-document";
+import { construireBlocsDossierPages } from "./blocs-dossier-pages";
 import { construireBlocQuadruplet } from "./blocs-quadruplet";
 import { construireBlocCorrige } from "./blocs-corrige";
 
@@ -25,7 +25,6 @@ export type OptionsBlocsTache = {
 
 /**
  * Sous-ensemble de `DonneesTache` consommé par l'orchestrateur.
- * Défini comme Pick local (spec D0).
  */
 type TacheImpression = Pick<
   DonneesTache,
@@ -39,22 +38,22 @@ type TacheImpression = Pick<
   | "corrige"
 >;
 
-/**
- * Construit tous les blocs d'une tâche dans l'ordre d'impression :
- * 1. Documents (un bloc par document)
- * 2. Quadruplet (consigne + guidage + espace prod + outil eval)
- * 3. Corrigé (optionnel, si `estCorrige` et corrigé non vide)
- *
- * Applique les règles de visibilité (titres docs, guidage) selon le mode.
- */
 export function construireBlocsTache(tache: TacheImpression, options: OptionsBlocsTache): Bloc[] {
   const regles = reglesVisibilite(options.mode);
   const blocs: Bloc[] = [];
 
-  // Documents
-  for (const doc of tache.documents) {
-    blocs.push(construireBlocDocument(doc, { titreVisible: regles.titresDocumentsVisibles }));
-  }
+  // Dossier documentaire — pages de grille bicolonnée. Numéros 1..N locaux à la tâche.
+  const docsNumerotes = tache.documents.map((document, i) => ({
+    numeroGlobal: i + 1,
+    document,
+  }));
+  blocs.push(
+    ...construireBlocsDossierPages(
+      docsNumerotes,
+      { titresVisibles: regles.titresDocumentsVisibles },
+      `tache-${tache.id}-dossier`,
+    ),
+  );
 
   // Quadruplet
   blocs.push(construireBlocQuadruplet(tache, { guidageVisible: regles.guidageVisible }));

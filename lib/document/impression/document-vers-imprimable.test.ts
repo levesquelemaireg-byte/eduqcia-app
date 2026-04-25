@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
+import type { ContenuDossierPage } from "@/lib/impression/builders/blocs-dossier-pages";
 import { documentVersImprimable } from "./document-vers-imprimable";
 
 /* -------------------------------------------------------------------------- */
@@ -66,8 +67,20 @@ describe("documentVersImprimable", () => {
     const rendu = documentVersImprimable(doc, mesureurFixe(400));
     expect(rendu.ok).toBe(true);
     if (!rendu.ok) return;
-    const contenu = rendu.pages[0].blocs[0].content as { document: RendererDocument };
-    expect(contenu.document.titre).toBe("Mon titre");
+    const contenu = rendu.pages[0].blocs[0].content as ContenuDossierPage;
+    expect(contenu.titresVisibles).toBe(true);
+    expect(contenu.sources.get(doc.id)?.titre).toBe("Mon titre");
+  });
+
+  it("rend la page avec une seule cellule en pleine largeur (span 2)", () => {
+    const doc = creerDoc();
+    const rendu = documentVersImprimable(doc, mesureurFixe(400));
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const contenu = rendu.pages[0].blocs[0].content as ContenuDossierPage;
+    expect(contenu.page.rangees).toHaveLength(1);
+    expect(contenu.page.rangees[0].cellules).toHaveLength(1);
+    expect(contenu.page.rangees[0].cellules[0].span).toBe(2);
   });
 
   it("retourne une erreur si le document dépasse la page", () => {

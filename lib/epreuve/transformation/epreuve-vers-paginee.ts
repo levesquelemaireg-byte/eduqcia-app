@@ -24,6 +24,7 @@ import type {
 import { mesurerBloc, verifierDebordement, paginer } from "@/lib/epreuve/pagination/pager";
 import type { Mesureur } from "@/lib/epreuve/pagination/pager";
 import { reglesVisibilite } from "@/lib/impression/builders/regles-visibilite";
+import { construireBlocsDossierPages } from "@/lib/impression/builders/blocs-dossier-pages";
 import { aplatirDocumentsAvecNumeros, resoudreReferencesDocuments } from "./renumerotation";
 import type { RenduImprimable } from "@/lib/impression/types";
 
@@ -109,21 +110,21 @@ export type ContenuCorrige = {
 /*  Construction des blocs par feuillet                                       */
 /* -------------------------------------------------------------------------- */
 
-/** Construit les blocs du dossier documentaire (tous les documents, numérotés). */
+/**
+ * Construit les blocs du dossier documentaire — un bloc dossier-page par
+ * page de la grille bicolonnée (placement délégué au layout engine).
+ */
 function construireBlocsDossierDocumentaire(
   taches: TacheImpression[],
   mode: ModeImpression,
 ): Bloc[] {
   const regles = reglesVisibilite(mode);
   const docsNumerotes = aplatirDocumentsAvecNumeros(taches);
-  return docsNumerotes.map((dn, i) => ({
-    id: genererIdBloc("dossier-documentaire", i),
-    kind: "document" as const,
-    content: {
-      numeroGlobal: dn.numeroGlobal,
-      document: regles.titresDocumentsVisibles ? dn.document : { ...dn.document, titre: "" },
-    },
-  }));
+  return construireBlocsDossierPages(
+    docsNumerotes,
+    { titresVisibles: regles.titresDocumentsVisibles },
+    "dossier-documentaire",
+  );
 }
 
 /** Construit les blocs du questionnaire (un quadruplet par tâche, + corrigé si flag actif). */

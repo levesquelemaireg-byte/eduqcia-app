@@ -22,7 +22,7 @@ export function SectionDocuments({ data, mode: _mode }: Props) {
       <div className={`${FICHE_SECTION_BODY_INSET} flex flex-col gap-3`}>
         {data.documents.map((doc) => (
           <div key={doc.numero} className="rounded-lg border border-border bg-panel p-4">
-            <DocumentRenderer document={documentFicheVersRenderer(doc)} mode="sommaire" />
+            <DocumentRenderer document={documentFicheVersRenderer(doc)} />
           </div>
         ))}
       </div>

@@ -140,7 +140,7 @@ export function DocumentCardReader({ document: doc, meta }: DocumentCardReaderPr
             </h2>
             <div className="pl-[calc(1em+0.5rem)]">
               <div className="rounded-xl border border-border bg-panel-alt p-4 sm:p-5">
-                <DocumentRenderer document={doc} mode="sommaire" />
+                <DocumentRenderer document={doc} />
               </div>
             </div>
           </div>

@@ -1,12 +1,32 @@
 import { describe, expect, it } from "vitest";
 import type { Bloc } from "@/lib/epreuve/pagination/types";
 import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
+import type { DocumentAPositionner } from "@/lib/impression/layout-dossier-documentaire";
 
-function creerBlocDocument(contenu: unknown): Bloc {
+function docTextuel(numero: number, nombreMots: number): DocumentAPositionner {
   return {
-    id: "doc-1",
-    kind: "document",
-    content: contenu,
+    id: `d${numero}`,
+    numero,
+    type: "textuel",
+    structure: "simple",
+    titre: "Titre",
+    nombreMots,
+    imageRatio: null,
+  };
+}
+
+function creerBlocDossierPage(
+  content: unknown = {
+    page: { rangees: [] },
+    sources: new Map(),
+    titresVisibles: true,
+  },
+): Bloc {
+  return {
+    id: "dossier-1",
+    kind: "dossier-page",
+    pagination: { mode: "exclusive-page" },
+    content,
   };
 }
 
@@ -19,31 +39,31 @@ function creerBlocQuadruplet(contenu: unknown): Bloc {
 }
 
 describe("mesurerBlocImpression", () => {
-  it("estime un document iconographique significativement au-dessus du fallback", () => {
-    const bloc = creerBlocDocument({
-      document: {
-        id: "d1",
-        titre: "Carte de la Nouvelle-France",
-        structure: "simple",
-        elements: [
-          {
-            id: "e1",
-            type: "iconographique",
-            imageUrl: "https://example.com/carte.jpg",
-            imagePixelWidth: 1200,
-            imagePixelHeight: 800,
-            legende: "Carte politique et hydrographique annotée.",
-            categorieIconographique: "carte",
-            source: "<p>Archives nationales</p>",
-            sourceType: "primaire",
-          },
+  it("retourne 0 pour une page dossier vide (aucune rangée)", () => {
+    expect(mesurerBlocImpression(creerBlocDossierPage())).toBe(0);
+  });
+
+  it("calcule la vraie hauteur d'un bloc dossier-page à partir des rangées", () => {
+    const bloc = creerBlocDossierPage({
+      page: {
+        rangees: [
+          { cellules: [{ document: docTextuel(1, 50), span: 1 }] },
+          { cellules: [{ document: docTextuel(2, 50), span: 1 }] },
         ],
       },
-      numeroGlobal: 1,
+      sources: new Map(),
+      titresVisibles: true,
     });
-
     const h = mesurerBlocImpression(bloc);
-    expect(h).toBeGreaterThan(300);
+    // Deux rangées + un gap : hauteur > 0, et croissante avec le nombre de rangées.
+    expect(h).toBeGreaterThan(0);
+
+    const blocUneRangee = creerBlocDossierPage({
+      page: { rangees: [{ cellules: [{ document: docTextuel(1, 50), span: 1 }] }] },
+      sources: new Map(),
+      titresVisibles: true,
+    });
+    expect(h).toBeGreaterThan(mesurerBlocImpression(blocUneRangee));
   });
 
   it("augmente la hauteur quand la consigne est longue", () => {

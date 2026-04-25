@@ -96,13 +96,13 @@ describe("paginer", () => {
   });
 
   it("répartit les blocs sur plusieurs pages", () => {
-    // MAX_CONTENT_HEIGHT_PX = 825, chaque bloc = 300px → 2 par page, 5 blocs → 3 pages
+    // MAX_CONTENT_HEIGHT_PX = 904, chaque bloc = 300px → 3 par page (900px),
+    // 5 blocs → 2 pages (3 + 2).
     const blocs = Array.from({ length: 5 }, (_, i) => creerBlocMesure(`b${i}`, 300));
     const pages = paginer(blocs, "questionnaire");
-    expect(pages).toHaveLength(3);
-    expect(pages[0].blocs).toHaveLength(2); // 600px
+    expect(pages).toHaveLength(2);
+    expect(pages[0].blocs).toHaveLength(3); // 900px
     expect(pages[1].blocs).toHaveLength(2); // 600px
-    expect(pages[2].blocs).toHaveLength(1); // 300px
   });
 
   it("numérote les pages correctement", () => {
@@ -147,11 +147,80 @@ describe("paginer", () => {
   });
 
   it("pousse un bloc sur une nouvelle page si l'ajout dépasse MAX_CONTENT_HEIGHT_PX", () => {
-    // 2 blocs de 500px : le 2e ne tient pas sur la même page (500+500=1000 > 825)
+    // 2 blocs de 500px : le 2e ne tient pas sur la même page (500+500=1000 > 904)
     const blocs = [creerBlocMesure("b1", 500), creerBlocMesure("b2", 500)];
     const pages = paginer(blocs, "questionnaire");
     expect(pages).toHaveLength(2);
     expect(pages[0].blocs).toHaveLength(1);
     expect(pages[1].blocs).toHaveLength(1);
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/*  Mode exclusive-page                                                       */
+/* -------------------------------------------------------------------------- */
+
+function creerBlocExclusif(id: string, hauteurPx: number): BlocMesure {
+  const ratio = hauteurPx / MAX_CONTENT_HEIGHT_PX;
+  return {
+    id,
+    kind: "dossier-page",
+    pagination: { mode: "exclusive-page" },
+    content: {},
+    hauteurPx,
+    ratio,
+    securise: ratio <= 1,
+  };
+}
+
+describe("paginer — mode exclusive-page", () => {
+  it("place un bloc exclusif seul sur sa page même si la page courante a de la place", () => {
+    // 1 bloc flow de 200px + 1 bloc exclusif de 300px : le flow doit être seul
+    // sur la page 1, l'exclusif seul sur la page 2, bien qu'ils tiendraient
+    // ensemble (500 < 904).
+    const blocs = [creerBlocMesure("flow-1", 200), creerBlocExclusif("dossier-1", 300)];
+    const pages = paginer(blocs, "questionnaire");
+    expect(pages).toHaveLength(2);
+    expect(pages[0].blocs.map((b) => b.id)).toEqual(["flow-1"]);
+    expect(pages[1].blocs.map((b) => b.id)).toEqual(["dossier-1"]);
+  });
+
+  it("referme immédiatement la page exclusive : les blocs flow suivants partent sur une nouvelle page", () => {
+    const blocs = [creerBlocExclusif("dossier-1", 400), creerBlocMesure("flow-1", 200)];
+    const pages = paginer(blocs, "questionnaire");
+    expect(pages).toHaveLength(2);
+    expect(pages[0].blocs.map((b) => b.id)).toEqual(["dossier-1"]);
+    expect(pages[1].blocs.map((b) => b.id)).toEqual(["flow-1"]);
+  });
+
+  it("enchaîne plusieurs blocs exclusifs sur leurs propres pages respectives", () => {
+    const blocs = [
+      creerBlocExclusif("dossier-1", 400),
+      creerBlocExclusif("dossier-2", 400),
+      creerBlocExclusif("dossier-3", 400),
+    ];
+    const pages = paginer(blocs, "dossier-documentaire");
+    expect(pages).toHaveLength(3);
+    for (let i = 0; i < 3; i++) {
+      expect(pages[i].blocs).toHaveLength(1);
+      expect(pages[i].blocs[0].id).toBe(`dossier-${i + 1}`);
+    }
+  });
+
+  it("accepte un bloc exclusif jusqu'à MAX_CONTENT_HEIGHT_PX (ratio ≤ 1, pas ≤ 0.97)", () => {
+    // Un bloc exclusif à 95% de MAX est sécurisé.
+    const bloc: Bloc = {
+      id: "dossier-1",
+      kind: "dossier-page",
+      pagination: { mode: "exclusive-page" },
+      content: {},
+    };
+    const r = mesurerBloc(bloc, mesureurFixe(MAX_CONTENT_HEIGHT_PX * 0.98));
+    expect(r.securise).toBe(true);
+
+    // Un bloc flow à 98% de MAX ne l'est pas (seuil = 0.97).
+    const blocFlow: Bloc = { id: "flow-1", kind: "quadruplet", content: {} };
+    const rFlow = mesurerBloc(blocFlow, mesureurFixe(MAX_CONTENT_HEIGHT_PX * 0.98));
+    expect(rFlow.securise).toBe(false);
   });
 });

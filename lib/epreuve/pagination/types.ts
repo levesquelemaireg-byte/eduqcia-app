@@ -15,13 +15,27 @@ export type TypeFeuillet = "dossier-documentaire" | "questionnaire" | "cahier-re
 /*  Blocs                                                                     */
 /* -------------------------------------------------------------------------- */
 
-export type KindBloc = "document" | "quadruplet" | "entete-section";
+export type KindBloc = "dossier-page" | "quadruplet" | "entete-section";
+
+/**
+ * Contrat de pagination explicite.
+ *
+ * - `flow` (défaut implicite si `pagination` absent) : le bloc s'empile
+ *   normalement avec les autres jusqu'à `MAX_CONTENT_HEIGHT_PX`.
+ * - `exclusive-page` : le bloc force une page dédiée (pas d'empilage avant
+ *   ou après lui sur la même page physique). Utilisé pour les pages du
+ *   dossier documentaire (1 grille = 1 page), et potentiellement pour des
+ *   pages de garde, couvertures, etc.
+ */
+export type PaginationMode = "flow" | "exclusive-page";
 
 export type Bloc = {
   id: string;
   kind: KindBloc;
   tacheId?: string;
   content: unknown;
+  /** Contrat de pagination (défaut : `{ mode: "flow" }`). */
+  pagination?: { mode: PaginationMode };
 };
 
 export type BlocMesure = Bloc & {

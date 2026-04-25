@@ -23,12 +23,7 @@ export function SectionDocuments({ data, surClicDocument }: Props) {
       <div className="flex flex-col gap-3">
         {data.cards.map((card) => {
           const content = (
-            <DocumentRenderer
-              key={card.docId}
-              document={card.document}
-              mode="sommaire"
-              numero={card.numero}
-            />
+            <DocumentRenderer key={card.docId} document={card.document} numero={card.numero} />
           );
 
           if (surClicDocument) {

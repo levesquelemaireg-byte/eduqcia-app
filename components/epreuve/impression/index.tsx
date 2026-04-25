@@ -15,9 +15,9 @@ import type {
   ContenuQuadruplet,
   ContenuCorrige,
 } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import type { ContenuDossierPage } from "@/lib/impression/builders/blocs-dossier-pages";
 import { SectionPage } from "./section-page";
-import { SectionDocument } from "./sections/document";
-import type { ContenuDocument } from "./sections/document";
+import { DossierGrille } from "./dossier/grille";
 import { SectionQuadruplet } from "./sections/quadruplet";
 import { SectionCorrige } from "./sections/corrige";
 
@@ -43,8 +43,16 @@ function estContenuQuadruplet(content: unknown): content is ContenuQuadruplet {
 /** Rend un bloc selon son kind et son contenu. */
 function RenduBloc({ bloc }: { bloc: BlocMesure }) {
   switch (bloc.kind) {
-    case "document":
-      return <SectionDocument contenu={bloc.content as ContenuDocument} />;
+    case "dossier-page": {
+      const content = bloc.content as ContenuDossierPage;
+      return (
+        <DossierGrille
+          page={content.page}
+          sources={content.sources}
+          titresVisibles={content.titresVisibles}
+        />
+      );
+    }
 
     case "quadruplet":
       if (estContenuCorrige(bloc.content)) {

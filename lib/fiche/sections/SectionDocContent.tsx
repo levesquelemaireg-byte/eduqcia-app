@@ -19,7 +19,7 @@ export function SectionDocContent({ data, mode: _mode }: Props) {
       <SectionLabel icon="description">{FICHE_SECTION_TITLE_DOCUMENT}</SectionLabel>
       <div className={FICHE_SECTION_BODY_INSET}>
         <div className="rounded-xl border border-border bg-panel-alt p-4 sm:p-5">
-          <DocumentRenderer document={data.document} mode="sommaire" />
+          <DocumentRenderer document={data.document} />
         </div>
       </div>
     </section>

@@ -1,13 +1,10 @@
 import type { Bloc } from "@/lib/epreuve/pagination/types";
 import { htmlHasMeaningfulText, stripHtml } from "@/lib/tache/consigne-helpers";
-import type { RendererDocument, DocumentElement } from "@/lib/types/document-renderer";
 import {
-  PRINT_IMAGE_MAX_HEIGHT_PX,
-  PRINT_IMAGE_MAX_WIDTH_PX,
-} from "@/lib/impression/constantes-image";
-
-const MIN_IMAGE_HEIGHT_PX = 140;
-const DEFAULT_IMAGE_HEIGHT_PX = 270;
+  estimerHauteur as estimerHauteurCelluleDossier,
+  type PageDossier,
+} from "@/lib/impression/layout-dossier-documentaire";
+import { DOSSIER_GAP_VERTICAL_PX } from "@/lib/impression/constantes-dossier-documentaire";
 
 function clamp(n: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, n));
@@ -26,78 +23,26 @@ function longueurHtml(html: string): number {
   return stripHtml(html).length;
 }
 
-function estimerHauteurImage(
-  element: Extract<DocumentElement, { type: "iconographique" }>,
-): number {
-  const w = element.imagePixelWidth;
-  const h = element.imagePixelHeight;
-  if (!Number.isFinite(w) || !Number.isFinite(h) || !w || !h || w <= 0 || h <= 0) {
-    return DEFAULT_IMAGE_HEIGHT_PX;
+/**
+ * Hauteur réelle d'un bloc dossier-page : somme des hauteurs des rangées
+ * (max des cellules par rangée) + gaps verticaux. Cohérent avec ce que
+ * `placerDocuments` a calculé en amont.
+ */
+function estimerHauteurBlocDossierPage(content: unknown): number {
+  if (!estObjet(content)) return 0;
+  const page = content.page as PageDossier | undefined;
+  if (!page || page.rangees.length === 0) return 0;
+
+  let total = 0;
+  for (const rangee of page.rangees) {
+    if (rangee.cellules.length === 0) continue;
+    const hRangee = Math.max(
+      ...rangee.cellules.map((c) => estimerHauteurCelluleDossier(c.document, c.span)),
+    );
+    total += hRangee;
   }
-
-  const projectedByWidth = (h / w) * PRINT_IMAGE_MAX_WIDTH_PX;
-  const projected = Math.min(h, projectedByWidth, PRINT_IMAGE_MAX_HEIGHT_PX);
-  return clamp(Math.round(projected), MIN_IMAGE_HEIGHT_PX, PRINT_IMAGE_MAX_HEIGHT_PX);
-}
-
-function estimerHauteurSource(source: string): number {
-  const len = longueurHtml(source);
-  const lignes = lignesDepuisLongueur(len, 95);
-  return 12 + lignes * 15;
-}
-
-function estimerHauteurElementDocument(element: DocumentElement): number {
-  const metaCount = [element.auteur, element.repereTemporel, element.sousTitre].filter(
-    Boolean,
-  ).length;
-  const metaHeight = metaCount * 16;
-
-  if (element.type === "textuel") {
-    const lignes = lignesDepuisLongueur(longueurHtml(element.contenu), 95);
-    const body = lignes * 18;
-    return Math.max(96, 20 + metaHeight + body);
-  }
-
-  const image = estimerHauteurImage(element);
-  const legendeLen = (element.legende ?? "").trim().length;
-  const legendeLines = lignesDepuisLongueur(legendeLen, 88, 0);
-  const legendeHeight = legendeLines * 16;
-  return 18 + metaHeight + image + legendeHeight;
-}
-
-function extraireDocument(content: unknown): RendererDocument | null {
-  if (!estObjet(content)) return null;
-
-  const maybeNested = content.document;
-  if (estObjet(maybeNested) && Array.isArray(maybeNested.elements)) {
-    return maybeNested as unknown as RendererDocument;
-  }
-
-  if (Array.isArray(content.elements)) {
-    return content as unknown as RendererDocument;
-  }
-
-  return null;
-}
-
-function estimerHauteurBlocDocument(content: unknown): number {
-  const document = extraireDocument(content);
-  if (!document || document.elements.length === 0) {
-    return 280;
-  }
-
-  const overhead = document.structure === "simple" ? 92 : 100;
-
-  if (document.structure === "simple") {
-    const first = document.elements[0];
-    const contenu = estimerHauteurElementDocument(first);
-    const source = estimerHauteurSource(first.source);
-    return Math.ceil((overhead + contenu + source) * 1.1 + 12);
-  }
-
-  const contenuMax = Math.max(...document.elements.map(estimerHauteurElementDocument));
-  const sourceMax = Math.max(...document.elements.map((el) => estimerHauteurSource(el.source)));
-  return Math.ceil((overhead + contenuMax + sourceMax) * 1.1 + 16);
+  total += Math.max(0, page.rangees.length - 1) * DOSSIER_GAP_VERTICAL_PX;
+  return total;
 }
 
 function estimerHauteurEspaceProduction(content: unknown): number {
@@ -212,8 +157,8 @@ function estimerHauteurBlocQuadruplet(content: unknown): number {
  */
 export function mesurerBlocImpression(bloc: Bloc): number {
   switch (bloc.kind) {
-    case "document":
-      return estimerHauteurBlocDocument(bloc.content);
+    case "dossier-page":
+      return estimerHauteurBlocDossierPage(bloc.content);
     case "quadruplet":
       return estimerHauteurBlocQuadruplet(bloc.content);
     case "entete-section":

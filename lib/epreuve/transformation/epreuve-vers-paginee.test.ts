@@ -4,6 +4,7 @@ import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { TypeFeuillet, Page } from "@/lib/epreuve/pagination/types";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
+import type { ContenuDossierPage } from "@/lib/impression/builders/blocs-dossier-pages";
 import { epreuveVersImprimable, type Mesureur, type OptionsRendu } from "./epreuve-vers-paginee";
 
 /* -------------------------------------------------------------------------- */
@@ -171,14 +172,19 @@ describe("epreuveVersImprimable — mode sommatif-standard", () => {
   const epreuve = creerEpreuve([tache1, tache2]);
   const options: OptionsRendu = { mode: "sommatif-standard", estCorrige: false };
 
-  it("produit un dossier documentaire avec tous les documents numérotés", () => {
+  it("produit un dossier documentaire (1 bloc dossier-page par page de grille)", () => {
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
     const pagesDD = pagesDuFeuillet(resultat.pages, "dossier-documentaire");
     const blocs = pagesDD.flatMap((p) => p.blocs);
-    expect(blocs).toHaveLength(3);
-    expect(blocs[0].kind).toBe("document");
+    // 3 documents textuels courts → tiennent sur 1 page de grille bicolonnée
+    expect(blocs).toHaveLength(1);
+    expect(blocs[0].kind).toBe("dossier-page");
+    // La page contient bien les 3 documents
+    const contenu = blocs[0].content as ContenuDossierPage;
+    const cellules = contenu.page.rangees.flatMap((r) => r.cellules);
+    expect(cellules).toHaveLength(3);
   });
 
   it("masque les titres de documents en sommatif", () => {
@@ -186,8 +192,8 @@ describe("epreuveVersImprimable — mode sommatif-standard", () => {
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
     const blocs = pagesDuFeuillet(resultat.pages, "dossier-documentaire").flatMap((p) => p.blocs);
-    const contenu = blocs[0].content as { document: RendererDocument };
-    expect(contenu.document.titre).toBe("");
+    const contenu = blocs[0].content as ContenuDossierPage;
+    expect(contenu.titresVisibles).toBe(false);
   });
 
   it("masque le guidage dans les quadruplets en sommatif", () => {
@@ -294,12 +300,12 @@ describe("epreuveVersImprimable — pagination", () => {
     const taches = Array.from({ length: 5 }, (_, i) => creerTache({ id: `t${i}` }));
     const epreuve = creerEpreuve(taches);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
-    // Chaque bloc = 300px, max = 825px → 2 blocs par page, 5 blocs → 3 pages
+    // Chaque bloc = 300px, max = 904px → 3 blocs par page, 5 blocs → 2 pages
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(300));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
     const pagesQ = pagesDuFeuillet(resultat.pages, "questionnaire");
-    expect(pagesQ.length).toBe(3);
+    expect(pagesQ.length).toBe(2);
   });
 
   it("numérote les pages correctement (globalement)", () => {

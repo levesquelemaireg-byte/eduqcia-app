@@ -1,21 +1,19 @@
 /**
- * En-tete d'epreuve — repete sur chaque page du PDF.
- * Hauteur plafonnee a 80 px (D6, print-engine v2.1).
+ * En-tête d'épreuve — répété sur chaque page du PDF.
  *
- * Rendu austere : Arial, noir, pas de decoration.
- * Ne connait pas la pagination — recoit `numeroPage` / `totalPages` en props.
+ * Positionné dans la marge haute de 2 cm par `SectionPage` (position absolue) ;
+ * n'occupe pas d'espace dans la zone de contenu. Rendu austère : Arial, noir,
+ * pas de décoration. Ne connaît pas la pagination — la pagination de bas de
+ * page est rendue séparément par `SectionPage` dans la marge basse.
  */
 
 import type { EnTeteEpreuve } from "@/lib/epreuve/contrats/donnees";
-import { HEADER_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
 
 export type EnTeteImpressionProps = {
   enTete: EnTeteEpreuve;
-  numeroPage: number;
-  totalPages: number;
 };
 
-export function EnTeteImpression({ enTete, numeroPage, totalPages }: EnTeteImpressionProps) {
+export function EnTeteImpression({ enTete }: EnTeteImpressionProps) {
   const metaSegments: string[] = [];
   if (enTete.ecole) metaSegments.push(enTete.ecole);
   if (enTete.niveau) metaSegments.push(enTete.niveau);
@@ -25,43 +23,22 @@ export function EnTeteImpression({ enTete, numeroPage, totalPages }: EnTeteImpre
   return (
     <header
       style={{
-        maxHeight: `${HEADER_HEIGHT_PX}px`,
-        overflow: "hidden",
         boxSizing: "border-box",
         fontFamily: 'Arial, "Liberation Sans", Helvetica, sans-serif',
         color: "#000",
         borderBottom: "1.5pt solid #000",
         paddingBottom: "6px",
-        marginBottom: "10px",
       }}
     >
-      {/* Ligne 1 : titre + pagination */}
+      {/* Ligne 1 : titre */}
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "baseline",
+          fontSize: "13pt",
+          fontWeight: 700,
+          lineHeight: 1.25,
         }}
       >
-        <span
-          style={{
-            fontSize: "13pt",
-            fontWeight: 700,
-            lineHeight: 1.25,
-          }}
-        >
-          {enTete.titre}
-        </span>
-        <span
-          style={{
-            fontSize: "9pt",
-            whiteSpace: "nowrap",
-            flexShrink: 0,
-            marginLeft: "1em",
-          }}
-        >
-          Page {numeroPage} / {totalPages}
-        </span>
+        {enTete.titre}
       </div>
 
       {/* Ligne 2 : enseignant + meta optionnelle */}
@@ -84,7 +61,7 @@ export function EnTeteImpression({ enTete, numeroPage, totalPages }: EnTeteImpre
               marginLeft: "1em",
             }}
           >
-            {metaSegments.join(" \u2014 ")}
+            {metaSegments.join(" — ")}
           </span>
         )}
       </div>

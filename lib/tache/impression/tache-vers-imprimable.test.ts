@@ -82,15 +82,16 @@ describe("tacheVersImprimable", () => {
     const tache = creerTache({
       documents: [creerDoc("d1"), creerDoc("d2"), creerDoc("d3"), creerDoc("d4")],
     });
-    // 4 docs + 1 quadruplet = 5 blocs × 300px = 1500px → 2 pages (825px max)
+    // 4 docs courts → 1 bloc dossier-page (groupés sur 1 page de grille).
+    // Avec un quadruplet, 2 blocs × 600px = 1200px → 2 pages (904px max).
     const rendu = tacheVersImprimable(
       tache,
       { mode: "formatif", estCorrige: false },
-      mesureurFixe(300),
+      mesureurFixe(600),
     );
     expect(rendu.ok).toBe(true);
     if (!rendu.ok) return;
-    expect(rendu.pages.length).toBe(3);
+    expect(rendu.pages.length).toBe(2);
   });
 
   it("retourne une erreur de débordement si un bloc est trop grand", () => {
