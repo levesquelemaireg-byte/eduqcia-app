@@ -25,6 +25,12 @@ export function ModeApercuImprime({ document: doc, numero }: Props) {
   const showAuteur = doc.structure === "perspectives";
   const showRepereTemporel = doc.structure === "deux_temps";
   const hasNumero = numero != null;
+  // Pour les documents simples, on expose le type du seul élément afin que la
+  // règle `.documentCell[data-doc-type="iconographique"]` compacte le cadre à
+  // la largeur de l'image. Pour les structures composites (perspectives /
+  // deux_temps), le cadre reste pleine largeur — les sous-colonnes intra-cadre
+  // ont besoin de l'espace.
+  const firstElementType = isSingle ? doc.elements[0]?.type : undefined;
 
   return (
     <div className={styles.documentWrapper}>
@@ -39,7 +45,11 @@ export function ModeApercuImprime({ document: doc, numero }: Props) {
       </div>
 
       {/* Zone 2 : cadre bordé — contenu + auteur uniquement */}
-      <div className={styles.documentCell} data-doc-structure={doc.structure}>
+      <div
+        className={styles.documentCell}
+        data-doc-structure={doc.structure}
+        data-doc-type={firstElementType}
+      >
         {isSingle ? (
           <div>
             {doc.elements[0] ? (

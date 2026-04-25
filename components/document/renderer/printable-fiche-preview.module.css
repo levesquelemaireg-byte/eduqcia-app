@@ -126,6 +126,8 @@
   min-height: 0;
   break-inside: avoid;
   page-break-inside: avoid;
+  /* Contexte print : source bibliographique en noir pur (print-engine §4). */
+  --document-source-color: #000;
 }
 
 /* Zone 1 : ligne titre (badge + titre) — au-dessus du cadre, sans bordure. */
@@ -254,7 +256,10 @@
 .documentSource {
   margin: 0.35em 0 0;
   font-size: 9pt;
-  color: var(--color-steel);
+  /* Gris discret par défaut (sommaire à l'écran). Les wrappers print forcent
+     la couleur à noir pur via `--document-source-color: #000` (règle §4 du
+     print-engine — Arial noir pur exclusivement). */
+  color: var(--document-source-color, var(--color-steel));
 }
 
 /* Citation à la suite du libellé « Source : » (flex uniquement quand HTML citation). */
@@ -307,6 +312,8 @@
   display: inline-block;
   width: fit-content;
   max-width: 100%;
+  /* Empêche le parent flex column de l'étirer à 100% (align-items: stretch par défaut). */
+  align-self: flex-start;
   vertical-align: top;
   border: 1px solid #000;
   padding: 0;
