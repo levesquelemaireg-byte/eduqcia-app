@@ -325,7 +325,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ### Sous-titre
 
-- Complétez les sept (7) étapes pour créer une tâche complète, alignée sur les prescriptions ministérielles. (`PAGE_CREER_UNE_TACHE_SUBTITLE`)
+- Complétez les étapes pour créer une tâche complète. L'aperçu se met à jour à chaque modification. (`PAGE_CREER_UNE_TACHE_SUBTITLE`)
 
 ### Bannières — reprise brouillon
 

@@ -48,12 +48,12 @@ export const WIZARD_DRAFT_INDICATOR_SAVED = (seconds: number): string => {
 
 /** Page `/questions/new` — sous-titre sous le h1 (`docs/UI-COPY.md`) */
 export const PAGE_CREER_UNE_TACHE_SUBTITLE =
-  "Complétez les sept (7) étapes pour créer une tâche complète, alignée sur les prescriptions ministérielles.";
+  "Complétez les étapes pour créer une tâche complète. L'aperçu se met à jour à chaque modification.";
 
 /** Page `/questions/[id]/edit` (`docs/UI-COPY.md` — Édition guidée) */
 export const PAGE_MODIFIER_UNE_TACHE_TITLE = "Modifier une tâche";
 export const PAGE_MODIFIER_UNE_TACHE_SUBTITLE =
-  "Reprenez les sept (7) étapes pour mettre à jour votre tâche, alignée sur les prescriptions ministérielles.";
+  "Reprenez les étapes pour mettre à jour votre tâche. L'aperçu se met à jour à chaque modification.";
 
 /** Page « Mes tâches » — modale suppression (`docs/UI-COPY.md`) */
 export const MY_QUESTIONS_DELETE_MODAL_TITLE = "Supprimer cette tâche ?";

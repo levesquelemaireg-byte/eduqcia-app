@@ -1,6 +1,4 @@
 import type { WizardStepDefinition } from "@/components/wizard/WizardStepper";
-import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
-import { LEGAL_NOTICE_MATERIAL_ICON } from "@/lib/tache/icon-justifications";
 import {
   DOCUMENT_WIZARD_STEP_CLASSIFICATION_DESC,
   DOCUMENT_WIZARD_STEP_CLASSIFICATION_LABEL,
@@ -19,8 +17,6 @@ export const DOCUMENT_WIZARD_STEP_METAS = [
     stepperLine: "Structure",
     label: DOCUMENT_WIZARD_STEP_STRUCTURE_LABEL,
     description: DOCUMENT_WIZARD_STEP_STRUCTURE_DESC,
-    // `description` / `groups` : variantes UI hors mapping métier ; `history` = date mise à jour.
-    icons: ["description", "groups", ICONES_METIER.dateMiseAJour] as const,
   },
   {
     id: "document",
@@ -28,8 +24,6 @@ export const DOCUMENT_WIZARD_STEP_METAS = [
     stepperLine: "Document",
     label: DOCUMENT_WIZARD_STEP_DOCUMENT_LABEL,
     description: DOCUMENT_WIZARD_STEP_DOCUMENT_DESC,
-    // `image` = variante iconographique hors mapping métier.
-    icons: [ICONES_METIER.creationDocument, ICONES_METIER.documents, "image"] as const,
   },
   {
     id: "classification",
@@ -37,12 +31,6 @@ export const DOCUMENT_WIZARD_STEP_METAS = [
     stepperLine: "Classification",
     label: DOCUMENT_WIZARD_STEP_CLASSIFICATION_LABEL,
     description: DOCUMENT_WIZARD_STEP_CLASSIFICATION_DESC,
-    icons: [
-      ICONES_METIER.niveau,
-      ICONES_METIER.discipline,
-      ICONES_METIER.connaissances,
-      ICONES_METIER.aspectsSociete,
-    ] as const,
   },
   {
     id: "confirmation",
@@ -50,7 +38,6 @@ export const DOCUMENT_WIZARD_STEP_METAS = [
     stepperLine: "Confirmation",
     label: DOCUMENT_WIZARD_STEP_CONFIRMATION_LABEL,
     description: DOCUMENT_WIZARD_STEP_CONFIRMATION_DESC,
-    icons: [LEGAL_NOTICE_MATERIAL_ICON] as const,
   },
 ] as const;
 
@@ -63,5 +50,4 @@ export const DOCUMENT_WIZARD_STEPS_FOR_STEPPER: WizardStepDefinition[] =
     id: s.id,
     number: s.number,
     stepperLine: s.stepperLine,
-    icons: s.icons as unknown as readonly string[],
   }));

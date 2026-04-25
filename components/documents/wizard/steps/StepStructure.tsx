@@ -7,6 +7,7 @@ import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-docu
 import type { DocumentStructure } from "@/lib/types/document-renderer";
 import { createElementsForStructure } from "@/lib/documents/document-element-defaults";
 import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
+import { iconForDocumentStructure } from "@/lib/ui/icons/document-structure-icon";
 import { cn } from "@/lib/utils/cn";
 import {
   DOC_STRUCTURE_SIMPLE_TITLE,
@@ -118,11 +119,11 @@ export function StepStructure() {
                     : "border border-border hover:border-accent/40",
                 )}
               >
-                {/* En-tête : radio + titre + bouton (i) */}
+                {/* En-tête : radio + icône structure + titre + bouton (i) */}
                 <div className="flex items-center gap-3">
                   <span
                     className={cn(
-                      "flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-150",
+                      "flex size-4.5 shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-150",
                       checked ? "border-accent bg-accent" : "border-border",
                     )}
                   >
@@ -137,6 +138,12 @@ export function StepStructure() {
                         />
                       </svg>
                     ) : null}
+                  </span>
+                  <span
+                    className="material-symbols-outlined shrink-0 text-[18px] text-muted"
+                    aria-hidden="true"
+                  >
+                    {iconForDocumentStructure(opt.value, nbPerspectives ?? 2)}
                   </span>
                   <span className="flex-1 text-sm font-semibold text-deep">{opt.title}</span>
                   <button
@@ -155,13 +162,11 @@ export function StepStructure() {
                 </div>
 
                 {/* Description courte — toujours visible */}
-                <p className="mt-1 pl-[30px] text-xs leading-relaxed text-muted">
-                  {opt.description}
-                </p>
+                <p className="mt-1 pl-13.5 text-xs leading-relaxed text-muted">{opt.description}</p>
 
                 {/* Progressive disclosure — OI + comportements seulement si sélectionné */}
                 {checked && opt.oi ? (
-                  <div className="mt-3 ml-[30px] rounded-none border-l-2 border-accent/30 bg-accent/5 px-3 py-2.5">
+                  <div className="mt-3 ml-7.5 rounded-none border-l-2 border-accent/30 bg-accent/5 px-3 py-2.5">
                     <div className="flex items-center gap-1.5">
                       <span
                         className="material-symbols-outlined text-[16px] text-accent"
@@ -187,7 +192,7 @@ export function StepStructure() {
 
               {/* Sous-choix nombre de perspectives — progressive disclosure */}
               {checked && opt.value === "perspectives" ? (
-                <div className="ml-[30px] mt-2 flex flex-col gap-2">
+                <div className="ml-7.5 mt-2 flex flex-col gap-2">
                   <PerspectiveCountRadio
                     count={2}
                     selected={nbPerspectives === 2}
@@ -260,7 +265,7 @@ function PerspectiveCountRadio({
     >
       <span
         className={cn(
-          "mt-px flex size-[18px] shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-150",
+          "mt-px flex size-4.5 shrink-0 items-center justify-center rounded-full border-[1.5px] transition-colors duration-150",
           selected ? "border-accent bg-accent" : "border-border",
         )}
       >

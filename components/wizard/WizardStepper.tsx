@@ -1,13 +1,11 @@
 "use client";
 
-import { materialIconTooltip } from "@/lib/tache/icon-justifications";
 import { cn } from "@/lib/utils/cn";
 
 export type WizardStepDefinition = {
   id: string;
   number: number;
   stepperLine: string;
-  icons: readonly string[];
 };
 
 type WizardStepperProps = {
@@ -59,12 +57,6 @@ export function WizardStepper({
                   ? "box-border flex h-10 w-10 shrink-0 cursor-default items-center justify-center rounded-full bg-accent text-lg font-bold text-white ring-4 ring-accent/20 ring-offset-2 ring-offset-panel"
                   : "box-border flex h-10 w-10 shrink-0 cursor-not-allowed items-center justify-center rounded-full border-2 border-border bg-surface font-medium text-muted";
 
-              const iconClass = completed
-                ? "material-symbols-outlined text-success"
-                : active
-                  ? "material-symbols-outlined text-accent"
-                  : "material-symbols-outlined text-muted";
-
               const leftLineDone = index > 0 && index - 1 <= ceiling && index <= ceiling;
               const rightLineDone = index < lastIndex && index <= ceiling && index + 1 <= ceiling;
 
@@ -110,21 +102,6 @@ export function WizardStepper({
                       )}
                       aria-hidden="true"
                     />
-                  </div>
-                  <div
-                    className="mx-auto mt-2 flex max-w-28 flex-wrap justify-center gap-1 px-0.5"
-                    aria-hidden="true"
-                  >
-                    {step.icons.map((icon) => (
-                      <span
-                        key={icon}
-                        className={iconClass}
-                        style={{ fontSize: 18 }}
-                        title={materialIconTooltip(icon)}
-                      >
-                        {icon}
-                      </span>
-                    ))}
                   </div>
                 </li>
               );

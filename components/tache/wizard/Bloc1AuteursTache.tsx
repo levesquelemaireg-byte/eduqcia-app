@@ -6,12 +6,14 @@
  */
 import { useCallback, useId, useMemo } from "react";
 import { CollaborateurSearchField } from "@/components/tache/wizard/CollaborateurSearchField";
-import { BLOC1_STEPPER_ICONS } from "@/components/tache/wizard/bloc1-stepper-icons";
 import { useTacheForm } from "@/components/tache/wizard/FormState";
 import { RadioCardGroup } from "@/components/ui/RadioCardGroup";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import type { CollaborateurProfileSearchRow } from "@/lib/queries/collaborateur-profile-search";
 import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
+
+/** Glyphe Material « groups » — variante UI du concept auteur en mode équipe (hors mapping métier). */
+const GROUPS_ICON = "groups";
 
 export function Bloc1AuteursTache() {
   const { state, dispatch } = useTacheForm();
@@ -54,7 +56,7 @@ export function Bloc1AuteursTache() {
           {
             value: "equipe",
             label: "En équipe",
-            icon: BLOC1_STEPPER_ICONS[1],
+            icon: GROUPS_ICON,
             description:
               "Vous avez conçu cette tâche avec un ou plusieurs collègues. Ajoutez leurs noms ci-dessous pour les inclure comme collaborateurs.",
           },
@@ -70,7 +72,7 @@ export function Bloc1AuteursTache() {
               className="material-symbols-outlined shrink-0 text-[1.35rem] text-accent"
               aria-hidden="true"
             >
-              {BLOC1_STEPPER_ICONS[1]}
+              {GROUPS_ICON}
             </span>
             <p className="text-sm font-semibold text-deep">
               Collaborateurs <RequiredMark />

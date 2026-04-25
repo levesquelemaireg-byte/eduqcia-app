@@ -13,11 +13,10 @@ const TACHE_STEPS_FOR_STEPPER: readonly WizardStepDefinition[] = TACHE_FORM_STEP
   id: s.id,
   number: s.number,
   stepperLine: s.stepperLine,
-  icons: s.icons,
 }));
 
 /**
- * Barre d’étapes du wizard TAÉ — délègue à `WizardStepper` (même rendu que les autres wizards).
+ * Barre d’étapes du wizard tâche — délègue à `WizardStepper` (même rendu que les autres wizards).
  */
 export function Stepper({ className }: StepperProps) {
   const { state, dispatch } = useTacheForm();
