@@ -88,7 +88,7 @@ export interface DossierDocumentaireLayout {
 export interface OptionsLayout {
   /**
    * Hauteur utile de la zone dossier documentaire (px). À calculer par l'appelant :
-   * - Hors épreuve (tâche seule / doc seul) : `HAUTEUR_UTILE_HORS_EPREUVE_PX` (905).
+   * - Hors épreuve (tâche seule / doc seul) : `HAUTEUR_UTILE_HORS_EPREUVE_PX` (904).
    * - Épreuve avec en-tête : `MAX_CONTENT_HEIGHT_PX` (825).
    */
   hauteurUtilePx: number;
