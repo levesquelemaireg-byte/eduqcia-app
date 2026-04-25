@@ -103,10 +103,13 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
             )}
           </div>
 
-          {/* Footer — navigation prev/next à gauche, actions à droite. */}
-          <footer className="flex shrink-0 items-center justify-between gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
+          {/* Footer — grid 3 colonnes : nav centrée absolument, actions à droite.
+              La col gauche vide équilibre la col droite (actions) pour que la
+              nav soit centrée par rapport au footer entier. */}
+          <footer className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
+            <div aria-hidden="true" />
             <FooterNavigation />
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-end gap-2">
               <Button type="button" variant="ghost" onClick={onClose}>
                 {CARROUSEL_APERCU_COPY.boutonFermer}
               </Button>
@@ -142,7 +145,11 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
 /*  Sous-composants internes                                                  */
 /* -------------------------------------------------------------------------- */
 
-/** Navigation prev / next + indicateur, lue depuis le Context du carrousel. */
+/**
+ * Navigation prev / next + indicateur, lue depuis le Context du carrousel.
+ * Boutons icône bordés (chevron_left / chevron_right), indicateur central
+ * en font-semibold pour le contraste avec les boutons ghost à côté.
+ */
 function FooterNavigation() {
   const ctx = useCarrouselNav();
   const controls = ctx?.controls;
@@ -152,26 +159,26 @@ function FooterNavigation() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2">
       <button
         type="button"
         onClick={controls.scrollPrev}
         disabled={!controls.peutPrecedent}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-panel text-deep transition-colors hover:border-border-secondary hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="Page précédente"
       >
         <span className="material-symbols-outlined text-[1.25em] leading-none" aria-hidden="true">
           chevron_left
         </span>
       </button>
-      <span className="text-sm font-medium text-muted">
+      <span className="min-w-[8ch] px-2 text-center text-sm font-semibold text-deep tabular-nums">
         {CARROUSEL_APERCU_COPY.indicateurPage(controls.indexPageGlobal, controls.totalPagesGlobal)}
       </span>
       <button
         type="button"
         onClick={controls.scrollNext}
         disabled={!controls.peutSuivant}
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-panel text-deep transition-colors hover:border-border-secondary hover:bg-panel-alt disabled:cursor-not-allowed disabled:opacity-40"
         aria-label="Page suivante"
       >
         <span className="material-symbols-outlined text-[1.25em] leading-none" aria-hidden="true">
