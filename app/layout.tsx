@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ÉduQc.IA",
-  description: "Tâches d’apprentissage et d’évaluation — univers social",
+  description: "Tâches — univers social",
 };
 
 export default function RootLayout({

@@ -38,16 +38,17 @@ Ne jamais modifier un fichier `docs/` de sa propre initiative. Exception : une d
 
 ### Terminologie — acronymes interdits en UI
 
-| Interdit                      | Forme officielle                      |
-| ----------------------------- | ------------------------------------- |
-| OI                            | Opération intellectuelle              |
-| TAÉ                           | Tâche d'apprentissage et d'évaluation |
-| CD                            | Compétence disciplinaire              |
-| HEC / HQC                     | Formes longues complètes              |
-| Preview / Aperçu (formulaire) | Sommaire                              |
-| Sous-opération                | Comportement attendu                  |
-| Bibliothèque / Répertoire     | Banque collaborative                  |
-| 5 blocs                       | 7 étapes                              |
+| Interdit                              | Forme officielle         |
+| ------------------------------------- | ------------------------ |
+| OI                                    | Opération intellectuelle |
+| TAÉ                                   | Tâche                    |
+| Tâche d'apprentissage et d'évaluation | Tâche                    |
+| CD                                    | Compétence disciplinaire |
+| HEC / HQC                             | Formes longues complètes |
+| Preview / Aperçu (formulaire)         | Sommaire                 |
+| Sous-opération                        | Comportement attendu     |
+| Bibliothèque / Répertoire             | Banque collaborative     |
+| 5 blocs                               | 7 étapes                 |
 
 ### Terminologie — code et SQL : `tae` → `tache`
 
@@ -1178,7 +1179,7 @@ Trois axes structurent chaque nouveau fichier : **entité métier**, **fonction 
 
 ### Entités métier reconnues
 
-- `tache` — tâches d'apprentissage et d'évaluation
+- `tache` — tâches
 - `document` — documents historiques de la banque
 - `epreuve` — épreuves (regroupements de tâches)
 - `banque` — vues de navigation et filtrage de la banque collaborative

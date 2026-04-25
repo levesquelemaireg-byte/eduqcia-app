@@ -209,7 +209,7 @@ Structure d'un document instance :
 
 ### 5.4 Compteur « Utilisé dans X tâches »
 
-**Décision PO (mars 2026) :** le nombre affiché correspond au nombre de **tâches d’apprentissage et d’évaluation distinctes** qui référencent le document via `tache_documents`, en comptant **une seule fois par tâche** (`COUNT(DISTINCT tae_id)`), et **uniquement pour les TAÉ publiées** (`tache.is_published = true`). Les brouillons de TAÉ ne sont pas inclus.
+**Décision PO (mars 2026) :** le nombre affiché correspond au nombre de **tâches distinctes** qui référencent le document via `tache_documents`, en comptant **une seule fois par tâche** (`COUNT(DISTINCT tae_id)`), et **uniquement pour les tâches publiées** (`tache.is_published = true`). Les brouillons ne sont pas inclus.
 
 ### 5.5 Visibilité banque — pas de brouillon au niveau document
 

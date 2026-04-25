@@ -26,7 +26,7 @@ export const TOAST_PUBLICATION_LOOKUP_DISCIPLINE =
  * Les images Storage peuvent exister sans que la transaction « publier » réussisse.
  */
 export const TOAST_PUBLICATION_LOOKUP_CD =
-  "Compétence disciplinaire introuvable en base. Importez les référentiels : npm run seed:ref (base vide) ou npm run seed:ref:fill (tâches d'apprentissage et d'évaluation déjà en base), avec la service role dans .env.local.";
+  "Compétence disciplinaire introuvable en base. Importez les référentiels : npm run seed:ref (base vide) ou npm run seed:ref:fill (tâches déjà en base), avec la service role dans .env.local.";
 
 export const TOAST_PUBLICATION_LOOKUP_CONNAISSANCE =
   "Connaissances relatives introuvables en base. Importez les référentiels : npm run seed:ref ou npm run seed:ref:fill (voir .env.local).";

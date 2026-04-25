@@ -155,7 +155,7 @@ Route `app/(app)/error.tsx` : affiché lorsqu'une erreur non gérée survient da
 ### Titre / Sous-titre
 
 - Mes tâches
-- Tâches d'apprentissage et d'évaluation que vous avez créées (brouillons et publiées).
+- Tâches que vous avez créées (brouillons et publiées).
 
 ### CTA header
 
@@ -224,7 +224,7 @@ Route `app/(app)/documents/page.tsx`. Constantes `MY_DOCUMENTS_DELETE_*` dans `l
 
 ### Suppression impossible (document lié à une tâche)
 
-- Impossible de supprimer ce document : il est utilisé dans une ou plusieurs tâches d'apprentissage et d'évaluation. Retirez-le des tâches concernées, puis réessayez.
+- Impossible de supprimer ce document : il est utilisé dans une ou plusieurs tâches. Retirez-le des tâches concernées, puis réessayez.
 
 ---
 
@@ -790,13 +790,13 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 
 ### Sous-titres et corps (onglets)
 
-- Parcourez les tâches d'apprentissage et d'évaluation publiées par d'autres enseignants.
+- Parcourez les tâches publiées par d'autres enseignants.
 - Onglet **Documents historiques** : liste des documents publiés, filtres (**Niveau scolaire** = `PAGE_BANK_DOCUMENTS_FILTER_NIVEAU`), compteur d’usages, lien fiche, **Charger plus**, CTA création — copy dans `lib/ui/ui-copy.ts` (`PAGE_BANK_DOCUMENTS_*`, `BANK_DOCUMENT_*`, `BANK_TASK_LOAD_MORE`). Exemples :
   - « Aucun document ne correspond aux filtres. Ajustez la recherche ou créez un document. »
   - « Pour créer un document historique structuré, utilisez l’entrée dédiée. » + lien **Créer un document**
   - « Utilisé dans : X tâche(s) » (formulations selon `copyDocumentPublishedTacheUsageCount`)
 - Onglet **Tâches** — filtres et tri : constantes `BANK_TASK_FILTER_*`, `BANK_TASK_SORT_*`, `BANK_TASK_LOAD_MORE` ; sous-titre `PAGE_BANK_TASKS_SUBTITLE`. Libellés alignés **étape 2** du wizard : **Niveau scolaire**, **Discipline**, **Opération intellectuelle**, **Comportement attendu** (pas d’acronyme « OI » — [DECISIONS.md](./DECISIONS.md#terminologie-ui--pas-dacronymes-interdits)). **Aspects de société** : `DOCUMENT_MODULE_ASPECTS_LABEL` (fieldset filtres). **Compétence disciplinaire** : `BANK_TASK_FILTER_CD` (libellé champ) + `BANK_TASK_FILTER_CD_HINT` (filtre sur le numéro technique du critère Miller en base, paramètre URL `cd` = `cd.id` ; jamais l’acronyme « CD » à l’écran). **Connaissances relatives** : `BANK_TASK_FILTER_CONNAISSANCES`. **Consigne** : `BANK_TASK_FILTER_SEARCH` (recherche sur texte sans mise en forme, colonne `consigne_search_plain`). Pastille liste : `BANK_TASK_LIST_BADGE_PUBLISHED` (**Publié**).
-- Onglet **Épreuves** : sous-titre `PAGE_BANK_EVALUATIONS_SUBTITLE` ; CTA « Pour composer une épreuve… » + **Créer une épreuve** (`PAGE_BANK_EVALUATIONS_CTA_*`) ; recherche `BANK_EVAL_SEARCH_LABEL` ; vide `PAGE_BANK_EVALUATIONS_EMPTY` ; compteur `copyBankEvaluationTaskCount` (forme longue **tâche d’apprentissage et d’évaluation**, pas l’abréviation TAÉ) ; **Charger plus** = `BANK_TASK_LOAD_MORE` ; épreuve d’un autre auteur : `BANK_EVAL_NO_EDIT_OTHER` (pas de lien **Modifier** — aligné sur `getEvaluationEditBundle`).
+- Onglet **Épreuves** : sous-titre `PAGE_BANK_EVALUATIONS_SUBTITLE` ; CTA « Pour composer une épreuve… » + **Créer une épreuve** (`PAGE_BANK_EVALUATIONS_CTA_*`) ; recherche `BANK_EVAL_SEARCH_LABEL` ; vide `PAGE_BANK_EVALUATIONS_EMPTY` ; compteur `copyBankEvaluationTaskCount` (forme courte **tâche** / **tâches** — la forme longue et l’acronyme TAÉ sont interdits en UI) ; **Charger plus** = `BANK_TASK_LOAD_MORE` ; épreuve d’un autre auteur : `BANK_EVAL_NO_EDIT_OTHER` (pas de lien **Modifier** — aligné sur `getEvaluationEditBundle`).
 
 ### Liste (tâches)
 
@@ -804,7 +804,7 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 - Publié le
 - Par
 - Filtrer / Réinitialiser / Charger plus (liste paginée)
-- Ajouter à une épreuve (tâche d’apprentissage et d’évaluation **publiée** — modale **Choisir une épreuve brouillon** : **Annuler**, **Continuer** ; vide : « Aucune épreuve brouillon. Créez d’abord une épreuve depuis Mes épreuves. »)
+- Ajouter à une épreuve (tâche **publiée** — modale **Choisir une épreuve brouillon** : **Annuler**, **Continuer** ; vide : « Aucune épreuve brouillon. Créez d’abord une épreuve depuis Mes épreuves. »)
 
 ---
 

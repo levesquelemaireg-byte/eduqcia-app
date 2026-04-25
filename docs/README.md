@@ -1,6 +1,6 @@
 # Documentation ÉduQc.IA
 
-ÉduQc.IA est une application Next.js (App Router) pour la création et la diffusion de **tâches d’apprentissage et d’évaluation** alignées sur les programmes québécois (univers social). La documentation ci-dessous est la **seule carte** : chaque sujet a **un** fichier source (plus **[RLS-CHECKLIST.md](./RLS-CHECKLIST.md)** pour l’exécution manuelle F3 / A3).
+ÉduQc.IA est une application Next.js (App Router) pour la création et la diffusion de **tâches** alignées sur les programmes québécois (univers social). La documentation ci-dessous est la **seule carte** : chaque sujet a **un** fichier source (plus **[RLS-CHECKLIST.md](./RLS-CHECKLIST.md)** pour l’exécution manuelle F3 / A3).
 
 ## Fichiers et rôle
 

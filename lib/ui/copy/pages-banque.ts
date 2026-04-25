@@ -11,7 +11,7 @@ export const LISTE_DOCUMENTS_VIDE = "Aucun document pour le moment.";
 
 export const PAGE_LISTE_MES_TACHES_TITLE = "Mes tâches";
 export const PAGE_LISTE_MES_TACHES_SUBTITLE =
-  "Tâches d'apprentissage et d'évaluation que vous avez créées (brouillons et publiées).";
+  "Tâches que vous avez créées (brouillons et publiées).";
 export const CTA_CREER_UNE_TACHE = "Créer une tâche";
 export const LISTE_TACHES_VIDE_CATEGORIE = "Aucune tâche dans cette catégorie.";
 
@@ -95,7 +95,7 @@ export const MY_DOCUMENTS_DELETE_MODAL_BODY =
 export const MY_DOCUMENTS_DELETE_MODAL_CANCEL = "Annuler";
 export const MY_DOCUMENTS_DELETE_MODAL_CONFIRM = "Supprimer";
 export const MY_DOCUMENTS_DELETE_BLOCKED_IN_TAE =
-  "Impossible de supprimer ce document : il est utilisé dans une ou plusieurs tâches d'apprentissage et d'évaluation. Retirez-le des tâches concernées, puis réessayez.";
+  "Impossible de supprimer ce document : il est utilisé dans une ou plusieurs tâches. Retirez-le des tâches concernées, puis réessayez.";
 export const TOAST_MES_DOCUMENTS_DELETED = "Le document a été supprimé.";
 export const TOAST_MES_DOCUMENTS_DELETE_FAILED = "Impossible de supprimer le document. Réessayez.";
 
@@ -113,8 +113,7 @@ export const PAGE_BANK_TITLE = "Banque collaborative";
 export const PAGE_BANK_TAB_TASKS = "Tâches";
 export const PAGE_BANK_TAB_DOCUMENTS = "Documents historiques";
 export const PAGE_BANK_TAB_EVALUATIONS = "Épreuves";
-export const PAGE_BANK_TASKS_SUBTITLE =
-  "Parcourez les tâches d'apprentissage et d'évaluation publiées par d'autres enseignants.";
+export const PAGE_BANK_TASKS_SUBTITLE = "Parcourez les tâches publiées par d'autres enseignants.";
 export const PAGE_BANK_EVALUATIONS_SUBTITLE =
   "Parcourez les épreuves publiées par d'autres enseignants.";
 export const PAGE_BANK_EVALUATIONS_CTA_INTRO =
@@ -194,13 +193,13 @@ export const BANK_EVAL_SEARCH_LABEL = "Recherche par titre";
 /** Banque — épreuve publiée par un autre enseignant : pas d'édition depuis cet écran. */
 export const BANK_EVAL_NO_EDIT_OTHER = "Réservé à l'auteur";
 
-/** Banque — onglet Épreuves ; compteur `evaluation_tache` (forme longue, DECISIONS lexique). */
+/** Banque — onglet Épreuves ; compteur `evaluation_tache`. */
 export function copyBankEvaluationTaskCount(count: number): string {
   if (count === 0) {
-    return "Aucune tâche d'apprentissage et d'évaluation dans cette épreuve";
+    return "Aucune tâche dans cette épreuve";
   }
-  if (count === 1) return "1 tâche d'apprentissage et d'évaluation";
-  return `${count} tâches d'apprentissage et d'évaluation`;
+  if (count === 1) return "1 tâche";
+  return `${count} tâches`;
 }
 
 export const BANK_TASK_LINK_VOIR = "Voir";

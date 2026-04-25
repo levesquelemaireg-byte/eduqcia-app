@@ -11,7 +11,7 @@
 
 Le MVP v1 d'ÉduQc.IA est une plateforme web qui permet à un enseignant d'histoire du secondaire québécois de :
 
-1. Créer, publier et organiser ses tâches d'apprentissage et d'évaluation (TAÉ)
+1. Créer, publier et organiser ses tâches
 2. Créer et gérer une banque personnelle de documents historiques
 3. Assembler des tâches en épreuves complètes (jusqu'à 23 tâches)
 4. Exporter ses épreuves en PDF imprimables avec une qualité professionnelle
@@ -64,7 +64,7 @@ L'enseignant doit pouvoir créer trois types d'entités, indépendantes mais int
 - **C4** Modifier un document publié
 - **C5** Supprimer un document qu'il a créé
 
-**Tâches d'apprentissage et d'évaluation (TAÉ)**
+**Tâches**
 
 - **C6** Créer une tâche via le wizard tâche en 7 étapes
 - **C7** Référencer dans une tâche des documents existants de la banque

@@ -207,7 +207,7 @@
 - **Dépendances :** C1
 - **Effort restant :** 2–3 h
 
-### Tâches d'apprentissage et d'évaluation
+### Tâches
 
 #### C6 — Wizard tâche 7 étapes ✅ Fait
 

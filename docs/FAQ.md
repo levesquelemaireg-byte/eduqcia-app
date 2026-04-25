@@ -29,7 +29,7 @@ Une tâche comprend généralement :
 
 Les tâches peuvent être utilisées seules ou regroupées dans une épreuve.
 
-> **Note produit :** dans l'application, la forme longue canonique est **tâche d'apprentissage et d'évaluation (TAÉ)**. L'UI utilise principalement "tâche" pour l'économie d'espace ; la forme longue est privilégiée dans les contextes éditoriaux où la précision pédagogique importe.
+> **Note produit :** dans l'application, la forme officielle est **Tâche** (l'ancienne forme longue « tâche d'apprentissage et d'évaluation » et l'acronyme TAÉ ont été retirés de l'UI le 25 avril 2026 — voir [DECISIONS.md](./DECISIONS.md)).
 
 ---
 
@@ -329,7 +329,7 @@ En didactique, le guidage complémentaire — parfois appelé étayage — dési
 
 ### 13. Qu'est-ce que la copie de l'élève ?
 
-La copie de l'élève désigne le support physique fourni par l'enseignant, destiné à recevoir la production écrite, graphique ou symbolique de l'élève dans le cadre d'une tâche d'apprentissage et d'évaluation.
+La copie de l'élève désigne le support physique fourni par l'enseignant, destiné à recevoir la production écrite, graphique ou symbolique de l'élève dans le cadre d'une tâche.
 
 Dans ÉduQc.IA, la copie de l'élève est produite sous forme de **PDF pixel-perfect** (format 8,5 × 11 pouces) que l'enseignant télécharge depuis la plateforme et imprime ensuite depuis son poste.
 
