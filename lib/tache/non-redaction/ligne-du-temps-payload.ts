@@ -155,6 +155,54 @@ export function ligneDuTempsPartialPreviewBoundaries(p: LigneDuTempsPayload): nu
   return nums.length >= 2 ? nums : null;
 }
 
+/**
+ * Erreur par borne, indexée sur `boundaries[0..segmentCount]` :
+ * - `"missing"` : la borne est vide alors qu’une borne ultérieure est remplie (ou la borne 0 vide alors qu’une suivante l’est)
+ * - `"not-greater"` : la borne est remplie mais ≤ à la dernière borne valide précédente (incohérence)
+ * - `null` : pas d’erreur visible (encore à remplir, ou OK)
+ *
+ * Aucune erreur signalée tant que rien n’est saisi : une frise vide n’est pas une erreur, juste incomplète.
+ */
+export type LigneDuTempsBoundaryError = "missing" | "not-greater";
+
+export function ligneDuTempsBoundaryErrors(
+  p: LigneDuTempsPayload,
+): readonly (LigneDuTempsBoundaryError | null)[] {
+  const need = p.segmentCount + 1;
+  const result: (LigneDuTempsBoundaryError | null)[] = new Array(need).fill(null);
+
+  // Index de la dernière borne renseignée (numérique finie)
+  let lastFilledIndex = -1;
+  for (let i = need - 1; i >= 0; i--) {
+    const x = p.boundaries[i];
+    if (x !== null && x !== undefined && Number.isFinite(x)) {
+      lastFilledIndex = i;
+      break;
+    }
+  }
+  if (lastFilledIndex < 0) return result; // tout vide → aucune erreur
+
+  // Pour chaque borne 0..lastFilledIndex : vide → "missing", remplie ≤ précédente → "not-greater"
+  let prevValid: number | null = null;
+  for (let i = 0; i <= lastFilledIndex; i++) {
+    const x = p.boundaries[i];
+    if (x === null || x === undefined || !Number.isFinite(x)) {
+      result[i] = "missing";
+      continue;
+    }
+    if (prevValid !== null && x <= prevValid) {
+      result[i] = "not-greater";
+    }
+    prevValid = x;
+  }
+  return result;
+}
+
+/** `true` dès qu'au moins une borne est en erreur (`missing` ou `not-greater`). */
+export function ligneDuTempsHasBoundaryErrors(p: LigneDuTempsPayload): boolean {
+  return ligneDuTempsBoundaryErrors(p).some((e) => e !== null);
+}
+
 export function isLigneDuTempsCorrectLetterValid(p: LigneDuTempsPayload): boolean {
   const letters = ligneTempsLettersForSegmentCount(p.segmentCount);
   return letters.includes(p.correctLetter);

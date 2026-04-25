@@ -17,12 +17,19 @@ import {
   isWizardPublishReady,
 } from "@/lib/tache/wizard-publish-guards";
 import { isStepReadyForNext, TOAST_NEXT_COMPLETER } from "@/lib/tache/wizard-step-next-gate";
+import {
+  ligneDuTempsHasBoundaryErrors,
+  normalizeLigneDuTempsPayload,
+} from "@/lib/tache/non-redaction/ligne-du-temps-payload";
+import { isActiveLigneDuTempsVariant } from "@/lib/tache/non-redaction/wizard-variant";
+import { nonRedactionLignePayload } from "@/lib/tache/wizard-state-nr";
 import { HoverTip } from "@/components/ui/HoverTip";
 import type { PublishTacheFailureCode } from "@/lib/tache/publish-tache";
 import { detectMajorChangeFromFormState } from "@/lib/tache/publish-tache-version";
 import { TACHE_DRAFT_STORAGE_KEY } from "@/lib/tache/tache-draft-storage-key";
 import { WarningModal } from "@/components/ui/WarningModal";
 import {
+  NR_LIGNE_TEMPS_PUBLISH_DISABLED,
   PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE,
   TOAST_DRAFT_SAVE_FAILED,
   TOAST_PUBLICATION_DOCUMENT_IMAGE,
@@ -109,6 +116,23 @@ export function StepperNavFooter() {
 
   const canPublish = isWizardPublishReady(state);
   const publishTitleImageOnly = isPublishBlockedOnlyByIconographicUrls(state);
+
+  /**
+   * Tooltip Publier — frise du temps invalide (au moins une borne en erreur).
+   * Le bouton est déjà désactivé via `isWizardPublishReady` ; on n'ajoute ici que la raison visible.
+   */
+  const ligneTempsPayloadForFooter =
+    !canPublish && isActiveLigneDuTempsVariant(state)
+      ? normalizeLigneDuTempsPayload(nonRedactionLignePayload(state))
+      : null;
+  const publishBlockedByLigneTemps = ligneTempsPayloadForFooter
+    ? ligneDuTempsHasBoundaryErrors(ligneTempsPayloadForFooter)
+    : false;
+  const publishTooltipLabel = publishTitleImageOnly
+    ? PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE
+    : publishBlockedByLigneTemps
+      ? NR_LIGNE_TEMPS_PUBLISH_DISABLED
+      : null;
 
   const doPublish = async () => {
     setPublishing(true);
@@ -236,10 +260,7 @@ export function StepperNavFooter() {
               Sauvegarder
             </button>
           ) : null}
-          <HoverTip
-            label={publishTitleImageOnly ? PUBLISH_BUTTON_TITLE_DOCUMENT_IMAGE : null}
-            placement="top"
-          >
+          <HoverTip label={publishTooltipLabel} placement="top">
             <button
               type="button"
               disabled={!canPublish || publishing}

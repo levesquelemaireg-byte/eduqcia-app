@@ -216,6 +216,17 @@ export const NR_LIGNE_TEMPS_DATE_START = "Date de début";
 export const NR_LIGNE_TEMPS_DATE_END = "Date de fin";
 export const NR_LIGNE_TEMPS_DATE_CHAINED_HINT =
   "La date de fin d'une période est automatiquement la date de début de la suivante.";
+/** Validation inline — borne vide alors qu'au moins une borne ultérieure est renseignée. */
+export const NR_LIGNE_TEMPS_DATE_ERROR_MISSING = "Veuillez renseigner cette date.";
+/** Validation inline — borne ≤ à la dernière borne valide précédente. */
+export const NR_LIGNE_TEMPS_DATE_ERROR_NOT_GREATER =
+  "La date de fin doit être postérieure à la date de début.";
+/** Statut sous la frise quand des bornes sont en erreur — explique pourquoi des segments manquent. */
+export const NR_LIGNE_TEMPS_FRISE_PARTIAL_DUE_TO_ERROR =
+  "Frise partielle — corrigez les dates en rouge pour voir toutes les périodes.";
+/** Tooltip sur le bouton Publier quand la frise est invalide. */
+export const NR_LIGNE_TEMPS_PUBLISH_DISABLED =
+  "Toutes les dates de la frise doivent être valides pour publier.";
 export const NR_LIGNE_TEMPS_TIMELINE_PREVIEW_TITLE = "Ligne du temps";
 /** Bloc 3 — titre au-dessus de la frise (sans choix du segment). */
 export const NR_LIGNE_TEMPS_BLOC3_FRISE_PREVIEW_LEAD = "Aperçu de la frise";

@@ -3,6 +3,8 @@ import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsGuidageHtml,
   initialLigneDuTempsPayload,
+  ligneDuTempsBoundaryErrors,
+  ligneDuTempsHasBoundaryErrors,
   ligneDuTempsPartialPreviewBoundaries,
   mergeLigneDuTempsPayload,
   normalizeLigneDuTempsPayload,
@@ -81,5 +83,68 @@ describe("ligne-du-temps-payload", () => {
     const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
     const prep = prepareNonRedactionConsigneForTeacherDisplay(html);
     expect(prep).toContain("ligne-temps-frise");
+  });
+
+  describe("ligneDuTempsBoundaryErrors", () => {
+    it("aucune erreur quand toutes les bornes sont vides (frise vierge)", () => {
+      const p = initialLigneDuTempsPayload();
+      const errs = ligneDuTempsBoundaryErrors(p);
+      expect(errs).toEqual([null, null, null, null]);
+      expect(ligneDuTempsHasBoundaryErrors(p)).toBe(false);
+    });
+
+    it("aucune erreur quand toutes les bornes sont strictement croissantes", () => {
+      expect(ligneDuTempsBoundaryErrors(sampleComplete3)).toEqual([null, null, null, null]);
+      expect(ligneDuTempsHasBoundaryErrors(sampleComplete3)).toBe(false);
+    });
+
+    it("aucune erreur sur un préfixe rempli (saisie en cours)", () => {
+      const p = mergeLigneDuTempsPayload(initialLigneDuTempsPayload(), {
+        segmentCount: 4,
+        boundaries: [1600, 1700, null, null, null],
+      });
+      // Borne 1700 OK ; les bornes vides ultérieures sont juste « à remplir », pas une erreur
+      expect(ligneDuTempsBoundaryErrors(p)).toEqual([null, null, null, null, null]);
+      expect(ligneDuTempsHasBoundaryErrors(p)).toBe(false);
+    });
+
+    it("missing : borne vide alors qu'une borne ultérieure est remplie", () => {
+      const p = mergeLigneDuTempsPayload(initialLigneDuTempsPayload(), {
+        segmentCount: 4,
+        boundaries: [1600, null, 1800, null, 2000],
+      });
+      // index 1 et 3 vides, mais 2 et 4 remplis → missing pour 1 et 3
+      expect(ligneDuTempsBoundaryErrors(p)).toEqual([null, "missing", null, "missing", null]);
+      expect(ligneDuTempsHasBoundaryErrors(p)).toBe(true);
+    });
+
+    it("not-greater : date de fin ≤ date de début (régression période 3 dans la spec)", () => {
+      const p = mergeLigneDuTempsPayload(initialLigneDuTempsPayload(), {
+        segmentCount: 4,
+        boundaries: [5, 6, 8, 7, null],
+      });
+      // index 3 (= 7) ≤ index 2 (= 8) → not-greater sur l'index 3
+      expect(ligneDuTempsBoundaryErrors(p)).toEqual([null, null, null, "not-greater", null]);
+      expect(ligneDuTempsHasBoundaryErrors(p)).toBe(true);
+    });
+
+    it("not-greater : égalité (≤ et non strictement <)", () => {
+      const p = mergeLigneDuTempsPayload(initialLigneDuTempsPayload(), {
+        segmentCount: 3,
+        boundaries: [1700, 1700, 1800, 1900],
+      });
+      expect(ligneDuTempsBoundaryErrors(p)).toEqual([null, "not-greater", null, null]);
+    });
+
+    it("missing + not-greater cohabitent sur la même frise", () => {
+      const p = mergeLigneDuTempsPayload(initialLigneDuTempsPayload(), {
+        segmentCount: 4,
+        boundaries: [1600, null, 1500, 1700, null],
+      });
+      // index 1 vide alors que 2 et 3 sont remplis → missing
+      // index 2 (= 1500) ≤ 1600 (dernière borne valide précédente) → not-greater
+      // index 4 vide mais aucune borne ultérieure remplie → null (pas une erreur, juste à remplir)
+      expect(ligneDuTempsBoundaryErrors(p)).toEqual([null, "missing", "not-greater", null, null]);
+    });
   });
 });

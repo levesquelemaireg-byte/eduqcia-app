@@ -15,6 +15,7 @@ import {
   buildLigneDuTempsGuidageHtml,
   buildLigneDuTempsIntroHtml,
   initialLigneDuTempsPayload,
+  ligneDuTempsBoundaryErrors,
   mergeLigneDuTempsPayload,
   normalizeLigneDuTempsPayload,
   type LigneDuTempsPayload,
@@ -24,7 +25,10 @@ import { materialIconTooltip } from "@/lib/tache/icon-justifications";
 import {
   NR_LIGNE_TEMPS_DATE_CHAINED_HINT,
   NR_LIGNE_TEMPS_DATE_END,
+  NR_LIGNE_TEMPS_DATE_ERROR_MISSING,
+  NR_LIGNE_TEMPS_DATE_ERROR_NOT_GREATER,
   NR_LIGNE_TEMPS_DATE_START,
+  NR_LIGNE_TEMPS_FRISE_PARTIAL_DUE_TO_ERROR,
   NR_LIGNE_TEMPS_GATE_BLOC3,
   NR_LIGNE_TEMPS_GUIDAGE_FORM_LEAD,
   NR_LIGNE_TEMPS_GUIDAGE_INFO_MODAL_BODY,
@@ -96,6 +100,8 @@ export function Bloc3LigneDuTemps() {
   );
 
   const need = p.segmentCount + 1;
+  const boundaryErrors = useMemo(() => ligneDuTempsBoundaryErrors(p), [p]);
+  const friseHasErrors = boundaryErrors.some((e) => e !== null);
 
   const setBoundary = (index: number, raw: string) => {
     const nextB = [...p.boundaries];
@@ -187,6 +193,22 @@ export function Bloc3LigneDuTemps() {
             const endVal = p.boundaries[i + 1];
             const startStr = startVal === null || startVal === undefined ? "" : String(startVal);
             const endStr = endVal === null || endVal === undefined ? "" : String(endVal);
+            const startError = i === 0 ? boundaryErrors[0] : null;
+            const endError = boundaryErrors[i + 1] ?? null;
+            const startErrorMsg =
+              startError === "missing"
+                ? NR_LIGNE_TEMPS_DATE_ERROR_MISSING
+                : startError === "not-greater"
+                  ? NR_LIGNE_TEMPS_DATE_ERROR_NOT_GREATER
+                  : null;
+            const endErrorMsg =
+              endError === "missing"
+                ? NR_LIGNE_TEMPS_DATE_ERROR_MISSING
+                : endError === "not-greater"
+                  ? NR_LIGNE_TEMPS_DATE_ERROR_NOT_GREATER
+                  : null;
+            const startErrorId = startErrorMsg ? `${segFieldId}-start-${i}-error` : undefined;
+            const endErrorId = endErrorMsg ? `${segFieldId}-end-${i}-error` : undefined;
             return (
               <div
                 key={i}
@@ -203,9 +225,11 @@ export function Bloc3LigneDuTemps() {
                   {i === 0 ? (
                     <input
                       type="number"
-                      className="mt-1 w-full rounded-md border border-border bg-panel px-2 py-2 text-sm text-deep"
+                      className={`mt-1 w-full rounded-md border bg-panel px-2 py-2 text-sm text-deep ${startErrorMsg ? "border-error" : "border-border"}`}
                       value={startStr}
                       onChange={(e) => setBoundary(0, e.target.value)}
+                      aria-invalid={startErrorMsg ? true : undefined}
+                      aria-describedby={startErrorId}
                     />
                   ) : (
                     <input
@@ -216,6 +240,15 @@ export function Bloc3LigneDuTemps() {
                       aria-label={NR_LIGNE_TEMPS_DATE_START}
                     />
                   )}
+                  {startErrorMsg ? (
+                    <p
+                      id={startErrorId}
+                      role="alert"
+                      className="mt-1 text-xs font-medium text-error"
+                    >
+                      {startErrorMsg}
+                    </p>
+                  ) : null}
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-deep">
@@ -223,10 +256,17 @@ export function Bloc3LigneDuTemps() {
                   </label>
                   <input
                     type="number"
-                    className="mt-1 w-full rounded-md border border-border bg-panel px-2 py-2 text-sm text-deep"
+                    className={`mt-1 w-full rounded-md border bg-panel px-2 py-2 text-sm text-deep ${endErrorMsg ? "border-error" : "border-border"}`}
                     value={endStr}
                     onChange={(e) => setBoundary(i + 1, e.target.value)}
+                    aria-invalid={endErrorMsg ? true : undefined}
+                    aria-describedby={endErrorId}
                   />
+                  {endErrorMsg ? (
+                    <p id={endErrorId} role="alert" className="mt-1 text-xs font-medium text-error">
+                      {endErrorMsg}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             );
@@ -236,6 +276,11 @@ export function Bloc3LigneDuTemps() {
 
       <section className="space-y-3 border-t border-border pt-4">
         <p className="text-sm font-semibold text-deep">{NR_LIGNE_TEMPS_TIMELINE_PREVIEW_TITLE}</p>
+        {friseHasErrors ? (
+          <p role="status" className="text-xs font-medium text-error">
+            {NR_LIGNE_TEMPS_FRISE_PARTIAL_DUE_TO_ERROR}
+          </p>
+        ) : null}
         <LigneDuTempsFrisePicker payload={p} onPickLetter={() => {}} interactive={false} />
       </section>
 
