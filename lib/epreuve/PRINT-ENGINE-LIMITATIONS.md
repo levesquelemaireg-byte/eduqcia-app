@@ -87,7 +87,7 @@ des blocs evolue dans un chemin sans etre repercute dans l'autre.
 ### Plan de convergence
 
 1. **Court terme** : s'assurer que les deux chemins appellent les memes builders
-   de blocs (`construireBlocDocument`, `construireBlocQuadruplet`, `construireBlocCorrige`).
+   de blocs (`construireBlocsDossierPages`, `construireBlocQuadruplet`, `construireBlocCorrige`).
    C'est deja le cas — `blocs-tache.ts` est la couche commune.
 
 2. **Moyen terme** : extraire la logique de composition par feuillet dans un module

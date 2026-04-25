@@ -333,7 +333,7 @@ Ces entités n'ont pas de cycle de vie propre. Elles sont **calculées** depuis 
 - Type de sortie : `RenduImprimable` (`lib/impression/types.ts`)
 - Contexte : `ContexteImpression = { type: "document" } | { type: "tache", mode, estCorrige } | { type: "epreuve", mode, estCorrige }`
 - Transformation : `epreuveVersImprimable` (`lib/epreuve/transformation/epreuve-vers-paginee.ts`)
-- Sections : `SectionPage`, `SectionDocument`, `SectionQuadruplet`, `SectionCorrige`, `SectionOutilEvaluation`, `SectionEspaceProduction`
+- Sections : `SectionPage`, `DossierGrille` (+ `DossierCellule`), `SectionQuadruplet`, `SectionCorrige`, `SectionOutilEvaluation`, `SectionEspaceProduction`
 
 ### 4.3 Aperçu imprimé : variantes
 
@@ -362,7 +362,8 @@ ApercuImpression(contexte: ContexteImpression)
   ├─ rend ses propres champs (titre, en-tête, pied de page, numérotation)
   ├─ applique la règle de composition selon ModeImpression (1/2/3 feuillets)
   └─ pour chaque tâche → sections de tâche (consigne, guidage, outil, espace)
-       └─ pour chaque document référencé → SectionDocument (rendu canonique)
+       └─ pour le dossier documentaire → DossierGrille (pages de grille bicolonnée,
+          1 bloc `kind: "dossier-page"` = 1 page papier via `pagination.mode: "exclusive-page"`)
 ```
 
 **Le mode de rendu se propage intact** le long de la chaîne. La **variante** est une règle de composition du niveau épreuve — elle n'altère pas le rendu intrinsèque des éléments enfants.

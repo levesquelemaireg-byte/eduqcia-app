@@ -62,22 +62,27 @@ Le système imprime des **compositions de blocs contraints par un contexte d'imp
 Fonctions pures qui transforment des données métier en blocs imprimables. **Aucune connaissance de la pagination ni du contexte global.** Réutilisées par la tâche seule ET par l'épreuve.
 
 ```typescript
-// lib/impression/builders/blocs-document.ts (~40 lignes)
-export function construireBlocDocument(
-  doc: DocumentReference,
-  options: { titreVisible: boolean },
-): Bloc;
+// lib/impression/builders/blocs-dossier-pages.ts
+// Transforme N documents en N blocs dossier-page via `placerDocuments` (layout
+// engine). Chaque bloc porte `pagination: { mode: "exclusive-page" }` —
+// 1 grille bicolonnée 2×3 = 1 page papier. `construireBlocDossierPageUnique`
+// est utilisé pour le rendu d'un document isolé (1 cellule span 2 forcée).
+export function construireBlocsDossierPages(
+  docs: { numeroGlobal: number; document: RendererDocument }[],
+  options: { titresVisibles: boolean },
+  idPrefix: string,
+): Bloc[];
 
-// lib/impression/builders/blocs-quadruplet.ts (~60 lignes)
+// lib/impression/builders/blocs-quadruplet.ts
 export function construireBlocQuadruplet(
   tache: Pick<DonneesTache, "consigne" | "guidage" | "espaceProduction" | "outilEvaluation">,
   options: { guidageVisible: boolean },
 ): Bloc;
 
-// lib/impression/builders/blocs-corrige.ts (~30 lignes)
+// lib/impression/builders/blocs-corrige.ts
 export function construireBlocCorrige(corrige: string): Bloc;
 
-// lib/impression/builders/blocs-tache.ts (~80 lignes)
+// lib/impression/builders/blocs-tache.ts
 // Orchestre les builders ci-dessus selon le mode
 export function construireBlocsTache(
   tache: DonneesTache,
@@ -86,14 +91,18 @@ export function construireBlocsTache(
   const regles = reglesVisibilite(options.mode);
   const blocs: Bloc[] = [];
 
-  // Documents de la tâche
-  for (const doc of tache.documents) {
-    blocs.push(
-      construireBlocDocument(doc, {
-        titreVisible: regles.titresDocumentsVisibles,
-      }),
-    );
-  }
+  // Dossier documentaire — 1 bloc dossier-page par page de grille bicolonnée.
+  const docsNumerotes = tache.documents.map((document, i) => ({
+    numeroGlobal: i + 1,
+    document,
+  }));
+  blocs.push(
+    ...construireBlocsDossierPages(
+      docsNumerotes,
+      { titresVisibles: regles.titresDocumentsVisibles },
+      `tache-${tache.id}-dossier`,
+    ),
+  );
 
   // Quadruplet
   blocs.push(
@@ -131,7 +140,11 @@ export function documentVersImprimable(
   document: DonneesDocument,
   mesureur: Mesureur,
 ): RenduImprimable {
-  const bloc = construireBlocDocument(document, { titreVisible: true });
+  const bloc = construireBlocDossierPageUnique(
+    document,
+    { titresVisibles: true },
+    `document-${document.id}`,
+  );
   const hauteur = mesureur(bloc);
 
   if (hauteur > MAX_CONTENT_HEIGHT_PX) {
@@ -214,9 +227,9 @@ export function epreuveVersImprimable(
   // Contexte épreuve : résolution {{doc_N}} (et {{doc_A}} legacy) cross-tâches
   const blocsResolus = resoudreReferences(blocsFusionnes, epreuve);
 
-  // Couche 2 : paginer le tout
+  // Couche 2 : paginer le tout (MAX_CONTENT_HEIGHT_PX = 904, en-tête dans la marge)
   const resultatPagination = paginer(blocsResolus, mesureur, {
-    maxContentHeight: MAX_CONTENT_HEIGHT_PX - HEADER_HEIGHT_PX,
+    maxContentHeight: MAX_CONTENT_HEIGHT_PX,
     tolerance: TOLERANCE_PX,
   });
 
@@ -360,10 +373,12 @@ Aucune modification. Le token contient tout. Les APIs ne savent pas quel type d'
 
 ```
 lib/impression/types.ts                               ~40 lignes  RenduImprimable, ContexteImpression
-lib/impression/builders/blocs-document.ts             ~40 lignes  construireBlocDocument
+lib/impression/layout-dossier-documentaire.ts        ~230 lignes  moteur placement bicolonné 2×3 (placerDocuments)
+lib/impression/constantes-dossier-documentaire.ts     ~90 lignes  seuils span, gaps, hauteurs cellule
+lib/impression/builders/blocs-dossier-pages.ts       ~100 lignes  construireBlocsDossierPages + construireBlocDossierPageUnique
 lib/impression/builders/blocs-quadruplet.ts           ~60 lignes  construireBlocQuadruplet
 lib/impression/builders/blocs-corrige.ts              ~30 lignes  construireBlocCorrige
-lib/impression/builders/blocs-tache.ts                ~80 lignes  construireBlocsTache (orchestre)
+lib/impression/builders/blocs-tache.ts                ~65 lignes  construireBlocsTache (orchestre)
 lib/impression/builders/regles-visibilite.ts          ~30 lignes  reglesVisibilite
 lib/tache/impression/tache-vers-imprimable.ts         ~120 lignes point d'entrée tâche
 lib/document/impression/document-vers-imprimable.ts   ~60 lignes  point d'entrée document

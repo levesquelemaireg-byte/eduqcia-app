@@ -153,12 +153,34 @@ Pas de champ `position`. Visibilité décidée par le mode d'impression dans la 
 
 export const PAGE_HEIGHT_PX = 1056; // Letter portrait 8.5" × 11" à 96dpi
 export const PAGE_WIDTH_PX = 816; // 8.5" à 96dpi
-export const PAGE_MARGIN_PX = 151; // ~2cm × 2 marges verticales
-export const HEADER_HEIGHT_PX = 80; // Hauteur fixe plafonnée (Option A)
+export const PAGE_MARGIN_PX = 152; // 2cm × 2 marges verticales (76 px × 2)
 export const TOLERANCE_PX = 4; // Marge de garde pour dérive subpixel
-export const MAX_CONTENT_HEIGHT_PX = PAGE_HEIGHT_PX - PAGE_MARGIN_PX - HEADER_HEIGHT_PX;
-// = 825px disponibles pour les blocs par page
+export const MAX_CONTENT_HEIGHT_PX = PAGE_HEIGHT_PX - PAGE_MARGIN_PX;
+// = 904px disponibles pour les blocs par page.
+// L'en-tête d'épreuve et la pagination de bas de page vivent dans les marges
+// de 2 cm (`position: absolute` dans `SectionPage`), n'occupent donc aucun
+// espace dans la zone de contenu.
 ```
+
+**Contrat de pagination explicite** (section `lib/epreuve/pagination/types.ts`) :
+
+```typescript
+export type PaginationMode = "flow" | "exclusive-page";
+
+export type Bloc = {
+  id: string;
+  kind: KindBloc;
+  tacheId?: string;
+  content: unknown;
+  /** Défaut implicite : `{ mode: "flow" }`. */
+  pagination?: { mode: PaginationMode };
+};
+```
+
+- `flow` : empilage standard jusqu'à `MAX_CONTENT_HEIGHT_PX`.
+- `exclusive-page` : force une page dédiée (ex. pages du dossier documentaire,
+  1 grille bicolonnée 2×3 = 1 page papier). Le pager ferme la page courante
+  si non vide, pose le bloc seul, et referme immédiatement la page.
 
 **Note :** ces constantes sont à valider empiriquement sur le premier prototype. Si Letter paysage ou un autre format est requis, ajuster.
 
@@ -487,7 +509,7 @@ export function verifierTokenDraft(token: string): { valide: boolean; payloadId?
 ### Pagination
 
 - `lib/epreuve/pagination/types.ts`
-- `lib/epreuve/pagination/constantes.ts` — `MAX_CONTENT_HEIGHT_PX`, `HEADER_HEIGHT_PX`, `TOLERANCE_PX`, etc.
+- `lib/epreuve/pagination/constantes.ts` — `MAX_CONTENT_HEIGHT_PX` (= 904), `PAGE_MARGIN_PX`, `TOLERANCE_PX`, etc.
 - `lib/epreuve/pagination/mesure.ts` — mesure offscreen isomorphe.
 - `lib/epreuve/pagination/pager.ts` — greedy first-fit 1D.
 - `lib/epreuve/pagination/preflight.ts` — `attendreFontsChargees()`, `attendreImagesDecodees()`, `assertAucuneMutation()`.
@@ -505,10 +527,11 @@ export function verifierTokenDraft(token: string): { valide: boolean; payloadId?
 
 ### Composants de rendu
 
-- `components/epreuve/impression/index.tsx` — `ApercuImpression`, composant unique, consomme `EpreuvePaginee`.
-- `components/epreuve/impression/section-page.tsx` — `SectionPage`, wrapper `<section class="page">` avec en-tête injecté.
-- `components/epreuve/impression/entete.tsx` — `EnTeteImpression`, l'en-tête 80px max.
-- `components/epreuve/impression/sections/document.tsx` — `SectionDocument`.
+- `components/epreuve/impression/index.tsx` — `ApercuImpression`, composant unique, consomme `RenduImprimable`.
+- `components/epreuve/impression/section-page.tsx` — `SectionPage`, wrapper `<section class="page">` avec en-tête et pagination positionnés en absolute dans les marges 2 cm.
+- `components/epreuve/impression/entete.tsx` — `EnTeteImpression` (titre + enseignant + méta), tient dans la marge haute.
+- `components/epreuve/impression/dossier/grille.tsx` — `DossierGrille`, rendu CSS Grid 2 colonnes × 3 rangées d'une page du dossier documentaire.
+- `components/epreuve/impression/dossier/cellule.tsx` — `DossierCellule`, une cellule de la grille (span 1 ou 2).
 - `components/epreuve/impression/sections/quadruplet.tsx` — `SectionQuadruplet` (consigne + guidage + espace de production + outil d'évaluation).
 - `components/epreuve/impression/sections/corrige.tsx` — `SectionCorrige`, variante pour `estCorrige = true`.
 - `components/epreuve/impression/sections/outil-evaluation.tsx` — `SectionOutilEvaluation`.
@@ -606,9 +629,8 @@ L'ordre v1 plaçait le pager avant l'en-tête. C'était faux : le pager a besoin
    - Grep exhaustif sur `.guidage.replace`, `.guidage.indexOf`, `.guidage.trim` pour éviter les régressions silencieuses.
 
 3. **D6 — En-tête d'épreuve**
-   - Créer `components/epreuve/impression/entete.tsx` avec contrainte `max-height: 80px`.
-   - Créer `SectionPage` qui injecte l'en-tête.
-   - Définir `HEADER_HEIGHT_PX = 80` dans `lib/epreuve/pagination/constantes.ts`.
+   - Créer `components/epreuve/impression/entete.tsx`. L'en-tête vit dans la marge haute de 2 cm via `position: absolute` dans `SectionPage` — il n'occupe aucun espace dans la zone de contenu.
+   - Créer `SectionPage` qui positionne en-tête (marge haute) et pagination « Page X / Y » (marge basse) en absolute.
 
 4. **D3 — Transformation `epreuveVersPaginee`**
    - Créer la fonction pure avec composition par mode, renumérotation (réutilise `flattenDocumentsWithGlobalNumbers`), résolution `{{doc_N}}` (et `{{doc_A}}` legacy, rétrocompat ; réutilise et adapte `rewriteTacheHtmlDocRefsForEvaluationPrint`), flag `estCorrige`, règles de visibilité.
