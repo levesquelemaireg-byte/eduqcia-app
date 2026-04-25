@@ -28,18 +28,6 @@
   --document-source-color: #000;
 }
 
-/*
- * Wrapper interne — `width: fit-content` garantit que titre, cadre et source
- * partagent la même largeur maximale (celle du cadre). Empêche la source
- * de déborder à droite quand le cadre est compact (iconographique au format
- * de l'image). Sans ce wrapper, la source prendrait 100% de `.cellule` qui
- * occupe toute la colonne grille.
- */
-.celluleInner {
-  width: fit-content;
-  max-width: 100%;
-}
-
 .celluleSpan2 {
   grid-column: span 2;
 
@@ -48,10 +36,26 @@
 }
 
 /*
+ * Wrapper du cadre bordé + source bibliographique. La source est enfant
+ * direct de ce wrapper (et non d'un wrapper englobant le titre) : sa
+ * largeur est naturellement contrainte à celle du wrapper, qui prend la
+ * largeur du cadre. Le titre reste à l'extérieur — il peut être plus large
+ * que l'image sans pousser le cadre.
+ *
+ * Pour les documents simples iconographiques, le wrapper rétrécit à la
+ * largeur de l'image (`max-content`). Pour les autres structures
+ * (textuel simple, perspectives, deux_temps), il prend la largeur naturelle
+ * du flow (full-width de la cellule).
+ */
+.cadreEtSource[data-doc-type="iconographique"] {
+  width: max-content;
+  max-width: 100%;
+}
+
+/*
  * Cadre bordé du contenu (zone entre le titre et la source).
- * Styles alignés sur `.documentCell` du rendu impression canonique,
- * mais définis localement pour permettre des ajustements propres à la grille
- * (padding plus serré, absence de fond).
+ * Bordure 1 px noire uniquement autour du contenu — la source vit hors du
+ * cadre dans le wrapper parent `.cadreEtSource`.
  */
 .cadre {
   border: 1px solid #000;
@@ -59,16 +63,6 @@
   background: transparent;
   box-sizing: border-box;
   overflow: hidden;
-}
-
-/*
- * Document simple iconographique : cadre compact à la largeur de l'image,
- * pas pleine largeur de la cellule. Aligné sur la règle homologue de
- * `.documentCell[data-doc-type="iconographique"]` du rendu print canonique.
- */
-.cadre[data-doc-type="iconographique"] {
-  width: max-content;
-  max-width: 100%;
 }
 
 /*

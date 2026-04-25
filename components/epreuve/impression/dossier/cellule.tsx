@@ -45,21 +45,20 @@ export function DossierCellule({ document: doc, numero, span, titreVisible }: Pr
 
   return (
     <div className={cn(styles.cellule, span === 2 && styles.celluleSpan2)}>
-      <div className={styles.celluleInner}>
-        {afficherTitre ? (
-          <div className={styles.ligneTitre}>
-            <span className={styles.numero} aria-label={`Document ${numero}`}>
-              {numero}
-            </span>
-            <p className={styles.titre}>{titre}</p>
-          </div>
-        ) : null}
+      {afficherTitre ? (
+        <div className={styles.ligneTitre}>
+          <span className={styles.numero} aria-label={`Document ${numero}`}>
+            {numero}
+          </span>
+          <p className={styles.titre}>{titre}</p>
+        </div>
+      ) : null}
 
-        <div
-          className={styles.cadre}
-          data-doc-structure={doc.structure}
-          data-doc-type={firstElementType}
-        >
+      {/* Wrapper cadre + source : compact à la largeur de l'image pour
+          les iconographiques simples ; la source à l'intérieur prend la
+          largeur du wrapper et wrappe naturellement, sans déborder. */}
+      <div className={styles.cadreEtSource} data-doc-type={firstElementType}>
+        <div className={styles.cadre} data-doc-structure={doc.structure}>
           {isSingle ? (
             doc.elements[0] ? (
               <DocumentElementRenderer
