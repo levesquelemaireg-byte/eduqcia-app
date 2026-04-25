@@ -28,6 +28,18 @@
   --document-source-color: #000;
 }
 
+/*
+ * Wrapper interne — `width: fit-content` garantit que titre, cadre et source
+ * partagent la même largeur maximale (celle du cadre). Empêche la source
+ * de déborder à droite quand le cadre est compact (iconographique au format
+ * de l'image). Sans ce wrapper, la source prendrait 100% de `.cellule` qui
+ * occupe toute la colonne grille.
+ */
+.celluleInner {
+  width: fit-content;
+  max-width: 100%;
+}
+
 .celluleSpan2 {
   grid-column: span 2;
 
@@ -62,14 +74,15 @@
 /*
  * Ligne titre : badge numéro + titre, au-dessus du cadre.
  * Alignée verticalement pour que le badge noir soit centré sur la baseline
- * du titre. En mode sommatif (titre absent), toute la ligne disparaît et
- * l'espace est récupéré.
+ * du titre. Pas de `margin-bottom` — le badge colle au bord supérieur du
+ * cadre (référence visuelle MEQ). En mode sommatif (titre absent), toute
+ * la ligne disparaît et l'espace est récupéré.
  */
 .ligneTitre {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin: 0 0 0.3rem;
+  margin: 0;
 }
 
 .numero {

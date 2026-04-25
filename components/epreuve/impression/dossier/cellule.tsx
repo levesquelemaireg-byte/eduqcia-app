@@ -45,59 +45,61 @@ export function DossierCellule({ document: doc, numero, span, titreVisible }: Pr
 
   return (
     <div className={cn(styles.cellule, span === 2 && styles.celluleSpan2)}>
-      {afficherTitre ? (
-        <div className={styles.ligneTitre}>
-          <span className={styles.numero} aria-label={`Document ${numero}`}>
-            {numero}
-          </span>
-          <p className={styles.titre}>{titre}</p>
-        </div>
-      ) : null}
+      <div className={styles.celluleInner}>
+        {afficherTitre ? (
+          <div className={styles.ligneTitre}>
+            <span className={styles.numero} aria-label={`Document ${numero}`}>
+              {numero}
+            </span>
+            <p className={styles.titre}>{titre}</p>
+          </div>
+        ) : null}
 
-      <div
-        className={styles.cadre}
-        data-doc-structure={doc.structure}
-        data-doc-type={firstElementType}
-      >
+        <div
+          className={styles.cadre}
+          data-doc-structure={doc.structure}
+          data-doc-type={firstElementType}
+        >
+          {isSingle ? (
+            doc.elements[0] ? (
+              <DocumentElementRenderer
+                element={doc.elements[0]}
+                showAuteur={Boolean(doc.elements[0].auteur)}
+                hideSource
+              />
+            ) : null
+          ) : (
+            <div
+              className={styles.multicolonne}
+              style={{ gridTemplateColumns: `repeat(${doc.elements.length}, 1fr)` }}
+            >
+              {doc.elements.map((el) => (
+                <div key={el.id} className={styles.multicolonneColonne}>
+                  <DocumentElementRenderer
+                    element={el}
+                    showAuteur={showAuteur}
+                    showRepereTemporel={showRepereTemporel}
+                    hideSource
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
         {isSingle ? (
-          doc.elements[0] ? (
-            <DocumentElementRenderer
-              element={doc.elements[0]}
-              showAuteur={Boolean(doc.elements[0].auteur)}
-              hideSource
-            />
-          ) : null
+          <SourceBloc source={doc.elements[0]?.source ?? ""} />
         ) : (
           <div
-            className={styles.multicolonne}
+            className={styles.sourceMulticolonne}
             style={{ gridTemplateColumns: `repeat(${doc.elements.length}, 1fr)` }}
           >
             {doc.elements.map((el) => (
-              <div key={el.id} className={styles.multicolonneColonne}>
-                <DocumentElementRenderer
-                  element={el}
-                  showAuteur={showAuteur}
-                  showRepereTemporel={showRepereTemporel}
-                  hideSource
-                />
-              </div>
+              <SourceBloc key={el.id} source={el.source} />
             ))}
           </div>
         )}
       </div>
-
-      {isSingle ? (
-        <SourceBloc source={doc.elements[0]?.source ?? ""} />
-      ) : (
-        <div
-          className={styles.sourceMulticolonne}
-          style={{ gridTemplateColumns: `repeat(${doc.elements.length}, 1fr)` }}
-        >
-          {doc.elements.map((el) => (
-            <SourceBloc key={el.id} source={el.source} />
-          ))}
-        </div>
-      )}
     </div>
   );
 }
