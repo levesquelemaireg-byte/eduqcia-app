@@ -119,24 +119,29 @@
  * créant la jonction visuelle entre la ligne titre et la boîte bordée.
  */
 
-/* Wrapper qui regroupe les 3 zones — ne pas fragmenter sur deux pages. */
+/* Wrapper qui regroupe les 3 zones — ne pas fragmenter sur deux pages.
+ * `width: fit-content` garantit que le titre et la source épousent la largeur
+ * du cadre (ex. largeur de l'image pour un iconographique) et ne dépassent
+ * jamais au-delà — titre + cadre + source = même largeur maximale. */
 .documentWrapper {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  width: fit-content;
+  max-width: 100%;
   break-inside: avoid;
   page-break-inside: avoid;
   /* Contexte print : source bibliographique en noir pur (print-engine §4). */
   --document-source-color: #000;
 }
 
-/* Zone 1 : ligne titre (badge + titre) — au-dessus du cadre, sans bordure. */
+/* Zone 1 : ligne titre (badge + titre) — au-dessus du cadre, sans bordure.
+ * Pas de `margin-bottom` — le badge numéro colle au bord supérieur du cadre
+ * (référence visuelle MEQ). */
 .documentHeader {
   display: flex;
   align-items: center;
   gap: 0.4em;
-  /* Espace entre la ligne titre et le cadre bordé. */
-  margin-bottom: 3px;
   position: relative;
   z-index: 1;
 }
@@ -252,13 +257,15 @@
   line-height: 1.4;
 }
 
-/* Zone 3 : source — hors cadre, sous le cadre bordé, texte libre 9pt. */
+/* Zone 3 : source — hors cadre, sous le cadre bordé. Arial 7pt line-height 1.15
+ * en contexte print (référence visuelle MEQ — la source est écrite très petit).
+ * Gris discret par défaut (sommaire à l'écran). Les wrappers print forcent
+ * la couleur à noir pur via `--document-source-color: #000` (règle §4 du
+ * print-engine — Arial noir pur exclusivement). */
 .documentSource {
   margin: 0.35em 0 0;
-  font-size: 9pt;
-  /* Gris discret par défaut (sommaire à l'écran). Les wrappers print forcent
-     la couleur à noir pur via `--document-source-color: #000` (règle §4 du
-     print-engine — Arial noir pur exclusivement). */
+  font-size: 7pt;
+  line-height: 1.15;
   color: var(--document-source-color, var(--color-steel));
 }
 

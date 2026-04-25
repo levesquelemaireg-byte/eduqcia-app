@@ -37,9 +37,11 @@ export function DocumentRail({ data }: Props) {
       {hasRepere && (
         <SectionRail titre={ANCRAGE_TEMPOREL_LABEL}>
           <div className="space-y-1">
-            <p className="text-xs leading-relaxed text-deep">
-              {data.document.repereTemporelDocument}
-            </p>
+            <MetaRowSimple
+              icon={ICONES_METIER.ancrageTemporel}
+              label={data.document.repereTemporelDocument ?? ""}
+              noBorderTop
+            />
             <p className="text-[10px] italic text-muted">
               N&apos;apparaît jamais sur la copie de l&apos;élève
             </p>
