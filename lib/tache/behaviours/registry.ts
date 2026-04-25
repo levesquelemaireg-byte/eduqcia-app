@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import type { ComponentType } from "react";
 import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import { avantApresConfig } from "@/lib/tache/behaviours/avant-apres";
+import { carteHistoriqueConfig } from "@/lib/tache/behaviours/carte-historique";
 import { ligneDuTempsConfig } from "@/lib/tache/behaviours/ligne-du-temps";
 import { ordreChronologiqueConfig } from "@/lib/tache/behaviours/ordre-chronologique";
 import { redactionnelConfig } from "@/lib/tache/behaviours/redactionnel";
@@ -12,6 +13,7 @@ const registry: Record<ComportementSlug, ComportementConfig> = {
   "ordre-chronologique": ordreChronologiqueConfig,
   "ligne-du-temps": ligneDuTempsConfig,
   "avant-apres": avantApresConfig,
+  "carte-historique": carteHistoriqueConfig,
 };
 
 export function getComportementConfig(slug: ComportementSlug): ComportementConfig {
@@ -39,6 +41,10 @@ export const BLOC5_DYNAMIC_BY_SLUG: Record<ComportementSlug, ComponentType<Bloc5
   ),
   "avant-apres": dynamic(
     () => import("@/components/tache/wizard/bloc5/non-redactionnel/Bloc5AvantApres"),
+    { ssr: false },
+  ),
+  "carte-historique": dynamic(
+    () => import("@/components/tache/wizard/bloc5/non-redactionnel/Bloc5CarteHistorique"),
     { ssr: false },
   ),
 };

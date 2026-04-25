@@ -17,3 +17,7 @@ export function isActiveLigneDuTempsVariant(state: TacheFormState): boolean {
 export function isActiveAvantApresVariant(state: TacheFormState): boolean {
   return getVariantSlugForComportementId(state.bloc2.comportementId) === "avant-apres";
 }
+
+export function isActiveCarteHistoriqueVariant(state: TacheFormState): boolean {
+  return getVariantSlugForComportementId(state.bloc2.comportementId) === "carte-historique";
+}

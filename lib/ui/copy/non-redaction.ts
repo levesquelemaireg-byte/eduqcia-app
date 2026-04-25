@@ -366,3 +366,49 @@ export const NR_AVANT_APRES_CONSIGNE_INFO_MODAL_BODY =
   "Le thème, le libellé du repère et l'année du repère structurent la consigne publiée ; le tableau des options est généré à l'étape 5.";
 export const TOAST_TACHE_NR_AVANT_APRES_HYDRATE_INVALID =
   "Les données structurées de cette tâche (avant / après) sont illisibles. Vous pouvez republier depuis le wizard.";
+
+/* -------------------------------------------------------------------------- */
+/*  Carte historique (OI2 — comportements 2.1 / 2.2 / 2.3)                    */
+/*  Lot 1 : fragments publiés requis par les builders HTML uniquement.        */
+/*  Les libellés UI (Bloc 2/3/4/5) sont ajoutés au Lot 2.                     */
+/* -------------------------------------------------------------------------- */
+
+/** Intro feuille élève : « Consultez le document {{doc_1}}. » */
+export const NR_CARTE_PUBLISHED_INTRO_PREFIX = "Consultez le document ";
+export const NR_CARTE_PUBLISHED_INTRO_DOC_PLACEHOLDER = "{{doc_1}}";
+export const NR_CARTE_PUBLISHED_INTRO_SUFFIX = ".";
+
+/** Question feuille élève — 2.1 (« Quelle lettre … correspond à <élément> ? »). */
+export const NR_CARTE_21_QUESTION_PREFIX = "Quelle lettre (A, B, C ou D) correspond à ";
+export const NR_CARTE_21_QUESTION_SUFFIX = " ?";
+
+/** Question feuille élève — 2.2 (tableau A–D de paires de chiffres). */
+export const NR_CARTE_22_QUESTION =
+  "Quelle lettre (A, B, C ou D) présente les chiffres qui correspondent à l'emplacement de ces éléments ?";
+
+/** Question feuille élève — 2.3 (deux lieux, deux réponses). */
+export const NR_CARTE_23_QUESTION_LEAD = "Quelle lettre (A, B, C ou D) correspond :";
+export const NR_CARTE_23_ITEM_PREFIX = "à ";
+export const NR_CARTE_23_ITEM_SUFFIX = " ?";
+
+/** Label zone réponse feuille élève (commun aux 3 comportements). */
+export const NR_CARTE_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
+
+/** Aria-label du tableau A–D (2.2). */
+export const NR_CARTE_22_TABLE_OPTIONS_GROUP_ARIA =
+  "Options de réponse : quatre paires de chiffres associant deux éléments à des positions sur la carte";
+
+/** Corrigé — préfixe commun. */
+export const NR_CARTE_CORRIGE_REPONSE_PREFIX = "Réponse attendue : ";
+
+/** Corrigé — comportement 2.2 (justification après la lettre). */
+export const NR_CARTE_22_CORRIGE_JUSTIFICATION =
+  "Le chiffre {{c1}} correspond à {{element1}} et le chiffre {{c2}} correspond à {{element2}}.";
+
+/** Corrigé — comportement 2.3 (deux lettres, deux éléments). */
+export const NR_CARTE_23_CORRIGE_TEMPLATE =
+  "{{letter1}} pour {{element1}} ; {{letter2}} pour {{element2}}.";
+
+/** Toast affiché si l'hydratation de la tâche échoue (édition). */
+export const TOAST_TACHE_NR_CARTE_HISTORIQUE_HYDRATE_INVALID =
+  "Les données structurées de cette tâche (carte historique) sont illisibles. Vous pouvez republier depuis le wizard.";

@@ -19,3 +19,10 @@ export function nonRedactionAvantApresPayload(state: TacheFormState): unknown {
   if (nr?.type !== "avant-apres") return null;
   return nr.payload;
 }
+
+/** Charge utile carte historique depuis `bloc5.nonRedaction`. */
+export function nonRedactionCartePayload(state: TacheFormState): unknown {
+  const nr = state.bloc5.nonRedaction;
+  if (nr?.type !== "carte-historique") return null;
+  return nr.payload;
+}

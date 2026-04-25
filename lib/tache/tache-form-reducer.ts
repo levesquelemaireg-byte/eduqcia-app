@@ -19,6 +19,11 @@ import {
   clearedAvantApresOptionsPatch,
 } from "@/lib/tache/non-redaction/avant-apres-payload";
 import {
+  initialCarteHistoriquePayload,
+  isCarteHistoriqueComportementId,
+  mergeCarteHistoriquePayload,
+} from "@/lib/tache/non-redaction/carte-historique-payload";
+import {
   initialLigneDuTempsPayload,
   mergeLigneDuTempsPayload,
 } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
@@ -39,6 +44,7 @@ import {
 
 function initialNonRedactionForSlug(
   slug: ReturnType<typeof getVariantSlugForComportementId>,
+  comportementId: string,
 ): NonRedactionData | null {
   if (slug === "ordre-chronologique") {
     return { type: "ordre-chronologique", payload: initialOrdreChronologiquePayload() };
@@ -48,6 +54,10 @@ function initialNonRedactionForSlug(
   }
   if (slug === "avant-apres") {
     return { type: "avant-apres", payload: initialAvantApresPayload() };
+  }
+  if (slug === "carte-historique") {
+    const cid = isCarteHistoriqueComportementId(comportementId) ? comportementId : "2.1";
+    return { type: "carte-historique", payload: initialCarteHistoriquePayload(cid) };
   }
   return null;
 }
@@ -255,7 +265,7 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
     }
     case "SET_COMPORTEMENT": {
       const slug = getVariantSlugForComportementId(action.comportementId);
-      const nonRedaction = initialNonRedactionForSlug(slug);
+      const nonRedaction = initialNonRedactionForSlug(slug, action.comportementId);
       return {
         ...state,
         bloc2: {
@@ -478,6 +488,25 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
         },
       };
     }
+    case "NON_REDACTION_PATCH_CARTE_HISTORIQUE": {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "carte-historique") return state;
+      return {
+        ...state,
+        bloc5: {
+          ...state.bloc5,
+          nonRedaction: {
+            type: "carte-historique",
+            payload: mergeCarteHistoriquePayload(nr.payload, action.patch),
+          },
+        },
+      };
+    }
+    case "SET_OUTIL_EVALUATION_OVERRIDE":
+      return {
+        ...state,
+        bloc2: { ...state.bloc2, outilEvaluation: action.outilEvaluation },
+      };
     case "SET_OI6_ENJEU":
       return { ...state, bloc3: { ...state.bloc3, oi6Enjeu: action.value } };
     case "SET_OI7_ENJEU_GLOBAL":

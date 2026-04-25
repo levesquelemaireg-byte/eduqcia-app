@@ -22,6 +22,7 @@ import type {
   PerspectiveLetter,
 } from "@/lib/tache/oi-perspectives/perspectives-types";
 import type { AvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
+import type { CarteHistoriquePayload } from "@/lib/tache/non-redaction/carte-historique-payload";
 import type { LigneDuTempsPayload } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import type { OrdreChronologiquePayload } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
 
@@ -91,7 +92,8 @@ export type NonRedactionData =
   | { type: "placeholder" }
   | { type: "ordre-chronologique"; payload: OrdreChronologiquePayload }
   | { type: "ligne-du-temps"; payload: LigneDuTempsPayload }
-  | { type: "avant-apres"; payload: AvantApresPayload };
+  | { type: "avant-apres"; payload: AvantApresPayload }
+  | { type: "carte-historique"; payload: CarteHistoriquePayload };
 
 export type Bloc5Slice = {
   corrige: string;
@@ -183,6 +185,8 @@ export type TacheFormAction =
   | { type: "NON_REDACTION_PATCH_ORDRE_CHRONO"; patch: Partial<OrdreChronologiquePayload> }
   | { type: "NON_REDACTION_PATCH_LIGNE_TEMPS"; patch: Partial<LigneDuTempsPayload> }
   | { type: "NON_REDACTION_PATCH_AVANT_APRES"; patch: Partial<AvantApresPayload> }
+  | { type: "NON_REDACTION_PATCH_CARTE_HISTORIQUE"; patch: Partial<CarteHistoriquePayload> }
+  | { type: "SET_OUTIL_EVALUATION_OVERRIDE"; outilEvaluation: string }
   | { type: "SET_PERSPECTIVES_MODE_WITH_MIGRATION"; value: "groupe" | "separe"; count: 2 | 3 }
   | { type: "UPDATE_PERSPECTIVE"; index: number; patch: Partial<PerspectiveData> }
   | { type: "SET_PERSPECTIVES_TYPE"; value: "acteurs" | "historiens" }

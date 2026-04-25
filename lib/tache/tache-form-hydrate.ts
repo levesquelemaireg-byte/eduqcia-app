@@ -16,6 +16,7 @@ import {
   type SchemaCd1Data,
 } from "@/lib/tache/schema-cd1/types";
 import { normalizeAvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
+import { normalizeCarteHistoriquePayload } from "@/lib/tache/non-redaction/carte-historique-payload";
 import { normalizeLigneDuTempsPayload } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import { normalizeOrdreChronologiquePayload } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
 import { initialAspects } from "@/lib/tache/redaction-helpers";
@@ -230,6 +231,11 @@ export function parseNonRedactionData(raw: unknown): NonRedactionData | null {
   if (t === "avant-apres" && "payload" in o) {
     const p = normalizeAvantApresPayload(o.payload);
     if (p) return { type: "avant-apres", payload: p };
+    return null;
+  }
+  if (t === "carte-historique" && "payload" in o) {
+    const p = normalizeCarteHistoriquePayload(o.payload);
+    if (p) return { type: "carte-historique", payload: p };
     return null;
   }
   return null;

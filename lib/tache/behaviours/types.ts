@@ -7,7 +7,8 @@ export type ComportementSlug =
   | "redactionnel"
   | "ordre-chronologique"
   | "ligne-du-temps"
-  | "avant-apres";
+  | "avant-apres"
+  | "carte-historique";
 
 export interface ComportementConfig {
   slug: ComportementSlug;
