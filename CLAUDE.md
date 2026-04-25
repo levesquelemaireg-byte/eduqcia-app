@@ -1251,9 +1251,7 @@ Ajouter une nouvelle entité à cette liste nécessite une mise à jour explicit
 
 ```
 components/tache/vue-detaillee/index.tsx               → TacheVueDetaillee
-components/tache/vue-detaillee/layout.tsx               → TacheVueDetailleeLayout
 components/tache/vue-detaillee/rail.tsx                 → TacheRail
-components/tache/vue-detaillee/barre-actions.tsx        → TacheBarreActions
 components/tache/vue-detaillee/sections/hero.tsx        → SectionHero
 components/tache/vue-detaillee/sections/documents.tsx   → SectionDocuments
 components/tache/vue-detaillee/sections/guidage.tsx     → SectionGuidage
