@@ -1,0 +1,120 @@
+/*
+ * Grille bicolonnée du dossier documentaire — 2 colonnes × 3 rangées.
+ * Référence visuelle : épreuves ministérielles MEQ (085-404 Histoire du Québec).
+ */
+
+.grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 8px;
+  row-gap: 10px;
+  width: 100%;
+}
+
+.rangee {
+  display: contents;
+}
+
+.cellule {
+  box-sizing: border-box;
+  min-width: 0;
+  break-inside: avoid;
+  page-break-inside: avoid;
+
+  /* Surcharge la hauteur max de l'image iconographique pour la cellule span 1. */
+  --tache-print-document-figure-max-height: 200px;
+
+  /* Contexte print : source bibliographique en noir pur (print-engine §4). */
+  --document-source-color: #000;
+}
+
+.celluleSpan2 {
+  grid-column: span 2;
+
+  /* Plus d'espace vertical disponible en pleine largeur. */
+  --tache-print-document-figure-max-height: 220px;
+}
+
+/*
+ * Cadre bordé du contenu (zone entre le titre et la source).
+ * Styles alignés sur `.documentCell` du rendu impression canonique,
+ * mais définis localement pour permettre des ajustements propres à la grille
+ * (padding plus serré, absence de fond).
+ */
+.cadre {
+  border: 1px solid #000;
+  padding: 0.4rem 0.5rem;
+  background: transparent;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/*
+ * Document simple iconographique : cadre compact à la largeur de l'image,
+ * pas pleine largeur de la cellule. Aligné sur la règle homologue de
+ * `.documentCell[data-doc-type="iconographique"]` du rendu print canonique.
+ */
+.cadre[data-doc-type="iconographique"] {
+  width: max-content;
+  max-width: 100%;
+}
+
+/*
+ * Ligne titre : badge numéro + titre, au-dessus du cadre.
+ * Alignée verticalement pour que le badge noir soit centré sur la baseline
+ * du titre. En mode sommatif (titre absent), toute la ligne disparaît et
+ * l'espace est récupéré.
+ */
+.ligneTitre {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.3rem;
+}
+
+.numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.3em;
+  height: 1.3em;
+  flex-shrink: 0;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12pt;
+  line-height: 1;
+  color: #fff;
+  background: #000;
+}
+
+.titre {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  font-size: 12pt;
+  line-height: 1.25;
+  color: #000;
+}
+
+/*
+ * Structures composites (perspectives / deux_temps) : sous-colonnes intra-cadre.
+ * Le cadre extérieur reste unique, les séparateurs internes sont des filets.
+ */
+.multicolonne {
+  display: grid;
+  margin: -0.4rem -0.5rem;
+}
+
+.multicolonneColonne {
+  border-left: 1px solid #333;
+  padding: 0.4rem 0.5rem;
+}
+
+.multicolonneColonne:first-child {
+  border-left: 0;
+}
+
+/* Source : hors cadre, sous la cellule, alignée sur la typo existante. */
+.sourceMulticolonne {
+  display: grid;
+}
