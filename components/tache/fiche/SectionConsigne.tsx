@@ -74,7 +74,7 @@ export function SectionConsigne({ tache, headerMenu }: Props) {
             className="material-symbols-outlined inline-flex shrink-0 items-center justify-center text-[1.1875rem] text-accent"
             aria-hidden="true"
           >
-            quiz
+            {ICONES_METIER.consigne}
           </span>
           <span className="text-[11px] font-semibold uppercase tracking-[0.09em] text-accent">
             Consigne

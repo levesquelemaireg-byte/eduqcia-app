@@ -242,7 +242,7 @@ type AsyncState<T> =
 
 // ✅ satisfies : valide sans élargir le type inféré
 const ICON_MAP = {
-  consigne: 'quiz',
+  consigne: 'short_text',
   guidage: 'tooltip_2',
   corrige: 'task_alt',
 } satisfies Record<string, string>
@@ -767,7 +767,7 @@ supabase/
 
 | Concept                    | Glyphe                | Clé `ICONES_METIER`          |
 | -------------------------- | --------------------- | ---------------------------- |
-| Consigne                   | `quiz`                | `consigne`                   |
+| Consigne                   | `short_text`          | `consigne`                   |
 | Guidage                    | `tooltip_2`           | `guidage`                    |
 | Corrigé                    | `task_alt`            | `corrige`                    |
 | Niveau                     | `school`              | `niveau`                     |

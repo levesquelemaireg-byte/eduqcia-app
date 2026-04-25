@@ -52,7 +52,7 @@ Bibliothèque **unique**. Glyphe en **`1em`**, pattern **`.icon-text`** / **`.ic
 | Comportement / grille                              | `table`                                   |
 | Voir grille                                        | `table_eye`                               |
 | Nombre de lignes                                   | `format_line_spacing`                     |
-| Consigne                                           | `quiz`                                    |
+| Consigne                                           | `short_text`                              |
 | Guidage                                            | `tooltip_2`                               |
 | Corrigé                                            | `task_alt`                                |
 | Options de réponse (stepper étape 5, avec corrigé) | `list_alt_check`                          |

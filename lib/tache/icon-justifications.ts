@@ -8,7 +8,8 @@ export const LEGAL_NOTICE_MATERIAL_ICON = "gavel";
 
 export const MATERIAL_ICON_TOOLTIP: Record<string, string> = {
   // —— Formulaire / sommaire (labels & champs)
-  quiz: "La consigne est une question posée à l'élève. L'icône évoque l'interrogation, le défi intellectuel soumis.",
+  short_text:
+    "La consigne est l'énoncé écrit que l'élève doit lire et appliquer. L'icône évoque le texte court, structuré et précis — l'instruction à suivre.",
   deployed_code:
     "Un cube à cinq faces — chaque aspect (économique, politique, social, culturel, territorial) est une perspective différente sur une même réalité sociale.",
   task_alt:

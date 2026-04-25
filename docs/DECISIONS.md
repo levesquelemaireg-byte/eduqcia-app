@@ -130,7 +130,7 @@ Textes d’infobulle : `lib/tache/icon-justifications.ts` (`MATERIAL_ICON_TOOLTI
 
 ### Labels et champs
 
-- **`quiz`** — Consigne : question posée à l’élève.
+- **`short_text`** — Consigne : énoncé écrit court à lire et appliquer (texte structuré, instruction à suivre).
 - **`deployed_code`** — Aspects de société : perspectives sur une réalité sociale.
 - **`task_alt`** — Corrigé : production attendue validée.
 - **`list_alt_check`** — Options de réponse (liste de propositions, bonne réponse) — stepper étape 5 avec `task_alt`.

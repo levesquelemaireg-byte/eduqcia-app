@@ -57,18 +57,7 @@ Recherche d’enseignants **inscrits** (`profiles.status = active`) pour aliment
 
 **Livré :** comportement **1.3** (avant / après) — `Bloc3AvantApres` / `Bloc4AvantApres` / `Bloc5AvantApres`, slug `avant-apres`, `avant-apres-payload.ts`, `avant-apres-helpers.ts`, `non-redaction-edit-hydrate.ts`, action `NON_REDACTION_PATCH_AVANT_APRES` ; **4 documents**, `requiresRepereTemporel: true` ; colonne **`tache.non_redaction_data`** (JSONB) alimentée par `publish_tache_transaction` / `update_tache_transaction` (clé absente en mise à jour → conservation de la valeur existante) ; HTML publié (`consigne` / `guidage` / `corrige`) + options persistées dans le JSON ; chaîne fiche enseignant : `prepareAvantApresConsigneForTeacherDisplay` dans `prepareNonRedactionConsigneForTeacherDisplay` ; impression : pipeline `ApercuImpression` (le HTML publié contient déjà l'agencement avant/après) — migrations `20260330220000_tae_non_redaction_data.sql`, `20260330220100_comportement_13_nb_documents.sql`, `public/data/oi.json` (`nb_documents`: 4 pour 1.3).
 
-**Glyphes sous pastilles :** une seule source avec les blocs — pas de duplication dans `step-meta` seul.
-
-| Étape | Module icônes                                                                                  |
-| ----- | ---------------------------------------------------------------------------------------------- |
-| 1     | `bloc1-stepper-icons.ts` → `person`, `groups`                                                  |
-| 2     | `bloc2-stepper-icons.ts` → `school`, `menu_book`, `psychology`, `table`, `format_line_spacing` |
-| 3     | `bloc3-stepper-icons.ts` → `quiz`, `deployed_code`, `task_alt`, `tooltip_2`                    |
-| 4–7   | `tache-future-step-icons.ts` (placeholder jusqu’à modules dédiés)                              |
-
-**Pourquoi des fichiers séparés :** éviter le cycle `FormState` ↔ `step-meta` ↔ `Bloc*`.
-
-**Intégration UI :** bandeau **dans** la carte formulaire ; `overflow-visible` sur la carte ; padding stepper `pt-6` min ; scroll horizontal du stepper avec `padding-top` pour ne pas rogner le ring de l’étape active.
+**Intégration UI :** bandeau **dans** la carte formulaire ; `overflow-visible` sur la carte ; padding stepper `pt-6` min ; scroll horizontal du stepper avec `padding-top` pour ne pas rogner le ring de l’étape active. **Pas de glyphes sous les pastilles** depuis le 25 avril 2026 — seuls les numéros sont affichés (les modules `blocN-stepper-icons.ts` qui alimentaient ces lignes ont été supprimés ou allégés ; `BLOC2_STEPPER_ICON` et `BLOC3_SECTION_ICON` restent disponibles pour les en-têtes de sections dans les blocs eux-mêmes).
 
 **États :** complétée = cercle vert + check ; active = accent + ring ; à venir = bordure grise, pastille non cliquable. Segments entre pastilles : vert si l’étape **à gauche** du segment est complétée. Cercle 40×40px, glyphes 18px, `gap-1`.
 

@@ -14,7 +14,7 @@
  */
 
 export const ICONES_METIER = {
-  consigne: "quiz",
+  consigne: "short_text",
   guidage: "tooltip_2",
   corrige: "task_alt",
   niveau: "school",
