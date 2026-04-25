@@ -64,7 +64,7 @@ export async function DashboardContent({ userId }: { userId: string }) {
         <dl className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-lg bg-panel-alt px-3 py-2">
             <dt className="text-xs font-medium uppercase tracking-wide text-muted">
-              Tâches d&apos;apprentissage et d&apos;évaluation publiées
+              Tâches publiées
             </dt>
             <dd className="mt-1 text-lg font-semibold text-deep">{stats.tachePublished}</dd>
           </div>
@@ -99,13 +99,10 @@ export async function DashboardContent({ userId }: { userId: string }) {
           )}
         </DashboardWidget>
 
-        <DashboardWidget
-          title="Mes tâches d'apprentissage et d'évaluation"
-          icon={ICONES_METIER.consigne}
-        >
+        <DashboardWidget title="Mes tâches" icon={ICONES_METIER.consigne}>
           {stats.tachePublished === 0 ? (
             <div className="flex flex-col gap-3">
-              <p className="text-muted">Aucune tâche d&apos;apprentissage et d&apos;évaluation.</p>
+              <p className="text-muted">Aucune tâche.</p>
               <Link
                 href="/questions/new"
                 className="inline-flex w-fit items-center gap-1 text-sm font-semibold text-accent hover:underline"
@@ -118,9 +115,8 @@ export async function DashboardContent({ userId }: { userId: string }) {
             </div>
           ) : (
             <p className="text-muted">
-              {stats.tachePublished} tâche{stats.tachePublished > 1 ? "s" : ""} d&apos;apprentissage
-              et d&apos;évaluation publiée{stats.tachePublished > 1 ? "s" : ""}. La liste détaillée
-              arrive prochainement.
+              {stats.tachePublished} tâche{stats.tachePublished > 1 ? "s" : ""} publiée
+              {stats.tachePublished > 1 ? "s" : ""}. La liste détaillée arrive prochainement.
             </p>
           )}
         </DashboardWidget>

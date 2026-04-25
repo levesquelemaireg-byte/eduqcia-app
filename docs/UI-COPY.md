@@ -114,10 +114,11 @@ Route `app/(app)/error.tsx` : affiché lorsqu'une erreur non gérée survient da
 - Notifications
 - Aucune notification pour le moment.
 
-### Mes tâches d'apprentissage et d'évaluation récentes
+### Mes tâches
 
-- Mes tâches d'apprentissage et d'évaluation récentes
-- Aucune tâche d'apprentissage et d'évaluation.
+- Mes tâches
+- Tâches publiées
+- Aucune tâche.
 - Créer une tâche
 - Voir toutes mes tâches
 
@@ -131,7 +132,7 @@ Route `app/(app)/error.tsx` : affiché lorsqu'une erreur non gérée survient da
 ### Mes favoris
 
 - Mes favoris
-- Tâches d'apprentissage et d'évaluation
+- Tâches
 - Documents
 - Épreuves
 - Aucun favori pour le moment.
