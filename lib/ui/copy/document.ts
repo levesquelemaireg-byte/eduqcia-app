@@ -90,6 +90,22 @@ export const DOCUMENT_MODULE_LEGEND_POSITION_SUBTITLE = "Positionnement de la l�
 export const DOCUMENT_MODULE_LEGEND_WORDS_ERROR = "La légende ne peut pas dépasser 50 mots.";
 export const DOCUMENT_MODULE_LEGEND_POSITION_ERROR =
   "Choisissez un coin pour la légende lorsque celle-ci est renseignée.";
+
+/**
+ * Avertissements non-bloquants — wizard document / Bloc 4.
+ * Purement informatifs (n'empêchent ni la saisie ni la publication).
+ * Seuils et niveaux : `lib/documents/seuils-avertissement.ts`.
+ */
+export const DOCUMENT_WARNING_TITRE_ORANGE =
+  "Ce titre est un peu long. Envisagez de le raccourcir pour améliorer la lisibilité.";
+export const DOCUMENT_WARNING_TITRE_ROUGE =
+  "La longueur du titre pourrait nuire à la mise en page et à la compréhension de l'élève. Raccourcissez-le autant que possible.";
+export const DOCUMENT_WARNING_CONTENU_TROP_COURT =
+  "Ce texte semble trop court pour constituer un document exploitable par l'élève.";
+export const DOCUMENT_WARNING_CONTENU_ORANGE =
+  "Ce texte est un peu long. Envisagez de le raccourcir pour ne pas surcharger l'élève.";
+export const DOCUMENT_WARNING_CONTENU_ROUGE =
+  "La longueur du texte risque de dépasser l'espace disponible sur la copie ou de surcharger cognitivement l'élève. Raccourcissez-le autant que possible.";
 export const DOCUMENT_MODULE_INDEX_DISCIPLINE = "Discipline";
 export const DOCUMENT_MODULE_INDEX_NIVEAU = "Niveau";
 export const DOCUMENT_MODULE_INDEX_CONNAISSANCES = "Connaissances associées";

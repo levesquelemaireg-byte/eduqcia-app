@@ -5,6 +5,7 @@ import { useCallback, useId, useState } from "react";
 import { DocumentTypeIconographiqueSelect } from "@/components/documents/DocumentTypeIconographiqueSelect";
 import { InlineWarning } from "@/components/ui/InlineWarning";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { WordCountFeedback } from "@/components/ui/WordCountFeedback";
 import { DocumentLegendPositionGrid } from "@/components/documents/DocumentLegendPositionGrid";
 import { RequiredMark } from "@/components/ui/RequiredMark";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
@@ -21,6 +22,13 @@ import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 import type { DocumentSlotData } from "@/lib/tache/document-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
+import { countWords } from "@/lib/documents/word-count";
+import {
+  evaluerContenuTextuel,
+  evaluerTitre,
+  messageContenuTextuel,
+  messageTitre,
+} from "@/lib/documents/seuils-avertissement";
 import {
   BLOC4_WARNING_NO_SOURCE,
   BLOC4_WARNING_NO_TITLE,
@@ -66,6 +74,14 @@ export function DocumentSlotCreateForm({
   const typeDocGroupId = useId();
   const iconoCategoryId = useId();
   const sourceHintId = `${sourceId}-hint`;
+
+  const titreWordCount = countWords(slot.titre);
+  const titreNiveau = evaluerTitre(slot.titre);
+  const titreMessage = messageTitre(titreNiveau);
+
+  const contenuWordCount = countWords(slot.contenu);
+  const contenuNiveau = evaluerContenuTextuel(slot.contenu);
+  const contenuMessage = messageContenuTextuel(contenuNiveau, contenuWordCount);
 
   // Track des champs visités pour conditionner les avertissements non-bloquants.
   // Les bannières InlineWarning ne s'affichent qu'après que l'utilisateur a
@@ -130,7 +146,9 @@ export function DocumentSlotCreateForm({
           autoComplete="off"
           className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
         />
-        {touched.titre && slot.type === "textuel" && slot.titre.trim().length === 0 ? (
+        {titreWordCount > 0 ? (
+          <WordCountFeedback count={titreWordCount} niveau={titreNiveau} message={titreMessage} />
+        ) : touched.titre && slot.type === "textuel" ? (
           <InlineWarning>{BLOC4_WARNING_NO_TITLE}</InlineWarning>
         ) : null}
       </div>
@@ -154,6 +172,13 @@ export function DocumentSlotCreateForm({
             placeholder="Saisir le contenu textuel du document…"
             rows={6}
           />
+          {contenuWordCount > 0 ? (
+            <WordCountFeedback
+              count={contenuWordCount}
+              niveau={contenuNiveau}
+              message={contenuMessage}
+            />
+          ) : null}
         </div>
       ) : (
         <div className="space-y-4">

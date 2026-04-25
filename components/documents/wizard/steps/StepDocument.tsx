@@ -6,10 +6,13 @@ import { toast } from "sonner";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { RepereTemporelField } from "@/components/ui/RepereTemporelField";
+import { WordCountFeedback } from "@/components/ui/WordCountFeedback";
 import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { DocumentElementFields } from "@/components/documents/wizard/steps/DocumentElementFields";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { countWords } from "@/lib/documents/word-count";
+import { evaluerTitre, messageTitre } from "@/lib/documents/seuils-avertissement";
 import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 import { cn } from "@/lib/utils/cn";
 import {
@@ -78,6 +81,11 @@ export function StepDocument() {
 
   const isMulti = structure === "perspectives" || structure === "deux_temps";
 
+  const titreValue = watch("titre") ?? "";
+  const titreWordCount = countWords(titreValue);
+  const titreNiveau = evaluerTitre(titreValue);
+  const titreMessage = messageTitre(titreNiveau);
+
   return (
     <div className="space-y-3">
       {/* Titre du document — toujours visible */}
@@ -97,6 +105,14 @@ export function StepDocument() {
           aria-invalid={errors.titre ? true : undefined}
           className="auth-input h-11 w-full rounded-lg border border-border bg-panel px-3 text-sm text-deep placeholder:text-muted"
         />
+        {titreWordCount > 0 ? (
+          <WordCountFeedback
+            count={titreWordCount}
+            niveau={titreNiveau}
+            message={titreMessage}
+            className="mt-2"
+          />
+        ) : null}
       </FieldLayout>
 
       {/* Ancrage temporel global */}

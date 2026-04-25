@@ -15,6 +15,13 @@
 
 import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
 import { countWords } from "@/lib/documents/word-count";
+import {
+  DOCUMENT_WARNING_CONTENU_ORANGE,
+  DOCUMENT_WARNING_CONTENU_ROUGE,
+  DOCUMENT_WARNING_CONTENU_TROP_COURT,
+  DOCUMENT_WARNING_TITRE_ORANGE,
+  DOCUMENT_WARNING_TITRE_ROUGE,
+} from "@/lib/ui/copy/document";
 
 // ---------------------------------------------------------------------------
 // Seuils — titre du document
@@ -84,4 +91,36 @@ export function evaluerLegende(texte: string): NiveauAvertissement {
   if (n <= LEGENDE_SEUIL_ORANGE_MIN) return "neutre";
   if (n < LEGENDE_MAX) return "orange";
   return "rouge"; // ≥ LEGENDE_MAX : validation Zod bloque déjà, ce rouge est informatif
+}
+
+// ---------------------------------------------------------------------------
+// Messages associés aux niveaux
+// ---------------------------------------------------------------------------
+
+/**
+ * Message correspondant au niveau d'avertissement du titre.
+ * `null` en niveau neutre (rien à signaler).
+ */
+export function messageTitre(niveau: NiveauAvertissement): string | null {
+  if (niveau === "orange") return DOCUMENT_WARNING_TITRE_ORANGE;
+  if (niveau === "rouge") return DOCUMENT_WARNING_TITRE_ROUGE;
+  return null;
+}
+
+/**
+ * Message correspondant au niveau d'avertissement du contenu textuel.
+ * Le niveau "rouge" couvre deux cas distincts — trop court (< 15 mots) OU
+ * trop long (> 150 mots). Le message est choisi selon le nombre de mots.
+ */
+export function messageContenuTextuel(
+  niveau: NiveauAvertissement,
+  nombreMots: number,
+): string | null {
+  if (niveau === "orange") return DOCUMENT_WARNING_CONTENU_ORANGE;
+  if (niveau === "rouge") {
+    return nombreMots < CONTENU_SEUIL_TROP_COURT_MIN
+      ? DOCUMENT_WARNING_CONTENU_TROP_COURT
+      : DOCUMENT_WARNING_CONTENU_ROUGE;
+  }
+  return null;
 }

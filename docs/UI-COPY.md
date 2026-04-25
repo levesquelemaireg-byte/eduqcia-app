@@ -617,6 +617,24 @@ Route `app/(app)/evaluations/page.tsx`. Constantes `MY_EVALUATIONS_DELETE_*` dan
 - **Texte d’aide (infobulle / tooltip, verbatim `DOCUMENT_MODULE_LEGEND_HELP_TOOLTIP`) :**  
   La légende est un court texte optionnel qui accompagne une image pour en préciser le contenu, le contexte ou la signification historique. Elle aide l’élève à mieux comprendre ce qu’il observe (ex. : lieu, date, personnage, événement). La légende apparaîtra directement sur l’image, dans le coin de votre choix, sous forme de rectangle en surimpression : fond blanc semi-transparent et filet noir à gauche. Maximum 50 mots.
 
+#### Titre du document — feedback compteur de mots (wizard document + Bloc 4)
+
+- **Composant :** **`WordCountFeedback`** (`components/ui/WordCountFeedback.tsx`), pilule colorée sous le champ + bannière texte si niveau ≠ neutre. Purement informatif — ne bloque ni la saisie ni la publication.
+- **Seuils :** **`lib/documents/seuils-avertissement.ts`** — `evaluerTitre()` + `messageTitre()`.
+  - **1–8 mots** : pilule grise neutre, aucun message.
+  - **9–12 mots** : pilule orange, message verbatim **`DOCUMENT_WARNING_TITRE_ORANGE`** : « Ce titre est un peu long. Envisagez de le raccourcir pour améliorer la lisibilité. »
+  - **13+ mots** : pilule rouge, message verbatim **`DOCUMENT_WARNING_TITRE_ROUGE`** : « La longueur du titre pourrait nuire à la mise en page et à la compréhension de l'élève. Raccourcissez-le autant que possible. »
+
+#### Contenu textuel — feedback compteur de mots (wizard document + Bloc 4)
+
+- **Composant :** identique — `WordCountFeedback` sous l'éditeur TipTap (wizard document) ou la textarea (Bloc 4). Comptage sur le texte brut (HTML stripé).
+- **Seuils :** `evaluerContenuTextuel()` + `messageContenuTextuel()` — la branche « rouge » couvre deux cas distincts (trop court OU trop long).
+  - **< 15 mots** : pilule rouge, message verbatim **`DOCUMENT_WARNING_CONTENU_TROP_COURT`** : « Ce texte semble trop court pour constituer un document exploitable par l'élève. »
+  - **15–100 mots** : pilule grise neutre, aucun message.
+  - **101–150 mots** : pilule orange, message verbatim **`DOCUMENT_WARNING_CONTENU_ORANGE`** : « Ce texte est un peu long. Envisagez de le raccourcir pour ne pas surcharger l'élève. »
+  - **151+ mots** : pilule rouge, message verbatim **`DOCUMENT_WARNING_CONTENU_ROUGE`** : « La longueur du texte risque de dépasser l'espace disponible sur la copie ou de surcharger cognitivement l'élève. Raccourcissez-le autant que possible. »
+- **Alignement layout dossier documentaire :** le seuil rouge long (151+ mots) déclenche automatiquement le span 2 à l'impression (`SEUIL_MOTS_SPAN2 = 150` dans `lib/impression/constantes-dossier-documentaire.ts`) — l'enseignant est prévenu en amont que son contenu va forcer la pleine largeur sur la grille bicolonnée.
+
 #### Type de source (primaire / secondaire)
 
 - **Obligatoire :** une valeur parmi primaire / secondaire.

@@ -13,6 +13,7 @@ import editorStyles from "@/components/partagees/tiptap/document-content-editor.
 import { useFieldFocusHandlers } from "@/components/documents/wizard/active-field-context";
 import { FieldLayout } from "@/components/ui/FieldLayout";
 import { RichTextEditor } from "@/components/ui/RichTextEditor";
+import { WordCountFeedback } from "@/components/ui/WordCountFeedback";
 import { documentContentExtensions } from "@/components/tache/wizard/tiptap/baseExtensions";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { ImageUploadDropzone } from "@/components/ui/ImageUploadDropzone";
@@ -30,6 +31,9 @@ import type { CategorieTextuelleValue } from "@/lib/documents/categorie-textuell
 import type { DocumentCategorieIconographiqueId } from "@/lib/types/document-categories";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import { isPublicHttpUrl } from "@/lib/tache/document-helpers";
+import { stripHtmlToPlainText } from "@/lib/documents/strip-html";
+import { countWords } from "@/lib/documents/word-count";
+import { evaluerContenuTextuel, messageContenuTextuel } from "@/lib/documents/seuils-avertissement";
 import type { DocumentImageUploadMeta } from "@/lib/types/document-image-upload";
 import { messageForUploadValidationReason } from "@/lib/ui/upload-image-validation-toast";
 import {
@@ -151,9 +155,15 @@ export function DocumentElementFields({
   const imageLegende = watch(`${prefix}.image_legende`);
   const imageUrl = watch(`${prefix}.image_url`);
   const titre = watch("titre");
+  const contenu = watch(`${prefix}.contenu`);
   const legendTrimmed = (imageLegende ?? "").trim();
   const showLegendPosition = legendTrimmed.length > 0;
   const legendWords = countWordsFr(imageLegende ?? "");
+
+  const contenuPlainText = stripHtmlToPlainText(contenu ?? "");
+  const contenuWordCount = countWords(contenuPlainText);
+  const contenuNiveau = evaluerContenuTextuel(contenu ?? "");
+  const contenuMessage = messageContenuTextuel(contenuNiveau, contenuWordCount);
 
   const elIndex = Number(prefix.split(".")[1]);
   const elErrors = errors.elements?.[elIndex];
@@ -345,6 +355,14 @@ export function DocumentElementFields({
             <div {...contenuFocus}>
               <DocumentContentRichEditor prefix={prefix} contenuEditorId={contenuEditorId} />
             </div>
+            {contenuWordCount > 0 ? (
+              <WordCountFeedback
+                count={contenuWordCount}
+                niveau={contenuNiveau}
+                message={contenuMessage}
+                className="mt-2"
+              />
+            ) : null}
           </FieldLayout>
 
           <FieldLayout
