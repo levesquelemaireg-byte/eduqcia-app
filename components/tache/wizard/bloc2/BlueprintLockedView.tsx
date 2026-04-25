@@ -1,5 +1,6 @@
 "use client";
 
+import { ponderationLabelFromOutilEvaluation } from "@/components/tache/wizard/bloc2/PonderationPicker";
 import { WarningModal } from "@/components/ui/WarningModal";
 import type { BlueprintSlice } from "@/components/tache/wizard/FormState";
 import { DISCIPLINE_LABEL, NIVEAUX } from "@/components/tache/wizard/bloc2/constants";
@@ -15,6 +16,7 @@ import {
   BLOC2_BLUEPRINT_LOCKED_LBL_NIVEAU,
   BLOC2_BLUEPRINT_LOCKED_LBL_OI,
   BLOC2_BLUEPRINT_LOCKED_TITLE,
+  BLOC2_PONDERATION_BLUEPRINT_LABEL,
   BLOC2_UNLOCK_CTA,
   BLOC2_UNLOCK_MODAL_BODY,
   BLOC2_UNLOCK_MODAL_CANCEL,
@@ -79,6 +81,12 @@ export function BlueprintLockedView({
                 </span>{" "}
                 {selectedComportement?.enonce ?? b.comportementId}
               </li>
+              {selectedComportement?.id === "2.1" ? (
+                <li>
+                  <span className="font-medium text-deep">{BLOC2_PONDERATION_BLUEPRINT_LABEL}</span>{" "}
+                  {ponderationLabelFromOutilEvaluation(b.outilEvaluation)}
+                </li>
+              ) : null}
             </>
           ) : null}
           {hideNbLignesSummary ? null : (

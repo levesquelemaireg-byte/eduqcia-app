@@ -9,6 +9,8 @@ import type { ComponentType } from "react";
 import dynamic from "next/dynamic";
 import { Bloc3AvantApres } from "@/components/tache/non-redaction/avant-apres/Bloc3AvantApres";
 import { Bloc4AvantApres } from "@/components/tache/non-redaction/avant-apres/Bloc4AvantApres";
+import { Bloc3CarteHistorique } from "@/components/tache/non-redaction/carte-historique/Bloc3CarteHistorique";
+import { Bloc4CarteHistorique } from "@/components/tache/non-redaction/carte-historique/Bloc4CarteHistorique";
 import { Bloc3LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-temps/Bloc3LigneDuTemps";
 import { Bloc4LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-temps/Bloc4LigneDuTemps";
 import { Bloc3OrdreChronologique } from "@/components/tache/non-redaction/ordre-chronologique/Bloc3OrdreChronologique";
@@ -47,6 +49,10 @@ export const TACHE_NON_REDACTION_WIZARD_BLOCS: Partial<
   "avant-apres": {
     Bloc3: Bloc3AvantApres,
     Bloc4: Bloc4AvantApres,
+  },
+  "carte-historique": {
+    Bloc3: Bloc3CarteHistorique,
+    Bloc4: Bloc4CarteHistorique,
   },
 };
 

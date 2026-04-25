@@ -412,3 +412,117 @@ export const NR_CARTE_23_CORRIGE_TEMPLATE =
 /** Toast affiché si l'hydratation de la tâche échoue (édition). */
 export const TOAST_TACHE_NR_CARTE_HISTORIQUE_HYDRATE_INVALID =
   "Les données structurées de cette tâche (carte historique) sont illisibles. Vous pouvez republier depuis le wizard.";
+
+/* -----------------------------  Bloc 3 — consigne  ------------------------ */
+
+export const NR_CARTE_CONSIGNE_LABEL = "Consigne";
+export const NR_CARTE_CONSIGNE_MINISTERIAL_BADGE = "Libellé ministériel";
+export const NR_CARTE_TEMPLATE_CARD_FOOTER =
+  "Seules les zones soulignées en bleu sont modifiables. Le numéro du document est généré automatiquement.";
+export const NR_CARTE_TEMPLATE_LEGEND_FIXED = "Texte fixe (ministériel)";
+export const NR_CARTE_TEMPLATE_LEGEND_AUTO = "Généré automatiquement";
+export const NR_CARTE_TEMPLATE_LEGEND_EDITABLE = "Zone éditable";
+export const NR_CARTE_TEMPLATE_LEGEND_GROUP_ARIA = "Légende : nature des zones de la consigne";
+export const NR_CARTE_TEMPLATE_RENUMBER_NOTE =
+  "Le numéro du document s'ajuste automatiquement si cette tâche est intégrée à une épreuve regroupant plusieurs tâches.";
+export const NR_CARTE_WIZARD_DOC_TOKEN_TITLE =
+  "Numéro de document généré automatiquement à partir du dossier documentaire de la tâche.";
+export const NR_CARTE_WIZARD_DOC_TOKEN_LABEL = "Doc 1";
+
+/** Aides spécifiques par comportement (texte sous le label « Consigne »). */
+export const NR_CARTE_CONSIGNE_HELP_21 =
+  "Indiquez l'élément géographique ou le territoire que l'élève doit identifier sur la carte. Le reste de la consigne est figé.";
+export const NR_CARTE_CONSIGNE_HELP_22 =
+  "Indiquez les deux éléments à associer aux chiffres tracés sur la carte. Le tableau A/B/C/D est généré à l'étape 5 à partir des chiffres choisis.";
+export const NR_CARTE_CONSIGNE_HELP_23 =
+  "Indiquez les deux lieux à identifier séparément sur la carte. Chaque lieu reçoit sa propre lettre de réponse à l'étape 5.";
+
+/** Modale d'aide « Consigne » — corps. */
+export const NR_CARTE_CONSIGNE_INFO_MODAL_BODY =
+  "Le libellé de la consigne suit la formulation officielle ministérielle. Vous ne complétez que le ou les éléments soulignés en bleu, qui apparaîtront aux endroits prévus dans la phrase publiée.";
+
+/** Placeholders et labels accessibles des champs éditables. */
+export const NR_CARTE_ELEMENT_PLACEHOLDER_21 = "élément géographique ou territoire";
+export const NR_CARTE_ELEMENT_PLACEHOLDER_22_1 = "premier élément (ex. : l'Acadie)";
+export const NR_CARTE_ELEMENT_PLACEHOLDER_22_2 =
+  "deuxième élément (ex. : la vallée du Saint-Laurent)";
+export const NR_CARTE_ELEMENT_PLACEHOLDER_23_1 = "premier lieu";
+export const NR_CARTE_ELEMENT_PLACEHOLDER_23_2 = "deuxième lieu";
+
+export const NR_CARTE_ELEMENT_ARIA_21 = "Élément géographique ou territoire à identifier";
+export const NR_CARTE_ELEMENT_ARIA_22_1 = "Premier élément à associer à un chiffre sur la carte";
+export const NR_CARTE_ELEMENT_ARIA_22_2 = "Deuxième élément à associer à un chiffre sur la carte";
+export const NR_CARTE_ELEMENT_ARIA_23_1 = "Premier lieu à identifier";
+export const NR_CARTE_ELEMENT_ARIA_23_2 = "Deuxième lieu à identifier";
+
+/** Modale d'aide « Guidage complémentaire ». */
+export const NR_CARTE_GUIDAGE_INFO_MODAL_BODY =
+  "Le guidage est facultatif. Il s'affiche en mode formatif (fiche enseignant et feuille élève si l'option est activée), et il est masqué en mode sommatif.";
+
+/* -----------------------------  Gates / prérequis  ------------------------ */
+
+export const NR_CARTE_GATE_BLOC3 =
+  "Complétez et verrouillez l'étape « Paramètres de la tâche » (étape 2) pour rédiger la consigne.";
+export const NR_CARTE_GATE_PRE_DOCS =
+  "Complétez d'abord les étapes « Paramètres de la tâche » et « Consigne » pour ajouter la carte historique au dossier documentaire.";
+export const NR_CARTE_GATE_BLOC5 =
+  "Complétez la consigne et ajoutez la carte historique avant de définir le corrigé.";
+export const NR_CARTE_BLOC4_INFO =
+  "Une seule carte historique est requise. Elle doit comporter les 4 lettres A, B, C, D (et, pour le comportement « association d'éléments », les 4 chiffres 1, 2, 3, 4) déjà tracés sur la carte.";
+
+/* -----------------------------  Bloc 5 — corrigé  ------------------------- */
+
+/** Titres des sections par comportement. */
+export const NR_CARTE_BLOC5_TITLE_21 = "Bonne réponse";
+export const NR_CARTE_BLOC5_TITLE_22 = "Association des chiffres";
+export const NR_CARTE_BLOC5_TITLE_23 = "Bonnes réponses";
+
+export const NR_CARTE_BLOC5_HELP_21 =
+  "Sélectionnez la lettre (A, B, C ou D) qui identifie correctement l'élément sur la carte historique.";
+export const NR_CARTE_BLOC5_HELP_22 =
+  "Choisissez le chiffre (1 à 4) associé à chacun des deux éléments. Les options A/B/C/D sont générées et mélangées automatiquement, avec une seule paire correcte.";
+export const NR_CARTE_BLOC5_HELP_23 =
+  "Sélectionnez la lettre identifiant chaque lieu sur la carte historique.";
+
+/** 2.1 / 2.3 — radio A/B/C/D. */
+export const NR_CARTE_LETTER_GROUP_ARIA = "Lettre correspondant à la bonne réponse";
+export const NR_CARTE_LETTER_GROUP_ARIA_FOR = "Lettre correspondant à : {{element}}";
+export const NR_CARTE_LETTER_OPTION_A = "A";
+export const NR_CARTE_LETTER_OPTION_B = "B";
+export const NR_CARTE_LETTER_OPTION_C = "C";
+export const NR_CARTE_LETTER_OPTION_D = "D";
+
+/** 2.2 — sélection des chiffres + génération. */
+export const NR_CARTE_22_STEP1_TITLE = "Étape 1 — Saisir la bonne association";
+export const NR_CARTE_22_STEP1_DESCRIPTION =
+  "Indiquez le chiffre (1 à 4) qui identifie chacun des deux éléments sur la carte. Les deux chiffres doivent être différents.";
+export const NR_CARTE_22_CHIFFRE_LABEL_FOR = "Chiffre pour {{element}}";
+export const NR_CARTE_22_CHIFFRE_PLACEHOLDER = "—";
+export const NR_CARTE_22_GENERATE_CTA = "Générer les options A B C D";
+export const NR_CARTE_22_REGENERATE_CTA = "Re-mélanger les options";
+export const NR_CARTE_22_STEP2_TITLE = "Étape 2 — Tableau généré";
+export const NR_CARTE_22_STEP2_DESCRIPTION =
+  "Les 4 paires ci-dessous ont été mélangées aléatoirement. La lettre correcte est identifiée automatiquement.";
+export const NR_CARTE_22_CORRECT_BADGE = "Bonne réponse";
+export const NR_CARTE_22_TABLE_ARIA = "Options A à D — paires de chiffres associées aux éléments";
+
+/** Erreurs de génération 2.2. */
+export const NR_CARTE_22_GEN_ERROR_SAME_DIGITS =
+  "Les deux chiffres doivent être différents pour générer le tableau.";
+export const NR_CARTE_22_GEN_ERROR_INVALID =
+  "Génération impossible. Vérifiez que vous avez choisi un chiffre pour chacun des deux éléments.";
+
+/** 2.3 — deux radios A/B/C/D. */
+export const NR_CARTE_23_LETTER_LABEL_FOR = "Lettre pour {{element}}";
+
+/** Sommaire / corrigé — affichage humain de la lettre. */
+export const NR_CARTE_CORRIGE_NO_LETTER = "(à définir)";
+
+/* -----------------------------  Bloc 2 — Pondération  --------------------- */
+
+export const BLOC2_PONDERATION_LABEL = "Pondération";
+export const BLOC2_PONDERATION_HELP =
+  "Choisissez la pondération à utiliser pour la grille de correction. Vous pouvez la modifier à tout moment sans perdre vos saisies.";
+export const BLOC2_PONDERATION_OPTION_2_PTS = "2 points (sur 2)";
+export const BLOC2_PONDERATION_OPTION_1_PT = "1 point (sur 1)";
+export const BLOC2_PONDERATION_BLUEPRINT_LABEL = "Pondération :";

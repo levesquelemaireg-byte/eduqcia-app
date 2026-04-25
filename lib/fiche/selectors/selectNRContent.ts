@@ -2,7 +2,10 @@
  * Selector mémoïsé — cascade NR exécutée une seule fois par render.
  * Consommé par selectConsigne, selectGuidage, selectCorrige.
  *
- * Priorité : avant/après → ordre chronologique → ligne du temps → null (rédactionnel).
+ * Priorité : avant/après → ordre chronologique → ligne du temps → carte historique → null (rédactionnel).
+ *
+ * Pour `carte-historique`, le guidage est libre (saisi par l'enseignant via TipTap)
+ * et provient de `state.bloc3.guidage`.
  */
 
 import { createSelector } from "@/lib/fiche/helpers";
@@ -15,6 +18,11 @@ import {
   buildAvantApresGuidageHtml,
   normalizeAvantApresPayload,
 } from "@/lib/tache/non-redaction/avant-apres-payload";
+import {
+  buildCarteHistoriqueConsigneHtml,
+  buildCarteHistoriqueCorrigeHtml,
+  normalizeCarteHistoriquePayload,
+} from "@/lib/tache/non-redaction/carte-historique-payload";
 import {
   buildOrdreChronologiqueConsigneHtml,
   buildOrdreChronologiqueCorrigeHtml,
@@ -32,8 +40,9 @@ export const selectNRContent = createSelector(
   [
     (state: TacheFormState) => state.bloc2.comportementId,
     (state: TacheFormState) => state.bloc5.nonRedaction,
+    (state: TacheFormState) => state.bloc3.guidage,
   ],
-  (comportementId, nonRedaction): NonRedactionContent | null => {
+  (comportementId, nonRedaction, guidageLibre): NonRedactionContent | null => {
     const slug = getVariantSlugForComportementId(comportementId);
     if (!slug || !nonRedaction || nonRedaction.type === "placeholder") return null;
 
@@ -64,6 +73,17 @@ export const selectNRContent = createSelector(
         consigne: buildLigneDuTempsConsigneHtml(norm),
         guidage: buildLigneDuTempsGuidageHtml(),
         corrige: buildLigneDuTempsCorrigeHtml(norm),
+      };
+    }
+
+    if (slug === "carte-historique" && nonRedaction.type === "carte-historique") {
+      const norm = normalizeCarteHistoriquePayload(nonRedaction.payload);
+      if (!norm) return null;
+      return {
+        consigne: buildCarteHistoriqueConsigneHtml(norm),
+        // Guidage libre saisi par l'enseignant — peut être vide.
+        guidage: guidageLibre,
+        corrige: buildCarteHistoriqueCorrigeHtml(norm),
       };
     }
 

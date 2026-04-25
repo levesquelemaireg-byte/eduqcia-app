@@ -41,6 +41,33 @@ export type CarteHistoriqueComportementId = "2.1" | "2.2" | "2.3";
 export type CarteHistoriqueLetter = "A" | "B" | "C" | "D";
 export type CarteHistoriqueLetterOrEmpty = CarteHistoriqueLetter | "";
 
+/**
+ * Longueurs max / seuils d'avertissement par comportement pour les zones éditables
+ * de la consigne (utilisé par `LimitCounterPill` dans le template Bloc 3).
+ */
+export const CARTE_ELEMENT_LIMITS: Record<
+  CarteHistoriqueComportementId,
+  { max: number; warn: number }
+> = {
+  "2.1": { max: 120, warn: 100 },
+  "2.2": { max: 60, warn: 50 },
+  "2.3": { max: 80, warn: 65 },
+};
+
+/** Outils d'évaluation alternatifs pour le comportement 2.1 (1pt / 2pts). */
+export const CARTE_21_OUTIL_EVALUATION_2PTS = "OI2_SO1";
+export const CARTE_21_OUTIL_EVALUATION_1PT = "OI2_SO1_1PT";
+
+export type Carte21Ponderation = "2pts" | "1pt";
+
+export function ponderationFromOutilEvaluation(outilEvaluation: string | null): Carte21Ponderation {
+  return outilEvaluation === CARTE_21_OUTIL_EVALUATION_1PT ? "1pt" : "2pts";
+}
+
+export function outilEvaluationFromPonderation(p: Carte21Ponderation): string {
+  return p === "1pt" ? CARTE_21_OUTIL_EVALUATION_1PT : CARTE_21_OUTIL_EVALUATION_2PTS;
+}
+
 const comportementIdZ = z.enum(["2.1", "2.2", "2.3"]);
 const letterOrEmptyZ = z.enum(["A", "B", "C", "D", ""]);
 const chiffreZ = z.union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)]);
