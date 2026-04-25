@@ -5,7 +5,7 @@ import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-aper
 import { Button } from "@/components/ui/Button";
 import { CarrouselApercu } from "./index";
 import { CARROUSEL_APERCU_COPY } from "./copy";
-import { CarrouselNavProvider, useCarrouselNav } from "./nav-context";
+import { CarrouselNavProvider, useCarrouselNavControls } from "./nav-context";
 
 export type CarrouselApercuModaleProps = {
   open: boolean;
@@ -151,8 +151,7 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
  * en font-semibold pour le contraste avec les boutons ghost à côté.
  */
 function FooterNavigation() {
-  const ctx = useCarrouselNav();
-  const controls = ctx?.controls;
+  const controls = useCarrouselNavControls();
 
   if (!controls) {
     return <div aria-hidden="true" />;

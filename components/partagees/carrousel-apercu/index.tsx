@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
 import { CARROUSEL_APERCU_COPY, FEUILLET_LABELS_COPY } from "./copy";
-import { useCarrouselNav } from "./nav-context";
+import { useCarrouselNavSetter } from "./nav-context";
 import { cn } from "@/lib/utils/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -87,7 +87,9 @@ function CarrouselFeuillet({
     startIndex: indexInitial,
   });
   const [indexActif, setIndexActif] = useState(indexInitial);
-  const navCtx = useCarrouselNav();
+  // Setter stable (référence ne change jamais) — pas de boucle de
+  // re-render même si on l'utilise comme dépendance du useEffect.
+  const setNavControls = useCarrouselNavSetter();
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -106,8 +108,8 @@ function CarrouselFeuillet({
 
   // Expose les controls au Context (consommé par le footer de la modale).
   useEffect(() => {
-    if (!navCtx || !emblaApi) return;
-    navCtx.setControls({
+    if (!emblaApi) return;
+    setNavControls({
       scrollPrev: () => emblaApi.scrollPrev(),
       scrollNext: () => emblaApi.scrollNext(),
       indexPageGlobal: feuillet.debutIndex + indexActif + 1,
@@ -116,9 +118,16 @@ function CarrouselFeuillet({
       peutSuivant: indexActif < feuillet.pages.length - 1,
     });
     return () => {
-      navCtx.setControls(null);
+      setNavControls(null);
     };
-  }, [navCtx, emblaApi, indexActif, feuillet.debutIndex, feuillet.pages.length, totalPagesGlobal]);
+  }, [
+    setNavControls,
+    emblaApi,
+    indexActif,
+    feuillet.debutIndex,
+    feuillet.pages.length,
+    totalPagesGlobal,
+  ]);
 
   return (
     <div className="overflow-hidden" ref={emblaRef}>
