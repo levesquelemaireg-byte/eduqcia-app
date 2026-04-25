@@ -207,8 +207,10 @@
 
   /*
    * Documents iconographiques — fiche / aperçu (`printable-fiche-preview.module.css`).
-   * Plafond hauteur sur l’`<img>` ; aligné sur `PRINT_IMAGE_MAX_HEIGHT_PX = 350` (`lib/impression/constantes-image.ts`)
-   * — soit ~9.3 cm à 96 dpi. L'image téléversée garde sa taille originale ; le rendu CSS borne la hauteur.
+   * Plafond hauteur sur l'`<img>` : 9.3 cm ≈ 350 px à 96 dpi. L'image
+   * téléversée garde sa taille originale ; le rendu CSS borne la hauteur.
+   * Surcharge locale possible via la variable (cf. `cellule.module.css`
+   * pour les cellules dossier documentaire : 200/220 px selon span).
    */
   --tache-print-document-figure-max-height: 9.3cm;
 }

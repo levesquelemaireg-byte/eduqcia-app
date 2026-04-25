@@ -1,70 +1,12 @@
-/* Letter US + marges feuille — `app/globals.css` : `--tache-print-sheet-*`, `--tache-print-document-figure-*` */
-
 /*
- * Grille documents (auto-fit) — largeurs min. de colonne :
- * - 20rem : textuel, paragraphes lisibles en multi-colonnes.
- * - 26rem : dès qu’une carte iconographique est présente (hybride :has + .docsGridHasIcono) —
- *   largeur min. pour légendes sur cartes géo / historiques ; monter 27.5–28rem si illisible,
- *   descendre 24–25rem si trop de passages en une colonne (calibration sur corpus réel).
+ * Styles partagés du rendu document — utilisés par :
+ * - `mode-sommaire.tsx` (panneau sommaire wizard / fiche)
+ * - `element-renderer.tsx` (atome de rendu d'un élément)
+ * - `cellule.tsx` (DossierCellule — réutilise les styles de source)
+ *
+ * Le rendu impression de la grille bicolonnée (`DossierGrille` / `DossierCellule`)
+ * définit ses propres styles dans `components/epreuve/impression/dossier/cellule.module.css`.
  */
-
-/* Conteneur racine — deux feuillets `.paper` ; à l’écran un seul visible selon l’onglet. */
-.printFeuilletRoot {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.25rem;
-  width: var(--tache-print-sheet-width);
-  max-width: 100%;
-}
-
-.feuilletPaneScreenHidden {
-  display: none;
-}
-
-.paper {
-  box-sizing: border-box;
-  width: var(--tache-print-sheet-width);
-  min-height: var(--tache-print-sheet-min-height);
-  max-width: 100%;
-  padding: var(--tache-print-sheet-padding);
-  background: var(--color-panel);
-  color: var(--color-deep);
-  container-type: inline-size;
-  container-name: paper;
-  /* Aligné impression (`globals.css` @media print) — Arial 11pt ; barèmes : typo propre sur `table` */
-  --font-sans: Arial, Helvetica, sans-serif;
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 11pt;
-  line-height: 1.5;
-  box-shadow: var(--wizard-preview-card-shadow);
-}
-
-.sectionBlock {
-  margin-bottom: 1.25rem;
-}
-
-/* Espace réduit entre consigne et guidage (une ligne, pas un « saut » de section). */
-.sectionBlock.sectionTightToNext {
-  margin-bottom: 0.5em;
-}
-
-.sectionBlock:last-child {
-  margin-bottom: 0;
-}
-
-/* Grille documents — auto-fit ; --col-min relevé si iconographique (:has + classe React) */
-.docsGrid {
-  --col-min: 20rem;
-  display: grid;
-  gap: 0.875rem;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
-}
-
-.docsGrid:has([data-doc-type="iconographique"]),
-.docsGrid.docsGridHasIcono {
-  --col-min: 26rem;
-}
 
 /* HTML TipTap / consigne — Preflight Tailwind enlève list-style sur ul/ol ; rétablir puces / numéros. */
 .htmlFlow p {
@@ -110,64 +52,10 @@
 }
 
 /*
- * Document imprimable — 3 zones empilées verticalement :
- * 1. `.documentHeader` — ligne titre (badge numéro + titre), hors cadre
- * 2. `.documentCell` — cadre bordé (contenu + auteur)
- * 3. `.documentSource` — source bibliographique, hors cadre, texte libre 9pt
- *
- * Le badge numéro chevauche le haut du cadre via un margin-bottom négatif,
- * créant la jonction visuelle entre la ligne titre et la boîte bordée.
+ * Cadre bordé — utilisé par `mode-sommaire.tsx` (panneau sommaire à l'écran).
+ * Le rendu impression du dossier documentaire utilise sa propre classe `.cadre`
+ * dans `cellule.module.css`.
  */
-
-/* Wrapper qui regroupe les 3 zones — ne pas fragmenter sur deux pages.
- * `width: fit-content` garantit que le titre et la source épousent la largeur
- * du cadre (ex. largeur de l'image pour un iconographique) et ne dépassent
- * jamais au-delà — titre + cadre + source = même largeur maximale. */
-.documentWrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  width: fit-content;
-  max-width: 100%;
-  break-inside: avoid;
-  page-break-inside: avoid;
-  /* Contexte print : source bibliographique en noir pur (print-engine §4). */
-  --document-source-color: #000;
-}
-
-/* Zone 1 : ligne titre (badge + titre) — au-dessus du cadre, sans bordure.
- * Pas de `margin-bottom` — le badge numéro colle au bord supérieur du cadre
- * (référence visuelle MEQ). */
-.documentHeader {
-  display: flex;
-  align-items: center;
-  gap: 0.4em;
-  position: relative;
-  z-index: 1;
-}
-
-/*
- * Badge numéro — carré noir, fait la jonction entre la ligne titre et le cadre.
- * `print-color-adjust: exact` pour que le fond noir s'imprime en PDF.
- */
-.documentNumero {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 8px;
-  background: #000;
-  color: #fff;
-  font-family: Arial, "Liberation Sans", Helvetica, sans-serif;
-  font-weight: 700;
-  font-size: 14pt;
-  line-height: 1;
-  print-color-adjust: exact;
-  -webkit-print-color-adjust: exact;
-}
-
-/* Zone 2 : cadre bordé — contient uniquement le contenu et l'auteur. */
 .documentCell {
   display: flex;
   flex-direction: column;
@@ -176,18 +64,6 @@
   border-radius: 0;
   padding: 0.4rem 0.5rem;
   background: var(--color-panel);
-}
-
-/*
- * Iconographique : bordure extérieure de la carte = largeur du contenu (image / titre / source),
- * pas toute la colonne de la grille.
- */
-.documentCell[data-doc-type="iconographique"] {
-  box-sizing: border-box;
-  width: max-content;
-  max-width: 100%;
-  justify-self: start;
-  align-items: flex-start;
 }
 
 /* Titre du document dans la ligne header — bold 12pt, pas de bordure. */
@@ -201,11 +77,6 @@
 .documentBody {
   margin: 0;
   margin-top: 0.5em;
-}
-
-/* Légende / HTML sous une figure iconographique — moins d’air qu’un `mt-2` Tailwind. */
-.htmlFlowAfterFigure {
-  margin-top: 0.35em;
 }
 
 /* Coupures de paragraphes lisibles sur textes longs (fiche imprimable) */
@@ -257,30 +128,17 @@
   line-height: 1.4;
 }
 
-/* Zone 3 : source — hors cadre, sous le cadre bordé. Arial 7pt line-height 1.15
- * en contexte print (référence visuelle MEQ — la source est écrite très petit).
- * Gris discret par défaut (sommaire à l'écran). Les wrappers print forcent
- * la couleur à noir pur via `--document-source-color: #000` (règle §4 du
- * print-engine — Arial noir pur exclusivement). */
+/*
+ * Source bibliographique — Arial 7pt, line-height 1.15 (référence MEQ).
+ * Couleur pilotée par `--document-source-color` : noir pur en contexte print
+ * (défini sur `.cellule` dans `cellule.module.css`), gris discret par défaut
+ * (sommaire à l'écran — fallback `--color-steel`).
+ */
 .documentSource {
   margin: 0.35em 0 0;
   font-size: 7pt;
   line-height: 1.15;
   color: var(--document-source-color, var(--color-steel));
-}
-
-/* Citation à la suite du libellé « Source : » (flex uniquement quand HTML citation). */
-.documentSourceRow {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.25em;
-}
-
-.documentSourceLabel {
-  flex-shrink: 0;
-  font-weight: 600;
 }
 
 .documentSourceValue {
@@ -309,8 +167,7 @@
 /*
  * Figure iconographique — cadre serré sur l'image rendue.
  * L'image téléversée conserve sa taille originale ; les bornes max-width / max-height
- * (`PRINT_IMAGE_MAX_WIDTH_PX` / `PRINT_IMAGE_MAX_HEIGHT_PX`, `lib/impression/constantes-image.ts`)
- * contrôlent la taille rendue sans déformation (`object-fit: contain`).
+ * (CSS) contrôlent la taille rendue sans déformation (`object-fit: contain`).
  */
 .documentFigure {
   position: relative;
@@ -330,7 +187,7 @@
 .documentFigureImg {
   display: block;
   box-sizing: border-box;
-  /* Borne en parallèle largeur (660px) et hauteur (9.3cm ≈ 350px) — la plus restrictive gagne. */
+  /* Borne en parallèle largeur (660px) et hauteur (variable CSS) — la plus restrictive gagne. */
   max-width: min(100%, 660px);
   width: auto;
   height: auto;
@@ -339,99 +196,13 @@
   object-position: center;
 }
 
-.answerLines {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.answerLine {
-  min-height: 7.5mm;
-  margin: 0;
-  border-bottom: 0.45pt solid var(--color-deep);
-  break-inside: avoid;
-}
-
-.grilleBaremeRow {
-  margin-bottom: 0.45rem;
-  padding: 0.4rem 0.5rem;
-  border: 0.5pt solid var(--color-border);
-  border-radius: var(--radius-sm);
-  break-inside: avoid;
-}
-
-.grilleBaremeLabel {
-  margin: 0;
-  font-size: 10pt;
-  font-weight: 600;
-}
-
-.grilleBaremeDesc {
-  margin: 0.25rem 0 0;
-  font-size: 9.5pt;
-  color: var(--color-steel);
-}
-
-.guidageBlock {
-  margin-top: 0;
-}
-
-.guidageBlock .htmlFlow {
-  font-style: italic;
-}
-
-/*
- * Après la grille documents : un seul « morceau » pour la pagination (impression).
- * Si la place restante sur la page ne suffit pas, le moteur envoie tout le bloc à la suivante.
- * Limite UA : si le bloc dépasse une page entière, fragmentation ou débordement possible.
- */
-.postDocumentsPrintGroup {
-  min-width: 0;
-}
-
 @media print {
-  .printFeuilletRoot {
-    gap: 0;
-    align-items: stretch;
-  }
-
-  .feuilletPaneScreenHidden {
-    display: block !important;
-  }
-
-  .feuilletDossierPane {
-    page-break-after: always;
-    break-after: page;
-  }
-
-  /*
-   * Géométrie feuille : variables `--tache-print-sheet-*` (`globals.css`).
-   * Impression Puppeteer : `@page { margin: 2cm }` dans `styles/impression.css`.
-   * Ne pas surcharger le padding de `.paper` ici (aligné sur les mêmes variables / globals).
-   */
-  .paper {
-    box-shadow: none;
-  }
-
-  .docsGrid {
-    gap: 0.6rem;
-  }
-
   .documentCell {
     border-color: #000;
-  }
-
-  .postDocumentsPrintGroup {
-    break-inside: avoid;
-    page-break-inside: avoid;
   }
 
   .documentFigure {
     border-color: #000;
     break-inside: avoid;
-  }
-
-  .answerLine {
-    border-bottom-color: #222;
   }
 }
