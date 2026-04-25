@@ -5,6 +5,7 @@ import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-aper
 import { Button } from "@/components/ui/Button";
 import { CarrouselApercu } from "./index";
 import { CARROUSEL_APERCU_COPY } from "./copy";
+import { CarrouselNavProvider, useCarrouselNav } from "./nav-context";
 
 export type CarrouselApercuModaleProps = {
   open: boolean;
@@ -16,7 +17,7 @@ export type CarrouselApercuModaleProps = {
  * Overlay modal partagé — bouton imprimante des vues détaillées
  * (tâche, document, épreuve). Génère les PNG via `useApercuPng`
  * et les présente dans `CarrouselApercu` avec chrome modal
- * (header, fermeture, footer télécharger PDF).
+ * (header, fermeture, footer télécharger PDF + navigation prev/next).
  */
 export function CarrouselApercuModale({ open, onClose, payload }: CarrouselApercuModaleProps) {
   const titleId = useId();
@@ -52,87 +53,134 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" role="presentation">
-      <button
-        type="button"
-        className="absolute inset-0 bg-black/50"
-        aria-label={CARROUSEL_APERCU_COPY.boutonFermer}
-        onClick={onClose}
-      />
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className="relative z-10 flex min-h-0 flex-1 flex-col bg-deep/25"
-      >
-        {/* Header */}
-        <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-4 py-3 shadow-sm sm:px-5">
-          <h2 id={titleId} className="text-lg font-semibold text-deep">
-            {CARROUSEL_APERCU_COPY.modalTitle}
-          </h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep"
-            aria-label={CARROUSEL_APERCU_COPY.boutonFermer}
-          >
-            <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
-              close
-            </span>
-          </button>
-        </header>
-
-        {/* Contenu principal */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-steel/25 px-4 py-6 sm:px-8">
-          {etat.statut === "chargement" && <SqueletteChargement />}
-
-          {etat.statut === "erreur" && <EtatErreur message={etat.message} surReessayer={generer} />}
-
-          {etat.statut === "pret" && (
-            <CarrouselApercu
-              pages={etat.pages}
-              pagesParFeuillet={etat.pagesParFeuillet}
-              empreintePng={etat.empreintePng}
-              empreinteWizard={empreinteWizard}
-              surRegenerer={generer}
-            />
-          )}
-        </div>
-
-        {/* Footer */}
-        <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
-          <Button type="button" variant="ghost" onClick={onClose}>
-            {CARROUSEL_APERCU_COPY.boutonFermer}
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            disabled={etat.statut !== "pret" || pdfEnCours}
-            onClick={telechargerPdf}
-          >
-            {pdfEnCours ? (
-              <span className="inline-flex items-center gap-[0.35em]">
-                <span
-                  className="material-symbols-outlined animate-spin text-[1em] leading-none"
-                  aria-hidden="true"
-                >
-                  progress_activity
-                </span>
-                {CARROUSEL_APERCU_COPY.boutonTelechargerPdf}
+    <CarrouselNavProvider>
+      <div className="fixed inset-0 z-50 flex flex-col" role="presentation">
+        <button
+          type="button"
+          className="absolute inset-0 bg-black/50"
+          aria-label={CARROUSEL_APERCU_COPY.boutonFermer}
+          onClick={onClose}
+        />
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={titleId}
+          className="relative z-10 flex min-h-0 flex-1 flex-col bg-deep/25"
+        >
+          {/* Header */}
+          <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-4 py-3 shadow-sm sm:px-5">
+            <h2 id={titleId} className="text-lg font-semibold text-deep">
+              {CARROUSEL_APERCU_COPY.modalTitle}
+            </h2>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep"
+              aria-label={CARROUSEL_APERCU_COPY.boutonFermer}
+            >
+              <span className="material-symbols-outlined text-[22px]" aria-hidden="true">
+                close
               </span>
-            ) : (
-              CARROUSEL_APERCU_COPY.boutonTelechargerPdf
+            </button>
+          </header>
+
+          {/* Contenu principal — overflow-hidden, pas de scroll vertical. */}
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-steel/25 px-4 py-6 sm:px-8">
+            {etat.statut === "chargement" && <SqueletteChargement />}
+
+            {etat.statut === "erreur" && (
+              <EtatErreur message={etat.message} surReessayer={generer} />
             )}
-          </Button>
-        </footer>
+
+            {etat.statut === "pret" && (
+              <CarrouselApercu
+                pages={etat.pages}
+                pagesParFeuillet={etat.pagesParFeuillet}
+                empreintePng={etat.empreintePng}
+                empreinteWizard={empreinteWizard}
+                surRegenerer={generer}
+              />
+            )}
+          </div>
+
+          {/* Footer — navigation prev/next à gauche, actions à droite. */}
+          <footer className="flex shrink-0 items-center justify-between gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
+            <FooterNavigation />
+            <div className="flex items-center gap-2">
+              <Button type="button" variant="ghost" onClick={onClose}>
+                {CARROUSEL_APERCU_COPY.boutonFermer}
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                disabled={etat.statut !== "pret" || pdfEnCours}
+                onClick={telechargerPdf}
+              >
+                {pdfEnCours ? (
+                  <span className="inline-flex items-center gap-[0.35em]">
+                    <span
+                      className="material-symbols-outlined animate-spin text-[1em] leading-none"
+                      aria-hidden="true"
+                    >
+                      progress_activity
+                    </span>
+                    {CARROUSEL_APERCU_COPY.boutonTelechargerPdf}
+                  </span>
+                ) : (
+                  CARROUSEL_APERCU_COPY.boutonTelechargerPdf
+                )}
+              </Button>
+            </div>
+          </footer>
+        </div>
       </div>
-    </div>
+    </CarrouselNavProvider>
   );
 }
 
 /* -------------------------------------------------------------------------- */
 /*  Sous-composants internes                                                  */
 /* -------------------------------------------------------------------------- */
+
+/** Navigation prev / next + indicateur, lue depuis le Context du carrousel. */
+function FooterNavigation() {
+  const ctx = useCarrouselNav();
+  const controls = ctx?.controls;
+
+  if (!controls) {
+    return <div aria-hidden="true" />;
+  }
+
+  return (
+    <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={controls.scrollPrev}
+        disabled={!controls.peutPrecedent}
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label="Page précédente"
+      >
+        <span className="material-symbols-outlined text-[1.25em] leading-none" aria-hidden="true">
+          chevron_left
+        </span>
+      </button>
+      <span className="text-sm font-medium text-muted">
+        {CARROUSEL_APERCU_COPY.indicateurPage(controls.indexPageGlobal, controls.totalPagesGlobal)}
+      </span>
+      <button
+        type="button"
+        onClick={controls.scrollNext}
+        disabled={!controls.peutSuivant}
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep disabled:cursor-not-allowed disabled:opacity-40"
+        aria-label="Page suivante"
+      >
+        <span className="material-symbols-outlined text-[1.25em] leading-none" aria-hidden="true">
+          chevron_right
+        </span>
+      </button>
+    </div>
+  );
+}
 
 function SqueletteChargement() {
   return (

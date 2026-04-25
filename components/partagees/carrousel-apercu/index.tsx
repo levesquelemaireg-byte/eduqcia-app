@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
 import { CARROUSEL_APERCU_COPY, FEUILLET_LABELS_COPY } from "./copy";
+import { useCarrouselNav } from "./nav-context";
 import { cn } from "@/lib/utils/cn";
 
 /* -------------------------------------------------------------------------- */
@@ -86,6 +87,7 @@ function CarrouselFeuillet({
     startIndex: indexInitial,
   });
   const [indexActif, setIndexActif] = useState(indexInitial);
+  const navCtx = useCarrouselNav();
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -102,76 +104,47 @@ function CarrouselFeuillet({
     };
   }, [emblaApi, feuillet.type, surChangementPage]);
 
-  const allerPrecedent = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
-  const allerSuivant = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
-
-  const pageGlobale = feuillet.debutIndex + indexActif + 1;
+  // Expose les controls au Context (consommé par le footer de la modale).
+  useEffect(() => {
+    if (!navCtx || !emblaApi) return;
+    navCtx.setControls({
+      scrollPrev: () => emblaApi.scrollPrev(),
+      scrollNext: () => emblaApi.scrollNext(),
+      indexPageGlobal: feuillet.debutIndex + indexActif + 1,
+      totalPagesGlobal,
+      peutPrecedent: indexActif > 0,
+      peutSuivant: indexActif < feuillet.pages.length - 1,
+    });
+    return () => {
+      navCtx.setControls(null);
+    };
+  }, [navCtx, emblaApi, indexActif, feuillet.debutIndex, feuillet.pages.length, totalPagesGlobal]);
 
   return (
-    <div className="flex flex-col gap-3">
-      {/* Carrousel */}
-      <div className="overflow-hidden rounded-md border border-border" ref={emblaRef}>
-        <div className="flex">
-          {feuillet.pages.map((pageBase64, i) => {
-            const estActif = i === indexActif;
-            const pageNum = feuillet.debutIndex + i + 1;
-            return (
-              <div
-                key={`${feuillet.type}-${i}-${empreintePng}`}
-                className={cn(
-                  "min-w-0 flex-[0_0_100%] px-2 transition-[filter,opacity] duration-200",
-                  !estActif && "opacity-40 blur-[2px]",
-                )}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- base64 data URI, Next Image n'optimise pas */}
-                <img
-                  src={`data:image/png;base64,${pageBase64}`}
-                  alt={CARROUSEL_APERCU_COPY.altImage(pageNum, totalPagesGlobal, feuillet.label)}
-                  className="mx-auto w-full max-w-[816px] rounded shadow-sm"
-                  draggable={false}
-                />
-              </div>
-            );
-          })}
-        </div>
+    <div className="overflow-hidden" ref={emblaRef}>
+      <div className="flex">
+        {feuillet.pages.map((pageBase64, i) => {
+          const estActif = i === indexActif;
+          const pageNum = feuillet.debutIndex + i + 1;
+          return (
+            <div
+              key={`${feuillet.type}-${i}-${empreintePng}`}
+              className={cn(
+                "min-w-0 flex-[0_0_100%] px-2 transition-[filter,opacity] duration-200",
+                !estActif && "opacity-40 blur-[2px]",
+              )}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element -- base64 data URI, Next Image n'optimise pas */}
+              <img
+                src={`data:image/png;base64,${pageBase64}`}
+                alt={CARROUSEL_APERCU_COPY.altImage(pageNum, totalPagesGlobal, feuillet.label)}
+                className="mx-auto w-full max-w-[816px] rounded shadow-sm"
+                draggable={false}
+              />
+            </div>
+          );
+        })}
       </div>
-
-      {/* Navigation */}
-      {feuillet.pages.length > 1 && (
-        <div className="flex items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={allerPrecedent}
-            disabled={indexActif === 0}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Page précédente"
-          >
-            <span
-              className="material-symbols-outlined text-[1.25em] leading-none"
-              aria-hidden="true"
-            >
-              chevron_left
-            </span>
-          </button>
-          <span className="text-sm font-medium text-muted">
-            {CARROUSEL_APERCU_COPY.indicateurPage(pageGlobale, totalPagesGlobal)}
-          </span>
-          <button
-            type="button"
-            onClick={allerSuivant}
-            disabled={indexActif === feuillet.pages.length - 1}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted hover:bg-panel-alt hover:text-deep disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label="Page suivante"
-          >
-            <span
-              className="material-symbols-outlined text-[1.25em] leading-none"
-              aria-hidden="true"
-            >
-              chevron_right
-            </span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -203,7 +176,7 @@ export function CarrouselApercu({
   if (feuillets.length === 0) return null;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
       {/* Bannière d'invalidation */}
       {estInvalide && (
         <div className="flex items-center gap-3 rounded-md border border-warning/30 bg-warning/10 px-4 py-3">
@@ -257,9 +230,9 @@ export function CarrouselApercu({
         </div>
       )}
 
-      {/* Carrousel du feuillet actif */}
+      {/* Carrousel du feuillet actif — overflow-hidden, pas de scroll vertical. */}
       {feuilletActif && (
-        <div role="tabpanel" className="min-h-0 flex-1 overflow-y-auto">
+        <div role="tabpanel" className="min-h-0 flex-1 overflow-hidden">
           <CarrouselFeuillet
             key={feuilletActif.type}
             feuillet={feuilletActif}
