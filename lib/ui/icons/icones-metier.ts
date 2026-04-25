@@ -30,6 +30,8 @@ export const ICONES_METIER = {
   valeurAutoGeneree: "settings",
   /** Création document — utilisé dans la navbar (« Créer un document »). */
   creationDocument: "add_notes",
+  /** Onglet Sommaire — vue détaillée tâche / document / épreuve. */
+  sommaire: "topic",
   aspectsSociete: "deployed_code",
   auteur: "person",
   dateCreation: "calendar_today",

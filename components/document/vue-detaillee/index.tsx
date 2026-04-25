@@ -7,7 +7,6 @@ import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
 import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
-import { SectionHero } from "@/components/document/vue-detaillee/sections/hero";
 import { SectionContenu } from "@/components/document/vue-detaillee/sections/contenu";
 import { DocumentRail } from "@/components/document/vue-detaillee/rail";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
@@ -43,16 +42,6 @@ export function DocumentVueDetaillee({
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
 
-  // Extraire les labels de type/structure
-  const premierElement = data.document.elements[0];
-  const typeLabel = premierElement?.type === "iconographique" ? "Iconographique" : "Textuel";
-  const structureLabel =
-    data.document.structure === "perspectives"
-      ? "Perspectives"
-      : data.document.structure === "deux_temps"
-        ? "Deux temps"
-        : "Simple";
-
   const payloadImpression = useMemo(
     () => ({ type: "document", donnees: data.document }) as const,
     [data.document],
@@ -84,16 +73,6 @@ export function DocumentVueDetaillee({
               })
             }
             layout={layout}
-          />
-        }
-        header={
-          <SectionHero
-            titre={data.document.titre}
-            estPublie={data.isPublished}
-            typeLabel={typeLabel}
-            structureLabel={structureLabel}
-            niveauLabels={data.niveauLabels}
-            disciplineLabels={data.disciplineLabels}
           />
         }
         onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}

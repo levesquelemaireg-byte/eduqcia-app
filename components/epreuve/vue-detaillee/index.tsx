@@ -7,7 +7,6 @@ import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
 import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
-import { SectionHero } from "@/components/epreuve/vue-detaillee/sections/hero";
 import { SectionPileTaches } from "@/components/epreuve/vue-detaillee/sections/pile-taches";
 import { EpreuveRail } from "@/components/epreuve/vue-detaillee/rail";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
@@ -77,15 +76,6 @@ export function EpreuveVueDetaillee({
               /* TODO */
             }}
             layout={layout}
-          />
-        }
-        header={
-          <SectionHero
-            titre={donnees.titre}
-            estPubliee={estPubliee}
-            nbTaches={donnees.taches.length}
-            niveauLabel={niveauLabel}
-            disciplineLabel={disciplineLabel}
           />
         }
         onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}

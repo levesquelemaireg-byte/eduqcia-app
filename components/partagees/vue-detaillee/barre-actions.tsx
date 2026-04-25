@@ -69,123 +69,126 @@ export function BarreActions({
   const estStacked = layout === "stacked";
 
   return (
-    <div className="sticky top-0 z-10 border-b border-border bg-panel print:hidden">
-      <div className={cn("flex items-center justify-between px-4 py-2", !estStacked && "sm:px-6")}>
-        {/* Bouton retour */}
-        <button
-          type="button"
-          className="group inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-sm font-medium text-steel transition-all duration-150 ease-in-out hover:bg-surface hover:text-deep active:scale-[0.98]"
-          onClick={() => router.push(retour.chemin)}
+    <div
+      className={cn(
+        "flex items-center justify-between py-2",
+        estStacked ? "px-4" : "mx-auto max-w-6xl px-6",
+      )}
+    >
+      {/* Bouton retour */}
+      <button
+        type="button"
+        className="group inline-flex min-h-11 items-center gap-1 rounded-md px-2 text-sm font-medium text-steel transition-all duration-150 ease-in-out hover:bg-surface hover:text-deep active:scale-[0.98]"
+        onClick={() => router.push(retour.chemin)}
+      >
+        <span
+          className="material-symbols-outlined text-[18px] transition-transform duration-150 ease-in-out group-hover:-translate-x-0.5"
+          aria-hidden="true"
         >
-          <span
-            className="material-symbols-outlined text-[18px] transition-transform duration-150 ease-in-out group-hover:-translate-x-0.5"
-            aria-hidden="true"
-          >
-            chevron_left
-          </span>
-          {retour.libelle}
-        </button>
+          chevron_left
+        </span>
+        {retour.libelle}
+      </button>
 
-        {/* Actions droite */}
-        <div className="flex items-center gap-1.5">
-          {/* Copier le lien */}
-          <div className="relative">
-            <BoutonIcone icone="link" ariaLabel="Copier le lien" onClick={gererCopierLien} />
-            {copieFeedback && <PopoverCopieLien />}
-          </div>
-
-          {/* Ouvrir visionneuse */}
-          <BoutonIcone
-            icone="print"
-            ariaLabel="Ouvrir la visionneuse"
-            onClick={surOuvrirVisionneuse}
-          />
-
-          {/* Épingler — visiteur tâche : icône simple avant le séparateur */}
-          {!estAuteur && entite === "tache" && (
-            <BoutonIcone
-              icone="push_pin"
-              ariaLabel={estEpinglee ? "Retirer l'épingle" : "Épingler"}
-              onClick={surEpingler}
-              rempli={estEpinglee}
-            />
-          )}
-
-          {/* Séparateur */}
-          <div className="mx-1 h-5 w-px bg-border" />
-
-          {/* Bouton primaire */}
-          {estAuteur && !estStacked ? (
-            <BoutonPrimaire icone="edit_document" libelle="Modifier" onClick={surModifier} />
-          ) : !estAuteur && entite === "tache" && surAjouterEpreuve ? (
-            <BoutonPrimaire
-              icone="playlist_add"
-              libelle="Ajouter à une épreuve"
-              onClick={surAjouterEpreuve}
-            />
-          ) : !estAuteur ? (
-            estEpinglee ? (
-              <button
-                type="button"
-                className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-accent bg-panel px-4 text-sm font-medium text-accent transition-all duration-150 ease-in-out hover:bg-accent/5 active:scale-[0.97]"
-                onClick={surEpingler}
-              >
-                <span
-                  className="material-symbols-outlined text-[1em]"
-                  aria-hidden="true"
-                  style={{ fontVariationSettings: '"FILL" 1' }}
-                >
-                  push_pin
-                </span>
-                Épinglé
-              </button>
-            ) : (
-              <BoutonPrimaire icone="push_pin" libelle="Épingler" onClick={surEpingler} />
-            )
-          ) : null}
-
-          {/* Menu ⋯ — propriétaire uniquement */}
-          {estAuteur && !estStacked && (
-            <div className="relative">
-              <button
-                ref={boutonMenuRef}
-                type="button"
-                className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted transition-all duration-150 ease-in-out hover:bg-surface hover:text-deep active:scale-[0.93]"
-                aria-label="Plus d'options"
-                aria-haspopup="true"
-                aria-expanded={menuOuvert}
-                onClick={() => setMenuOuvert((v) => !v)}
-              >
-                <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
-                  more_vert
-                </span>
-              </button>
-
-              {menuOuvert && (
-                <div
-                  ref={menuRef}
-                  className="absolute right-0 top-full z-30 mt-1 min-w-[180px] rounded-md border border-border bg-panel py-1 shadow-md"
-                  role="menu"
-                >
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="flex w-full items-center gap-2 px-3 py-2.5 text-sm text-muted transition-colors hover:bg-error/5 hover:text-error"
-                    onClick={() => {
-                      setMenuOuvert(false);
-                      surSupprimer();
-                    }}
-                  >
-                    <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
-                      delete
-                    </span>
-                    Supprimer
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
+      {/* Actions droite */}
+      <div className="flex items-center gap-1.5">
+        {/* Copier le lien */}
+        <div className="relative">
+          <BoutonIcone icone="link" ariaLabel="Copier le lien" onClick={gererCopierLien} />
+          {copieFeedback && <PopoverCopieLien />}
         </div>
+
+        {/* Ouvrir visionneuse */}
+        <BoutonIcone
+          icone="print"
+          ariaLabel="Ouvrir la visionneuse"
+          onClick={surOuvrirVisionneuse}
+        />
+
+        {/* Épingler — visiteur tâche : icône simple avant le séparateur */}
+        {!estAuteur && entite === "tache" && (
+          <BoutonIcone
+            icone="push_pin"
+            ariaLabel={estEpinglee ? "Retirer l'épingle" : "Épingler"}
+            onClick={surEpingler}
+            rempli={estEpinglee}
+          />
+        )}
+
+        {/* Séparateur */}
+        <div className="mx-1 h-5 w-px bg-border" />
+
+        {/* Bouton primaire */}
+        {estAuteur && !estStacked ? (
+          <BoutonPrimaire icone="edit_document" libelle="Modifier" onClick={surModifier} />
+        ) : !estAuteur && entite === "tache" && surAjouterEpreuve ? (
+          <BoutonPrimaire
+            icone="playlist_add"
+            libelle="Ajouter à une épreuve"
+            onClick={surAjouterEpreuve}
+          />
+        ) : !estAuteur ? (
+          estEpinglee ? (
+            <button
+              type="button"
+              className="inline-flex min-h-11 items-center gap-1.5 rounded-md border border-accent bg-panel px-4 text-sm font-medium text-accent transition-all duration-150 ease-in-out hover:bg-accent/5 active:scale-[0.97]"
+              onClick={surEpingler}
+            >
+              <span
+                className="material-symbols-outlined text-[1em]"
+                aria-hidden="true"
+                style={{ fontVariationSettings: '"FILL" 1' }}
+              >
+                push_pin
+              </span>
+              Épinglé
+            </button>
+          ) : (
+            <BoutonPrimaire icone="push_pin" libelle="Épingler" onClick={surEpingler} />
+          )
+        ) : null}
+
+        {/* Menu ⋯ — propriétaire uniquement */}
+        {estAuteur && !estStacked && (
+          <div className="relative">
+            <button
+              ref={boutonMenuRef}
+              type="button"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-md text-muted transition-all duration-150 ease-in-out hover:bg-surface hover:text-deep active:scale-[0.93]"
+              aria-label="Plus d'options"
+              aria-haspopup="true"
+              aria-expanded={menuOuvert}
+              onClick={() => setMenuOuvert((v) => !v)}
+            >
+              <span className="material-symbols-outlined text-[20px]" aria-hidden="true">
+                more_vert
+              </span>
+            </button>
+
+            {menuOuvert && (
+              <div
+                ref={menuRef}
+                className="absolute right-0 top-full z-30 mt-1 min-w-[180px] rounded-md border border-border bg-panel py-1 shadow-md"
+                role="menu"
+              >
+                <button
+                  type="button"
+                  role="menuitem"
+                  className="flex w-full items-center gap-2 px-3 py-2.5 text-sm text-muted transition-colors hover:bg-error/5 hover:text-error"
+                  onClick={() => {
+                    setMenuOuvert(false);
+                    surSupprimer();
+                  }}
+                >
+                  <span className="material-symbols-outlined text-[18px]" aria-hidden="true">
+                    delete
+                  </span>
+                  Supprimer
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

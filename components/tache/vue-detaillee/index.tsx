@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { TacheFicheData, PeerVoteTally } from "@/lib/types/fiche";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
-import { StatusBadge } from "@/lib/fiche/primitives/MetaRow";
 import { useFicheModale } from "@/hooks/partagees/use-fiche-modale";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
 import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
@@ -68,7 +67,6 @@ export function TacheVueDetaillee({
     [ouvrirFicheModale, layout],
   );
 
-  const contexte = [tache.niveau.label, tache.discipline.label].filter(Boolean).join(" · ");
   const payloadImpression = useMemo(
     () =>
       donneesTache
@@ -106,15 +104,6 @@ export function TacheVueDetaillee({
             }}
             layout={layout}
           />
-        }
-        header={
-          <div className="space-y-1.5">
-            <StatusBadge
-              label={tache.is_published ? "Publiée" : "Brouillon"}
-              variant={tache.is_published ? "published" : "draft"}
-            />
-            {contexte && <p className="text-sm text-steel">{contexte}</p>}
-          </div>
         }
         onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
         contenuPrincipal={

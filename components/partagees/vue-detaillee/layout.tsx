@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils/cn";
 type Props = {
   layout: "sidebar" | "stacked";
   barreActions: ReactNode;
-  header: ReactNode;
   onglets: ReactNode;
   contenuPrincipal: ReactNode;
   rail: ReactNode;
@@ -17,11 +16,14 @@ type Props = {
  * En `sidebar` : grid 2 colonnes (contenu + rail 300px sticky).
  * En `stacked` : 1 colonne, rail empilé sous le contenu.
  * Passe automatiquement de sidebar à stacked sous le breakpoint `lg`.
+ *
+ * La barre d'actions et la sous-navbar onglets sont englobées dans un même
+ * bloc `sticky top-0` — fonds pleine largeur (`bg-panel + border-b`),
+ * contenus internes alignés sur le conteneur centré (`mx-auto max-w-6xl px-6`).
  */
 export function VueDetailleeLayout({
   layout,
   barreActions,
-  header,
   onglets,
   contenuPrincipal,
   rail,
@@ -30,13 +32,12 @@ export function VueDetailleeLayout({
 
   return (
     <div className="min-h-0 w-full">
-      {/* Barre d'actions */}
-      {barreActions}
-
-      {/* Header + onglets */}
-      <div className={cn("mx-auto w-full", estSidebar ? "max-w-6xl px-6" : "px-4")}>
-        <div className="py-4">{header}</div>
-        {onglets}
+      {/* Bloc sticky : barre d'actions + sous-navbar onglets */}
+      <div className="sticky top-0 z-10 print:hidden">
+        <div className="border-b border-border bg-panel">{barreActions}</div>
+        <div className="border-b border-border bg-panel">
+          <div className={cn("mx-auto", estSidebar ? "max-w-6xl px-6" : "px-4")}>{onglets}</div>
+        </div>
       </div>
 
       {/* Contenu principal + rail */}
