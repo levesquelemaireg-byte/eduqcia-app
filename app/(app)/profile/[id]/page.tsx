@@ -20,7 +20,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
   // Profil désactivé/supprimé — message minimal
   if (overview.profile.status === "suspended") {
     return (
-      <div className="mx-auto max-w-3xl py-12 text-center">
+      <div className="mx-auto max-w-3xl px-4 py-12 text-center md:px-6">
         <span
           className="material-symbols-outlined mb-4 text-[48px] text-slate-400"
           aria-hidden="true"

@@ -116,7 +116,7 @@ export function CollaborateursClient({ currentUserId, initialItems, initialTotal
   }, [isSearchMode, loadMore]);
 
   return (
-    <div>
+    <div className="mx-auto max-w-4xl px-4 py-8 md:px-6">
       {/* Titre et sous-titre */}
       <header className="mb-6">
         <h1 className="text-2xl font-bold tracking-tight text-deep md:text-3xl">

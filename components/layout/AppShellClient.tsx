@@ -118,7 +118,7 @@ export function AppShellClient({
           <span className="ml-auto max-w-[40%] truncate text-xs text-muted">{displayName}</span>
         </header>
 
-        <main id="main-content" className="main--app flex-1 p-4 md:p-6">
+        <main id="main-content" className="main--app min-w-0 flex-1">
           {children}
         </main>
       </div>

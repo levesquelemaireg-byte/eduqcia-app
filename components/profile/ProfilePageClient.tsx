@@ -32,7 +32,7 @@ export function ProfilePageClient({
   const { profile, counts, experienceLabel, isOwner } = overview;
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 pb-12">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 py-8 pb-12 md:px-6">
       <ProfileHero
         firstName={profile.firstName}
         lastName={profile.lastName}
