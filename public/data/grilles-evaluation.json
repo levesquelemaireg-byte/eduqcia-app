@@ -33,7 +33,7 @@
     "oi": "OI1",
     "comportement_id": "1.1",
     "outil_image": "OI1_SO1.png",
-    "operation": "Situer dans le temps et dans l’espace",
+    "operation": "Situer dans le temps",
     "comportement_enonce": "Ordonner chronologiquement des faits en tenant compte de repères de temps.",
     "type_reponse": "non_ecrite",
     "bareme": {
@@ -57,7 +57,7 @@
     "oi": "OI1",
     "comportement_id": "1.2",
     "outil_image": "OI1_SO2.png",
-    "operation": "Situer dans le temps et dans l’espace",
+    "operation": "Situer dans le temps",
     "comportement_enonce": "Situer des faits sur une ligne du temps.",
     "type_reponse": "non_ecrite",
     "bareme": {
@@ -81,7 +81,7 @@
     "oi": "OI1",
     "comportement_id": "1.3",
     "outil_image": "OI1_SO3.png",
-    "operation": "Situer dans le temps et dans l’espace",
+    "operation": "Situer dans le temps",
     "comportement_enonce": "Classer des faits selon qu'ils sont antérieurs ou postérieurs à un repère de temps.",
     "type_reponse": "non_ecrite",
     "bareme": {
@@ -105,8 +105,32 @@
     "oi": "OI2",
     "comportement_id": "2.1",
     "outil_image": "OI2_SO1.png",
-    "operation": "Situer dans le temps et dans l’espace",
-    "comportement_enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (variante A).",
+    "operation": "Situer dans l’espace",
+    "comportement_enonce": "Identifier sur une carte un élément géographique ou un territoire.",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève situe le fait dans l’espace."
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas le fait dans l’espace."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI2_SO1_1PT",
+    "oi": "OI2",
+    "comportement_id": "2.1",
+    "outil_image": "OI2_SO1.png",
+    "operation": "Situer dans l’espace",
+    "comportement_enonce": "Identifier sur une carte un élément géographique ou un territoire.",
     "type_reponse": "non_ecrite",
     "bareme": {
       "max_points": 1,
@@ -129,32 +153,8 @@
     "oi": "OI2",
     "comportement_id": "2.2",
     "outil_image": "OI2_SO2.png",
-    "operation": "Situer dans le temps et dans l’espace",
-    "comportement_enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (variante B).",
-    "type_reponse": "non_ecrite",
-    "bareme": {
-      "max_points": 2,
-      "echelle": [
-        {
-          "points": 2,
-          "label": "2 points",
-          "description": "L’élève situe le fait dans l’espace."
-        },
-        {
-          "points": 0,
-          "label": "0 point",
-          "description": "L’élève ne situe pas le fait dans l’espace."
-        }
-      ]
-    }
-  },
-  {
-    "id": "OI2_SO3",
-    "oi": "OI2",
-    "comportement_id": "2.3",
-    "outil_image": "OI2_SO3.png",
-    "operation": "Situer dans le temps et dans l’espace",
-    "comportement_enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (plusieurs faits).",
+    "operation": "Situer dans l’espace",
+    "comportement_enonce": "Identifier sur une carte une association d’éléments géographiques.",
     "type_reponse": "non_ecrite",
     "bareme": {
       "max_points": 2,
@@ -168,6 +168,35 @@
           "points": 0,
           "label": "0 point",
           "description": "L’élève ne situe pas les faits dans l’espace."
+        }
+      ]
+    }
+  },
+  {
+    "id": "OI2_SO3",
+    "oi": "OI2",
+    "comportement_id": "2.3",
+    "outil_image": "OI2_SO3.png",
+    "operation": "Situer dans l’espace",
+    "comportement_enonce": "Identifier sur une carte plusieurs éléments géographiques.",
+    "type_reponse": "non_ecrite",
+    "bareme": {
+      "max_points": 2,
+      "echelle": [
+        {
+          "points": 2,
+          "label": "2 points",
+          "description": "L’élève situe les faits dans l’espace. (2 sur 2)"
+        },
+        {
+          "points": 1,
+          "label": "1 point",
+          "description": "L’élève situe l’un des faits dans l’espace. (1 sur 2)"
+        },
+        {
+          "points": 0,
+          "label": "0 point",
+          "description": "L’élève ne situe pas les faits dans l’espace. (0 sur 2)"
         }
       ]
     }

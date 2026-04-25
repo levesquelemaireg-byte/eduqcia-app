@@ -54,24 +54,24 @@
     "comportements_attendus": [
       {
         "id": "2.1",
-        "enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (variante A)",
-        "nb_documents": null,
+        "enonce": "Identifier sur une carte un élément géographique ou un territoire",
+        "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI2_SO1",
         "variant_slug": "carte-historique"
       },
       {
         "id": "2.2",
-        "enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (variante B)",
-        "nb_documents": null,
+        "enonce": "Identifier sur une carte une association d'éléments géographiques",
+        "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI2_SO2",
         "variant_slug": "carte-historique"
       },
       {
         "id": "2.3",
-        "enonce": "Identifier sur une carte ce qui correspond à un élément géographique, à un fait ou à un territoire donné (plusieurs faits)",
-        "nb_documents": null,
+        "enonce": "Identifier sur une carte plusieurs éléments géographiques",
+        "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI2_SO3",
         "variant_slug": "carte-historique"
