@@ -83,10 +83,7 @@ function stripHtml(html: string): string {
     .trim();
 }
 
-/** Calcule le total max de points depuis l'outil d'évaluation résolu. */
+/** Total max de points = `bareme.max_points` du référentiel (source de vérité). */
 function calculerMaxPoints(donnees: DonneesTache): number {
-  return donnees.outilEvaluation.criteres.reduce((somme, critere) => {
-    const maxCritere = Math.max(0, ...critere.descripteurs.map((d) => d.points));
-    return somme + maxCritere;
-  }, 0);
+  return donnees.outilEvaluation?.bareme.max_points ?? 0;
 }

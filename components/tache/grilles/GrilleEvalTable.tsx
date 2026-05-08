@@ -1,6 +1,4 @@
-"use client";
-
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import { GrilleAbsente } from "@/components/tache/grilles/GrilleAbsente";
 import { renderGrilleNode } from "@/components/tache/grilles/grille-registry";
 import { cn } from "@/lib/utils/cn";

@@ -344,15 +344,17 @@ export type DocumentReference = {
   echelle?: number; // pour iconographique
 };
 
-export type Critere = {
-  libelle: string;
-  descripteurs: Array<{ niveau: string; description: string; points: number }>;
-};
-
-export type OutilEvaluation = {
-  oi: "OI1" | "OI2" | "OI3" | "OI4" | "OI5" | "redactionnel";
-  criteres: Critere[];
-};
+// Outil d'évaluation = la GrilleEntry canonique du référentiel
+// public/data/grilles-evaluation.json. Source de vérité unique partagée
+// par tous les contextes (wizard, fiche détaillée, modale, impression).
+// Rendu via <GrilleEvalTable entry={...} viewport={...} /> qui route vers
+// le registre renderGrilleNode (4 grilles dédiées + GenericEchelleGrid).
+//
+// Mise à jour 8 mai 2026 : le contrat aplati `{ oi, criteres }` a été
+// supprimé. La GrilleEntry est désormais propagée intacte du référentiel
+// jusqu'au rendu, garantissant que les grilles dédiées (OI3_SO5, OI6_SO3,
+// OI7_SO1, CD1_SCHEMA) s'impriment exactement comme à l'écran.
+export type OutilEvaluation = GrilleEntry | null;
 
 export type EspaceProduction =
   | { type: "lignes"; nbLignes: number }
@@ -369,7 +371,7 @@ export type DonneesTache = {
   guidage: Guidage; // structuré, composé par React
   documents: DocumentReference[];
   espaceProduction: EspaceProduction;
-  outilEvaluation: OutilEvaluation;
+  outilEvaluation: OutilEvaluation; // GrilleEntry | null (null = brouillon wizard incomplet)
   corrige?: string; // HTML du corrigé
   // + tous les champs métier existants de TacheFicheData :
   // auteur_id, auteurs, oi, comportement, niveau, discipline,

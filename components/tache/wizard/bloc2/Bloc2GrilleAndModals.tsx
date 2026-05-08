@@ -6,7 +6,7 @@ import { SimpleModal } from "@/components/ui/SimpleModal";
 import { cn } from "@/lib/utils/cn";
 import { MODAL_TITRE_OPERATION_INTELLECTUELLE } from "@/components/tache/wizard/bloc2/constants";
 import type { BlueprintSlice } from "@/components/tache/wizard/FormState";
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import type { ComportementAttenduJson, OiEntryJson } from "@/lib/types/oi";
 import {
   BLOC2_MODAL_COMPORTEMENT_INTRO,

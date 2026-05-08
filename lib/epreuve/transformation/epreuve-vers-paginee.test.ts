@@ -47,7 +47,7 @@ function creerTache(overrides: Partial<DonneesTache> & { id: string }): DonneesT
     guidage: { content: "<p>Guidage complémentaire</p>" },
     documents: [creerDoc(`doc-${overrides.id}-A`, "Document A")],
     espaceProduction: { type: "lignes", nbLignes: 10 },
-    outilEvaluation: { oi: "OI2", criteres: [] },
+    outilEvaluation: null,
     corrige: "<p>Corrigé</p>",
     aspects_societe: [],
     nb_lignes: 10,

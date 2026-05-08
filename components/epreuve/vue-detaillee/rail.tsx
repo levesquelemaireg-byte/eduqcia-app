@@ -86,13 +86,10 @@ function BlocCompteur({ valeur, libelle }: { valeur: number; libelle: string }) 
   );
 }
 
-/** Calcule le total max de points depuis les outils d'évaluation des tâches. */
+/** Total max de points = somme des `bareme.max_points` (source de vérité référentiel). */
 function calculerTotalPoints(taches: DonneesTache[]): number {
-  return taches.reduce((total, tache) => {
-    const pointsTache = tache.outilEvaluation.criteres.reduce((somme, critere) => {
-      const maxCritere = Math.max(0, ...critere.descripteurs.map((d) => d.points));
-      return somme + maxCritere;
-    }, 0);
-    return total + pointsTache;
-  }, 0);
+  return taches.reduce(
+    (total, tache) => total + (tache.outilEvaluation?.bareme.max_points ?? 0),
+    0,
+  );
 }

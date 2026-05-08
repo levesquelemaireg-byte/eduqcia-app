@@ -8,6 +8,7 @@
 
 import type { CdSelection, ConnaissanceSelection } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 
 /* -------------------------------------------------------------------------- */
 /*  Sous-types structurés                                                     */
@@ -16,24 +17,19 @@ import type { RendererDocument } from "@/lib/types/document-renderer";
 /** Guidage structuré — remplace la string monolithique avec ancres HTML. */
 export type Guidage = { content: string } | null;
 
-/** Descripteur d'un niveau de performance dans un critère d'évaluation. */
-export type Descripteur = {
-  niveau: string;
-  description: string;
-  points: number;
-};
-
-/** Critère d'évaluation avec ses descripteurs par niveau. */
-export type Critere = {
-  libelle: string;
-  descripteurs: Descripteur[];
-};
-
-/** Outil d'évaluation résolu depuis `grilles-evaluation.json`. */
-export type OutilEvaluation = {
-  oi: "OI0" | "OI1" | "OI2" | "OI3" | "OI4" | "OI5" | "OI6" | "OI7" | "redactionnel";
-  criteres: Critere[];
-};
+/**
+ * Outil d'évaluation = la `GrilleEntry` canonique du référentiel
+ * `public/data/grilles-evaluation.json`. Source de vérité unique pour
+ * tous les contextes (wizard, fiche détaillée, modale, impression).
+ *
+ * Le rendu consomme cet outil via `<GrilleEvalTable entry={...} viewport={...} />`
+ * qui route vers le registre `renderGrilleNode` (4 grilles dédiées + générique).
+ *
+ * Nullable uniquement pour le bord brouillon-wizard (avant Bloc 2 complété).
+ * À la publication, l'invariant produit garantit qu'une grille est toujours
+ * résolue depuis le `comportement_id`.
+ */
+export type OutilEvaluation = GrilleEntry | null;
 
 /** Espace de production — zone où l'élève produit sa réponse. */
 export type EspaceProduction =

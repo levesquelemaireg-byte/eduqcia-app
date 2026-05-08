@@ -5,7 +5,7 @@ import path from "path";
 import { createClient } from "@/lib/supabase/server";
 import { fetchTacheFicheBundle } from "@/lib/tache/server-fiche-map";
 import { ficheTaVersDonneesTache } from "@/lib/tache/contrats/fiche-vers-donnees-tache";
-import type { GrilleEvaluationEntree } from "@/lib/tache/contrats/etat-wizard-vers-tache";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 
@@ -17,13 +17,13 @@ export type EvaluationDetailBundle = {
 };
 
 /** Cache module — un seul chargement par instance serveur. */
-let grillesCache: GrilleEvaluationEntree[] | null = null;
+let grillesCache: GrilleEntry[] | null = null;
 
-function chargerGrilles(): GrilleEvaluationEntree[] {
+function chargerGrilles(): GrilleEntry[] {
   if (grillesCache) return grillesCache;
   const filePath = path.join(process.cwd(), "public/data/grilles-evaluation.json");
   const raw = fs.readFileSync(filePath, "utf-8");
-  grillesCache = JSON.parse(raw) as GrilleEvaluationEntree[];
+  grillesCache = JSON.parse(raw) as GrilleEntry[];
   return grillesCache;
 }
 

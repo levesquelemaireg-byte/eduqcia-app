@@ -1,5 +1,5 @@
 import type { ReactElement } from "react";
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import { GenericEchelleGrid } from "@/components/tache/grilles/GenericEchelleGrid";
 import { GrilleOI3SO5 } from "@/components/tache/grilles/GrilleOI3SO5";
 import { GrilleOI6SO3 } from "@/components/tache/grilles/GrilleOI6SO3";

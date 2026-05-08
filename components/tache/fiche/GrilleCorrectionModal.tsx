@@ -2,7 +2,7 @@
 
 import { SimpleModal } from "@/components/ui/SimpleModal";
 import { GrilleEvalTable } from "@/components/tache/grilles/GrilleEvalTable";
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import { MODALE_OUTIL_EVALUATION_TITRE } from "@/lib/ui/ui-copy";
 
 type Props = {

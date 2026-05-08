@@ -22,7 +22,7 @@ import { isDisciplineAutoAssignedForNiveau } from "@/lib/tache/blueprint-helpers
 import { resoudreParcours } from "@/lib/tache/parcours/resolveur";
 import { OiPicker } from "@/components/tache/wizard/bloc2/OiPicker";
 import type { BlueprintSlice } from "@/components/tache/wizard/FormState";
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import type { DisciplineCode } from "@/lib/tache/blueprint-helpers";
 import type { ComportementAttenduJson, OiEntryJson } from "@/lib/types/oi";
 import {

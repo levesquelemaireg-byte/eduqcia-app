@@ -36,7 +36,7 @@ function creerTache(overrides?: Partial<DonneesTache>): DonneesTache {
     guidage: { content: "<p>Guidage</p>" },
     documents: [creerDoc("d1")],
     espaceProduction: { type: "lignes", nbLignes: 10 },
-    outilEvaluation: { oi: "OI2", criteres: [] },
+    outilEvaluation: null,
     corrige: "<p>Corrigé</p>",
     aspects_societe: [],
     nb_lignes: 10,

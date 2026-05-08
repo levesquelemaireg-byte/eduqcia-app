@@ -4,11 +4,8 @@ import { initialTacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { TacheFormState } from "@/lib/tache/tache-form-state-types";
 import type { OiEntryJson } from "@/lib/types/oi";
 import type { RendererDocument } from "@/lib/types/document-renderer";
-import {
-  etatWizardVersTache,
-  type GrilleEvaluationEntree,
-  type MetaApercu,
-} from "./etat-wizard-vers-tache";
+import { etatWizardVersTache, type MetaApercu } from "./etat-wizard-vers-tache";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 
 /* -------------------------------------------------------------------------- */
 /*  Fixtures                                                                  */
@@ -64,12 +61,13 @@ const OI_FIXTURE: OiEntryJson[] = [
   },
 ];
 
-const GRILLES_FIXTURE: GrilleEvaluationEntree[] = [
+const GRILLES_FIXTURE: GrilleEntry[] = [
   {
     id: "OI0_SO1",
-    oi: "OI0",
+    operation: "Établir des faits",
     comportement_enonce: "Établir un fait à partir d'un document historique",
     bareme: {
+      max_points: 2,
       echelle: [
         { points: 2, label: "2 points", description: "Correctement." },
         { points: 1, label: "1 point", description: "Plus ou moins." },
@@ -79,9 +77,10 @@ const GRILLES_FIXTURE: GrilleEvaluationEntree[] = [
   },
   {
     id: "OI1_SO1",
-    oi: "OI1",
+    operation: "Situer dans le temps",
     comportement_enonce: "Ordonner chronologiquement des faits",
     bareme: {
+      max_points: 2,
       echelle: [
         { points: 2, label: "2 points", description: "Tous les faits." },
         { points: 0, label: "0 point", description: "Pas tous." },
@@ -237,30 +236,28 @@ describe("etatWizardVersTache", () => {
   });
 
   describe("résolution outilEvaluation", () => {
-    it("résout les critères depuis les grilles", () => {
+    it("propage la GrilleEntry canonique du référentiel sans la transformer", () => {
       const result = etatWizardVersTache(etatRedactionnel(), OI_FIXTURE, GRILLES_FIXTURE);
-      expect(result.outilEvaluation.oi).toBe("OI0");
-      expect(result.outilEvaluation.criteres).toHaveLength(1);
-      expect(result.outilEvaluation.criteres[0].descripteurs).toHaveLength(3);
-      expect(result.outilEvaluation.criteres[0].descripteurs[0]).toEqual({
-        niveau: "2 points",
-        description: "Correctement.",
-        points: 2,
-      });
+      expect(result.outilEvaluation).toEqual(GRILLES_FIXTURE[0]);
     });
 
-    it("retourne redactionnel si outilEvaluation est null", () => {
+    it("expose bareme.max_points lisible directement (source de vérité)", () => {
+      const result = etatWizardVersTache(etatRedactionnel(), OI_FIXTURE, GRILLES_FIXTURE);
+      expect(result.outilEvaluation?.bareme.max_points).toBe(2);
+    });
+
+    it("retourne null si outilEvaluation est null (bord brouillon wizard)", () => {
       const etat = etatRedactionnel();
       etat.bloc2.outilEvaluation = null;
 
       const result = etatWizardVersTache(etat, OI_FIXTURE, GRILLES_FIXTURE);
-      expect(result.outilEvaluation.oi).toBe("redactionnel");
-      expect(result.outilEvaluation.criteres).toEqual([]);
+      expect(result.outilEvaluation).toBeNull();
     });
 
-    it("retourne redactionnel si la grille est introuvable", () => {
-      const result = etatWizardVersTache(etatRedactionnel(), OI_FIXTURE, []);
-      expect(result.outilEvaluation.oi).toBe("redactionnel");
+    it("throw si outilEvaluation est fourni mais grille introuvable (intégrité référentiel)", () => {
+      expect(() => etatWizardVersTache(etatRedactionnel(), OI_FIXTURE, [])).toThrow(
+        /Grille introuvable.*OI0_SO1/,
+      );
     });
   });
 

@@ -59,21 +59,12 @@ import {
 
 import type { RendererDocument, DocumentElement } from "@/lib/types/document-renderer";
 
-import type { DonneesTache, EspaceProduction, Guidage, OutilEvaluation, Critere } from "./donnees";
+import type { DonneesTache, EspaceProduction, Guidage, OutilEvaluation } from "./donnees";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 
 /* -------------------------------------------------------------------------- */
 /*  Types d'entrée                                                            */
 /* -------------------------------------------------------------------------- */
-
-/** Entrée minimale de `grilles-evaluation.json` nécessaire à la résolution. */
-export type GrilleEvaluationEntree = {
-  id: string;
-  oi: string;
-  comportement_enonce: string;
-  bareme: {
-    echelle: { points: number; label: string; description: string }[];
-  };
-};
 
 /** Métadonnées affichées dans le pied de fiche (auteur, date). */
 export type MetaApercu = {
@@ -90,31 +81,31 @@ function supprimerAncres(html: string): string {
   return html.replace(/<!--eduqcia:[^>]+-->/g, "");
 }
 
-/** Résout l'outil d'évaluation depuis les grilles JSON. */
+/**
+ * Résout l'outil d'évaluation depuis les grilles JSON.
+ *
+ * Retourne la `GrilleEntry` canonique trouvée par `id` dans le référentiel
+ * `public/data/grilles-evaluation.json`. Aucun aplatissement — la donnée
+ * traverse le pipeline intacte jusqu'au rendu via `GrilleEvalTable`.
+ *
+ * `null` uniquement si `outilId` n'est pas fourni (brouillon wizard avant
+ * sélection du comportement). Si `outilId` est fourni mais introuvable :
+ * throw — bug d'intégrité du référentiel à signaler tôt.
+ */
 export function resoudreOutilEvaluation(
   outilId: string | null,
-  grilles: GrilleEvaluationEntree[],
+  grilles: GrilleEntry[],
 ): OutilEvaluation {
-  if (!outilId) {
-    return { oi: "redactionnel", criteres: [] };
-  }
+  if (!outilId) return null;
 
   const grille = grilles.find((g) => g.id === outilId);
   if (!grille) {
-    return { oi: "redactionnel", criteres: [] };
+    throw new Error(
+      `[resoudreOutilEvaluation] Grille introuvable : "${outilId}". ` +
+        `Vérifier l'intégrité de public/data/grilles-evaluation.json.`,
+    );
   }
-
-  const critere: Critere = {
-    libelle: grille.comportement_enonce,
-    descripteurs: grille.bareme.echelle.map((e) => ({
-      niveau: e.label,
-      description: e.description,
-      points: e.points,
-    })),
-  };
-
-  const oi = grille.oi as OutilEvaluation["oi"];
-  return { oi, criteres: [critere] };
+  return grille;
 }
 
 /** Déduit l'espace de production depuis l'état du wizard. */
@@ -290,7 +281,7 @@ function construireAuteurs(
 export function etatWizardVersTache(
   etat: TacheFormState,
   oiList: OiEntryJson[],
-  grilles: GrilleEvaluationEntree[],
+  grilles: GrilleEntry[],
   meta?: MetaApercu | null,
 ): DonneesTache {
   const oiEntry = oiList.find((o) => o.id === etat.bloc2.oiId);

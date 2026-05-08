@@ -11,8 +11,9 @@ import type { TacheFicheData } from "@/lib/types/fiche";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import { documentFicheVersRenderer } from "@/lib/documents/document-fiche-vers-renderer";
-import { resoudreOutilEvaluation, type GrilleEvaluationEntree } from "./etat-wizard-vers-tache";
+import { resoudreOutilEvaluation } from "./etat-wizard-vers-tache";
 import type { DonneesTache, EspaceProduction, Guidage } from "./donnees";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 
 /** Déduit l'espace de production depuis les données de la fiche. */
 function deduireEspaceProduction(fiche: TacheFicheData): EspaceProduction {
@@ -41,7 +42,7 @@ function construireGuidage(guidage: string): Guidage {
  */
 export function ficheTaVersDonneesTache(
   fiche: TacheFicheData,
-  grilles: GrilleEvaluationEntree[],
+  grilles: GrilleEntry[],
 ): DonneesTache {
   return {
     id: fiche.id,

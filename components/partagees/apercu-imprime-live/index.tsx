@@ -11,10 +11,7 @@ import { documentVersImprimable } from "@/lib/document/impression/document-vers-
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
-import {
-  etatWizardVersTache,
-  type GrilleEvaluationEntree,
-} from "@/lib/tache/contrats/etat-wizard-vers-tache";
+import { etatWizardVersTache } from "@/lib/tache/contrats/etat-wizard-vers-tache";
 import { parseDocumentLegendPosition } from "@/lib/tache/document-helpers";
 import type { WizardFichePreviewMeta } from "@/lib/tache/fiche-helpers";
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
@@ -43,14 +40,7 @@ export function ApercuImprimeLiveTache({ previewMeta, mode, estCorrige }: TacheP
     if (!oiList || oiList.length === 0) return null;
     if (!grilles) return null;
 
-    const grillesEntrees: GrilleEvaluationEntree[] = grilles.map((g) => ({
-      id: g.id,
-      oi: g.operation,
-      comportement_enonce: g.comportement_enonce,
-      bareme: g.bareme,
-    }));
-
-    const donnees = etatWizardVersTache(state, oiList, grillesEntrees, previewMeta);
+    const donnees = etatWizardVersTache(state, oiList, grilles, previewMeta);
     return tacheVersImprimable(donnees, { mode, estCorrige }, mesurerBlocImpression);
   }, [state, oiList, grilles, previewMeta, mode, estCorrige]);
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import type { OiEntryJson } from "@/lib/types/oi";
 import { BLOC2_ERROR_OI_FETCH } from "@/lib/ui/ui-copy";
 

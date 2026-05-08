@@ -1,4 +1,4 @@
-import type { GrilleEntry } from "@/components/tache/wizard/bloc2/types";
+import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import { grilleTextWithLockedParenGroups } from "@/components/tache/grilles/grille-text-nodes";
 import { cn } from "@/lib/utils/cn";
 import styles from "@/components/tache/grilles/eval-grid.module.css";
