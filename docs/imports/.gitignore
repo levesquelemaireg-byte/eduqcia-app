@@ -1,0 +1,59 @@
+# Documents importés (sources brutes) — non versionnés.
+# Seuls les fichiers texte produits à partir de ces sources (Markdown, JSON, etc.)
+# doivent être commités dans ce dossier.
+
+# PDF
+*.pdf
+
+# Images bitmap
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.tif
+*.webp
+*.heic
+*.heif
+*.ico
+
+# Images vectorielles binaires (formats propriétaires)
+*.psd
+*.ai
+*.sketch
+*.fig
+*.xd
+
+# Documents bureautiques
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.odt
+*.ods
+*.odp
+*.rtf
+
+# Archives
+*.zip
+*.rar
+*.7z
+*.tar
+*.tar.gz
+*.tgz
+*.gz
+*.bz2
+
+# Audio / vidéo
+*.mp3
+*.wav
+*.ogg
+*.m4a
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
