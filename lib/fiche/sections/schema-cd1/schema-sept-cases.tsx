@@ -1,6 +1,7 @@
 "use client";
 
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
+import { sanitize } from "@/lib/fiche/helpers";
 import type { FicheMode } from "@/lib/fiche/types";
 import type {
   CaseSommaire,
@@ -28,7 +29,7 @@ function CaseLecture({ c }: { c: CaseSommaire }) {
             {c.guidage.trim() ? (
               <div
                 className="leading-snug [&>p]:m-0"
-                dangerouslySetInnerHTML={{ __html: c.guidage }}
+                dangerouslySetInnerHTML={{ __html: sanitize(c.guidage) }}
               />
             ) : null}
             {c.reponse.trim() ? (

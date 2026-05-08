@@ -19,13 +19,17 @@ import {
   SECTION_B_CORRIGE_TOTAL_LABEL,
 } from "@/lib/ui/ui-copy";
 import { construireCorrigeTabulaire } from "@/lib/tache/schema-cd1/corrige-tabulaire";
+import { sanitize } from "@/lib/fiche/helpers";
 
 function CellGuidage({ html }: { html: string }) {
   if (!html.trim()) {
     return <span className="italic text-muted">—</span>;
   }
   return (
-    <div className="text-sm leading-snug [&>p]:m-0" dangerouslySetInnerHTML={{ __html: html }} />
+    <div
+      className="text-sm leading-snug [&>p]:m-0"
+      dangerouslySetInnerHTML={{ __html: sanitize(html) }}
+    />
   );
 }
 

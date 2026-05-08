@@ -14,6 +14,7 @@ import {
 } from "@/components/tache/wizard/bloc4/documentSlotStatusStyles";
 import { slotStatusLabel, type SlotUiStatus } from "@/lib/tache/document-helpers";
 import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
+import { sanitize } from "@/lib/fiche/helpers";
 import { aspectDeLaCase, titreCase } from "./helpers";
 import { SECTION_B_SCHEMA_CASE_VIDE_PLACEHOLDER } from "@/lib/ui/ui-copy";
 
@@ -55,7 +56,7 @@ export function CaseSchema({ cle, donnees, aspectA, aspectB, onOuvrir }: Props) 
         {aUnGuidage ? (
           <div
             className="text-sm leading-snug text-deep [&>p]:m-0"
-            dangerouslySetInnerHTML={{ __html: donnees.guidage }}
+            dangerouslySetInnerHTML={{ __html: sanitize(donnees.guidage) }}
           />
         ) : (
           <p className="text-sm italic text-muted">{SECTION_B_SCHEMA_CASE_VIDE_PLACEHOLDER}</p>

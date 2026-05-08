@@ -2,6 +2,7 @@
 
 import { SectionLabel } from "@/lib/fiche/primitives/SectionLabel";
 import { ContentBlock } from "@/lib/fiche/primitives/ContentBlock";
+import { sanitize } from "@/lib/fiche/helpers";
 import type { FicheMode } from "@/lib/fiche/types";
 import type { CorrigeTabulaireData } from "@/lib/fiche/selectors/tache/corrige-tabulaire";
 import {
@@ -54,7 +55,7 @@ export function SectionCorrigeTabulaire({ data, mode: _mode }: Props) {
                     {l.guidageHtml.trim() ? (
                       <div
                         className="leading-snug [&>p]:m-0"
-                        dangerouslySetInnerHTML={{ __html: l.guidageHtml }}
+                        dangerouslySetInnerHTML={{ __html: sanitize(l.guidageHtml) }}
                       />
                     ) : (
                       <span className="italic text-muted">—</span>
