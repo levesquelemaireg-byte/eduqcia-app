@@ -522,8 +522,7 @@ export const NR_CARTE_CORRIGE_NO_LETTER = "(à définir)";
 
 /**
  * Constantes consommées par les builders HTML feuille élève / corrigé enseignant
- * (`lib/tache/non-redaction/manifestations-payload.ts`). Les libellés UI wizard
- * (modal help, gates, etc.) sont ajoutés au Lot 2.
+ * (`lib/tache/non-redaction/manifestations-payload.ts`).
  */
 
 /** Préfixe ministériel — précède le placeholder de tokens documents. */
@@ -550,6 +549,67 @@ export const NR_MANIFESTATIONS_ET_SEPARATOR = "et";
 export const NR_MANIFESTATIONS_CORRIGE_TITRE = "Associations attendues :";
 /** Séparateur entre numéros de documents dans une catégorie multi-docs (corrigé). */
 export const NR_MANIFESTATIONS_CORRIGE_TEMPLATE = " et ";
+
+/* --- UI wizard (Lot 2) --- */
+
+/** Gates */
+export const NR_MANIFESTATIONS_GATE_BLOC3 =
+  "Sélectionnez un comportement attendu pour configurer la consigne et les catégories.";
+export const NR_MANIFESTATIONS_GATE_PRE_DOCS =
+  "Configurez la consigne et nommez vos catégories à l'étape précédente avant d'ajouter des documents.";
+export const NR_MANIFESTATIONS_GATE_BLOC5 =
+  "Complétez les étapes précédentes (consigne, catégories, documents) avant d'assigner les documents aux catégories.";
+
+/** Bloc 3 — labels et hints */
+export const NR_MANIFESTATIONS_CONSIGNE_LABEL = "Consigne";
+export const NR_MANIFESTATIONS_CONSIGNE_INFO_MODAL_BODY =
+  "La consigne est rédigée selon la formulation officielle du ministère. Vous complétez uniquement la zone soulignée en bleu — le sujet général qui décrit ce que les documents ont en commun. Les numéros de documents sont générés automatiquement.";
+export const NR_MANIFESTATIONS_CONSIGNE_HELP_51 =
+  "Indiquez le sujet général qui décrit le thème commun des deux documents (ex. « la tradition orale et la prise de décision chez les Premiers Peuples »).";
+export const NR_MANIFESTATIONS_CONSIGNE_HELP_52 =
+  "Indiquez le sujet général qui décrit le thème commun des quatre documents (ex. « aux droits et aux devoirs des censitaires dans le régime seigneurial »).";
+
+export const NR_MANIFESTATIONS_SUJET_LABEL = "Sujet général";
+export const NR_MANIFESTATIONS_SUJET_PLACEHOLDER_51 =
+  "ex. la tradition orale et la prise de décision chez les Premiers Peuples";
+export const NR_MANIFESTATIONS_SUJET_PLACEHOLDER_52 =
+  "ex. aux droits et aux devoirs des censitaires dans le régime seigneurial";
+export const NR_MANIFESTATIONS_SUJET_ARIA =
+  "Sujet général de la consigne — seule zone modifiable du gabarit ministériel";
+
+/** Bloc 3 — section catégories */
+export const NR_MANIFESTATIONS_CATEGORIES_SECTION_TITLE = "Catégories";
+export const NR_MANIFESTATIONS_CATEGORIES_SECTION_HINT =
+  "Nommez chaque catégorie. L'élève associera chaque document à la catégorie qui lui correspond.";
+export const NR_MANIFESTATIONS_CATEGORIE_LABEL_PREFIX = "Catégorie ";
+export const NR_MANIFESTATIONS_CATEGORIE_PLACEHOLDER = "ex. Tradition orale";
+export const NR_MANIFESTATIONS_CATEGORIE_ARIA_PREFIX = "Nom de la catégorie ";
+
+/** Bloc 3 — guidage */
+export const NR_MANIFESTATIONS_GUIDAGE_INFO_MODAL_BODY =
+  "Le guidage complémentaire est optionnel et visible uniquement en mode formatif. Il vous permet d'ajouter des précisions ou rappels pour orienter l'élève dans sa démarche.";
+
+/** Bloc 4 — info */
+export const NR_MANIFESTATIONS_BLOC4_INFO_51 =
+  "Ajoutez les deux documents historiques que l'élève devra associer aux catégories. Chaque document doit illustrer un fait correspondant à une catégorie.";
+export const NR_MANIFESTATIONS_BLOC4_INFO_52 =
+  "Ajoutez les quatre documents historiques que l'élève devra associer aux catégories. Chaque document doit illustrer un fait correspondant à une catégorie.";
+
+/** Bloc 5 — assignation docs → catégories */
+export const NR_MANIFESTATIONS_BLOC5_TITLE = "Corrigé — Assignation des documents";
+export const NR_MANIFESTATIONS_BLOC5_HELP =
+  "Pour chaque catégorie, sélectionnez le ou les documents qui lui correspondent. Chaque document doit être assigné à exactement une catégorie.";
+export const NR_MANIFESTATIONS_BLOC5_DOC_PLACEHOLDER = "Sélectionner un document";
+export const NR_MANIFESTATIONS_BLOC5_DOC_LABEL_PREFIX = "Document ";
+export const NR_MANIFESTATIONS_BLOC5_DOC_PICKER_ARIA_PREFIX = "Document associé à la catégorie ";
+
+/** Bloc 2 — Organisation des catégories (5.2 uniquement) */
+export const BLOC2_ORGANISATION_CATEGORIES_LABEL = "Organisation des catégories";
+export const BLOC2_ORGANISATION_CATEGORIES_HELP =
+  "Choisissez comment les quatre documents seront répartis entre les catégories. Vous pouvez modifier ce choix à tout moment ; les catégories saisies sont préservées (les associations sont à refaire).";
+export const BLOC2_ORGANISATION_CATEGORIES_OPTION_2 = "2 catégories (2 documents chacune)";
+export const BLOC2_ORGANISATION_CATEGORIES_OPTION_4 = "4 catégories (1 document chacune)";
+export const BLOC2_ORGANISATION_CATEGORIES_BLUEPRINT_LABEL = "Organisation :";
 
 /* -----------------------------  Bloc 2 — Pondération  --------------------- */
 

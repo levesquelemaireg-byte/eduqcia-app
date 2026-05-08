@@ -8,6 +8,7 @@ import {
 import { Bloc2EspaceProductionReadonly } from "@/components/tache/wizard/bloc2/Bloc2EspaceProductionReadonly";
 import { ComportementPicker } from "@/components/tache/wizard/bloc2/ComportementPicker";
 import { DISCIPLINE_LABEL, NIVEAU_SELECT_OPTIONS } from "@/components/tache/wizard/bloc2/constants";
+import { OrganisationCategoriesPicker } from "@/components/tache/wizard/bloc2/OrganisationCategoriesPicker";
 import { PonderationPicker } from "@/components/tache/wizard/bloc2/PonderationPicker";
 import { SelecteurAspects } from "@/components/tache/wizard/bloc2/selecteur-aspects";
 import { SelecteurTypeTache } from "@/components/tache/wizard/bloc2/selecteur-type-tache";
@@ -197,6 +198,7 @@ export function Bloc2EditFields({
           />
 
           {selectedComportement?.id === "2.1" ? <PonderationPicker /> : null}
+          {selectedComportement?.id === "5.2" ? <OrganisationCategoriesPicker /> : null}
         </>
       ) : null}
 
