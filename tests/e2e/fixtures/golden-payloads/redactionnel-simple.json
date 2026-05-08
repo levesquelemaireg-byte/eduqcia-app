@@ -28,45 +28,29 @@
         ],
         "espaceProduction": { "type": "lignes", "nbLignes": 12 },
         "outilEvaluation": {
-          "oi": "redactionnel",
-          "criteres": [
-            {
-              "libelle": "Utilisation des connaissances",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Utilise de façon appropriée les connaissances liées au sujet",
-                  "points": 5
-                },
-                {
-                  "niveau": "B",
-                  "description": "Utilise quelques connaissances liées au sujet",
-                  "points": 3
-                },
-                {
-                  "niveau": "C",
-                  "description": "Utilise peu ou pas de connaissances liées au sujet",
-                  "points": 1
-                }
-              ]
-            },
-            {
-              "libelle": "Qualité de l'argumentation",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Argumente de façon rigoureuse et cohérente",
-                  "points": 5
-                },
-                { "niveau": "B", "description": "Argumente de façon partielle", "points": 3 },
-                {
-                  "niveau": "C",
-                  "description": "N'argumente pas ou de façon incohérente",
-                  "points": 1
-                }
-              ]
-            }
-          ]
+          "id": "OI0_SO1",
+          "operation": "Établir des faits",
+          "comportement_enonce": "Établir un fait à partir d'un document historique",
+          "bareme": {
+            "max_points": 2,
+            "echelle": [
+              {
+                "points": 2,
+                "label": "2 points",
+                "description": "L'élève établit correctement le fait."
+              },
+              {
+                "points": 1,
+                "label": "1 point",
+                "description": "L'élève établit plus ou moins correctement le fait."
+              },
+              {
+                "points": 0,
+                "label": "0 point",
+                "description": "L'élève établit incorrectement le fait ou ne l'établit pas."
+              }
+            ]
+          }
         },
         "corrige": "<p><strong>Réponse attendue :</strong></p><p>La Proclamation royale de 1763 a eu plusieurs conséquences sur la société canadienne-française :</p><ol><li>L'imposition des lois anglaises remplace les lois françaises (Coutume de Paris), ce qui affecte les droits de propriété et le système juridique familier aux Canadiens français.</li><li>La création de tribunaux anglais signifie que les Canadiens français doivent désormais se soumettre à un système judiciaire étranger, dans une langue qu'ils ne maîtrisent pas.</li></ol>",
         "aspects_societe": [],

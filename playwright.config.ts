@@ -23,5 +23,8 @@ export default defineConfig({
     timeout: 120_000,
     stdout: "pipe",
     stderr: "pipe",
+    // Active la route dev-only `/apercu/test/[slug]` côté `next start`
+    // pour les fixtures Playwright. Voir page.tsx → routesTestActives().
+    env: { ALLOW_TEST_ROUTES: "1" },
   },
 });

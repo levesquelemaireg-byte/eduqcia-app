@@ -28,29 +28,29 @@
         ],
         "espaceProduction": { "type": "lignes", "nbLignes": 8 },
         "outilEvaluation": {
-          "oi": "OI0",
-          "criteres": [
-            {
-              "libelle": "Identification des motivations",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Identifie correctement deux motivations avec justification",
-                  "points": 4
-                },
-                {
-                  "niveau": "B",
-                  "description": "Identifie une motivation avec justification",
-                  "points": 2
-                },
-                {
-                  "niveau": "C",
-                  "description": "N'identifie aucune motivation pertinente",
-                  "points": 0
-                }
-              ]
-            }
-          ]
+          "id": "OI0_SO1",
+          "operation": "Établir des faits",
+          "comportement_enonce": "Établir un fait à partir d'un document historique",
+          "bareme": {
+            "max_points": 2,
+            "echelle": [
+              {
+                "points": 2,
+                "label": "2 points",
+                "description": "L'élève établit correctement le fait."
+              },
+              {
+                "points": 1,
+                "label": "1 point",
+                "description": "L'élève établit plus ou moins correctement le fait."
+              },
+              {
+                "points": 0,
+                "label": "0 point",
+                "description": "L'élève établit incorrectement le fait ou ne l'établit pas."
+              }
+            ]
+          }
         },
         "corrige": "<p>Deux motivations possibles : 1) La recherche de nouvelles routes commerciales vers l'Asie. 2) La volonté d'évangéliser les peuples autochtones.</p>",
         "aspects_societe": [],
@@ -97,41 +97,29 @@
         ],
         "espaceProduction": { "type": "lignes", "nbLignes": 10 },
         "outilEvaluation": {
-          "oi": "OI3",
-          "criteres": [
-            {
-              "libelle": "Éléments de comparaison",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Compare de façon pertinente les deux acteurs avec des éléments précis",
-                  "points": 5
-                },
-                {
-                  "niveau": "B",
-                  "description": "Identifie des éléments pour chaque acteur sans les comparer",
-                  "points": 3
-                },
-                {
-                  "niveau": "C",
-                  "description": "Ne parvient pas à distinguer les deux acteurs",
-                  "points": 1
-                }
-              ]
-            },
-            {
-              "libelle": "Utilisation des documents",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Réfère explicitement aux deux documents",
-                  "points": 3
-                },
-                { "niveau": "B", "description": "Réfère à un seul document", "points": 1 },
-                { "niveau": "C", "description": "Ne réfère à aucun document", "points": 0 }
-              ]
-            }
-          ]
+          "id": "OI3_SO1",
+          "operation": "Dégager des différences et des similitudes",
+          "comportement_enonce": "Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison.",
+          "bareme": {
+            "max_points": 2,
+            "echelle": [
+              {
+                "points": 2,
+                "label": "2 points",
+                "description": "L’élève dégage correctement la différence."
+              },
+              {
+                "points": 1,
+                "label": "1 point",
+                "description": "L’élève dégage plus ou moins correctement la différence."
+              },
+              {
+                "points": 0,
+                "label": "0 point",
+                "description": "L’élève dégage incorrectement la différence ou ne la dégage pas."
+              }
+            ]
+          }
         },
         "corrige": "<p>Les compagnies de commerce (doc 2) avaient un rôle économique : elles exploitaient le commerce des fourrures mais négligeaient le peuplement. L'État français sous Louis XIV (doc 3) a pris en charge directement le peuplement avec des mesures concrètes (Filles du Roy, soldats, engagés), ce qui a doublé la population.</p>",
         "aspects_societe": [],
@@ -175,29 +163,29 @@
         ],
         "espaceProduction": { "type": "lignes", "nbLignes": 10 },
         "outilEvaluation": {
-          "oi": "OI0",
-          "criteres": [
-            {
-              "libelle": "Identification des conséquences",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Identifie correctement au moins deux conséquences avec appui documentaire",
-                  "points": 4
-                },
-                {
-                  "niveau": "B",
-                  "description": "Identifie une conséquence avec appui documentaire",
-                  "points": 2
-                },
-                {
-                  "niveau": "C",
-                  "description": "N'identifie aucune conséquence pertinente",
-                  "points": 0
-                }
-              ]
-            }
-          ]
+          "id": "OI0_SO1",
+          "operation": "Établir des faits",
+          "comportement_enonce": "Établir un fait à partir d'un document historique",
+          "bareme": {
+            "max_points": 2,
+            "echelle": [
+              {
+                "points": 2,
+                "label": "2 points",
+                "description": "L'élève établit correctement le fait."
+              },
+              {
+                "points": 1,
+                "label": "1 point",
+                "description": "L'élève établit plus ou moins correctement le fait."
+              },
+              {
+                "points": 0,
+                "label": "0 point",
+                "description": "L'élève établit incorrectement le fait ou ne l'établit pas."
+              }
+            ]
+          }
         },
         "corrige": "<p>Conséquences : 1) Effondrement démographique massif (jusqu'à 90 % de pertes). 2) Perte des savoirs traditionnels avec la mort des anciens (doc 5). 3) Déstabilisation des modes de vie traditionnels des survivants.</p>",
         "aspects_societe": [],

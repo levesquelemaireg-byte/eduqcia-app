@@ -29,15 +29,22 @@ type GoldenFixture = {
 /** Slugs autorisés — correspondance 1:1 avec les fichiers fixtures. */
 const SLUGS_AUTORISES = ["redactionnel-simple", "ordre-chrono", "sommatif-3-taches"] as const;
 
+/**
+ * Route dev-only par défaut. La CI Playwright tourne en `next start`
+ * (NODE_ENV=production) et a besoin de cette route pour les fixtures.
+ * `ALLOW_TEST_ROUTES=1` ouvre la route — réservé à l'environnement de test.
+ */
+function routesTestActives(): boolean {
+  return process.env.NODE_ENV !== "production" || process.env.ALLOW_TEST_ROUTES === "1";
+}
+
 export async function generateStaticParams() {
-  // Ne pas générer les pages statiques en production
-  if (process.env.NODE_ENV === "production") return [];
+  if (!routesTestActives()) return [];
   return SLUGS_AUTORISES.map((slug) => ({ slug }));
 }
 
 export default async function ApercuTestPage({ params }: PageProps) {
-  // Guard : 404 en production
-  if (process.env.NODE_ENV === "production") {
+  if (!routesTestActives()) {
     notFound();
   }
 

@@ -41,7 +41,10 @@ export function DossierCellule({ document: doc, numero, span, titreVisible }: Pr
   const showRepereTemporel = doc.structure === "deux_temps";
 
   return (
-    <div className={cn(styles.cellule, span === 2 && styles.celluleSpan2)}>
+    <div
+      className={cn(styles.cellule, span === 2 && styles.celluleSpan2)}
+      data-test-dossier-cellule
+    >
       {/* Wrapper interne `width: fit-content` — titre, cadre et source y
           sont enfants directs. Combiné à `overflow-wrap: anywhere` sur la
           source, le wrapper prend la largeur du cadre quand le titre est

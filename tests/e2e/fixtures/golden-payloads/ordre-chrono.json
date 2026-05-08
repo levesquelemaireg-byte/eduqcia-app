@@ -42,29 +42,24 @@
           ]
         },
         "outilEvaluation": {
-          "oi": "OI2",
-          "criteres": [
-            {
-              "libelle": "Exactitude de l'ordre chronologique",
-              "descripteurs": [
-                {
-                  "niveau": "A",
-                  "description": "Tous les événements sont placés dans le bon ordre",
-                  "points": 4
-                },
-                {
-                  "niveau": "B",
-                  "description": "La majorité des événements sont dans le bon ordre",
-                  "points": 2
-                },
-                {
-                  "niveau": "C",
-                  "description": "Les événements sont dans un ordre incorrect",
-                  "points": 0
-                }
-              ]
-            }
-          ]
+          "id": "OI2_SO1",
+          "operation": "Situer dans l’espace",
+          "comportement_enonce": "Identifier sur une carte un élément géographique ou un territoire.",
+          "bareme": {
+            "max_points": 2,
+            "echelle": [
+              {
+                "points": 2,
+                "label": "2 points",
+                "description": "L’élève situe le fait dans l’espace."
+              },
+              {
+                "points": 0,
+                "label": "0 point",
+                "description": "L’élève ne situe pas le fait dans l’espace."
+              }
+            ]
+          }
         },
         "corrige": "<p><strong>Ordre chronologique attendu :</strong></p><ol><li><strong>B</strong> — Début de la guerre de Sept Ans (1756)</li><li><strong>A</strong> — Bataille des Plaines d'Abraham (1759)</li><li><strong>D</strong> — Capitulation de Montréal (1760)</li><li><strong>C</strong> — Traité de Paris (1763)</li></ol>",
         "aspects_societe": [],
