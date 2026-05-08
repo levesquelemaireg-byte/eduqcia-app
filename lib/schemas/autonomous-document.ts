@@ -4,7 +4,6 @@ import { categorieTextuelleSchema } from "@/lib/documents/categorie-textuelle";
 import { typeIconographiqueSchema } from "@/lib/documents/type-iconographique";
 import { documentLegendPositionSchema, documentSourceTypeSchema } from "@/lib/schemas/document";
 import { documentStructureSchema } from "@/lib/schemas/document-renderer";
-import { htmlHasMeaningfulText } from "@/lib/tache/consigne-helpers";
 import {
   DOCUMENT_MODULE_LEGEND_POSITION_ERROR,
   DOCUMENT_MODULE_LEGEND_WORDS_ERROR,
@@ -204,15 +203,6 @@ export const autonomousDocumentFormSchema = z
             message: "Téléversez une image ou fournissez une adresse HTTPS valide.",
           });
         }
-      }
-
-      // Source requise
-      if (!htmlHasMeaningfulText(el.source_citation)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          path: ["elements", i, "source_citation"],
-          message: "Source requise.",
-        });
       }
 
       // Légende iconographique

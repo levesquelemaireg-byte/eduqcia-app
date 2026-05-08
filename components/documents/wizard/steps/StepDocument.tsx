@@ -176,10 +176,9 @@ function isElementComplete(
   const hasContent =
     el.type === "textuel" ? htmlHasMeaningfulText(el.contenu ?? "") : Boolean(el.image_url?.trim());
   const hasCategory = el.type === "textuel" ? el.categorie_textuelle != null : true; // catégorie iconographique optionnelle
-  const hasSource = htmlHasMeaningfulText(el.source_citation ?? "");
   const hasAuteur = structure !== "perspectives" || Boolean(el.auteur?.trim());
   const hasRepere = structure !== "deux_temps" || Boolean(el.repere_temporel?.trim());
-  return hasContent && hasCategory && hasSource && hasAuteur && hasRepere;
+  return hasContent && hasCategory && hasAuteur && hasRepere;
 }
 
 function MultiElementAccordion({ structure }: { structure: string }) {

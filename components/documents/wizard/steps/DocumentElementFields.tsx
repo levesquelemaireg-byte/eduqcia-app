@@ -508,7 +508,6 @@ export function DocumentElementFields({
       <FieldLayout
         label={DOCUMENT_MODULE_SOURCE_LABEL}
         htmlFor={sourceId}
-        required
         labelExtra={<FieldHelpModalButton onClick={() => setHelpKey("source")} />}
         error={elErrors?.source_citation?.message}
       >

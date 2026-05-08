@@ -198,7 +198,6 @@ export function AutonomousDocumentWizard({
           if (el.type === "textuel" && !htmlHasMeaningfulText(el.contenu ?? "")) return false;
           if (el.type === "textuel" && el.categorie_textuelle == null) return false;
           if (el.type === "iconographique" && !(el.image_url ?? "").trim()) return false;
-          if (!htmlHasMeaningfulText(el.source_citation ?? "")) return false;
           if (st === "perspectives" && !(el.auteur ?? "").trim()) return false;
           if (st === "deux_temps" && !(el.repere_temporel ?? "").trim()) return false;
         }
