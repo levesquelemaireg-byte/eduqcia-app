@@ -7,6 +7,10 @@ import {
   initialCarteHistoriquePayload,
   isCarteHistoriqueComportementId,
 } from "@/lib/tache/non-redaction/carte-historique-payload";
+import {
+  initialManifestationsPayload,
+  isManifestationsComportementId,
+} from "@/lib/tache/non-redaction/manifestations-payload";
 import { getVariantSlugForComportementId } from "@/lib/tache/non-redaction/registry";
 import { parseNonRedactionData } from "@/lib/tache/tache-form-hydrate";
 import type { NonRedactionData } from "@/lib/tache/tache-form-state-types";
@@ -25,6 +29,11 @@ export function nonRedactionFromDbColumn(
     if (parsed?.type === "carte-historique") return parsed;
     const cid = isCarteHistoriqueComportementId(comportementId) ? comportementId : "2.1";
     return { type: "carte-historique", payload: initialCarteHistoriquePayload(cid) };
+  }
+  if (slug === "manifestations") {
+    if (parsed?.type === "manifestations") return parsed;
+    const cid = isManifestationsComportementId(comportementId) ? comportementId : "5.1";
+    return { type: "manifestations", payload: initialManifestationsPayload(cid) };
   }
   return parsed;
 }

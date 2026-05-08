@@ -518,6 +518,39 @@ export const NR_CARTE_23_LETTER_LABEL_FOR = "Lettre pour {{element}}";
 /** Sommaire / corrigé — affichage humain de la lettre. */
 export const NR_CARTE_CORRIGE_NO_LETTER = "(à définir)";
 
+/* -----------------------------  OI5 · 5.1 / 5.2 — Manifestations  --------- */
+
+/**
+ * Constantes consommées par les builders HTML feuille élève / corrigé enseignant
+ * (`lib/tache/non-redaction/manifestations-payload.ts`). Les libellés UI wizard
+ * (modal help, gates, etc.) sont ajoutés au Lot 2.
+ */
+
+/** Préfixe ministériel — précède le placeholder de tokens documents. */
+export const NR_MANIFESTATIONS_PUBLISHED_INTRO_PREFIX = "Les documents ";
+/** Suffixe entre les tokens et le sujet général. */
+export const NR_MANIFESTATIONS_PUBLISHED_INTRO_SUFFIX = " font référence à";
+
+/** Token documents — 5.1 (2 docs). Réécrit à l'impression. */
+export const NR_MANIFESTATIONS_51_DOC_TOKEN = "{{doc_1}} et {{doc_2}}";
+/** Token documents — 5.2 (4 docs). Réécrit à l'impression. */
+export const NR_MANIFESTATIONS_52_DOC_TOKEN = "{{doc_1}} à {{doc_4}}";
+
+/** Instruction ministérielle — 5.1 (deux faits). */
+export const NR_MANIFESTATIONS_51_INSCRIVEZ =
+  "Inscrivez dans la case appropriée le numéro de chacun des documents.";
+/** Instruction ministérielle — 5.2 (quatre faits). */
+export const NR_MANIFESTATIONS_52_INSCRIVEZ =
+  "Inscrivez dans la case appropriée le numéro de chacun des quatre documents.";
+
+/** Séparateur visuel entre 2 cases (5.2 organisation 2-categories × 2 docs). */
+export const NR_MANIFESTATIONS_ET_SEPARATOR = "et";
+
+/** Titre du corrigé enseignant. */
+export const NR_MANIFESTATIONS_CORRIGE_TITRE = "Associations attendues :";
+/** Séparateur entre numéros de documents dans une catégorie multi-docs (corrigé). */
+export const NR_MANIFESTATIONS_CORRIGE_TEMPLATE = " et ";
+
 /* -----------------------------  Bloc 2 — Pondération  --------------------- */
 
 export const BLOC2_PONDERATION_LABEL = "Pondération";

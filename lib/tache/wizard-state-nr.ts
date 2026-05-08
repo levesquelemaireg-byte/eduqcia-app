@@ -26,3 +26,10 @@ export function nonRedactionCartePayload(state: TacheFormState): unknown {
   if (nr?.type !== "carte-historique") return null;
   return nr.payload;
 }
+
+/** Charge utile manifestations depuis `bloc5.nonRedaction`. */
+export function nonRedactionManifestationsPayload(state: TacheFormState): unknown {
+  const nr = state.bloc5.nonRedaction;
+  if (nr?.type !== "manifestations") return null;
+  return nr.payload;
+}

@@ -21,3 +21,7 @@ export function isActiveAvantApresVariant(state: TacheFormState): boolean {
 export function isActiveCarteHistoriqueVariant(state: TacheFormState): boolean {
   return getVariantSlugForComportementId(state.bloc2.comportementId) === "carte-historique";
 }
+
+export function isActiveManifestationsVariant(state: TacheFormState): boolean {
+  return getVariantSlugForComportementId(state.bloc2.comportementId) === "manifestations";
+}

@@ -31,6 +31,17 @@ import {
   initialOrdreChronologiquePayload,
   mergeOrdreChronologiquePayload,
 } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
+import {
+  initialManifestationsPayload,
+  isManifestationsComportementId,
+  mergeManifestationsPayload,
+} from "@/lib/tache/non-redaction/manifestations-payload";
+import {
+  emptyAssociations,
+  getCategoryCount,
+  migrateCategoriesFor2,
+  migrateCategoriesFor4,
+} from "@/lib/tache/non-redaction/manifestations-helpers";
 import type { BlueprintSlice } from "@/lib/tache/tache-form-state-types";
 import {
   initialBloc5,
@@ -58,6 +69,10 @@ function initialNonRedactionForSlug(
   if (slug === "carte-historique") {
     const cid = isCarteHistoriqueComportementId(comportementId) ? comportementId : "2.1";
     return { type: "carte-historique", payload: initialCarteHistoriquePayload(cid) };
+  }
+  if (slug === "manifestations") {
+    const cid = isManifestationsComportementId(comportementId) ? comportementId : "5.1";
+    return { type: "manifestations", payload: initialManifestationsPayload(cid) };
   }
   return null;
 }
@@ -499,6 +514,34 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
             type: "carte-historique",
             payload: mergeCarteHistoriquePayload(nr.payload, action.patch),
           },
+        },
+      };
+    }
+    case "NON_REDACTION_PATCH_MANIFESTATIONS": {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "manifestations") return state;
+      const merged = mergeManifestationsPayload(nr.payload, action.patch);
+      // Migration des catégories + reset des associations si organisation change.
+      const orgChanged =
+        action.patch.organisationCategories !== undefined &&
+        action.patch.organisationCategories !== nr.payload.organisationCategories;
+      const finalPayload = orgChanged
+        ? {
+            ...merged,
+            categories:
+              merged.organisationCategories === "4-categories"
+                ? migrateCategoriesFor4(nr.payload.categories)
+                : migrateCategoriesFor2(nr.payload.categories),
+            associations: emptyAssociations(
+              getCategoryCount(merged.comportementId, merged.organisationCategories),
+            ),
+          }
+        : merged;
+      return {
+        ...state,
+        bloc5: {
+          ...state.bloc5,
+          nonRedaction: { type: "manifestations", payload: finalPayload },
         },
       };
     }
