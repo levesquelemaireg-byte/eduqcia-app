@@ -87,14 +87,15 @@ export const WIZARD_BLOC_CONFIGS: Record<string, WizardBlocConfig> = {
     bloc4: { type: "standard" },
   },
 
-  // OI6 — changements et continuités (6.1/6.2 : 1 document standard)
+  // OI6 — changements et continuités (6.1/6.2 : bascule groupé/séparé via Bloc3ModeleSouple)
+  // Mode groupé par défaut : 1 document à 2 moments. Mode séparé : 2 documents distincts.
   "6.1": {
     bloc3: { type: "modele_souple", templateKey: "oi6-changement" },
-    bloc4: { type: "standard" },
+    bloc4: { type: "moments", count: 2, modeGroupeDefaut: true },
   },
   "6.2": {
     bloc3: { type: "modele_souple", templateKey: "oi6-continuite" },
-    bloc4: { type: "standard" },
+    bloc4: { type: "moments", count: 2, modeGroupeDefaut: true },
   },
 
   // OI6 — changement OU continuité (template pur)

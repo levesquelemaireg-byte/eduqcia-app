@@ -107,6 +107,10 @@ function isBloc3PerspectivesReadyForNext(state: TacheFormState): boolean {
     if (state.bloc3.perspectivesContexte.trim().length === 0) return false;
     return true;
   }
+  // OI6.1 / OI6.2 : modele_souple + bloc4 moments → mode groupé/séparé doit être choisi.
+  if (config.bloc3.type === "modele_souple" && config.bloc4.type === "moments") {
+    if (state.bloc3.perspectivesMode === null) return false;
+  }
   return true;
 }
 
