@@ -274,7 +274,7 @@ describe("manifestations-payload — isManifestationsDocumentsStepComplete", () 
 describe("manifestations-payload — buildManifestationsConsigneHtml", () => {
   it("5.1 : génère le HTML feuille élève avec tokens {{doc_1}} et {{doc_2}}", () => {
     const html = buildManifestationsConsigneHtml(payload51Complete());
-    expect(html).toContain('data-manifestations-student="true"');
+    expect(html).toContain('data-manifestations-eleve="true"');
     expect(html).toContain("{{doc_1}}");
     expect(html).toContain("{{doc_2}}");
     expect(html).toContain("Tradition orale");
@@ -285,16 +285,16 @@ describe("manifestations-payload — buildManifestationsConsigneHtml", () => {
     const html = buildManifestationsConsigneHtml(payload52_2catComplete());
     expect(html).toContain("{{doc_1}} à {{doc_4}}");
     // 2 cellules × 2 cases = 4 cases au total
-    const caseCount = (html.match(/"manifestations-student-case"/g) || []).length;
+    const caseCount = (html.match(/"manifestations-eleve-case"/g) || []).length;
     expect(caseCount).toBe(4);
-    expect(html).toContain("manifestations-student-et");
+    expect(html).toContain("manifestations-eleve-et");
   });
 
   it("5.2 + 4-categories : 4 cellules avec 1 case chacune (pas de 'et')", () => {
     const html = buildManifestationsConsigneHtml(payload52_4catComplete());
-    const caseCount = (html.match(/"manifestations-student-case"/g) || []).length;
+    const caseCount = (html.match(/"manifestations-eleve-case"/g) || []).length;
     expect(caseCount).toBe(4);
-    expect(html).not.toContain("manifestations-student-et");
+    expect(html).not.toContain("manifestations-eleve-et");
     expect(html).toContain("Gouverneur");
     expect(html).toContain("Capitaine de milice");
   });

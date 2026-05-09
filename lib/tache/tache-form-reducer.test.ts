@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { NR_ORDRE_STUDENT_GUIDAGE } from "@/lib/ui/ui-copy";
+import { NR_ORDRE_ELEVE_GUIDAGE } from "@/lib/ui/ui-copy";
 import { initialTacheFormState } from "@/lib/tache/tache-form-state-types";
 import { tacheFormReducer } from "@/lib/tache/tache-form-reducer";
 
@@ -26,7 +26,7 @@ describe("tacheFormReducer SET_COMPORTEMENT", () => {
       },
       bloc3: {
         ...initialTacheFormState.bloc3,
-        guidage: `<p>${NR_ORDRE_STUDENT_GUIDAGE}</p>`,
+        guidage: `<p>${NR_ORDRE_ELEVE_GUIDAGE}</p>`,
       },
     };
 

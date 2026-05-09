@@ -9,9 +9,9 @@ import {
   NR_ORDRE_PUBLISHED_INTRO_LES_DOCUMENTS,
   NR_ORDRE_PUBLISHED_INTRO_PORTENT_SUR,
   NR_ORDRE_PUBLISHED_INTRO_SUFFIX,
-  NR_ORDRE_STUDENT_GUIDAGE,
-  NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA,
-  NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL,
+  NR_ORDRE_ELEVE_GUIDAGE,
+  NR_ORDRE_ELEVE_SHEET_OPTIONS_GROUP_ARIA,
+  NR_ORDRE_ELEVE_SHEET_REPONSE_LABEL,
   NR_ORDRE_WIZARD_DOC_TOKEN_PREFIX,
 } from "@/lib/ui/ui-copy";
 import {
@@ -33,15 +33,13 @@ import {
 import type { DocumentSlotId } from "@/lib/tache/blueprint-helpers";
 
 /** Enseignant / sommaire : masquer la zone « Réponse : » + case (réservée à la feuille élève imprimée). */
-export function stripOrdreChronologiqueStudentSheetResponseBlockForDisplay(
-  consigne: string,
-): string {
-  return consigne.replace(/<div class="ordre-chrono-student-reponse"[^>]*>[\s\S]*?<\/div>/, "");
+export function stripOrdreChronologiqueEleveSheetResponseBlockForDisplay(consigne: string): string {
+  return consigne.replace(/<div class="ordre-chrono-eleve-reponse"[^>]*>[\s\S]*?<\/div>/, "");
 }
 
 /** Consigne ordre chrono affichée côté enseignant (fiche, sommaire) : sans bloc réponse élève. */
 export function prepareOrdreChronologiqueConsigneForTeacherDisplay(consigne: string): string {
-  return stripOrdreChronologiqueStudentSheetResponseBlockForDisplay(consigne);
+  return stripOrdreChronologiqueEleveSheetResponseBlockForDisplay(consigne);
 }
 
 /** Longueur max du thème (zone éditable ministérielle). */
@@ -318,21 +316,21 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function ordreStudentDigitCellsHtml(row: OrdreOptionRow): string {
+function ordreEleveDigitCellsHtml(row: OrdreOptionRow): string {
   const parts: string[] = [];
   for (let i = 0; i < 4; i++) {
     if (i > 0) {
-      parts.push('<span class="ordre-chrono-student-sep">–</span>');
+      parts.push('<span class="ordre-chrono-eleve-sep">–</span>');
     }
     const d = row[i];
     const inner = d === null ? "&#160;" : escapeHtml(String(d));
-    parts.push(`<span class="ordre-chrono-student-digit">${inner}</span>`);
+    parts.push(`<span class="ordre-chrono-eleve-digit">${inner}</span>`);
   }
   return parts.join("");
 }
 
-function ordreStudentOptionRowHtml(letter: string, row: OrdreOptionRow): string {
-  return `<div class="ordre-chrono-student-option"><span class="ordre-chrono-student-letter-label"><strong>${escapeHtml(letter)})</strong></span><span class="ordre-chrono-student-seq">${ordreStudentDigitCellsHtml(row)}</span></div>`;
+function ordreEleveOptionRowHtml(letter: string, row: OrdreOptionRow): string {
+  return `<div class="ordre-chrono-eleve-option"><span class="ordre-chrono-eleve-letter-label"><strong>${escapeHtml(letter)})</strong></span><span class="ordre-chrono-eleve-seq">${ordreEleveDigitCellsHtml(row)}</span></div>`;
 }
 
 /** Phrase d’intro feuille élève avec jetons `{{doc_*}}` (réécrits à l’impression épreuve). */
@@ -343,7 +341,7 @@ export function buildOrdreChronologiqueIntroHtml(themeTrimmed: string): string {
     NR_ORDRE_PUBLISHED_INTRO_PORTENT_SUR +
     escapeHtml(themeTrimmed) +
     NR_ORDRE_PUBLISHED_INTRO_SUFFIX;
-  return `<p class="ordre-chrono-student-intro">${inner}</p>`;
+  return `<p class="ordre-chrono-eleve-intro">${inner}</p>`;
 }
 
 /**
@@ -352,9 +350,9 @@ export function buildOrdreChronologiqueIntroHtml(themeTrimmed: string): string {
  */
 export function buildOrdreChronologiqueConsigneHtml(p: OrdreChronologiquePayload): string {
   const intro = buildOrdreChronologiqueIntroHtml(p.consigneTheme.trim());
-  const grid = `<div class="ordre-chrono-student-grid" role="group" aria-label="${escapeHtml(NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA)}">${ordreStudentOptionRowHtml("A", p.optionA)}${ordreStudentOptionRowHtml("B", p.optionB)}${ordreStudentOptionRowHtml("C", p.optionC)}${ordreStudentOptionRowHtml("D", p.optionD)}</div>`;
-  const reponse = `<div class="ordre-chrono-student-reponse"><span class="ordre-chrono-student-reponse-label">${escapeHtml(NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="ordre-chrono-student-reponse-box" aria-hidden="true"></span></div>`;
-  return `<div data-ordre-chrono-student="true" class="ordre-chrono-student-root">${intro}${grid}${reponse}</div>`;
+  const grid = `<div class="ordre-chrono-eleve-grid" role="group" aria-label="${escapeHtml(NR_ORDRE_ELEVE_SHEET_OPTIONS_GROUP_ARIA)}">${ordreEleveOptionRowHtml("A", p.optionA)}${ordreEleveOptionRowHtml("B", p.optionB)}${ordreEleveOptionRowHtml("C", p.optionC)}${ordreEleveOptionRowHtml("D", p.optionD)}</div>`;
+  const reponse = `<div class="ordre-chrono-eleve-reponse"><span class="ordre-chrono-eleve-reponse-label">${escapeHtml(NR_ORDRE_ELEVE_SHEET_REPONSE_LABEL)}</span><span class="ordre-chrono-eleve-reponse-box" aria-hidden="true"></span></div>`;
+  return `<div data-ordre-chrono-eleve="true" class="ordre-chrono-eleve-root">${intro}${grid}${reponse}</div>`;
 }
 
 /** Texte enseignant — `tache.corrige`. */
@@ -380,5 +378,5 @@ export function buildOrdreChronologiqueCorrigeHtml(p: OrdreChronologiquePayload)
 
 /** HTML — `tache.guidage` : guidage **élève**, fixe (non modifiable par l’enseignant). */
 export function buildOrdreChronologiqueGuidageHtml(): string {
-  return `<p>${escapeHtml(NR_ORDRE_STUDENT_GUIDAGE)}</p>`;
+  return `<p>${escapeHtml(NR_ORDRE_ELEVE_GUIDAGE)}</p>`;
 }

@@ -37,14 +37,14 @@ export const NR_ORDRE_PUBLISHED_INTRO_PORTENT_SUR = " portent sur ";
 export const NR_ORDRE_PUBLISHED_INTRO_SUFFIX =
   ". Classez-les en ordre chronologique. Quelle option (A, B, C ou D) présente la bonne séquence ?";
 /** Feuille élève (ordre chronologique) — zone unique pour la lettre A–D. */
-export const NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
-export const NR_ORDRE_STUDENT_SHEET_OPTIONS_GROUP_ARIA =
+export const NR_ORDRE_ELEVE_SHEET_REPONSE_LABEL = "Réponse :";
+export const NR_ORDRE_ELEVE_SHEET_OPTIONS_GROUP_ARIA =
   "Options de réponse : quatre suites de numéros de documents";
 /**
  * Guidage **élève** (feuille / sommaire / `tache.guidage` publié) — fixe pour l'OI ordre chronologique, non éditable.
  * Distinct de `NR_ORDRE_OPTIONS_HELP` (texte **enseignant** sur la génération des options A–D).
  */
-export const NR_ORDRE_STUDENT_GUIDAGE =
+export const NR_ORDRE_ELEVE_GUIDAGE =
   "Cherchez dans chaque document des indices de temps (dates, événements, mots liés à une époque), puis utilisez vos connaissances pour confirmer leur ordre du plus ancien au plus récent.";
 /** Bloc 3 ordre chrono — texte sous le titre Guidage complémentaire (formulaire). */
 export const NR_ORDRE_GUIDAGE_FORM_LEAD =
@@ -180,7 +180,7 @@ export function formatNrOrdreBloc4ReminderDigitDocLine(digit: number, slotNumero
  * Guidage **élève** (`tache.guidage`) — fixe pour ce parcours, non éditable par l'enseignant.
  * L'élève relie le **document cible** aux **segments** A, B, C (ou D) de la ligne du temps.
  */
-export const NR_LIGNE_TEMPS_STUDENT_GUIDAGE =
+export const NR_LIGNE_TEMPS_ELEVE_GUIDAGE =
   "Repérez dans le document des indices temporels (dates, événements, tournures ou références à une période), puis comparez-les aux segments de la ligne du temps pour choisir la lettre qui correspond à la période où se situent les faits présentés.";
 /** Bloc 3 (futur) — texte sous le titre Guidage complémentaire lorsque le parcours ligne du temps sera branché. */
 export const NR_LIGNE_TEMPS_GUIDAGE_FORM_LEAD =
@@ -198,7 +198,7 @@ export const NR_LIGNE_TEMPS_CONSIGNE_MINISTERIAL_BADGE = "Libellé ministériel 
 /** Modale info — consigne fixe (parcours ligne du temps). */
 export const NR_LIGNE_TEMPS_CONSIGNE_INFO_MODAL_BODY =
   "Le libellé affiché aux élèves est fixe pour ce comportement. Les numéros de document s'ajustent automatiquement lorsque la tâche est intégrée à une épreuve regroupant plusieurs tâches.";
-export const NR_LIGNE_TEMPS_STUDENT_SHEET_TIMELINE_ARIA =
+export const NR_LIGNE_TEMPS_ELEVE_SHEET_TIMELINE_ARIA =
   "Ligne du temps : segments chronologiques et lettres de réponse";
 export const NR_LIGNE_TEMPS_BLOC4_INFO =
   "Cette tâche requiert exactement un document cible. L'élève s'en sert pour repérer la période sur la ligne du temps.";
@@ -294,7 +294,7 @@ export function NR_LIGNE_TEMPS_TIMELINE_SEGMENT_ARIA(
  * Wizard TAÉ — parcours avant / après (non rédactionnel, OI1 · comportement 1.3).
  * Spec : `docs/wizard-oi-non-redactionnelle.md`.
  */
-export const NR_AVANT_APRES_STUDENT_GUIDAGE =
+export const NR_AVANT_APRES_ELEVE_GUIDAGE =
   "Pour chaque option, comparez quels documents se situent avant le repère commun et lesquels s'y situent après, au regard des dates (ou de l'année extraite du repère temporel) par rapport à l'année du repère.";
 export const NR_AVANT_APRES_GUIDAGE_FORM_LEAD =
   "Ce guidage est prédéterminé pour ce parcours. Il ne peut pas être modifié et sera affiché aux mêmes endroits que pour les autres tâches (fiche, feuille élève selon les options d'impression).";
@@ -333,14 +333,14 @@ export const NR_AVANT_APRES_GEN_ERROR_TIE =
   "Pour toute année égale à celle du repère, choisissez « Avant » ou « Après » dans la section dédiée.";
 export const NR_AVANT_APRES_GEN_ERROR_PARTITION =
   "La partition correcte doit comporter exactement deux documents avant le repère et deux après. Ajustez les documents ou les choix d'égalité.";
-export const NR_AVANT_APRES_STUDENT_SHEET_OPTIONS_GROUP_ARIA =
+export const NR_AVANT_APRES_ELEVE_SHEET_OPTIONS_GROUP_ARIA =
   "Options de réponse : avant, repère, après";
-export const NR_AVANT_APRES_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
+export const NR_AVANT_APRES_ELEVE_SHEET_REPONSE_LABEL = "Réponse :";
 /** En-têtes du tableau **feuille élève / impression** uniquement (pivot au centre, sans titre au milieu). */
-export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_AVANT = "Avant";
-export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES = "Après";
+export const NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_AVANT = "Avant";
+export const NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_APRES = "Après";
 /** Libellé masqué visuellement : colonne centrale du tableau (repère affiché dans les lignes). */
-export const NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR = "Repère de comparaison";
+export const NR_AVANT_APRES_ELEVE_SHEET_TABLE_REPERE_TH_SR = "Repère de comparaison";
 export const NR_AVANT_APRES_PUBLISHED_INTRO_PREFIX =
   "Les documents {{doc_1}}, {{doc_2}}, {{doc_3}} et {{doc_4}} font référence à ";
 export const NR_AVANT_APRES_PUBLISHED_INTRO_MIDDLE =
@@ -392,7 +392,7 @@ export const NR_CARTE_23_ITEM_PREFIX = "à ";
 export const NR_CARTE_23_ITEM_SUFFIX = " ?";
 
 /** Label zone réponse feuille élève (commun aux 3 comportements). */
-export const NR_CARTE_STUDENT_SHEET_REPONSE_LABEL = "Réponse :";
+export const NR_CARTE_ELEVE_SHEET_REPONSE_LABEL = "Réponse :";
 
 /** Aria-label du tableau A–D (2.2). */
 export const NR_CARTE_22_TABLE_OPTIONS_GROUP_ARIA =

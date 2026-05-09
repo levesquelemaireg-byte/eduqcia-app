@@ -240,9 +240,8 @@ export function isManifestationsDocumentsPublishable(
 /*  Builders HTML — feuille élève + corrigé enseignant                         */
 /* -------------------------------------------------------------------------- */
 
-const STUDENT_ROOT_OPEN =
-  '<div data-manifestations-student="true" class="manifestations-student-root">';
-const STUDENT_ROOT_CLOSE = "</div>";
+const ELEVE_ROOT_OPEN = '<div data-manifestations-eleve="true" class="manifestations-eleve-root">';
+const ELEVE_ROOT_CLOSE = "</div>";
 
 function escapeHtml(s: string): string {
   return s
@@ -259,15 +258,15 @@ function buildIntroHtml(p: ManifestationsPayload): string {
   const sujet = escapeHtml(p.consigneSujet.trim());
   const inscrivez =
     p.comportementId === "5.1" ? NR_MANIFESTATIONS_51_INSCRIVEZ : NR_MANIFESTATIONS_52_INSCRIVEZ;
-  return `<p class="manifestations-student-intro">${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_PREFIX)}${docToken}${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_SUFFIX)} ${sujet}.</p><p class="manifestations-student-instruction">${escapeHtml(inscrivez)}</p>`;
+  return `<p class="manifestations-eleve-intro">${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_PREFIX)}${docToken}${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_SUFFIX)} ${sujet}.</p><p class="manifestations-eleve-instruction">${escapeHtml(inscrivez)}</p>`;
 }
 
 function buildCelluleHtml(label: string, casesCount: number): string {
   const cases =
     casesCount === 2
-      ? `<span class="manifestations-student-case" aria-hidden="true"></span><span class="manifestations-student-et">${escapeHtml(NR_MANIFESTATIONS_ET_SEPARATOR)}</span><span class="manifestations-student-case" aria-hidden="true"></span>`
-      : `<span class="manifestations-student-case" aria-hidden="true"></span>`;
-  return `<div class="manifestations-student-cellule"><span class="manifestations-student-label">${escapeHtml(label)}</span><span class="manifestations-student-cases">${cases}</span></div>`;
+      ? `<span class="manifestations-eleve-case" aria-hidden="true"></span><span class="manifestations-eleve-et">${escapeHtml(NR_MANIFESTATIONS_ET_SEPARATOR)}</span><span class="manifestations-eleve-case" aria-hidden="true"></span>`
+      : `<span class="manifestations-eleve-case" aria-hidden="true"></span>`;
+  return `<div class="manifestations-eleve-cellule"><span class="manifestations-eleve-label">${escapeHtml(label)}</span><span class="manifestations-eleve-cases">${cases}</span></div>`;
 }
 
 /** HTML stocké en `tache.consigne` — feuille élève complète. */
@@ -276,8 +275,8 @@ export function buildManifestationsConsigneHtml(p: ManifestationsPayload): strin
   const cellules = p.categories
     .map((cat) => buildCelluleHtml(cat.trim(), docsPerCategory))
     .join("");
-  const grille = `<div class="manifestations-student-grille">${cellules}</div>`;
-  return `${STUDENT_ROOT_OPEN}${buildIntroHtml(p)}${grille}${STUDENT_ROOT_CLOSE}`;
+  const grille = `<div class="manifestations-eleve-grille">${cellules}</div>`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroHtml(p)}${grille}${ELEVE_ROOT_CLOSE}`;
 }
 
 /** HTML enseignant — `tache.corrige`. */

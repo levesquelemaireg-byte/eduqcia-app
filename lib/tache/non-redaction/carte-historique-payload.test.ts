@@ -291,7 +291,7 @@ describe("buildCarteHistoriqueConsigneHtml", () => {
       correctLetter: "C",
     };
     const html = buildCarteHistoriqueConsigneHtml(p);
-    expect(html).toContain('data-carte-historique-student="true"');
+    expect(html).toContain('data-carte-historique-eleve="true"');
     expect(html).toContain("{{doc_1}}");
     expect(html).toContain("le territoire algonquien");
     expect(html).toContain("Réponse :");
@@ -391,7 +391,7 @@ describe("prepareCarteHistoriqueConsigneForTeacherDisplay", () => {
     };
     const html = buildCarteHistoriqueConsigneHtml(p);
     const stripped = prepareCarteHistoriqueConsigneForTeacherDisplay(html);
-    expect(stripped).not.toContain("carte-historique-student-reponse");
+    expect(stripped).not.toContain("carte-historique-eleve-reponse");
   });
 
   it("retire le bloc réponse span (2.3)", () => {
@@ -404,7 +404,7 @@ describe("prepareCarteHistoriqueConsigneForTeacherDisplay", () => {
     };
     const html = buildCarteHistoriqueConsigneHtml(p);
     const stripped = prepareCarteHistoriqueConsigneForTeacherDisplay(html);
-    expect(stripped).not.toContain("carte-historique-student-reponse");
+    expect(stripped).not.toContain("carte-historique-eleve-reponse");
   });
 });
 

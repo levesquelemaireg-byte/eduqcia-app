@@ -408,30 +408,30 @@ body {
 
 /*
  * Ordre chronologique — feuille élève (fiche sommaire + aperçu impression wizard + `/questions/[id]/print`).
- * Intro + grille 2×2 + « Réponse » dans `consigne` ; guidage élève injecté à l’impression (`.ordre-chrono-student-guidage`) depuis `tae.guidage` — voir `ordre-chronologique-payload.ts`.
+ * Intro + grille 2×2 + « Réponse » dans `consigne` ; guidage élève injecté à l’impression (`.ordre-chrono-eleve-guidage`) depuis `tae.guidage` — voir `ordre-chronologique-payload.ts`.
  */
-[data-ordre-chrono-student="true"] .ordre-chrono-student-root {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-root {
   margin-top: 0.15rem;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-intro {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-intro {
   margin: 0 0 0.65rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--color-deep);
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-guidage {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-guidage {
   margin: 0 0 1rem;
   line-height: 1.45;
   color: var(--color-steel);
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-guidage p {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-guidage p {
   margin: 0;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-grid {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem 2.25rem;
@@ -439,27 +439,27 @@ body {
   align-items: start;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-option {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-option {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.35rem 0.55rem;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-letter-label {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-letter-label {
   font-weight: 600;
   color: var(--color-deep);
   flex-shrink: 0;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-seq {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-seq {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.2rem 0.12rem;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-digit {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-digit {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -475,13 +475,13 @@ body {
   color: var(--color-deep);
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-sep {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-sep {
   color: var(--color-muted);
   user-select: none;
   font-weight: 500;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-reponse {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-reponse {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -489,12 +489,12 @@ body {
   margin-top: 0.25rem;
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-reponse-label {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-reponse-label {
   font-weight: 600;
   color: var(--color-deep);
 }
 
-[data-ordre-chrono-student="true"] .ordre-chrono-student-reponse-box {
+[data-ordre-chrono-eleve="true"] .ordre-chrono-eleve-reponse-box {
   display: inline-block;
   width: 2.1rem;
   height: 2.1rem;
@@ -506,28 +506,28 @@ body {
 /*
  * Avant / après (1.3) — feuille élève : intro + tableau + « Réponse » ; guidage entre intro et tableau (`avant-apres-payload.ts`).
  */
-[data-avant-apres-student="true"] .avant-apres-student-root {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-root {
   margin-top: 0.15rem;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-intro {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-intro {
   margin: 0 0 0.65rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--color-deep);
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-guidage {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-guidage {
   margin: 0 0 1rem;
   line-height: 1.45;
   color: var(--color-steel);
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-guidage p {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-guidage p {
   margin: 0;
 }
 
-[data-avant-apres-student="true"] .avant-apres-sr-only {
+[data-avant-apres-eleve="true"] .avant-apres-sr-only {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -539,7 +539,7 @@ body {
   border: 0;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-table {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-table {
   width: 100%;
   max-width: 100%;
   border-collapse: collapse;
@@ -547,16 +547,16 @@ body {
   font-size: 0.95rem;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-table th,
-[data-avant-apres-student="true"] .avant-apres-student-table td {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-table th,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-table td {
   border: 1px solid var(--color-border);
   padding: 0.4rem 0.5rem;
   vertical-align: middle;
 }
 
 /* Colonne des lettres A–D : hors du quadrillage principal (feuille ministérielle). */
-[data-avant-apres-student="true"] .avant-apres-student-th-letter,
-[data-avant-apres-student="true"] .avant-apres-student-letter-cell {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-th-letter,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-letter-cell {
   border: none;
   font-weight: 700;
   text-align: right;
@@ -566,27 +566,27 @@ body {
   vertical-align: middle;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-col-avant,
-[data-avant-apres-student="true"] .avant-apres-student-col-apres,
-[data-avant-apres-student="true"] .avant-apres-student-cell-avant,
-[data-avant-apres-student="true"] .avant-apres-student-cell-apres {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-col-avant,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-col-apres,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-cell-avant,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-cell-apres {
   text-align: center;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-th-repere-empty {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-th-repere-empty {
   position: relative;
   border-bottom: 1px solid var(--color-border);
   background-color: transparent;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-cell-repere {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-cell-repere {
   text-align: center;
   font-weight: 600;
   background-color: var(--color-surface);
   color: var(--color-deep);
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-reponse {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-reponse {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -594,12 +594,12 @@ body {
   margin-top: 0.25rem;
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-reponse-label {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-reponse-label {
   font-weight: 600;
   color: var(--color-deep);
 }
 
-[data-avant-apres-student="true"] .avant-apres-student-reponse-box {
+[data-avant-apres-eleve="true"] .avant-apres-eleve-reponse-box {
   display: inline-block;
   width: 2.1rem;
   height: 2.1rem;
@@ -615,18 +615,18 @@ body {
  * 2.3 : intro + question + liste à puces (un item par lieu, chacun avec « Réponse : □ »)
  * Construit dans `carte-historique-payload.ts` (`buildCarteHistoriqueConsigneHtml`).
  */
-[data-carte-historique-student="true"] .carte-historique-student-root {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-root {
   margin-top: 0.15rem;
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-intro {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-intro {
   margin: 0 0 0.55rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--color-deep);
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-question {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-question {
   margin: 0 0 0.65rem;
   font-weight: 600;
   line-height: 1.45;
@@ -634,15 +634,15 @@ body {
 }
 
 /* 2.2 — tableau d'options A–D. */
-[data-carte-historique-student="true"] .carte-historique-student-table {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-table {
   width: auto;
   border-collapse: collapse;
   margin: 0.35rem 0 0.75rem;
   font-size: 0.95rem;
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-table th,
-[data-carte-historique-student="true"] .carte-historique-student-table td {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-table th,
+[data-carte-historique-eleve="true"] .carte-historique-eleve-table td {
   border: 1px solid var(--color-border);
   padding: 0.4rem 0.65rem;
   text-align: center;
@@ -650,8 +650,8 @@ body {
 }
 
 /* Colonne des lettres A–D : hors du quadrillage principal (feuille ministérielle). */
-[data-carte-historique-student="true"] .carte-historique-student-th-letter,
-[data-carte-historique-student="true"] .carte-historique-student-letter-cell {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-th-letter,
+[data-carte-historique-eleve="true"] .carte-historique-eleve-letter-cell {
   border: none;
   font-weight: 700;
   text-align: right;
@@ -661,24 +661,24 @@ body {
 }
 
 /* 2.3 — liste à puces (un item par lieu). */
-[data-carte-historique-student="true"] .carte-historique-student-items {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-items {
   margin: 0;
   padding-left: 1.25rem;
   list-style: disc;
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-item {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-item {
   margin: 0 0 0.55rem;
   line-height: 1.5;
   color: var(--color-deep);
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-item:last-child {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-item:last-child {
   margin-bottom: 0;
 }
 
 /* Zone réponse — pattern partagé (2.1 / 2.2 = bloc final ; 2.3 = inline dans chaque item). */
-[data-carte-historique-student="true"] .carte-historique-student-reponse {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-reponse {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
@@ -687,19 +687,19 @@ body {
   margin-left: 0.5rem;
 }
 
-[data-carte-historique-student="true"]
-  .carte-historique-student-root
-  > .carte-historique-student-reponse {
+[data-carte-historique-eleve="true"]
+  .carte-historique-eleve-root
+  > .carte-historique-eleve-reponse {
   display: flex;
   margin-left: 0;
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-reponse-label {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-reponse-label {
   font-weight: 600;
   color: var(--color-deep);
 }
 
-[data-carte-historique-student="true"] .carte-historique-student-reponse-box {
+[data-carte-historique-eleve="true"] .carte-historique-eleve-reponse-box {
   display: inline-block;
   width: 2.1rem;
   height: 2.1rem;
@@ -714,31 +714,31 @@ body {
  * `manifestations-payload.ts` (`buildManifestationsConsigneHtml`). Layout 2×N :
  * 5.1 → 2 cellules (1 case chacune), 5.2 → 2 cellules (2 cases) ou 4 cellules (1 case).
  */
-[data-manifestations-student="true"] .manifestations-student-root {
+[data-manifestations-eleve="true"] .manifestations-eleve-root {
   margin-top: 0.15rem;
 }
 
-[data-manifestations-student="true"] .manifestations-student-intro {
+[data-manifestations-eleve="true"] .manifestations-eleve-intro {
   margin: 0 0 0.45rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--color-deep);
 }
 
-[data-manifestations-student="true"] .manifestations-student-instruction {
+[data-manifestations-eleve="true"] .manifestations-eleve-instruction {
   margin: 0 0 0.65rem;
   line-height: 1.45;
   color: var(--color-deep);
 }
 
-[data-manifestations-student="true"] .manifestations-student-grille {
+[data-manifestations-eleve="true"] .manifestations-eleve-grille {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 6px;
   margin: 0.35rem 0 0.5rem;
 }
 
-[data-manifestations-student="true"] .manifestations-student-cellule {
+[data-manifestations-eleve="true"] .manifestations-eleve-cellule {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -748,21 +748,21 @@ body {
   box-sizing: border-box;
 }
 
-[data-manifestations-student="true"] .manifestations-student-label {
+[data-manifestations-eleve="true"] .manifestations-eleve-label {
   flex: 1;
   font-size: 0.95rem;
   line-height: 1.35;
   color: var(--color-deep);
 }
 
-[data-manifestations-student="true"] .manifestations-student-cases {
+[data-manifestations-eleve="true"] .manifestations-eleve-cases {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   flex-shrink: 0;
 }
 
-[data-manifestations-student="true"] .manifestations-student-case {
+[data-manifestations-eleve="true"] .manifestations-eleve-case {
   display: inline-block;
   width: 1.75rem;
   height: 1.5rem;
@@ -771,7 +771,7 @@ body {
   flex-shrink: 0;
 }
 
-[data-manifestations-student="true"] .manifestations-student-et {
+[data-manifestations-eleve="true"] .manifestations-eleve-et {
   font-size: 0.85rem;
   color: var(--color-deep);
   text-align: center;
@@ -781,28 +781,28 @@ body {
  * Ligne du temps (1.2) — feuille élève (sommaire, aperçu impression, `/questions/[id]/print`).
  * Intro + frise + « Réponse » dans `consigne` ; guidage injecté entre intro et frise — `ligne-du-temps-payload.ts`.
  */
-[data-ligne-temps-student="true"] .ligne-temps-student-root {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-root {
   margin-top: 0.15rem;
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-student-intro {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-intro {
   margin: 0 0 0.65rem;
   font-weight: 600;
   line-height: 1.45;
   color: var(--color-deep);
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-student-guidage {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-guidage {
   margin: 0 0 1rem;
   line-height: 1.45;
   color: var(--color-steel);
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-student-guidage p {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-guidage p {
   margin: 0;
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-frise {
+[data-ligne-temps-eleve="true"] .ligne-temps-frise {
   margin: 0 0 1.1rem;
 }
 
@@ -840,7 +840,7 @@ body {
   outline-offset: 1px;
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-student-reponse {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -848,12 +848,12 @@ body {
   margin-top: 0.25rem;
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-student-reponse-label {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse-label {
   font-weight: 600;
   color: var(--color-deep);
 }
 
-[data-ligne-temps-student="true"] .ligne-temps-student-reponse-box {
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse-box {
   display: inline-block;
   width: 2.1rem;
   height: 2.1rem;

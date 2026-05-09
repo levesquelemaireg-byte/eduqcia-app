@@ -34,7 +34,7 @@ import {
   NR_CARTE_PUBLISHED_INTRO_DOC_PLACEHOLDER,
   NR_CARTE_PUBLISHED_INTRO_PREFIX,
   NR_CARTE_PUBLISHED_INTRO_SUFFIX,
-  NR_CARTE_STUDENT_SHEET_REPONSE_LABEL,
+  NR_CARTE_ELEVE_SHEET_REPONSE_LABEL,
 } from "@/lib/ui/ui-copy";
 
 export type CarteHistoriqueComportementId = "2.1" | "2.2" | "2.3";
@@ -334,9 +334,9 @@ export function isCarteHistoriqueDocumentsPublishable(
 /*  Builders HTML — feuille élève + corrigé enseignant                         */
 /* -------------------------------------------------------------------------- */
 
-const STUDENT_ROOT_OPEN =
-  '<div data-carte-historique-student="true" class="carte-historique-student-root">';
-const STUDENT_ROOT_CLOSE = "</div>";
+const ELEVE_ROOT_OPEN =
+  '<div data-carte-historique-eleve="true" class="carte-historique-eleve-root">';
+const ELEVE_ROOT_CLOSE = "</div>";
 
 function escapeHtml(s: string): string {
   return s
@@ -348,27 +348,27 @@ function escapeHtml(s: string): string {
 
 function buildIntroHtml(): string {
   // `{{doc_1}}` est réécrit à l'impression (épreuve / feuille élève).
-  return `<p class="carte-historique-student-intro">${NR_CARTE_PUBLISHED_INTRO_PREFIX}${NR_CARTE_PUBLISHED_INTRO_DOC_PLACEHOLDER}${NR_CARTE_PUBLISHED_INTRO_SUFFIX}</p>`;
+  return `<p class="carte-historique-eleve-intro">${NR_CARTE_PUBLISHED_INTRO_PREFIX}${NR_CARTE_PUBLISHED_INTRO_DOC_PLACEHOLDER}${NR_CARTE_PUBLISHED_INTRO_SUFFIX}</p>`;
 }
 
 function buildReponseBoxHtml(): string {
-  return `<div class="carte-historique-student-reponse"><span class="carte-historique-student-reponse-label">${escapeHtml(NR_CARTE_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="carte-historique-student-reponse-box" aria-hidden="true"></span></div>`;
+  return `<div class="carte-historique-eleve-reponse"><span class="carte-historique-eleve-reponse-label">${escapeHtml(NR_CARTE_ELEVE_SHEET_REPONSE_LABEL)}</span><span class="carte-historique-eleve-reponse-box" aria-hidden="true"></span></div>`;
 }
 
 function build21ConsigneHtml(p: CarteHistoriquePayload): string {
   const e1 = escapeHtml(p.consigneElement1.trim());
-  const question = `<p class="carte-historique-student-question">${escapeHtml(NR_CARTE_21_QUESTION_PREFIX)}<strong>${e1}</strong>${escapeHtml(NR_CARTE_21_QUESTION_SUFFIX)}</p>`;
-  return `${STUDENT_ROOT_OPEN}${buildIntroHtml()}${question}${buildReponseBoxHtml()}${STUDENT_ROOT_CLOSE}`;
+  const question = `<p class="carte-historique-eleve-question">${escapeHtml(NR_CARTE_21_QUESTION_PREFIX)}<strong>${e1}</strong>${escapeHtml(NR_CARTE_21_QUESTION_SUFFIX)}</p>`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroHtml()}${question}${buildReponseBoxHtml()}${ELEVE_ROOT_CLOSE}`;
 }
 
 function build22OptionRowHtml(letter: CarteHistoriqueLetter, pair: CarteHistoriquePair): string {
-  return `<tr class="carte-historique-student-option-row"><th scope="row" class="carte-historique-student-letter-cell"><strong>${escapeHtml(letter)})</strong></th><td>${escapeHtml(String(pair[0]))}</td><td>${escapeHtml(String(pair[1]))}</td></tr>`;
+  return `<tr class="carte-historique-eleve-option-row"><th scope="row" class="carte-historique-eleve-letter-cell"><strong>${escapeHtml(letter)})</strong></th><td>${escapeHtml(String(pair[0]))}</td><td>${escapeHtml(String(pair[1]))}</td></tr>`;
 }
 
 function build22TableHtml(p: CarteHistoriquePayload): string {
   const e1 = escapeHtml(p.consigneElement1.trim());
   const e2 = escapeHtml(p.consigneElement2.trim());
-  const head = `<thead><tr><th scope="col" class="carte-historique-student-th-letter">&#160;</th><th scope="col">${e1}</th><th scope="col">${e2}</th></tr></thead>`;
+  const head = `<thead><tr><th scope="col" class="carte-historique-eleve-th-letter">&#160;</th><th scope="col">${e1}</th><th scope="col">${e2}</th></tr></thead>`;
   const rows = (
     [
       ["A", p.optionA] as const,
@@ -381,23 +381,23 @@ function build22TableHtml(p: CarteHistoriquePayload): string {
     .map(([letter, pair]) => build22OptionRowHtml(letter, pair))
     .join("");
   const body = `<tbody>${rows}</tbody>`;
-  return `<table class="carte-historique-student-table" role="grid" aria-label="${escapeHtml(NR_CARTE_22_TABLE_OPTIONS_GROUP_ARIA)}">${head}${body}</table>`;
+  return `<table class="carte-historique-eleve-table" role="grid" aria-label="${escapeHtml(NR_CARTE_22_TABLE_OPTIONS_GROUP_ARIA)}">${head}${body}</table>`;
 }
 
 function build22ConsigneHtml(p: CarteHistoriquePayload): string {
-  const question = `<p class="carte-historique-student-question">${escapeHtml(NR_CARTE_22_QUESTION)}</p>`;
+  const question = `<p class="carte-historique-eleve-question">${escapeHtml(NR_CARTE_22_QUESTION)}</p>`;
   const table = build22TableHtml(p);
-  return `${STUDENT_ROOT_OPEN}${buildIntroHtml()}${question}${table}${buildReponseBoxHtml()}${STUDENT_ROOT_CLOSE}`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroHtml()}${question}${table}${buildReponseBoxHtml()}${ELEVE_ROOT_CLOSE}`;
 }
 
 function build23ItemHtml(label: string): string {
-  return `<li class="carte-historique-student-item">${escapeHtml(NR_CARTE_23_ITEM_PREFIX)}<strong>${escapeHtml(label)}</strong>${escapeHtml(NR_CARTE_23_ITEM_SUFFIX)}<span class="carte-historique-student-reponse"><span class="carte-historique-student-reponse-label">${escapeHtml(NR_CARTE_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="carte-historique-student-reponse-box" aria-hidden="true"></span></span></li>`;
+  return `<li class="carte-historique-eleve-item">${escapeHtml(NR_CARTE_23_ITEM_PREFIX)}<strong>${escapeHtml(label)}</strong>${escapeHtml(NR_CARTE_23_ITEM_SUFFIX)}<span class="carte-historique-eleve-reponse"><span class="carte-historique-eleve-reponse-label">${escapeHtml(NR_CARTE_ELEVE_SHEET_REPONSE_LABEL)}</span><span class="carte-historique-eleve-reponse-box" aria-hidden="true"></span></span></li>`;
 }
 
 function build23ConsigneHtml(p: CarteHistoriquePayload): string {
-  const lead = `<p class="carte-historique-student-question">${escapeHtml(NR_CARTE_23_QUESTION_LEAD)}</p>`;
-  const items = `<ul class="carte-historique-student-items">${build23ItemHtml(p.consigneElement1.trim())}${build23ItemHtml(p.consigneElement2.trim())}</ul>`;
-  return `${STUDENT_ROOT_OPEN}${buildIntroHtml()}${lead}${items}${STUDENT_ROOT_CLOSE}`;
+  const lead = `<p class="carte-historique-eleve-question">${escapeHtml(NR_CARTE_23_QUESTION_LEAD)}</p>`;
+  const items = `<ul class="carte-historique-eleve-items">${build23ItemHtml(p.consigneElement1.trim())}${build23ItemHtml(p.consigneElement2.trim())}</ul>`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroHtml()}${lead}${items}${ELEVE_ROOT_CLOSE}`;
 }
 
 /** HTML stocké en `tache.consigne` — feuille élève complète selon comportement. */
@@ -435,15 +435,15 @@ export function buildCarteHistoriqueCorrigeHtml(p: CarteHistoriquePayload): stri
 }
 
 /** Enseignant / sommaire : retire la zone réponse de la consigne (réservée à la feuille élève imprimée). */
-export function stripCarteHistoriqueStudentSheetResponseBlockForDisplay(consigne: string): string {
+export function stripCarteHistoriqueEleveSheetResponseBlockForDisplay(consigne: string): string {
   return consigne
-    .replace(/<div class="carte-historique-student-reponse"[^>]*>[\s\S]*?<\/div>/g, "")
+    .replace(/<div class="carte-historique-eleve-reponse"[^>]*>[\s\S]*?<\/div>/g, "")
     .replace(
-      /<span class="carte-historique-student-reponse"[^>]*>[\s\S]*?<\/span>\s*<\/li>/g,
+      /<span class="carte-historique-eleve-reponse"[^>]*>[\s\S]*?<\/span>\s*<\/li>/g,
       "</li>",
     );
 }
 
 export function prepareCarteHistoriqueConsigneForTeacherDisplay(consigne: string): string {
-  return stripCarteHistoriqueStudentSheetResponseBlockForDisplay(consigne);
+  return stripCarteHistoriqueEleveSheetResponseBlockForDisplay(consigne);
 }

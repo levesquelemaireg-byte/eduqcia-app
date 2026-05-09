@@ -3,12 +3,12 @@
  * Copy : `lib/ui/ui-copy.ts` (`NR_LIGNE_TEMPS_*`) ; spec : `docs/wizard-oi-non-redactionnelle.md` parcours 2.
  */
 
-import { NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL } from "@/lib/ui/ui-copy";
+import { NR_ORDRE_ELEVE_SHEET_REPONSE_LABEL } from "@/lib/ui/ui-copy";
 import {
   NR_LIGNE_TEMPS_LETTERS_FOUR,
   NR_LIGNE_TEMPS_LETTERS_THREE,
-  NR_LIGNE_TEMPS_STUDENT_GUIDAGE,
-  NR_LIGNE_TEMPS_STUDENT_SHEET_TIMELINE_ARIA,
+  NR_LIGNE_TEMPS_ELEVE_GUIDAGE,
+  NR_LIGNE_TEMPS_ELEVE_SHEET_TIMELINE_ARIA,
 } from "@/lib/ui/ui-copy";
 import {
   ligneTempsBoundariesStrictlyIncreasing,
@@ -50,9 +50,8 @@ export type LigneDuTempsPayload = {
   correctLetter: LigneDuTempsCorrectLetter;
 };
 
-const LIGNE_STUDENT_ROOT_OPEN =
-  '<div data-ligne-temps-student="true" class="ligne-temps-student-root">';
-const LIGNE_STUDENT_ROOT_CLOSE = "</div>";
+const LIGNE_ELEVE_ROOT_OPEN = '<div data-ligne-temps-eleve="true" class="ligne-temps-eleve-root">';
+const LIGNE_ELEVE_ROOT_CLOSE = "</div>";
 
 function escapeHtml(s: string): string {
   return s
@@ -224,7 +223,7 @@ export function isLigneDuTempsStep5SegmentComplete(p: LigneDuTempsPayload): bool
 export function buildLigneDuTempsIntroHtml(segmentCount: LigneDuTempsSegmentCount): string {
   const range = segmentCount === 3 ? NR_LIGNE_TEMPS_LETTERS_THREE : NR_LIGNE_TEMPS_LETTERS_FOUR;
   const inner = `Sur la ligne du temps ci-dessous, quelle lettre (${range}) correspond à la période où se situent les faits présentés dans le document {{doc_1}} ?`;
-  return `<p class="ligne-temps-student-intro">${inner}</p>`;
+  return `<p class="ligne-temps-eleve-intro">${inner}</p>`;
 }
 
 function buildLigneDuTempsTimelineHtml(
@@ -288,11 +287,11 @@ function buildLigneDuTempsTimelineHtml(
   const svgInner = `${defs}${polyBg}${clippedMain}${connectors.join("")}${dateTexts.join("")}`;
   const svg = `<svg class="ligne-temps-ribbon-svg" viewBox="0 0 ${LIGNE_TEMPS_RIBBON_VB_W} ${LIGNE_TEMPS_RIBBON_VB_H}" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">${svgInner}</svg>`;
 
-  return `<div class="ligne-temps-frise" role="group" aria-label="${escapeHtml(NR_LIGNE_TEMPS_STUDENT_SHEET_TIMELINE_ARIA)}">${svg}</div>`;
+  return `<div class="ligne-temps-frise" role="group" aria-label="${escapeHtml(NR_LIGNE_TEMPS_ELEVE_SHEET_TIMELINE_ARIA)}">${svg}</div>`;
 }
 
-export function buildLigneDuTempsStudentReponseHtml(): string {
-  return `<div class="ligne-temps-student-reponse"><span class="ligne-temps-student-reponse-label">${escapeHtml(NR_ORDRE_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="ligne-temps-student-reponse-box" aria-hidden="true"></span></div>`;
+export function buildLigneDuTempsEleveReponseHtml(): string {
+  return `<div class="ligne-temps-eleve-reponse"><span class="ligne-temps-eleve-reponse-label">${escapeHtml(NR_ORDRE_ELEVE_SHEET_REPONSE_LABEL)}</span><span class="ligne-temps-eleve-reponse-box" aria-hidden="true"></span></div>`;
 }
 
 export function buildLigneDuTempsConsigneHtml(p: LigneDuTempsPayload): string {
@@ -300,8 +299,8 @@ export function buildLigneDuTempsConsigneHtml(p: LigneDuTempsPayload): string {
   const nums = p.boundaries.slice(0, p.segmentCount + 1) as number[];
   const intro = buildLigneDuTempsIntroHtml(p.segmentCount);
   const frise = buildLigneDuTempsTimelineHtml(nums, p.segmentCount);
-  const reponse = buildLigneDuTempsStudentReponseHtml();
-  return `${LIGNE_STUDENT_ROOT_OPEN}${intro}${frise}${reponse}${LIGNE_STUDENT_ROOT_CLOSE}`;
+  const reponse = buildLigneDuTempsEleveReponseHtml();
+  return `${LIGNE_ELEVE_ROOT_OPEN}${intro}${frise}${reponse}${LIGNE_ELEVE_ROOT_CLOSE}`;
 }
 
 export function buildLigneDuTempsCorrigeText(p: LigneDuTempsPayload): string {
@@ -315,15 +314,15 @@ export function buildLigneDuTempsCorrigeHtml(p: LigneDuTempsPayload): string {
 }
 
 export function buildLigneDuTempsGuidageHtml(): string {
-  return `<p>${escapeHtml(NR_LIGNE_TEMPS_STUDENT_GUIDAGE)}</p>`;
+  return `<p>${escapeHtml(NR_LIGNE_TEMPS_ELEVE_GUIDAGE)}</p>`;
 }
 
-export function stripLigneDuTempsStudentSheetResponseBlockForDisplay(consigne: string): string {
-  return consigne.replace(/<div class="ligne-temps-student-reponse"[^>]*>[\s\S]*?<\/div>/, "");
+export function stripLigneDuTempsEleveSheetResponseBlockForDisplay(consigne: string): string {
+  return consigne.replace(/<div class="ligne-temps-eleve-reponse"[^>]*>[\s\S]*?<\/div>/, "");
 }
 
 export function prepareLigneDuTempsConsigneForTeacherDisplay(consigne: string): string {
-  return stripLigneDuTempsStudentSheetResponseBlockForDisplay(consigne);
+  return stripLigneDuTempsEleveSheetResponseBlockForDisplay(consigne);
 }
 
 /** Chaîne affichée fiche / sommaire : applique ordre puis ligne du temps puis avant / après. */

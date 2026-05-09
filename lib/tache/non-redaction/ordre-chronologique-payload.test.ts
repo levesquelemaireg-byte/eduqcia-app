@@ -86,11 +86,11 @@ describe("ordre-chronologique-payload", () => {
       optionsJustification: "",
       manualTieBreakSequence: null,
     });
-    expect(html).toContain("data-ordre-chrono-student");
+    expect(html).toContain("data-ordre-chrono-eleve");
     expect(html).toContain("{{doc_1}}");
     expect(html).not.toContain("<!--eduqcia:");
-    const iIntro = html.indexOf("ordre-chrono-student-intro");
-    const iGrid = html.indexOf("ordre-chrono-student-grid");
+    const iIntro = html.indexOf("ordre-chrono-eleve-intro");
+    const iGrid = html.indexOf("ordre-chrono-eleve-grid");
     expect(iIntro).toBeGreaterThan(-1);
     expect(iGrid).toBeGreaterThan(iIntro);
   });
@@ -108,8 +108,8 @@ describe("ordre-chronologique-payload", () => {
       manualTieBreakSequence: null,
     });
     const prep = prepareOrdreChronologiqueConsigneForTeacherDisplay(html);
-    expect(prep).not.toContain("ordre-chrono-student-reponse");
-    expect(prep).toContain("ordre-chrono-student-grid");
+    expect(prep).not.toContain("ordre-chrono-eleve-reponse");
+    expect(prep).toContain("ordre-chrono-eleve-grid");
   });
 
   it("ordreChronologiqueCorrectPermutation lit la ligne de l'option correcte", () => {

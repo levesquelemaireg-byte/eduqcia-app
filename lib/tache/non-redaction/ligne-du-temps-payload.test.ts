@@ -53,14 +53,14 @@ describe("ligne-du-temps-payload", () => {
 
   it("buildLigneDuTempsConsigneHtml assemble intro + frise + réponse (sans ancre — D0)", () => {
     const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
-    expect(html).toContain('data-ligne-temps-student="true"');
-    expect(html).toContain("ligne-temps-student-intro");
+    expect(html).toContain('data-ligne-temps-eleve="true"');
+    expect(html).toContain("ligne-temps-eleve-intro");
     expect(html).not.toContain("<!--eduqcia:");
     expect(html).toContain("ligne-temps-frise");
     expect(html).toContain("ligne-temps-ribbon-svg");
     expect(html).toContain("clipPath");
     expect(html).toContain('<line x1="45"');
-    const iIntro = html.indexOf("ligne-temps-student-intro");
+    const iIntro = html.indexOf("ligne-temps-eleve-intro");
     const iFrise = html.indexOf("ligne-temps-frise");
     expect(iIntro).toBeGreaterThan(-1);
     expect(iFrise).toBeGreaterThan(iIntro);
@@ -75,7 +75,7 @@ describe("ligne-du-temps-payload", () => {
   it("prepareLigneDuTempsConsigneForTeacherDisplay retire le bloc réponse élève", () => {
     const html = buildLigneDuTempsConsigneHtml(sampleComplete3);
     const prep = prepareLigneDuTempsConsigneForTeacherDisplay(html);
-    expect(prep).not.toContain("ligne-temps-student-reponse");
+    expect(prep).not.toContain("ligne-temps-eleve-reponse");
     expect(prep).toContain("ligne-temps-frise");
   });
 

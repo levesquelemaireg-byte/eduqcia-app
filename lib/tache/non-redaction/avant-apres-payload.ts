@@ -18,12 +18,12 @@ import {
   NR_AVANT_APRES_PUBLISHED_INTRO_MIDDLE,
   NR_AVANT_APRES_PUBLISHED_INTRO_PREFIX,
   NR_AVANT_APRES_PUBLISHED_INTRO_SUFFIX,
-  NR_AVANT_APRES_STUDENT_GUIDAGE,
-  NR_AVANT_APRES_STUDENT_SHEET_OPTIONS_GROUP_ARIA,
-  NR_AVANT_APRES_STUDENT_SHEET_REPONSE_LABEL,
-  NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES,
-  NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_AVANT,
-  NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR,
+  NR_AVANT_APRES_ELEVE_GUIDAGE,
+  NR_AVANT_APRES_ELEVE_SHEET_OPTIONS_GROUP_ARIA,
+  NR_AVANT_APRES_ELEVE_SHEET_REPONSE_LABEL,
+  NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_APRES,
+  NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_AVANT,
+  NR_AVANT_APRES_ELEVE_SHEET_TABLE_REPERE_TH_SR,
 } from "@/lib/ui/ui-copy";
 
 const slotIdZ = z.custom<DocumentSlotId>(
@@ -79,9 +79,8 @@ export type AvantApresPayload = {
   generated: boolean;
 };
 
-const AVANT_STUDENT_ROOT_OPEN =
-  '<div data-avant-apres-student="true" class="avant-apres-student-root">';
-const AVANT_STUDENT_ROOT_CLOSE = "</div>";
+const AVANT_ELEVE_ROOT_OPEN = '<div data-avant-apres-eleve="true" class="avant-apres-eleve-root">';
+const AVANT_ELEVE_ROOT_CLOSE = "</div>";
 
 function sortPair(a: DocumentSlotId, b: DocumentSlotId): [DocumentSlotId, DocumentSlotId] {
   return a < b ? [a, b] : [b, a];
@@ -466,11 +465,11 @@ export function buildAvantApresIntroHtml(p: AvantApresPayload): string {
       .replace("{{repere}}", rep)
       .replace("{{annee}}", yr) +
     NR_AVANT_APRES_PUBLISHED_INTRO_SUFFIX;
-  return `<p class="avant-apres-student-intro">${inner}</p>`;
+  return `<p class="avant-apres-eleve-intro">${inner}</p>`;
 }
 
 /** Contenu de la colonne pivot (feuille élève) : événement / intervalle ; année entre parenthèses si utile. */
-function buildStudentSheetReperePivotInnerHtml(p: AvantApresPayload): string {
+function buildEleveSheetReperePivotInnerHtml(p: AvantApresPayload): string {
   const r = p.repere.trim();
   const y = formatAvantApresAnneeForDisplay(p);
   if (!r) return escapeHtml(y);
@@ -481,19 +480,19 @@ function buildStudentSheetReperePivotInnerHtml(p: AvantApresPayload): string {
 function optionTableFirstRowHtml(p: AvantApresPayload, row: AvantApresOptionRow): string {
   const av = docTokensForPair(row.avantSlots);
   const ap = docTokensForPair(row.apresSlots);
-  const repInner = buildStudentSheetReperePivotInnerHtml(p);
-  return `<tr class="avant-apres-student-option-row"><th scope="row" class="avant-apres-student-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-student-cell-avant">${av}</td><td class="avant-apres-student-cell-repere" rowspan="4">${repInner}</td><td class="avant-apres-student-cell-apres">${ap}</td></tr>`;
+  const repInner = buildEleveSheetReperePivotInnerHtml(p);
+  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-repere" rowspan="4">${repInner}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
 }
 
 function optionTableFollowRowHtml(row: AvantApresOptionRow): string {
   const av = docTokensForPair(row.avantSlots);
   const ap = docTokensForPair(row.apresSlots);
-  return `<tr class="avant-apres-student-option-row"><th scope="row" class="avant-apres-student-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-student-cell-avant">${av}</td><td class="avant-apres-student-cell-apres">${ap}</td></tr>`;
+  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
 }
 
 export function buildAvantApresConsigneHtml(p: AvantApresPayload): string {
   const intro = buildAvantApresIntroHtml(p);
-  const head = `<thead><tr><th scope="col" class="avant-apres-student-th-letter">&#160;</th><th scope="col" class="avant-apres-student-col-avant">${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_AVANT)}</th><th scope="col" class="avant-apres-student-col-repere avant-apres-student-th-repere-empty"><span class="avant-apres-sr-only">${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_TABLE_REPERE_TH_SR)}</span></th><th scope="col" class="avant-apres-student-col-apres">${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_TABLE_COL_APRES)}</th></tr></thead>`;
+  const head = `<thead><tr><th scope="col" class="avant-apres-eleve-th-letter">&#160;</th><th scope="col" class="avant-apres-eleve-col-avant">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_AVANT)}</th><th scope="col" class="avant-apres-eleve-col-repere avant-apres-eleve-th-repere-empty"><span class="avant-apres-sr-only">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_REPERE_TH_SR)}</span></th><th scope="col" class="avant-apres-eleve-col-apres">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_APRES)}</th></tr></thead>`;
   const rows = p.optionRows;
   const bodyRows =
     rows.length === 0
@@ -503,9 +502,9 @@ export function buildAvantApresConsigneHtml(p: AvantApresPayload): string {
           ...rows.slice(1).map((r) => optionTableFollowRowHtml(r)),
         ].join("");
   const body = `<tbody>${bodyRows}</tbody>`;
-  const table = `<table class="avant-apres-student-table" role="grid" aria-label="${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_OPTIONS_GROUP_ARIA)}">${head}${body}</table>`;
-  const reponse = `<div class="avant-apres-student-reponse"><span class="avant-apres-student-reponse-label">${escapeHtml(NR_AVANT_APRES_STUDENT_SHEET_REPONSE_LABEL)}</span><span class="avant-apres-student-reponse-box" aria-hidden="true"></span></div>`;
-  return `${AVANT_STUDENT_ROOT_OPEN}${intro}${table}${reponse}${AVANT_STUDENT_ROOT_CLOSE}`;
+  const table = `<table class="avant-apres-eleve-table" role="grid" aria-label="${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_OPTIONS_GROUP_ARIA)}">${head}${body}</table>`;
+  const reponse = `<div class="avant-apres-eleve-reponse"><span class="avant-apres-eleve-reponse-label">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_REPONSE_LABEL)}</span><span class="avant-apres-eleve-reponse-box" aria-hidden="true"></span></div>`;
+  return `${AVANT_ELEVE_ROOT_OPEN}${intro}${table}${reponse}${AVANT_ELEVE_ROOT_CLOSE}`;
 }
 
 export function buildAvantApresCorrigeHtml(p: AvantApresPayload): string {
@@ -517,13 +516,13 @@ export function buildAvantApresCorrigeHtml(p: AvantApresPayload): string {
 }
 
 export function buildAvantApresGuidageHtml(): string {
-  return `<p>${escapeHtml(NR_AVANT_APRES_STUDENT_GUIDAGE)}</p>`;
+  return `<p>${escapeHtml(NR_AVANT_APRES_ELEVE_GUIDAGE)}</p>`;
 }
 
-export function stripAvantApresStudentSheetResponseBlockForDisplay(consigne: string): string {
-  return consigne.replace(/<div class="avant-apres-student-reponse"[^>]*>[\s\S]*?<\/div>/, "");
+export function stripAvantApresEleveSheetResponseBlockForDisplay(consigne: string): string {
+  return consigne.replace(/<div class="avant-apres-eleve-reponse"[^>]*>[\s\S]*?<\/div>/, "");
 }
 
 export function prepareAvantApresConsigneForTeacherDisplay(consigne: string): string {
-  return stripAvantApresStudentSheetResponseBlockForDisplay(consigne);
+  return stripAvantApresEleveSheetResponseBlockForDisplay(consigne);
 }

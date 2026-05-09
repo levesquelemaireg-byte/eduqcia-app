@@ -244,9 +244,9 @@ export function isCausesConsequencesDocumentsPublishable(
 /*  Builders HTML — feuille élève + corrigé enseignant                         */
 /* -------------------------------------------------------------------------- */
 
-const STUDENT_ROOT_OPEN =
-  '<div data-causes-consequences-student="true" class="causes-consequences-student-root">';
-const STUDENT_ROOT_CLOSE = "</div>";
+const ELEVE_ROOT_OPEN =
+  '<div data-causes-consequences-eleve="true" class="causes-consequences-eleve-root">';
+const ELEVE_ROOT_CLOSE = "</div>";
 
 function escapeHtml(s: string): string {
   return s
@@ -259,28 +259,28 @@ function escapeHtml(s: string): string {
 function buildIntroHtml(p: CausesConsequencesPayload): string {
   const sujet = escapeHtml(p.consigneSujet.trim());
   if (p.comportementId === "4.3") {
-    return `<p class="causes-consequences-student-intro">${escapeHtml(NR_CAUSES_CONSEQUENCES_43_CONSIGNE_PREFIX)}${sujet}${escapeHtml(NR_CAUSES_CONSEQUENCES_43_CONSIGNE_SUFFIX)}</p>`;
+    return `<p class="causes-consequences-eleve-intro">${escapeHtml(NR_CAUSES_CONSEQUENCES_43_CONSIGNE_PREFIX)}${sujet}${escapeHtml(NR_CAUSES_CONSEQUENCES_43_CONSIGNE_SUFFIX)}</p>`;
   }
   // 4.4 — intro + liste à puces (cause / conséquence)
   return (
-    `<p class="causes-consequences-student-intro">${escapeHtml(NR_CAUSES_CONSEQUENCES_44_CONSIGNE_INTRO)}</p>` +
-    `<ul class="causes-consequences-student-intro-list">` +
-    `<li>${escapeHtml(NR_CAUSES_CONSEQUENCES_44_BULLET_CAUSE_PREFIX)}${sujet}<span class="causes-consequences-student-bullet-end"> ;</span></li>` +
-    `<li>${escapeHtml(NR_CAUSES_CONSEQUENCES_44_BULLET_CONSEQUENCE_PREFIX)}${sujet}<span class="causes-consequences-student-bullet-end">.</span></li>` +
+    `<p class="causes-consequences-eleve-intro">${escapeHtml(NR_CAUSES_CONSEQUENCES_44_CONSIGNE_INTRO)}</p>` +
+    `<ul class="causes-consequences-eleve-intro-list">` +
+    `<li>${escapeHtml(NR_CAUSES_CONSEQUENCES_44_BULLET_CAUSE_PREFIX)}${sujet}<span class="causes-consequences-eleve-bullet-end"> ;</span></li>` +
+    `<li>${escapeHtml(NR_CAUSES_CONSEQUENCES_44_BULLET_CONSEQUENCE_PREFIX)}${sujet}<span class="causes-consequences-eleve-bullet-end">.</span></li>` +
     `</ul>`
   );
 }
 
 function buildCelluleHtml(label: string): string {
-  return `<div class="causes-consequences-student-cellule"><span class="causes-consequences-student-label">${escapeHtml(label)}</span><span class="causes-consequences-student-case" aria-hidden="true"></span></div>`;
+  return `<div class="causes-consequences-eleve-cellule"><span class="causes-consequences-eleve-label">${escapeHtml(label)}</span><span class="causes-consequences-eleve-case" aria-hidden="true"></span></div>`;
 }
 
 /** HTML stocké en `tache.consigne` — feuille élève complète. */
 export function buildCausesConsequencesConsigneHtml(p: CausesConsequencesPayload): string {
   const labels = getCausesConsequencesCategoryLabels(p.comportementId, p.consigneSujet);
   const cellules = labels.map(buildCelluleHtml).join("");
-  const grille = `<div class="causes-consequences-student-grille">${cellules}</div>`;
-  return `${STUDENT_ROOT_OPEN}${buildIntroHtml(p)}${grille}${STUDENT_ROOT_CLOSE}`;
+  const grille = `<div class="causes-consequences-eleve-grille">${cellules}</div>`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroHtml(p)}${grille}${ELEVE_ROOT_CLOSE}`;
 }
 
 /** HTML enseignant — `tache.corrige`. */

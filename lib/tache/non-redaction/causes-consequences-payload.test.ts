@@ -343,13 +343,13 @@ describe("buildCausesConsequencesConsigneHtml", () => {
       consigneSujet: "la sédentarité",
       associations: [null, null],
     });
-    expect(html).toContain('data-causes-consequences-student="true"');
+    expect(html).toContain('data-causes-consequences-eleve="true"');
     expect(html).toContain("Inscrivez dans la case appropriée");
     expect(html).toContain("Un facteur explicatif de la sédentarité");
     // 2 cellules
-    expect((html.match(/causes-consequences-student-cellule/g) ?? []).length).toBe(2);
+    expect((html.match(/causes-consequences-eleve-cellule/g) ?? []).length).toBe(2);
     // 2 cases
-    expect((html.match(/causes-consequences-student-case/g) ?? []).length).toBe(2);
+    expect((html.match(/causes-consequences-eleve-case/g) ?? []).length).toBe(2);
   });
 
   it("4.4 — intro avec liste à puces + 2 cellules distinctes", () => {
@@ -359,7 +359,7 @@ describe("buildCausesConsequencesConsigneHtml", () => {
       consigneSujet: "l'arrivée des loyalistes",
       associations: [null, null],
     });
-    expect(html).toContain("causes-consequences-student-intro-list");
+    expect(html).toContain("causes-consequences-eleve-intro-list");
     expect(html).toContain("une cause de l'arrivée des loyalistes");
     expect(html).toContain("une conséquence de l'arrivée des loyalistes");
     expect(html).toContain("Une cause de l'arrivée des loyalistes");
