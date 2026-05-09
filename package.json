@@ -19,6 +19,7 @@
     "seed:ref": "npx tsx scripts/seed-reference-tables.ts",
     "seed:ref:fill": "npx tsx scripts/seed-reference-tables.ts --fill-empty",
     "seed:schools": "npx tsx scripts/seed-css-schools.ts",
+    "seed:epreuve-meq-ch1": "npx tsx scripts/seed-epreuve-meq-ch1.ts",
     "prepare": "husky"
   },
   "lint-staged": {
