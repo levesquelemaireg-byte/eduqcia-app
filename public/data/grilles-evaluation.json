@@ -684,6 +684,29 @@
         }
       ]
     }
+  },
+  {
+    "id": "CD2_INTERPRETATION",
+    "oi": "CD2",
+    "comportement_id": "CD2.interpretation",
+    "operation": "Interpréter une réalité historique",
+    "comportement_enonce": "L'élève interprète une réalité historique en présentant deux éléments de réponse et en les appuyant par des faits exacts et pertinents.",
+    "type_reponse": "ecrite",
+    "bareme": {
+      "max_points": 8,
+      "echelle": [
+        {
+          "points": 4,
+          "label": "Premier élément de réponse",
+          "description": "Indiquer (2 pts) et appuyer par des faits (2 pts)."
+        },
+        {
+          "points": 4,
+          "label": "Deuxième élément de réponse",
+          "description": "Indiquer (2 pts) et appuyer par des faits (2 pts)."
+        }
+      ]
+    }
   }
 ]
 

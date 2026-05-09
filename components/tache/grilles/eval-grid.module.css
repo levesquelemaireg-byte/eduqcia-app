@@ -353,3 +353,70 @@
 .cd1GroupInnerNoTop {
   border-top-style: hidden;
 }
+
+/*
+ * CD2_INTERPRETATION — Grille « Interpréter une réalité historique » (Section C).
+ * 2 éléments de réponse × 2 critères (Indiquer + Appuyer/faits) — 7 colonnes.
+ * Référence visuelle : `docs/imports/grille-cd2-section-c.png`.
+ */
+.tableCd2Interpretation {
+  font-size: var(--eval-grid-font-size, 14px);
+  line-height: 1.18;
+  border-width: 1px;
+}
+
+.tableCd2Interpretation .cell {
+  padding: 5px 7px;
+}
+
+.tableCd2Interpretation .cellRubrique {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tableCd2Interpretation .cellDetail {
+  text-align: left;
+}
+
+/* 70 + 200 + 50 + 150 + 100 + 50 + 40 = 660 */
+.cd2ColLabel {
+  width: 70px;
+}
+
+.cd2ColIndiquerDescr {
+  width: 200px;
+}
+
+.cd2ColIndiquerPts {
+  width: 50px;
+}
+
+.cd2ColAppuyerManiere {
+  width: 150px;
+}
+
+.cd2ColAppuyerFaits {
+  width: 100px;
+}
+
+.cd2ColAppuyerPts {
+  width: 50px;
+}
+
+.cd2ColTotal {
+  width: 40px;
+}
+
+/* Étiquette verticale « Premier / Deuxième élément de réponse » — texte pivoté. */
+.cd2ElementLabel {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-weight: 700;
+  padding: 8px 4px;
+  line-height: 1.1;
+}
+
+.cd2TotalRow td,
+.cd2TotalRow th {
+  font-weight: 700;
+}
