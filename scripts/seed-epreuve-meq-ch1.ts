@@ -2,8 +2,8 @@
  * Seed — Épreuve MEQ « Histoire du Québec et du Canada Ch.1 » (test d'acceptation NR).
  *
  * Crée 6 tâches publiées (1 par parcours non rédactionnel) + 1 épreuve les
- * regroupant, sous le compte `enseignant.b.test@csslaval.gouv.qc.ca` (créé
- * par `npm run seed:teacher-b`).
+ * regroupant. Compte auteur paramétrable via `SEED_AUTHOR_EMAIL` (défaut :
+ * `enseignant.b.test@csslaval.gouv.qc.ca`).
  *
  * **Objectif** : valider end-to-end les 6 parcours NR — `ordre-chronologique`,
  * `ligne-du-temps`, `avant-apres`, `carte-historique`, `manifestations`,
@@ -14,15 +14,18 @@
  *
  * Contenus : placeholders text-only (l'objectif est de tester les wizards).
  *
- * Idempotence : le script supprime au début toute épreuve `seed:meq-ch1` et
- * ses tâches associées (créées par lui auparavant) avant de re-seeder.
+ * Idempotence : le script supprime au début toute épreuve marquée
+ * `[seed:meq-ch1]` (tous auteurs confondus) et ses tâches/documents associés
+ * avant de re-seeder. Permet de re-router le seed d'un compte à l'autre sans
+ * laisser de résidu.
  *
- * Usage : npm run seed:epreuve-meq-ch1
+ * Usage :
+ *   npm run seed:epreuve-meq-ch1                                    # défaut
+ *   SEED_AUTHOR_EMAIL=gllemaire@csslaval.gouv.qc.ca npm run seed:epreuve-meq-ch1
  *
  * Prérequis :
- *  - .env.local avec `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
- *    `SUPABASE_SERVICE_ROLE_KEY`.
- *  - Compte `enseignant.b.test@csslaval.gouv.qc.ca` actif (`npm run seed:teacher-b`).
+ *  - `.env.local` avec `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`.
+ *  - Compte cible existant dans `profiles` (status `active` recommandé).
  */
 
 import { readFileSync, existsSync } from "node:fs";
@@ -73,7 +76,7 @@ import {
 /*  Constantes                                                                 */
 /* -------------------------------------------------------------------------- */
 
-const TEACHER_EMAIL = "enseignant.b.test@csslaval.gouv.qc.ca";
+const DEFAULT_AUTHOR_EMAIL = "enseignant.b.test@csslaval.gouv.qc.ca";
 
 const NIVEAU_CODE = "sec3";
 const DISCIPLINE_CODE = "HQC";
@@ -119,6 +122,7 @@ function requireEnv(name: string): string {
 
 const SUPABASE_URL = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
 const SUPABASE_SERVICE_KEY = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+const AUTHOR_EMAIL = process.env.SEED_AUTHOR_EMAIL ?? DEFAULT_AUTHOR_EMAIL;
 
 /* -------------------------------------------------------------------------- */
 /*  Client Supabase (service role pour bypass RLS)                             */
@@ -199,11 +203,12 @@ async function lookupRefIds(svc: SBClient, auteurEmail: string): Promise<RefIds>
 /*  Idempotence — purge des seeds précédents                                   */
 /* -------------------------------------------------------------------------- */
 
-async function purgePreviousSeed(svc: SBClient, auteurId: string): Promise<void> {
+async function purgePreviousSeed(svc: SBClient): Promise<void> {
+  // Purge tous les seeds marqués (tous auteurs confondus) — permet de re-router
+  // le seed d'un compte à l'autre sans laisser de résidu.
   const { data: olds } = await svc
     .from("evaluations")
     .select("id")
-    .eq("auteur_id", auteurId)
     .like("description", `%${EVALUATION_TAG}%`);
   const oldIds = (olds ?? []).map((e) => e.id);
   if (oldIds.length === 0) return;
@@ -214,17 +219,27 @@ async function purgePreviousSeed(svc: SBClient, auteurId: string): Promise<void>
     .in("evaluation_id", oldIds);
   const oldTaeIds = Array.from(new Set((oldTaches ?? []).map((r) => r.tae_id)));
 
+  // Documents liés à ces tâches via tache_documents.
+  const { data: docLinks } = await svc
+    .from("tache_documents")
+    .select("document_id")
+    .in("tae_id", oldTaeIds.length > 0 ? oldTaeIds : ["00000000-0000-0000-0000-000000000000"]);
+  const oldDocIds = Array.from(new Set((docLinks ?? []).map((r) => r.document_id)));
+
   await svc.from("evaluation_tache").delete().in("evaluation_id", oldIds);
   await svc.from("evaluations").delete().in("id", oldIds);
 
   if (oldTaeIds.length > 0) {
-    // Détacher d'abord les documents puis supprimer les tâches.
     await svc.from("tache_documents").delete().in("tae_id", oldTaeIds);
     await svc.from("tache").delete().in("id", oldTaeIds);
   }
 
+  if (oldDocIds.length > 0) {
+    await svc.from("documents").delete().in("id", oldDocIds);
+  }
+
   console.log(
-    `✓ Purge : ${oldIds.length} évaluation(s) + ${oldTaeIds.length} tâche(s) supprimée(s).`,
+    `✓ Purge : ${oldIds.length} évaluation(s) + ${oldTaeIds.length} tâche(s) + ${oldDocIds.length} document(s) supprimés.`,
   );
 }
 
@@ -688,13 +703,13 @@ async function main(): Promise<void> {
   console.log("=== Seed épreuve MEQ Ch.1 (test NR) ===\n");
 
   const svc = serviceClient();
-  const refs = await lookupRefIds(svc, TEACHER_EMAIL);
-  console.log(`Auteur : ${TEACHER_EMAIL} (${refs.auteurId.slice(0, 8)}…)`);
+  const refs = await lookupRefIds(svc, AUTHOR_EMAIL);
+  console.log(`Auteur : ${AUTHOR_EMAIL} (${refs.auteurId.slice(0, 8)}…)`);
   console.log(
     `Référentiels : niveau=${refs.niveauId} (${NIVEAU_CODE}), discipline=${refs.disciplineId} (${DISCIPLINE_CODE}), cd=${refs.cdId}, conn=${refs.connaissanceId}\n`,
   );
 
-  await purgePreviousSeed(svc, refs.auteurId);
+  await purgePreviousSeed(svc);
 
   const taskBuilders: { name: string; build: () => SeedTacheSpec }[] = [
     { name: "ordre-chronologique (OI1.1)", build: buildTacheOrdreChrono },
@@ -718,7 +733,7 @@ async function main(): Promise<void> {
   console.log(`\n✓ Épreuve créée : ${evId}`);
   console.log(`  URL fiche  : ${SUPABASE_URL.replace(".supabase.co", "")} (locale)`);
   console.log(`  Pour visualiser : http://localhost:3000/evaluations/${evId}`);
-  console.log(`\n6 tâches publiées sous ${TEACHER_EMAIL} :`);
+  console.log(`\n6 tâches publiées sous ${AUTHOR_EMAIL} :`);
   taskBuilders.forEach((b, i) => {
     console.log(`  ${i + 1}. ${b.name} — http://localhost:3000/questions/${tacheIds[i]}`);
   });
