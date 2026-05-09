@@ -24,6 +24,11 @@ import {
   mergeCarteHistoriquePayload,
 } from "@/lib/tache/non-redaction/carte-historique-payload";
 import {
+  initialCausesConsequencesPayload,
+  isCausesConsequencesComportementId,
+  mergeCausesConsequencesPayload,
+} from "@/lib/tache/non-redaction/causes-consequences-payload";
+import {
   initialLigneDuTempsPayload,
   mergeLigneDuTempsPayload,
 } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
@@ -73,6 +78,10 @@ function initialNonRedactionForSlug(
   if (slug === "manifestations") {
     const cid = isManifestationsComportementId(comportementId) ? comportementId : "5.1";
     return { type: "manifestations", payload: initialManifestationsPayload(cid) };
+  }
+  if (slug === "causes-consequences") {
+    const cid = isCausesConsequencesComportementId(comportementId) ? comportementId : "4.3";
+    return { type: "causes-consequences", payload: initialCausesConsequencesPayload(cid) };
   }
   return null;
 }
@@ -513,6 +522,20 @@ export function tacheFormReducer(state: TacheFormState, action: TacheFormAction)
           nonRedaction: {
             type: "carte-historique",
             payload: mergeCarteHistoriquePayload(nr.payload, action.patch),
+          },
+        },
+      };
+    }
+    case "NON_REDACTION_PATCH_CAUSES_CONSEQUENCES": {
+      const nr = state.bloc5.nonRedaction;
+      if (nr?.type !== "causes-consequences") return state;
+      return {
+        ...state,
+        bloc5: {
+          ...state.bloc5,
+          nonRedaction: {
+            type: "causes-consequences",
+            payload: mergeCausesConsequencesPayload(nr.payload, action.patch),
           },
         },
       };

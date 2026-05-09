@@ -9,7 +9,8 @@ export type ComportementSlug =
   | "ligne-du-temps"
   | "avant-apres"
   | "carte-historique"
-  | "manifestations";
+  | "manifestations"
+  | "causes-consequences";
 
 export interface ComportementConfig {
   slug: ComportementSlug;

@@ -8,6 +8,10 @@ import {
   isCarteHistoriqueComportementId,
 } from "@/lib/tache/non-redaction/carte-historique-payload";
 import {
+  initialCausesConsequencesPayload,
+  isCausesConsequencesComportementId,
+} from "@/lib/tache/non-redaction/causes-consequences-payload";
+import {
   initialManifestationsPayload,
   isManifestationsComportementId,
 } from "@/lib/tache/non-redaction/manifestations-payload";
@@ -34,6 +38,11 @@ export function nonRedactionFromDbColumn(
     if (parsed?.type === "manifestations") return parsed;
     const cid = isManifestationsComportementId(comportementId) ? comportementId : "5.1";
     return { type: "manifestations", payload: initialManifestationsPayload(cid) };
+  }
+  if (slug === "causes-consequences") {
+    if (parsed?.type === "causes-consequences") return parsed;
+    const cid = isCausesConsequencesComportementId(comportementId) ? comportementId : "4.3";
+    return { type: "causes-consequences", payload: initialCausesConsequencesPayload(cid) };
   }
   return parsed;
 }

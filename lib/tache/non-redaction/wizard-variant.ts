@@ -25,3 +25,7 @@ export function isActiveCarteHistoriqueVariant(state: TacheFormState): boolean {
 export function isActiveManifestationsVariant(state: TacheFormState): boolean {
   return getVariantSlugForComportementId(state.bloc2.comportementId) === "manifestations";
 }
+
+export function isActiveCausesConsequencesVariant(state: TacheFormState): boolean {
+  return getVariantSlugForComportementId(state.bloc2.comportementId) === "causes-consequences";
+}

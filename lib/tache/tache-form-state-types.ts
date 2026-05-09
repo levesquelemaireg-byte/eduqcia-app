@@ -23,6 +23,7 @@ import type {
 } from "@/lib/tache/oi-perspectives/perspectives-types";
 import type { AvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
 import type { CarteHistoriquePayload } from "@/lib/tache/non-redaction/carte-historique-payload";
+import type { CausesConsequencesPayload } from "@/lib/tache/non-redaction/causes-consequences-payload";
 import type { ManifestationsPayload } from "@/lib/tache/non-redaction/manifestations-payload";
 import type { LigneDuTempsPayload } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import type { OrdreChronologiquePayload } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
@@ -95,7 +96,8 @@ export type NonRedactionData =
   | { type: "ligne-du-temps"; payload: LigneDuTempsPayload }
   | { type: "avant-apres"; payload: AvantApresPayload }
   | { type: "carte-historique"; payload: CarteHistoriquePayload }
-  | { type: "manifestations"; payload: ManifestationsPayload };
+  | { type: "manifestations"; payload: ManifestationsPayload }
+  | { type: "causes-consequences"; payload: CausesConsequencesPayload };
 
 export type Bloc5Slice = {
   corrige: string;
@@ -189,6 +191,10 @@ export type TacheFormAction =
   | { type: "NON_REDACTION_PATCH_AVANT_APRES"; patch: Partial<AvantApresPayload> }
   | { type: "NON_REDACTION_PATCH_CARTE_HISTORIQUE"; patch: Partial<CarteHistoriquePayload> }
   | { type: "NON_REDACTION_PATCH_MANIFESTATIONS"; patch: Partial<ManifestationsPayload> }
+  | {
+      type: "NON_REDACTION_PATCH_CAUSES_CONSEQUENCES";
+      patch: Partial<CausesConsequencesPayload>;
+    }
   | { type: "SET_OUTIL_EVALUATION_OVERRIDE"; outilEvaluation: string }
   | { type: "SET_PERSPECTIVES_MODE_WITH_MIGRATION"; value: "groupe" | "separe"; count: 2 | 3 }
   | { type: "UPDATE_PERSPECTIVE"; index: number; patch: Partial<PerspectiveData> }

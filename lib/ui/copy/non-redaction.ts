@@ -611,6 +611,43 @@ export const BLOC2_ORGANISATION_CATEGORIES_OPTION_2 = "2 catégories (2 document
 export const BLOC2_ORGANISATION_CATEGORIES_OPTION_4 = "4 catégories (1 document chacune)";
 export const BLOC2_ORGANISATION_CATEGORIES_BLUEPRINT_LABEL = "Organisation :";
 
+/* --------------------------------------------------------------------------
+ * Parcours `causes-consequences` (OI4 — comportements 4.3 / 4.4).
+ *
+ * 4.3 « Déterminer les deux facteurs explicatifs » et 4.4 « Déterminer le
+ * facteur explicatif et la conséquence » — non rédactionnels, 2 documents,
+ * 2 catégories fixes (dérivées du comportement), assignation manuelle.
+ *
+ * Source : `docs/specs/spec-oi-4-3-4-4.md`. Builders HTML :
+ * `lib/tache/non-redaction/causes-consequences-payload.ts`.
+ * -------------------------------------------------------------------------- */
+
+/* --- Builders HTML feuille élève (Lot 1) --- */
+
+/** 4.3 — préfixe ministériel, précède le sujet inséré dans la consigne. */
+export const NR_CAUSES_CONSEQUENCES_43_CONSIGNE_PREFIX =
+  "Inscrivez dans la case appropriée le numéro du document qui fait référence à un facteur explicatif de ";
+/** 4.3 — suffixe (point final), suit le sujet inséré dans la consigne. */
+export const NR_CAUSES_CONSEQUENCES_43_CONSIGNE_SUFFIX = ".";
+
+/** 4.4 — intro de la liste à puces (cause / conséquence). */
+export const NR_CAUSES_CONSEQUENCES_44_CONSIGNE_INTRO =
+  "Inscrivez dans la case appropriée le numéro du document qui fait référence à :";
+/** 4.4 — préfixe de la puce « cause de … ». */
+export const NR_CAUSES_CONSEQUENCES_44_BULLET_CAUSE_PREFIX = "une cause de ";
+/** 4.4 — préfixe de la puce « conséquence de … ». */
+export const NR_CAUSES_CONSEQUENCES_44_BULLET_CONSEQUENCE_PREFIX = "une conséquence de ";
+
+/** 4.3 — préfixe de label de cellule (espace de production + corrigé). */
+export const NR_CAUSES_CONSEQUENCES_43_LABEL_PREFIX = "Un facteur explicatif de ";
+/** 4.4 — préfixe de label « cause » (espace de production + corrigé). */
+export const NR_CAUSES_CONSEQUENCES_44_CAUSE_LABEL_PREFIX = "Une cause de ";
+/** 4.4 — préfixe de label « conséquence » (espace de production + corrigé). */
+export const NR_CAUSES_CONSEQUENCES_44_CONSEQUENCE_LABEL_PREFIX = "Une conséquence de ";
+
+/** Titre du corrigé enseignant. */
+export const NR_CAUSES_CONSEQUENCES_CORRIGE_TITRE = "Associations attendues :";
+
 /* -----------------------------  Bloc 2 — Pondération  --------------------- */
 
 export const BLOC2_PONDERATION_LABEL = "Pondération";

@@ -17,6 +17,7 @@ import {
 } from "@/lib/tache/schema-cd1/types";
 import { normalizeAvantApresPayload } from "@/lib/tache/non-redaction/avant-apres-payload";
 import { normalizeCarteHistoriquePayload } from "@/lib/tache/non-redaction/carte-historique-payload";
+import { normalizeCausesConsequencesPayload } from "@/lib/tache/non-redaction/causes-consequences-payload";
 import { normalizeManifestationsPayload } from "@/lib/tache/non-redaction/manifestations-payload";
 import { normalizeLigneDuTempsPayload } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import { normalizeOrdreChronologiquePayload } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
@@ -242,6 +243,11 @@ export function parseNonRedactionData(raw: unknown): NonRedactionData | null {
   if (t === "manifestations" && "payload" in o) {
     const p = normalizeManifestationsPayload(o.payload);
     if (p) return { type: "manifestations", payload: p };
+    return null;
+  }
+  if (t === "causes-consequences" && "payload" in o) {
+    const p = normalizeCausesConsequencesPayload(o.payload);
+    if (p) return { type: "causes-consequences", payload: p };
     return null;
   }
   return null;

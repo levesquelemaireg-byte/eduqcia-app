@@ -3,6 +3,7 @@ import type { ComponentType } from "react";
 import type { Bloc5Props } from "@/lib/tache/tache-form-state-types";
 import { avantApresConfig } from "@/lib/tache/behaviours/avant-apres";
 import { carteHistoriqueConfig } from "@/lib/tache/behaviours/carte-historique";
+import { causesConsequencesConfig } from "@/lib/tache/behaviours/causes-consequences";
 import { ligneDuTempsConfig } from "@/lib/tache/behaviours/ligne-du-temps";
 import { manifestationsConfig } from "@/lib/tache/behaviours/manifestations";
 import { ordreChronologiqueConfig } from "@/lib/tache/behaviours/ordre-chronologique";
@@ -16,6 +17,7 @@ const registry: Record<ComportementSlug, ComportementConfig> = {
   "avant-apres": avantApresConfig,
   "carte-historique": carteHistoriqueConfig,
   manifestations: manifestationsConfig,
+  "causes-consequences": causesConsequencesConfig,
 };
 
 export function getComportementConfig(slug: ComportementSlug): ComportementConfig {
@@ -51,6 +53,10 @@ export const BLOC5_DYNAMIC_BY_SLUG: Record<ComportementSlug, ComponentType<Bloc5
   ),
   manifestations: dynamic(
     () => import("@/components/tache/wizard/bloc5/non-redactionnel/Bloc5Manifestations"),
+    { ssr: false },
+  ),
+  "causes-consequences": dynamic(
+    () => import("@/components/tache/wizard/bloc5/non-redactionnel/Bloc5CausesConsequences"),
     { ssr: false },
   ),
 };

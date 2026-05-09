@@ -33,3 +33,10 @@ export function nonRedactionManifestationsPayload(state: TacheFormState): unknow
   if (nr?.type !== "manifestations") return null;
   return nr.payload;
 }
+
+/** Charge utile causes-consequences depuis `bloc5.nonRedaction`. */
+export function nonRedactionCausesConsequencesPayload(state: TacheFormState): unknown {
+  const nr = state.bloc5.nonRedaction;
+  if (nr?.type !== "causes-consequences") return null;
+  return nr.payload;
+}
