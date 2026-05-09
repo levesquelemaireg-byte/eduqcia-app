@@ -25,7 +25,10 @@ import { mesurerBloc, verifierDebordement, paginer } from "@/lib/epreuve/paginat
 import type { Mesureur } from "@/lib/epreuve/pagination/pager";
 import { reglesVisibilite } from "@/lib/impression/builders/regles-visibilite";
 import { construireBlocsDossierPages } from "@/lib/impression/builders/blocs-dossier-pages";
-import { aplatirDocumentsAvecNumeros, resoudreReferencesDocuments } from "./renumerotation";
+import {
+  aplatirDocumentsAvecNumeros,
+  resoudreReferencesDocuments,
+} from "@/lib/impression/renumerotation";
 import type { RenduImprimable } from "@/lib/impression/types";
 
 /* -------------------------------------------------------------------------- */

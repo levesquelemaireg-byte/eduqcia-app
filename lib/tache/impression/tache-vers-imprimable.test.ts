@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { RendererDocument } from "@/lib/types/document-renderer";
+import type { ContenuBlocQuadruplet } from "@/lib/impression/builders/blocs-quadruplet";
+import type { ContenuBlocCorrige } from "@/lib/impression/builders/blocs-corrige";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
 import { tacheVersImprimable } from "./tache-vers-imprimable";
 
@@ -145,5 +147,109 @@ describe("tacheVersImprimable", () => {
     expect(r1.ok && r2.ok).toBe(true);
     if (!r1.ok || !r2.ok) return;
     expect(r1.empreinte).not.toBe(r2.empreinte);
+  });
+
+  /* ------------------------------------------------------------------------ */
+  /*  Résolution des placeholders {{doc_X}} (Bug 1 — spec §12 Phase 2)        */
+  /* ------------------------------------------------------------------------ */
+
+  it("résout les placeholders {{doc_N}} dans la consigne (numérotation locale)", () => {
+    const tache = creerTache({
+      consigne: "<p>Voir le document {{doc_1}} et le document {{doc_2}}.</p>",
+      documents: [creerDoc("d1"), creerDoc("d2")],
+    });
+    const rendu = tacheVersImprimable(
+      tache,
+      { mode: "formatif", estCorrige: false },
+      mesureurFixe(200),
+    );
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const quadruplet = rendu.pages
+      .flatMap((p) => p.blocs)
+      .find((b) => b.id.startsWith("quadruplet-"));
+    expect(quadruplet).toBeDefined();
+    const contenu = quadruplet!.content as ContenuBlocQuadruplet;
+    expect(contenu.consigne).toBe("<p>Voir le document 1 et le document 2.</p>");
+    expect(contenu.consigne).not.toContain("{{doc_");
+  });
+
+  it("résout les placeholders {{doc_N}} dans le guidage", () => {
+    const tache = creerTache({
+      guidage: { content: "<p>Compare {{doc_1}} avec {{doc_2}}.</p>" },
+      documents: [creerDoc("d1"), creerDoc("d2")],
+    });
+    const rendu = tacheVersImprimable(
+      tache,
+      { mode: "formatif", estCorrige: false },
+      mesureurFixe(200),
+    );
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const quadruplet = rendu.pages
+      .flatMap((p) => p.blocs)
+      .find((b) => b.id.startsWith("quadruplet-"));
+    expect(quadruplet).toBeDefined();
+    const contenu = quadruplet!.content as ContenuBlocQuadruplet;
+    expect(contenu.guidage).not.toBeNull();
+    expect(contenu.guidage!.content).toBe("<p>Compare 1 avec 2.</p>");
+  });
+
+  it("résout les placeholders {{doc_N}} dans le corrigé", () => {
+    const tache = creerTache({
+      corrige: "<p>Réponse appuyée sur le document {{doc_1}}.</p>",
+      documents: [creerDoc("d1")],
+    });
+    const rendu = tacheVersImprimable(
+      tache,
+      { mode: "formatif", estCorrige: true },
+      mesureurFixe(200),
+    );
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const blocCorrige = rendu.pages
+      .flatMap((p) => p.blocs)
+      .find((b) => b.id.startsWith("corrige-"));
+    expect(blocCorrige).toBeDefined();
+    const contenu = blocCorrige!.content as ContenuBlocCorrige;
+    expect(contenu.corrige).toBe("<p>Réponse appuyée sur le document 1.</p>");
+    expect(contenu.corrige).not.toContain("{{doc_");
+  });
+
+  it("résout les placeholders {{doc_A}} legacy (alphabétique) dans la consigne", () => {
+    const tache = creerTache({
+      consigne: "<p>Voir le document {{doc_A}}.</p>",
+      documents: [creerDoc("d1")],
+    });
+    const rendu = tacheVersImprimable(
+      tache,
+      { mode: "formatif", estCorrige: false },
+      mesureurFixe(200),
+    );
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const quadruplet = rendu.pages
+      .flatMap((p) => p.blocs)
+      .find((b) => b.id.startsWith("quadruplet-"));
+    const contenu = quadruplet!.content as ContenuBlocQuadruplet;
+    expect(contenu.consigne).toBe("<p>Voir le document 1.</p>");
+  });
+
+  it("ne change pas la consigne si elle ne contient pas de placeholders", () => {
+    const tache = creerTache({
+      consigne: "<p>Consigne sans référence document.</p>",
+    });
+    const rendu = tacheVersImprimable(
+      tache,
+      { mode: "formatif", estCorrige: false },
+      mesureurFixe(200),
+    );
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const quadruplet = rendu.pages
+      .flatMap((p) => p.blocs)
+      .find((b) => b.id.startsWith("quadruplet-"));
+    const contenu = quadruplet!.content as ContenuBlocQuadruplet;
+    expect(contenu.consigne).toBe("<p>Consigne sans référence document.</p>");
   });
 });

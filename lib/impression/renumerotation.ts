@@ -1,7 +1,12 @@
 /**
- * Renumérotation globale des documents dans une épreuve — print-engine v2.1 §D3.
+ * Renumérotation globale des documents et résolution des placeholders `{{doc_X}}`
+ * — utilitaire partagé entre l'impression d'une tâche seule et celle d'une épreuve.
  *
- * Renumérotation globale pour consommer `DonneesTache[]`.
+ * Spec : docs/specs/SPEC-PIPELINE-RENDU-IMPRIME.md §12 Phase 2.
+ *
+ * Pour une tâche seule, la numérotation est locale (1..N) — passer `[tache]` en
+ * `toutesLesTaches`. Pour une épreuve, la numérotation est globale à travers
+ * toutes les tâches.
  */
 
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";

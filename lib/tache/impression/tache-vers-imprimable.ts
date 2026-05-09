@@ -14,6 +14,7 @@ import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import type { Mesureur } from "@/lib/epreuve/pagination/pager";
 import { mesurerBloc, verifierDebordement, paginer } from "@/lib/epreuve/pagination/pager";
 import { construireBlocsTache } from "@/lib/impression/builders/blocs-tache";
+import { resoudreReferencesDocuments } from "@/lib/impression/renumerotation";
 import type { RenduImprimable } from "@/lib/impression/types";
 
 export type OptionsTacheImprimable = {
@@ -54,8 +55,25 @@ export function tacheVersImprimable(
   options: OptionsTacheImprimable,
   mesureur: Mesureur,
 ): RenduImprimable {
+  // Résoudre les placeholders {{doc_X}} dans consigne, guidage et corrigé
+  // avant la construction des blocs (spec §12 Phase 2 — la résolution doit
+  // précéder toute pagination, un placeholder coupé est irrécupérable).
+  // Tâche seule = numérotation locale 1..N — `toutesLesTaches = [tache]`.
+  const tacheResolue: DonneesTache = {
+    ...tache,
+    consigne: resoudreReferencesDocuments(tache.consigne, tache.documents, [tache]),
+    guidage: tache.guidage
+      ? {
+          content: resoudreReferencesDocuments(tache.guidage.content, tache.documents, [tache]),
+        }
+      : tache.guidage,
+    corrige: tache.corrige
+      ? resoudreReferencesDocuments(tache.corrige, tache.documents, [tache])
+      : tache.corrige,
+  };
+
   // Couche 1 : construire les blocs
-  const blocs = construireBlocsTache(tache, options);
+  const blocs = construireBlocsTache(tacheResolue, options);
 
   // Mesurer chaque bloc
   const blocsMesures = blocs.map((b) => mesurerBloc(b, mesureur));
