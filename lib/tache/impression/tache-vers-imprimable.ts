@@ -6,7 +6,7 @@
  *
  * Pas d'en-tête, pas de feuillets — tous les blocs paginés ensemble.
  *
- * Spec : docs/specs/spec-impression-tache-seule.md §3, couche 2.
+ * Spec : docs/specs/fermees/spec-impression-tache-seule.md §3, couche 2.
  */
 
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";

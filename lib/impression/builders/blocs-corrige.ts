@@ -4,7 +4,7 @@
  * Construit un Bloc contenant le corrigé d'une tâche.
  * Utilisé quand `estCorrige === true` et que le corrigé est non vide.
  *
- * Spec : docs/specs/spec-impression-tache-seule.md §3, couche 1.
+ * Spec : docs/specs/fermees/spec-impression-tache-seule.md §3, couche 1.
  */
 
 import type { DonneesTache, OutilEvaluation } from "@/lib/tache/contrats/donnees";

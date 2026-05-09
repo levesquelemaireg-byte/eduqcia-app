@@ -1,5 +1,9 @@
 # Impression tâche seule & document seul — Spécification finale
 
+> **✅ SPEC FERMÉE — Livrée le 15 avril 2026** (commit principal `382706d` — PDF-13)
+> Cette spec est un document historique. Le code fait foi.
+> Pour l'architecture courante, voir le code dans `lib/impression/`, `lib/tache/impression/`, `lib/document/impression/` et `lib/epreuve/transformation/`.
+
 **Version** : 1.0 — post-review 4 agents (DeepSeek, Grok, Gemini, ChatGPT)
 **Statut** : Prêt pour implémentation
 **Prérequis** : Print engine PDF-1 à PDF-11 terminés

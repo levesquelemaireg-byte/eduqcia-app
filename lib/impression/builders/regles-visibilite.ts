@@ -4,7 +4,7 @@
  * Factorisé depuis lib/epreuve/transformation/regles-visibilite.ts.
  * Réutilisé par construireBlocsTache (tâche seule) et epreuveVersImprimable.
  *
- * Spec : docs/specs/spec-impression-tache-seule.md §3, couche 1.
+ * Spec : docs/specs/fermees/spec-impression-tache-seule.md §3, couche 1.
  */
 
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";

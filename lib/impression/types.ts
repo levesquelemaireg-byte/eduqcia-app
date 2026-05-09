@@ -4,7 +4,7 @@
  * `RenduImprimable` est le type de sortie unique pour les 3 entités :
  * tâche seule, document seul, épreuve.
  *
- * Spec : docs/specs/spec-impression-tache-seule.md §4.
+ * Spec : docs/specs/fermees/spec-impression-tache-seule.md §4.
  */
 
 import type { EnTeteEpreuve } from "@/lib/epreuve/contrats/donnees";

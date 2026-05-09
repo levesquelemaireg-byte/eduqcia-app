@@ -4,7 +4,7 @@
  * Transforme les champs d'une tâche en Bloc quadruplet imprimable
  * (consigne + guidage + espace de production + outil d'évaluation).
  *
- * Spec : docs/specs/spec-impression-tache-seule.md §3, couche 1.
+ * Spec : docs/specs/fermees/spec-impression-tache-seule.md §3, couche 1.
  */
 
 import type {
