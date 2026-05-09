@@ -1559,7 +1559,6 @@ BEGIN
       titre,
       type,
       elements,
-      print_impression_scale,
       repere_temporel,
       annee_normalisee,
       niveaux_ids,
@@ -1574,17 +1573,6 @@ BEGIN
       v_elem->>'titre',
       (v_elem->>'type')::doc_type,
       COALESCE(v_elem->'elements', '[]'::jsonb),
-      CASE
-        WHEN (v_elem->>'type') = 'iconographique' THEN
-          LEAST(
-            1.0::numeric,
-            GREATEST(
-              0.5::numeric,
-              COALESCE(NULLIF(TRIM(COALESCE(v_elem->>'print_impression_scale', '')), '')::numeric, 1.0)
-            )
-          )
-        ELSE 1.0::numeric
-      END,
       NULLIF(TRIM(COALESCE(v_elem->>'repere_temporel', '')), ''),
       CASE
         WHEN NOT (v_elem ? 'annee_normalisee') OR jsonb_typeof(v_elem->'annee_normalisee') = 'null' THEN NULL::int
@@ -1844,7 +1832,6 @@ BEGIN
       titre,
       type,
       elements,
-      print_impression_scale,
       repere_temporel,
       annee_normalisee,
       niveaux_ids,
@@ -1859,17 +1846,6 @@ BEGIN
       v_elem->>'titre',
       (v_elem->>'type')::doc_type,
       COALESCE(v_elem->'elements', '[]'::jsonb),
-      CASE
-        WHEN (v_elem->>'type') = 'iconographique' THEN
-          LEAST(
-            1.0::numeric,
-            GREATEST(
-              0.5::numeric,
-              COALESCE(NULLIF(TRIM(COALESCE(v_elem->>'print_impression_scale', '')), '')::numeric, 1.0)
-            )
-          )
-        ELSE 1.0::numeric
-      END,
       NULLIF(TRIM(COALESCE(v_elem->>'repere_temporel', '')), ''),
       CASE
         WHEN NOT (v_elem ? 'annee_normalisee') OR jsonb_typeof(v_elem->'annee_normalisee') = 'null' THEN NULL::int
