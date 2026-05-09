@@ -1,7 +1,8 @@
 # Checklist MVP v1 — ÉduQc.IA
 
 **Créé le :** 13 avril 2026
-**Source :** `docs/specs/mvp-v1-audit-completude.md`
+**Mis à jour le :** 8 mai 2026
+**Source :** `docs/specs/mvp-v1-audit-completude.md` + vérification codebase (lecture seule)
 **Usage :** cocher `[x]` au fur et à mesure des livraisons. Un item coché = code mergé + fonctionnel.
 
 ### Règles concernant l'implémentation des lots
@@ -74,31 +75,80 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 - [x] **PDF-11** D5 — carrousel PNG Embla + bannière invalidation empreinte
 - [ ] **PDF-12** Validation terrain sur imprimantes réelles (phase de validation, pas de dev)
 - [x] **PDF-13** Architecture 3 couches — `RenduImprimable` unifié, builders partagés, entry points tâche seule + document seul + épreuve, dispatch SSR/token-draft par `type`
+- [ ] **PDF-14** Exposer le choix de mode d'impression pour l'épreuve (pas seulement formatif) et propager `mode` + `estCorrige` jusqu'au token draft
 
 ## Lot 7 — Finitions parcours création
 
 - [ ] **CRE-1** Sélecteurs niveau/discipline dans le wizard épreuve (C17)
 - [ ] **CRE-2** Filtres épreuves dans la banque — niveau, discipline (D3)
 - [ ] **CRE-3** Filtre par auteur dans la banque (D4)
-- [ ] **CRE-4** Page de lecture épreuve read-only (D5 partiel)
+- [ ] **CRE-4** Banque épreuves : offrir un accès lecture pour non-auteur (pas seulement « Modifier »)
 
 ## Lot 8 — Dashboard
 
 - [ ] **DASH-1** Enrichir widgets avec dernières créations (B2)
 - [ ] **DASH-2** Widget « Brouillons en cours » avec liens directs (B4)
 
-## Lot 9 — Favoris / Épinglage
+## Lot 9 — Favoris / Actions fiches détaillées
 
 - [ ] **FAV-1** Action `toggle-favoris.ts` (insert/delete)
 - [ ] **FAV-2** Query `get-user-favorites.ts`
 - [ ] **FAV-3** Câbler le bouton épingler dans la fiche tâche (D6)
 - [ ] **FAV-4** Widget dashboard « Mes favoris » avec liste (B3)
+- [ ] **FAV-5** Résorber les `TODO` de la barre d'actions des vues détaillées (supprimer / ajouter à une épreuve / épingler)
 
 ## Lot 10 — Tests d'intégration
 
 - [ ] **TEST-1** Tests intégration `publishTacheAction`
 - [ ] **TEST-2** Tests intégration `saveWizardDraftAction`
 - [ ] **TEST-3** Tests intégration `publishEpreuveAction`
+
+---
+
+## Écart avec l'audit du 12 avril 2026 (constat 8 mai 2026)
+
+### Livré depuis l'audit (à ne plus considérer comme « restant »)
+
+- [x] A4 — Modifier son mot de passe
+- [x] A5/A6 — Accès + édition du profil
+- [x] C5/C21 — Suppression document + suppression épreuve
+- [x] D9 — Profil public enseignant
+- [x] E1/E4 — Génération PDF serveur + téléchargement depuis l'UI
+- [x] Transversal — loading/error, skeletons, Suspense, CSP, AVIF, `prefers-reduced-motion`, skip-link
+
+### Restant confirmé
+
+- [ ] C17, D3, D4, B2, B3, B4, D6
+- [ ] Validation terrain impression (PDF-12)
+- [ ] Exposition du mode d'impression côté épreuve (PDF-14)
+- [ ] Tests d'intégration des actions critiques
+
+---
+
+## Plan d'exécution recommandé (à partir du 8 mai 2026)
+
+### Phase 1 — Parcours épreuve et impression (priorité haute)
+
+- [ ] **P1-1** `CRE-1` : ajouter niveau/discipline dans la composition épreuve
+- [ ] **P1-2** `PDF-14` : brancher le mode d'impression épreuve (formatif / sommatif standard / corrigé)
+- [ ] **P1-3** `CRE-4` : permettre la lecture d'une épreuve publiée depuis la banque (non-auteur)
+
+### Phase 2 — Banque collaborative
+
+- [ ] **P2-1** `CRE-2` : filtres niveau/discipline pour la banque épreuves
+- [ ] **P2-2** `CRE-3` : filtre auteur dans la banque
+
+### Phase 3 — Favoris et actions de fiches
+
+- [ ] **P3-1** `FAV-1` + `FAV-2` : socle favoris (toggle + query)
+- [ ] **P3-2** `FAV-3` + `FAV-4` : épinglage tâche + widget dashboard enrichi
+- [ ] **P3-3** `FAV-5` : supprimer les TODO d'actions dans les vues détaillées
+
+### Phase 4 — Dashboard et qualité
+
+- [ ] **P4-1** `DASH-1` + `DASH-2` : dashboard actionnable (dernières créations + brouillons)
+- [ ] **P4-2** `TEST-1` à `TEST-3` : tests d'intégration actions serveur
+- [ ] **P4-3** `PDF-12` : validation terrain imprimantes réelles
 
 ---
 
@@ -111,19 +161,19 @@ Un lot n'est **pas terminé** tant que ces 3 étapes ne sont pas faites.
 | 3 — Loading/Error      | 4      | 4      | 100%    |
 | 4 — CRUD manquant      | 2      | 2      | 100%    |
 | 5 — Compte             | 4      | 4      | 100%    |
-| 6 — Export PDF         | 12     | 9      | 75%     |
+| 6 — Export PDF         | 14     | 12     | 86%     |
 | 7 — Finitions création | 4      | 0      | 0%      |
 | 8 — Dashboard          | 2      | 0      | 0%      |
-| 9 — Favoris            | 4      | 0      | 0%      |
+| 9 — Favoris / fiches   | 5      | 0      | 0%      |
 | 10 — Tests             | 3      | 0      | 0%      |
-| **Total**              | **43** | **27** | **63%** |
+| **Total**              | **46** | **30** | **65%** |
 
 ---
 
 ## Notes
 
 - Les lots sont ordonnés par priorité recommandée (sécurité d'abord, puis PDF car D0 est un refactor bloquant, puis polish UX)
-- Les items marqués « coupe possible » dans `mvp-v1.md` : PDF-5 (formatif), D4 (filtre auteur), D6/FAV (épinglage), D9/AUTH-4 (profil public)
+- Les items marqués « coupe possible » dans `mvp-v1.md` encore pertinents : D4 (filtre auteur), D6/FAV (épinglage), mode impression avancé (PDF-14)
 - Référence détaillée par item : `docs/specs/mvp-v1-audit-completude.md`
 
 ## Dette technique identifiée (hors lots)
