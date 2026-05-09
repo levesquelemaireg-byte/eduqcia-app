@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import "@/styles/impression.css";
+import "@/styles/impression/base.css";
 
 /**
  * Layout minimal pour la route d'aperçu impression.

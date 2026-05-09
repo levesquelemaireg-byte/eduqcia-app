@@ -1,0 +1,58 @@
+/**
+ * styles/impression/base.css — règles de base du rendu imprimé.
+ *
+ * Spec : docs/specs/SPEC-PIPELINE-RENDU-IMPRIME.md §4.7 (listes), §4.8 (sauts
+ * de page NR), §12 Phase 3.
+ *
+ * Toutes les règles sont scopées par `.zone-imprimable` (filet de sécurité
+ * générique) ou par des classes utilitaires explicites — aucun effet hors
+ * contexte d'impression.
+ */
+
+/* -------------------------------------------------------------------------- */
+/*  Restauration des listes (résout Bug 3)                                    */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Tailwind Preflight pose `list-style: none` et `padding: 0` sur ul/ol.
+ * À l'impression, on rétablit explicitement les puces et la numérotation
+ * avec une indentation conforme à la spec §4.7 (1.5cm).
+ *
+ * Les règles NR spécifiques (carte-historique-eleve-items,
+ * causes-consequences-eleve-intro-list, etc.) restent comme override
+ * granulaire — `.zone-imprimable` est le filet de sécurité par défaut.
+ */
+
+.zone-imprimable ul {
+  list-style: disc;
+  padding-left: 1.5cm;
+}
+
+.zone-imprimable ol {
+  list-style: decimal;
+  padding-left: 1.5cm;
+}
+
+.zone-imprimable ul ul {
+  list-style: circle;
+}
+
+.zone-imprimable ol ol {
+  list-style: lower-alpha;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Sauts de page — dispositifs visuels NR (spec §4.8)                        */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Les dispositifs visuels NR (frise, tableau avant/après, grille de
+ * catégories, tableau d'association) ne doivent jamais être coupés entre
+ * deux pages. Le moteur de pagination gère le reste — si un dispositif ne
+ * tient pas sur la page courante, il passe à la suivante.
+ */
+
+.zone-dispositif-nr {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}

@@ -75,7 +75,7 @@ export function SectionPage({ enTete, numeroPage, totalPages, children }: Sectio
       )}
 
       <div
-        className="page-content"
+        className="page-content zone-imprimable"
         style={{
           maxHeight: `${MAX_CONTENT_HEIGHT_PX}px`,
           overflow: "hidden",
