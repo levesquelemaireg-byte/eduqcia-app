@@ -7,11 +7,14 @@ import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
 import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
+import { FEUILLET_LABELS_COPY } from "@/components/partagees/carrousel-apercu/copy";
 import { SectionPileTaches } from "@/components/epreuve/vue-detaillee/sections/pile-taches";
 import { EpreuveRail } from "@/components/epreuve/vue-detaillee/rail";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
 import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
+import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
 
 type Props = {
   donnees: DonneesEpreuve;
@@ -38,8 +41,22 @@ export function EpreuveVueDetaillee({
   const router = useRouter();
   const [ongletActif, setOngletActif] = useState<OngletId>("sommaire");
   const [carrouselOuvert, setCarrouselOuvert] = useState(false);
+  // Mode FIXE sommatif-standard → 2 feuillets (dossier + questionnaire).
+  // Le toggle est rendu dans la barre des onglets parents (slot `actions`).
+  const [feuilletActif, setFeuilletActif] = useState<TypeFeuillet>("dossier-documentaire");
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
+
+  const optionsFeuillets = useMemo(
+    () => [
+      {
+        value: "dossier-documentaire" as const,
+        label: FEUILLET_LABELS_COPY["dossier-documentaire"],
+      },
+      { value: "questionnaire" as const, label: FEUILLET_LABELS_COPY["questionnaire"] },
+    ],
+    [],
+  );
 
   /* Déduire niveau/discipline depuis la première tâche si disponible */
   const premiereTache = donnees.taches[0] ?? null;
@@ -82,12 +99,27 @@ export function EpreuveVueDetaillee({
             layout={layout}
           />
         }
-        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
+        onglets={
+          <Onglets
+            ongletActif={ongletActif}
+            surChangerOnglet={setOngletActif}
+            actions={
+              ongletActif === "apercu-imprime" ? (
+                <SegmentedControl
+                  aria-label="Feuillet"
+                  options={optionsFeuillets}
+                  value={feuilletActif}
+                  onChange={(v) => setFeuilletActif(v as TypeFeuillet)}
+                />
+              ) : null
+            }
+          />
+        }
         contenuPrincipal={
           ongletActif === "sommaire" ? (
             <SectionPileTaches taches={donnees.taches} />
           ) : (
-            <ApercuImprimeInline payload={payloadImpression} />
+            <ApercuImprimeInline payload={payloadImpression} feuilletActif={feuilletActif} />
           )
         }
         rail={

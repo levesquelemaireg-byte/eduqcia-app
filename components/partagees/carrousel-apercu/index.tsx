@@ -23,12 +23,8 @@ export type CarrouselApercuProps = {
   pages: string[];
   /** Nombre de pages par feuillet (depuis la pagination locale). */
   pagesParFeuillet: Record<TypeFeuillet, number>;
-  /** Empreinte FNV-1a des PNG affichés. */
+  /** Empreinte FNV-1a des PNG affichés (key React pour bust de cache). */
   empreintePng: string;
-  /** Empreinte FNV-1a calculée localement depuis le contenu courant. */
-  empreinteWizard: string;
-  /** Callback pour regénérer les PNG. */
-  surRegenerer: () => void;
 };
 
 /* -------------------------------------------------------------------------- */
@@ -147,7 +143,7 @@ function CarrouselFeuillet({
               <img
                 src={`data:image/png;base64,${pageBase64}`}
                 alt={CARROUSEL_APERCU_COPY.altImage(pageNum, totalPagesGlobal, feuillet.label)}
-                className="mx-auto w-full max-w-[816px] rounded shadow-sm"
+                className="mx-auto w-full max-w-204 rounded shadow-sm"
                 draggable={false}
               />
             </div>
@@ -162,13 +158,7 @@ function CarrouselFeuillet({
 /*  Composant principal                                                       */
 /* -------------------------------------------------------------------------- */
 
-export function CarrouselApercu({
-  pages,
-  pagesParFeuillet,
-  empreintePng,
-  empreinteWizard,
-  surRegenerer,
-}: CarrouselApercuProps) {
+export function CarrouselApercu({ pages, pagesParFeuillet, empreintePng }: CarrouselApercuProps) {
   const feuillets = construireFeuillets(pages, pagesParFeuillet);
   const [feuilletActifIndex, setFeuilletActifIndex] = useState(0);
   const feuilletActif = feuillets[feuilletActifIndex] ?? feuillets[0];
@@ -180,37 +170,10 @@ export function CarrouselApercu({
     positionsRef.current[type] = index;
   }, []);
 
-  const estInvalide = empreinteWizard !== "" && empreintePng !== empreinteWizard;
-
   if (feuillets.length === 0) return null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
-      {/* Bannière d'invalidation */}
-      {estInvalide && (
-        <div className="flex items-center gap-3 rounded-md border border-warning/30 bg-warning/10 px-4 py-3">
-          <span
-            className="material-symbols-outlined text-[1.25em] leading-none text-warning"
-            aria-hidden="true"
-          >
-            warning
-          </span>
-          <span className="flex-1 text-sm font-medium text-deep">
-            {CARROUSEL_APERCU_COPY.banniereInvalidation}
-          </span>
-          <button
-            type="button"
-            onClick={surRegenerer}
-            className="inline-flex items-center gap-[0.35em] rounded-md bg-accent px-3 py-1.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            <span className="material-symbols-outlined text-[1em] leading-none" aria-hidden="true">
-              refresh
-            </span>
-            {CARROUSEL_APERCU_COPY.boutonRegenerer}
-          </button>
-        </div>
-      )}
-
       {/* Onglets feuillets */}
       {feuillets.length > 1 && (
         <div role="tablist" className="flex gap-1 border-b border-border" aria-label="Feuillets">

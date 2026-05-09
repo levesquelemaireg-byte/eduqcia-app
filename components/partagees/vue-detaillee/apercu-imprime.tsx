@@ -1,18 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-apercu-png";
 import { Button } from "@/components/ui/Button";
-import {
-  CARROUSEL_APERCU_COPY,
-  FEUILLET_LABELS_COPY,
-} from "@/components/partagees/carrousel-apercu/copy";
+import { CARROUSEL_APERCU_COPY } from "@/components/partagees/carrousel-apercu/copy";
 import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
-import { cn } from "@/lib/utils/cn";
-
-type Props = {
-  payload: PayloadImpression;
-};
 
 const ORDRE_FEUILLETS: TypeFeuillet[] = [
   "dossier-documentaire",
@@ -20,50 +12,46 @@ const ORDRE_FEUILLETS: TypeFeuillet[] = [
   "cahier-reponses",
 ];
 
-type FeuilletInfo = {
-  type: TypeFeuillet;
-  label: string;
-  pages: string[];
+type Props = {
+  payload: PayloadImpression;
+  /**
+   * Filtre l'affichage à un seul feuillet (utilisé par la vue détaillée
+   * épreuve en sommatif-standard, où les toggles de feuillets vivent dans
+   * la barre supérieure des onglets parents). Si omis, toutes les pages
+   * sont affichées en flux continu (cas tâche formatif — un seul feuillet).
+   */
+  feuilletActif?: TypeFeuillet;
 };
 
 /**
- * Construit la liste des feuillets actifs (ceux qui contiennent au moins
- * une page) avec leur tranche de pages PNG.
+ * Calcule l'offset de début et le nombre de pages d'un feuillet donné
+ * dans la liste plate de pages PNG (ordonnées dossier-doc → questionnaire
+ * → cahier-réponses).
  */
-function construireFeuillets(
-  pages: string[],
+function tranchePages(
+  feuillet: TypeFeuillet,
   pagesParFeuillet: Record<TypeFeuillet, number>,
-): FeuilletInfo[] {
-  const feuillets: FeuilletInfo[] = [];
-  let offset = 0;
-  for (const type of ORDRE_FEUILLETS) {
-    const count = pagesParFeuillet[type];
-    if (count > 0) {
-      feuillets.push({
-        type,
-        label: FEUILLET_LABELS_COPY[type],
-        pages: pages.slice(offset, offset + count),
-      });
-      offset += count;
-    }
+): { debut: number; fin: number } {
+  let debut = 0;
+  for (const f of ORDRE_FEUILLETS) {
+    if (f === feuillet) return { debut, fin: debut + pagesParFeuillet[f] };
+    debut += pagesParFeuillet[f];
   }
-  return feuillets;
+  return { debut: 0, fin: 0 };
 }
 
 /**
- * Contenu inline de l'onglet « Aperçu de l'imprimé ».
+ * Contenu inline de l'onglet « Aperçu de l'imprimé » des vues détaillées.
  *
- * Aperçu rapide en mode FIXE (formatif pour tâche, sommatif-standard pour
- * épreuve — décidé par le parent). L'export PDF et la configuration
- * complète des modes vivent dans la modale carrousel (bouton imprimante
- * de la barre d'actions).
+ * Mode FIXE (formatif pour tâche, sommatif-standard pour épreuve — décidé
+ * par le parent). L'export PDF et la configuration des modes vivent dans
+ * la modale carrousel (bouton imprimante de la barre d'actions).
  *
- * Quand le rendu produit plus d'un feuillet (épreuve sommatif-standard
- * → dossier + questionnaire), on affiche des onglets de navigation entre
- * feuillets. Avec un seul feuillet (tâche formatif), pas d'onglets — flux
- * continu.
+ * Pour épreuve sommatif, le parent gère le state `feuilletActif` et passe
+ * la valeur courante. Les toggles de feuillets sont rendus dans la barre
+ * des onglets parente, pas dans ce composant.
  */
-export function ApercuImprimeInline({ payload }: Props) {
+export function ApercuImprimeInline({ payload, feuilletActif }: Props) {
   const { etat, generer } = useApercuPng(payload);
 
   /* Génération automatique au montage */
@@ -73,14 +61,12 @@ export function ApercuImprimeInline({ payload }: Props) {
     }
   }, [etat.statut, generer]);
 
-  const feuillets = useMemo<FeuilletInfo[]>(() => {
+  const pagesAffichees = useMemo<string[]>(() => {
     if (etat.statut !== "pret") return [];
-    return construireFeuillets(etat.pages, etat.pagesParFeuillet);
-  }, [etat]);
-
-  const [feuilletActifIndex, setFeuilletActifIndex] = useState(0);
-  const indexAffiche = Math.min(feuilletActifIndex, Math.max(0, feuillets.length - 1));
-  const feuilletActif = feuillets[indexAffiche] ?? null;
+    if (!feuilletActif) return etat.pages;
+    const { debut, fin } = tranchePages(feuilletActif, etat.pagesParFeuillet);
+    return etat.pages.slice(debut, fin);
+  }, [etat, feuilletActif]);
 
   /* Chargement */
   if (etat.statut === "idle" || etat.statut === "chargement") {
@@ -116,50 +102,20 @@ export function ApercuImprimeInline({ payload }: Props) {
     );
   }
 
-  /* Prêt — onglets feuillets (si > 1) + pages empilées du feuillet actif. */
+  /* Prêt — pages du feuillet actif (ou toutes si non filtré) empilées. */
   return (
-    <div className="space-y-4">
-      {feuillets.length > 1 && (
-        <div role="tablist" aria-label="Feuillets" className="flex gap-1 border-b border-border">
-          {feuillets.map((f, i) => (
-            <button
-              key={f.type}
-              type="button"
-              role="tab"
-              aria-selected={i === indexAffiche}
-              onClick={() => setFeuilletActifIndex(i)}
-              className={cn(
-                "px-4 py-2 text-sm font-medium transition-colors",
-                i === indexAffiche
-                  ? "border-b-2 border-accent text-accent"
-                  : "text-muted hover:text-deep",
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
+    <div className="mx-auto max-w-150 space-y-4">
+      {pagesAffichees.map((pageBase64, i) => (
+        <div key={i} className="overflow-hidden rounded-md border border-border shadow-sm">
+          {/* eslint-disable-next-line @next/next/no-img-element -- base64 data URI, Next Image n'optimise pas */}
+          <img
+            src={`data:image/png;base64,${pageBase64}`}
+            alt={CARROUSEL_APERCU_COPY.altImage(i + 1, pagesAffichees.length, "")}
+            className="w-full"
+            draggable={false}
+          />
         </div>
-      )}
-
-      {feuilletActif && (
-        <div className="mx-auto max-w-150 space-y-4">
-          {feuilletActif.pages.map((pageBase64, i) => (
-            <div key={i} className="overflow-hidden rounded-md border border-border shadow-sm">
-              {/* eslint-disable-next-line @next/next/no-img-element -- base64 data URI, Next Image n'optimise pas */}
-              <img
-                src={`data:image/png;base64,${pageBase64}`}
-                alt={CARROUSEL_APERCU_COPY.altImage(
-                  i + 1,
-                  feuilletActif.pages.length,
-                  feuilletActif.label,
-                )}
-                className="w-full"
-                draggable={false}
-              />
-            </div>
-          ))}
-        </div>
-      )}
+      ))}
     </div>
   );
 }

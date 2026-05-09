@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-apercu-png";
 import { Button } from "@/components/ui/Button";
 import {
@@ -18,20 +18,21 @@ export type CarrouselApercuModaleProps = {
   payload: PayloadImpression;
 };
 
+/** Délai avant regénération sur changement de mode/corrigé (ms). */
+const DEBOUNCE_REGENERATION_MS = 500;
+
 /**
  * Overlay modal partagé — bouton imprimante des vues détaillées
- * (tâche, document, épreuve). Génère les PNG via `useApercuPng`
- * et les présente dans `CarrouselApercu` avec chrome modal
- * (header, navbar modes d'impression, footer télécharger PDF +
- * navigation prev/next).
+ * (tâche, document, épreuve). Outil de configuration complet de l'aperçu :
+ * - Header une ligne : titre · navbar modes · navbar corrigé · X.
+ * - Onglets feuillets dynamiques selon le mode (gérés par CarrouselApercu).
+ * - Footer : pagination centrée + bouton « Télécharger le PDF » (label fixe).
  *
- * State local mode + corrigé : la modale est l'outil de configuration
- * complet où l'enseignant ajuste mode (Formatif / Sommatif standard /
- * Épreuve ministérielle) et corrigé (Sans / Simple / Détaillé). La vue
- * détaillée inline ne fait que pré-visualiser dans un mode fixe.
+ * Régénération AUTOMATIQUE sur changement de mode/corrigé (debounce 500ms).
+ * Pas de bouton « Mettre à jour » ni de message d'invalidation : le contenu
+ * du formulaire ne change pas — seul le paramètre de rendu change.
  *
- * Documents : pas de navbar (un seul mode). Le payload document n'a pas
- * de champs mode/estCorrige.
+ * Documents : pas de navbar (un seul mode).
  */
 export function CarrouselApercuModale({ open, onClose, payload }: CarrouselApercuModaleProps) {
   const titleId = useId();
@@ -49,21 +50,32 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
   const estCorrige = optionCorrige !== "aucun";
 
   // Payload effectif passé à useApercuPng — applique le mode/corrigé locaux
-  // au-dessus du payload reçu. Le hook régénère les PNG quand le mode change.
+  // au-dessus du payload reçu. Le hook régénère les PNG quand le payload change.
   const payloadEffectif = useMemo<PayloadImpression>(() => {
     if (payload.type === "document") return payload;
     return { ...payload, mode, estCorrige };
   }, [payload, mode, estCorrige]);
 
-  const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } =
-    useApercuPng(payloadEffectif);
+  const { etat, generer, telechargerPdf, pdfEnCours } = useApercuPng(payloadEffectif);
 
-  // Génération automatique à l'ouverture
+  // Régénération : immédiate à l'ouverture, debounce 500ms sur changement
+  // ultérieur de mode/corrigé. `generer` n'est pas dans les deps pour éviter
+  // une boucle (il change à chaque payload via useApercuPng).
+  const isFirstOpenRef = useRef(true);
   useEffect(() => {
-    if (open && etat.statut === "idle") {
-      generer();
+    if (!open) {
+      isFirstOpenRef.current = true;
+      return;
     }
-  }, [open, etat.statut, generer]);
+    if (isFirstOpenRef.current) {
+      isFirstOpenRef.current = false;
+      generer();
+      return;
+    }
+    const timer = setTimeout(() => generer(), DEBOUNCE_REGENERATION_MS);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- generer change à chaque render via useApercuPng
+  }, [open, mode, estCorrige]);
 
   // Verrou scroll body
   useEffect(() => {
@@ -102,11 +114,25 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
           aria-labelledby={titleId}
           className="relative z-10 flex min-h-0 flex-1 flex-col bg-deep/25"
         >
-          {/* Header */}
-          <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border bg-panel px-4 py-3 shadow-sm sm:px-5">
-            <h2 id={titleId} className="text-lg font-semibold text-deep">
+          {/* Header — UNE seule ligne : titre · navbar modes · navbar corrigé · X */}
+          <header className="flex shrink-0 items-center gap-4 border-b border-border bg-panel px-4 py-2 shadow-sm sm:px-5">
+            <h2 id={titleId} className="shrink-0 text-[14px] font-medium text-deep">
               {CARROUSEL_APERCU_COPY.modalTitle}
             </h2>
+
+            {payload.type !== "document" && (
+              <NavbarModesImpression
+                entite={payload.type}
+                mode={mode}
+                optionCorrige={optionCorrige}
+                surChangerMode={setMode}
+                surChangerCorrige={setOptionCorrige}
+                className="min-w-0 flex-1"
+              />
+            )}
+
+            {payload.type === "document" && <div className="flex-1" aria-hidden="true" />}
+
             <button
               type="button"
               onClick={onClose}
@@ -118,20 +144,6 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
               </span>
             </button>
           </header>
-
-          {/* Navbar modes d'impression — pill buttons mode + corrigé.
-              Affichée uniquement pour tâche et épreuve (document = un seul mode). */}
-          {payload.type !== "document" && (
-            <div className="flex shrink-0 items-center border-b border-border bg-panel px-4 py-2 sm:px-5">
-              <NavbarModesImpression
-                entite={payload.type}
-                mode={mode}
-                optionCorrige={optionCorrige}
-                surChangerMode={setMode}
-                surChangerCorrige={setOptionCorrige}
-              />
-            </div>
-          )}
 
           {/* Contenu principal — overflow-hidden, pas de scroll vertical. */}
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-steel/25 px-4 py-6 sm:px-8">
@@ -146,22 +158,15 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
                 pages={etat.pages}
                 pagesParFeuillet={etat.pagesParFeuillet}
                 empreintePng={etat.empreintePng}
-                empreinteWizard={empreinteWizard}
-                surRegenerer={generer}
               />
             )}
           </div>
 
-          {/* Footer — grid 3 colonnes : nav centrée absolument, actions à droite.
-              La col gauche vide équilibre la col droite (actions) pour que la
-              nav soit centrée par rapport au footer entier. */}
+          {/* Footer — grid 3 colonnes : nav centrée absolument, action à droite. */}
           <footer className="grid shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-2 border-t border-border bg-panel px-4 py-3 sm:px-5">
             <div aria-hidden="true" />
             <FooterNavigation />
             <div className="flex items-center justify-end gap-2">
-              <Button type="button" variant="ghost" onClick={onClose}>
-                {CARROUSEL_APERCU_COPY.boutonFermer}
-              </Button>
               <Button
                 type="button"
                 variant="primary"

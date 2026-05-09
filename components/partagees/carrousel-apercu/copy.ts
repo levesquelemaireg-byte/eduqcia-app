@@ -8,8 +8,6 @@ export const CARROUSEL_APERCU_COPY = {
   boutonFermer: "Fermer",
   skeletonTitre: "Préparation de l'aperçu…",
   skeletonSousTitre: "Mise en page et génération des visuels",
-  banniereInvalidation: "L'aperçu ne reflète plus le contenu actuel du formulaire.",
-  boutonRegenerer: "Mettre à jour l'aperçu",
   erreurGeneration: "La génération a échoué",
   boutonReessayer: "Réessayer",
   boutonTelechargerPdf: "Télécharger le PDF",

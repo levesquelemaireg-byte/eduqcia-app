@@ -1,29 +1,34 @@
 "use client";
 
 /**
- * NavbarModesImpression — navbar des modes d'impression dans les vues
- * détaillées (tâche + épreuve).
+ * NavbarModesImpression — pill buttons des modes d'impression dans la
+ * modale carrousel d'aperçu (bouton imprimante des vues détaillées).
  *
  * Spec : docs/specs/SPEC-PIPELINE-RENDU-IMPRIME.md §7 (modes), §8 (UI),
- * §12 Phase 6, §13 règle 6 (mode jamais hardcodé — vient du state UI).
+ * §13 règle 6 (mode jamais hardcodé — vient du state UI).
  *
- * Deux groupes de pill buttons indépendants :
- * - Groupe « Mode d'impression » : Formatif · Sommatif standard ·
- *   [Épreuve ministérielle uniquement pour entite="epreuve"]
- * - Groupe « Corrigé » : Sans corrigé · Corrigé simple · Corrigé détaillé
+ * Structure :
+ * - Groupe « Mode » : Formatif · Sommatif standard · [Épreuve ministérielle]
+ *   (dernier masqué pour entite="tache"). SegmentedControl en pills
+ *   compactes (12px / py-1 / px-2.5).
+ * - Séparateur vertical 1px.
+ * - Groupe « Corrigé » : 2 pills toggle (Corrigé simple · Corrigé détaillé).
+ *   Pas de pill « Sans corrigé » : par défaut aucune des deux n'est active
+ *   (= sans corrigé). Cliquer une pill active l'option ; recliquer la pill
+ *   active la désélectionne (toggle).
  *
  * Pour Phase 6, « Corrigé simple » et « Corrigé détaillé » mappent tous
- * deux vers `estCorrige=true` (le rendu différencié arrive en Phase 5).
- * On expose le sous-mode au parent (`onCorrigeChange`) pour qu'il puisse
- * conserver la sélection précise et brancher Phase 5 sans changer l'UI.
+ * deux vers `estCorrige=true` côté payload (le rendu différencié arrive
+ * en Phase 5). On expose la sélection précise au parent pour qu'il puisse
+ * brancher Phase 5 sans changer l'UI.
  */
 
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { cn } from "@/lib/utils/cn";
 import {
   NAVBAR_IMPRESSION_CORRIGE_DETAILLE,
   NAVBAR_IMPRESSION_CORRIGE_GROUPE_LABEL,
-  NAVBAR_IMPRESSION_CORRIGE_SANS,
   NAVBAR_IMPRESSION_CORRIGE_SIMPLE,
   NAVBAR_IMPRESSION_MODE_EPREUVE_MINISTERIELLE,
   NAVBAR_IMPRESSION_MODE_FORMATIF,
@@ -32,9 +37,9 @@ import {
 } from "@/lib/ui/ui-copy";
 
 /**
- * Sélection corrigé exposée au parent. Pour Phase 6 : `simple` et `detaille`
- * mappent tous deux vers `estCorrige=true` côté payload, mais on conserve la
- * distinction en state pour brancher Phase 5 sans toucher l'UI.
+ * Sélection corrigé exposée au parent. `aucun` = aucune pill active
+ * (sans corrigé). Phase 6 : `simple` et `detaille` mappent tous deux vers
+ * `estCorrige=true` côté payload.
  */
 export type OptionCorrige = "aucun" | "simple" | "detaille";
 
@@ -44,7 +49,6 @@ export type NavbarModesImpressionProps = {
   optionCorrige: OptionCorrige;
   surChangerMode: (mode: ModeImpression) => void;
   surChangerCorrige: (option: OptionCorrige) => void;
-  /** Classes additionnelles sur le wrapper. */
   className?: string;
 };
 
@@ -61,11 +65,16 @@ const MODE_OPTIONS_EPREUVE = [
   },
 ];
 
-const CORRIGE_OPTIONS = [
-  { value: "aucun" as const, label: NAVBAR_IMPRESSION_CORRIGE_SANS },
-  { value: "simple" as const, label: NAVBAR_IMPRESSION_CORRIGE_SIMPLE },
-  { value: "detaille" as const, label: NAVBAR_IMPRESSION_CORRIGE_DETAILLE },
+const CORRIGE_OPTIONS: { value: Exclude<OptionCorrige, "aucun">; label: string }[] = [
+  { value: "simple", label: NAVBAR_IMPRESSION_CORRIGE_SIMPLE },
+  { value: "detaille", label: NAVBAR_IMPRESSION_CORRIGE_DETAILLE },
 ];
+
+/** Style des pills (mode + corrigé) — compact, cohérent SegmentedControl. */
+const PILL_BTN_BASE =
+  "inline-flex min-h-0 items-center justify-center gap-2 rounded-md border-0 px-2.5 py-1 text-[12px] font-medium transition-all duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
+const PILL_BTN_ACTIVE = "bg-(--color-background-info) text-(--color-text-info)";
+const PILL_BTN_INACTIVE = "bg-transparent text-(--color-text-secondary) hover:text-deep";
 
 export function NavbarModesImpression({
   entite,
@@ -77,23 +86,43 @@ export function NavbarModesImpression({
 }: NavbarModesImpressionProps) {
   const modeOptions = entite === "epreuve" ? MODE_OPTIONS_EPREUVE : MODE_OPTIONS_TACHE;
 
-  // Pas de wrapper visuel (border/bg/padding) — la navbar s'insère dans la
-  // barre supérieure existante (slot `actions` du composant `Onglets`).
   return (
-    <div className={`flex flex-wrap items-center gap-x-3 gap-y-2 ${className ?? ""}`}>
+    <div className={cn("flex flex-wrap items-center gap-x-3 gap-y-2", className)}>
       <SegmentedControl
         aria-label={NAVBAR_IMPRESSION_MODE_GROUPE_LABEL}
         options={modeOptions}
         value={mode}
         onChange={(v) => surChangerMode(v as ModeImpression)}
+        buttonClassName="px-2.5 py-1 text-[12px]"
       />
-      <span aria-hidden="true" className="hidden h-5 w-px bg-border md:block" />
-      <SegmentedControl
+
+      <span aria-hidden="true" className="hidden h-4 w-px bg-border md:block" />
+
+      {/*
+       * Groupe corrigé en pills toggle (pas SegmentedControl car celui-ci
+       * exige une valeur active parmi ses options ; ici l'état « aucun »
+       * = aucune pill active). Recliquer une pill active la désélectionne.
+       */}
+      <div
+        role="group"
         aria-label={NAVBAR_IMPRESSION_CORRIGE_GROUPE_LABEL}
-        options={CORRIGE_OPTIONS}
-        value={optionCorrige}
-        onChange={(v) => surChangerCorrige(v as OptionCorrige)}
-      />
+        className="flex flex-wrap gap-1"
+      >
+        {CORRIGE_OPTIONS.map((opt) => {
+          const active = optionCorrige === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              aria-pressed={active}
+              onClick={() => surChangerCorrige(active ? "aucun" : opt.value)}
+              className={cn(PILL_BTN_BASE, active ? PILL_BTN_ACTIVE : PILL_BTN_INACTIVE)}
+            >
+              {opt.label}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
