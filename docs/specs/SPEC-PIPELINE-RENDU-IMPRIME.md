@@ -107,7 +107,7 @@ function extraireFragmentsNR(consigneHtml: string): FragmentsNR;
 - La colonne `tache.consigne` (TEXT) en DB ne change pas. Pas de migration Supabase.
 - Les strippers (`strip*ConsigneForTeacherDisplay`), les selectors (`selectConsigne`), les miniatures (`stripHtml(donnees.consigne)`), la sérialisation KV — tous continuent d'opérer sur un `string`. Aucun de ces consommateurs n'est impacté.
 - Le type `DonneesTache.consigne` reste `string` dans le contrat de persistance. L'union `string | FragmentsNR` n'existe que dans le type local du pipeline impression (dans `ContenuBlocQuadruplet` et le renderer).
-- Le mapper (couche 2) appelle `extraireFragmentsNR()` au moment de construire les blocs d'impression, pas au moment de persister la tâche.
+- La couche transformation (couche 4) appelle `extraireFragmentsNR()` au moment de construire les blocs d'impression, pas au moment de persister la tâche. Le mapper (couche 2) reste agnostique du format `FragmentsNR`.
 
 **Pas de discriminant `kind` dans `FragmentsNR`.** Le renderer n'a pas besoin de savoir quel parcours NR il rend — il reçoit intro, corps, reponse et les assemble dans l'ordre. Le builder qui connaît le parcours est celui qui produit les fragments et celui qui produit le corrigé (`produireCorrigeSimple`). Le renderer reste générique.
 
