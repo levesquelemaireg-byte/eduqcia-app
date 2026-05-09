@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { TacheFicheData, PeerVoteTally } from "@/lib/types/fiche";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
-import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import { useFicheModale } from "@/hooks/partagees/use-fiche-modale";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
 import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
@@ -13,10 +12,6 @@ import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
 import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
-import {
-  NavbarModesImpression,
-  type OptionCorrige,
-} from "@/components/partagees/navbar-modes-impression";
 import { FluxLecture } from "@/components/tache/vue-detaillee/flux-lecture";
 import { TacheRail } from "@/components/tache/vue-detaillee/rail";
 import { FicheModale } from "@/components/partagees/fiche-modale";
@@ -53,10 +48,6 @@ export function TacheVueDetaillee({
   const [ongletActif, setOngletActif] = useState<OngletId>("sommaire");
   const [docPanneauId, setDocPanneauId] = useState<string | null>(null);
   const [carrouselOuvert, setCarrouselOuvert] = useState(false);
-  // Modes d'impression — pilotés par la navbar (spec §13 règle 6 : jamais hardcodé).
-  // Défaut tâche : formatif + sans corrigé (spec §7.2).
-  const [mode, setMode] = useState<ModeImpression>("formatif");
-  const [optionCorrige, setOptionCorrige] = useState<OptionCorrige>("aucun");
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
 
@@ -76,20 +67,20 @@ export function TacheVueDetaillee({
     [ouvrirFicheModale, layout],
   );
 
-  // estCorrige : Phase 6 mappe simple ET detaille vers true. Le rendu différencié
-  // (overlay simple vs annexe détaillée) arrive en Phase 5.
-  const estCorrige = optionCorrige !== "aucun";
+  // Vue détaillée inline = aperçu rapide en mode FIXE formatif (spec §7.2).
+  // La modale carrousel (bouton imprimante) est l'outil de configuration
+  // complet où l'utilisateur peut changer mode + corrigé.
   const payloadImpression = useMemo(
     () =>
       donneesTache
         ? ({
             type: "tache",
             donnees: donneesTache,
-            mode,
-            estCorrige,
+            mode: "formatif",
+            estCorrige: false,
           } as const)
         : null,
-    [donneesTache, mode, estCorrige],
+    [donneesTache],
   );
 
   return (
@@ -117,23 +108,7 @@ export function TacheVueDetaillee({
             layout={layout}
           />
         }
-        onglets={
-          <Onglets
-            ongletActif={ongletActif}
-            surChangerOnglet={setOngletActif}
-            actions={
-              ongletActif === "apercu-imprime" && payloadImpression ? (
-                <NavbarModesImpression
-                  entite="tache"
-                  mode={mode}
-                  optionCorrige={optionCorrige}
-                  surChangerMode={setMode}
-                  surChangerCorrige={setOptionCorrige}
-                />
-              ) : null
-            }
-          />
-        }
+        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
         contenuPrincipal={
           ongletActif === "sommaire" ? (
             <FluxLecture

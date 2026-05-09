@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { useApercuPng, type PayloadImpression } from "@/hooks/partagees/use-apercu-png";
 import { Button } from "@/components/ui/Button";
+import {
+  NavbarModesImpression,
+  type OptionCorrige,
+} from "@/components/partagees/navbar-modes-impression";
+import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 import { CarrouselApercu } from "./index";
 import { CARROUSEL_APERCU_COPY } from "./copy";
 import { CarrouselNavProvider, useCarrouselNavControls } from "./nav-context";
@@ -17,11 +22,41 @@ export type CarrouselApercuModaleProps = {
  * Overlay modal partagé — bouton imprimante des vues détaillées
  * (tâche, document, épreuve). Génère les PNG via `useApercuPng`
  * et les présente dans `CarrouselApercu` avec chrome modal
- * (header, fermeture, footer télécharger PDF + navigation prev/next).
+ * (header, navbar modes d'impression, footer télécharger PDF +
+ * navigation prev/next).
+ *
+ * State local mode + corrigé : la modale est l'outil de configuration
+ * complet où l'enseignant ajuste mode (Formatif / Sommatif standard /
+ * Épreuve ministérielle) et corrigé (Sans / Simple / Détaillé). La vue
+ * détaillée inline ne fait que pré-visualiser dans un mode fixe.
+ *
+ * Documents : pas de navbar (un seul mode). Le payload document n'a pas
+ * de champs mode/estCorrige.
  */
 export function CarrouselApercuModale({ open, onClose, payload }: CarrouselApercuModaleProps) {
   const titleId = useId();
-  const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } = useApercuPng(payload);
+
+  // State des modes — initialisé depuis le payload (qui porte les défauts
+  // spec §7.2 : tâche=formatif, épreuve=sommatif-standard).
+  const modeInitial: ModeImpression = payload.type === "document" ? "formatif" : payload.mode;
+  const optionCorrigeInitial: OptionCorrige =
+    payload.type !== "document" && payload.estCorrige ? "simple" : "aucun";
+  const [mode, setMode] = useState<ModeImpression>(modeInitial);
+  const [optionCorrige, setOptionCorrige] = useState<OptionCorrige>(optionCorrigeInitial);
+
+  // Phase 6 : « Corrigé simple » et « Corrigé détaillé » mappent tous deux
+  // vers estCorrige=true. Le rendu différencié arrive en Phase 5.
+  const estCorrige = optionCorrige !== "aucun";
+
+  // Payload effectif passé à useApercuPng — applique le mode/corrigé locaux
+  // au-dessus du payload reçu. Le hook régénère les PNG quand le mode change.
+  const payloadEffectif = useMemo<PayloadImpression>(() => {
+    if (payload.type === "document") return payload;
+    return { ...payload, mode, estCorrige };
+  }, [payload, mode, estCorrige]);
+
+  const { etat, empreinteWizard, generer, telechargerPdf, pdfEnCours } =
+    useApercuPng(payloadEffectif);
 
   // Génération automatique à l'ouverture
   useEffect(() => {
@@ -83,6 +118,20 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
               </span>
             </button>
           </header>
+
+          {/* Navbar modes d'impression — pill buttons mode + corrigé.
+              Affichée uniquement pour tâche et épreuve (document = un seul mode). */}
+          {payload.type !== "document" && (
+            <div className="flex shrink-0 items-center border-b border-border bg-panel px-4 py-2 sm:px-5">
+              <NavbarModesImpression
+                entite={payload.type}
+                mode={mode}
+                optionCorrige={optionCorrige}
+                surChangerMode={setMode}
+                surChangerCorrige={setOptionCorrige}
+              />
+            </div>
+          )}
 
           {/* Contenu principal — overflow-hidden, pas de scroll vertical. */}
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-steel/25 px-4 py-6 sm:px-8">

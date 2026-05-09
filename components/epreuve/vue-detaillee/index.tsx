@@ -7,16 +7,11 @@ import { BarreActions } from "@/components/partagees/vue-detaillee/barre-actions
 import { Onglets, type OngletId } from "@/components/partagees/vue-detaillee/onglets";
 import { ApercuImprimeInline } from "@/components/partagees/vue-detaillee/apercu-imprime";
 import { CarrouselApercuModale } from "@/components/partagees/carrousel-apercu/modale";
-import {
-  NavbarModesImpression,
-  type OptionCorrige,
-} from "@/components/partagees/navbar-modes-impression";
 import { SectionPileTaches } from "@/components/epreuve/vue-detaillee/sections/pile-taches";
 import { EpreuveRail } from "@/components/epreuve/vue-detaillee/rail";
 import { useRetourContextuel } from "@/hooks/partagees/use-retour-contextuel";
 import { useCopierLien } from "@/hooks/partagees/use-copier-lien";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
-import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 
 type Props = {
   donnees: DonneesEpreuve;
@@ -43,10 +38,6 @@ export function EpreuveVueDetaillee({
   const router = useRouter();
   const [ongletActif, setOngletActif] = useState<OngletId>("sommaire");
   const [carrouselOuvert, setCarrouselOuvert] = useState(false);
-  // Modes d'impression — pilotés par la navbar (spec §13 règle 6).
-  // Défaut épreuve : sommatif-standard + sans corrigé (spec §7.2).
-  const [mode, setMode] = useState<ModeImpression>("sommatif-standard");
-  const [optionCorrige, setOptionCorrige] = useState<OptionCorrige>("aucun");
   const retour = useRetourContextuel();
   const { copierLien } = useCopierLien();
 
@@ -54,17 +45,19 @@ export function EpreuveVueDetaillee({
   const premiereTache = donnees.taches[0] ?? null;
   const niveauLabel = premiereTache?.niveau.label;
   const disciplineLabel = premiereTache?.discipline.label;
-  // Phase 6 : simple ET detaille mappent vers true (rendu différencié = Phase 5).
-  const estCorrige = optionCorrige !== "aucun";
+
+  // Vue détaillée inline = aperçu rapide en mode FIXE sommatif-standard
+  // (spec §7.2). La modale carrousel (bouton imprimante) est l'outil de
+  // configuration complet où l'utilisateur peut changer mode + corrigé.
   const payloadImpression = useMemo(
     () =>
       ({
         type: "epreuve",
         donnees: donnees,
-        mode,
-        estCorrige,
+        mode: "sommatif-standard",
+        estCorrige: false,
       }) as const,
-    [donnees, mode, estCorrige],
+    [donnees],
   );
 
   return (
@@ -89,23 +82,7 @@ export function EpreuveVueDetaillee({
             layout={layout}
           />
         }
-        onglets={
-          <Onglets
-            ongletActif={ongletActif}
-            surChangerOnglet={setOngletActif}
-            actions={
-              ongletActif === "apercu-imprime" ? (
-                <NavbarModesImpression
-                  entite="epreuve"
-                  mode={mode}
-                  optionCorrige={optionCorrige}
-                  surChangerMode={setMode}
-                  surChangerCorrige={setOptionCorrige}
-                />
-              ) : null
-            }
-          />
-        }
+        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
         contenuPrincipal={
           ongletActif === "sommaire" ? (
             <SectionPileTaches taches={donnees.taches} />
