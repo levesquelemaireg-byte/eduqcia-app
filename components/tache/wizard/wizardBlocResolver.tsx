@@ -11,6 +11,8 @@ import { Bloc3AvantApres } from "@/components/tache/non-redaction/avant-apres/Bl
 import { Bloc4AvantApres } from "@/components/tache/non-redaction/avant-apres/Bloc4AvantApres";
 import { Bloc3CarteHistorique } from "@/components/tache/non-redaction/carte-historique/Bloc3CarteHistorique";
 import { Bloc4CarteHistorique } from "@/components/tache/non-redaction/carte-historique/Bloc4CarteHistorique";
+import { Bloc3CausesConsequences } from "@/components/tache/non-redaction/causes-consequences/Bloc3CausesConsequences";
+import { Bloc4CausesConsequences } from "@/components/tache/non-redaction/causes-consequences/Bloc4CausesConsequences";
 import { Bloc3Manifestations } from "@/components/tache/non-redaction/manifestations/Bloc3Manifestations";
 import { Bloc4Manifestations } from "@/components/tache/non-redaction/manifestations/Bloc4Manifestations";
 import { Bloc3LigneDuTemps } from "@/components/tache/non-redaction/ligne-du-temps/Bloc3LigneDuTemps";
@@ -59,6 +61,10 @@ export const TACHE_NON_REDACTION_WIZARD_BLOCS: Partial<
   manifestations: {
     Bloc3: Bloc3Manifestations,
     Bloc4: Bloc4Manifestations,
+  },
+  "causes-consequences": {
+    Bloc3: Bloc3CausesConsequences,
+    Bloc4: Bloc4CausesConsequences,
   },
 };
 

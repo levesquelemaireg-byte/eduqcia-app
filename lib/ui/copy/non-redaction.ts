@@ -648,6 +648,48 @@ export const NR_CAUSES_CONSEQUENCES_44_CONSEQUENCE_LABEL_PREFIX = "Une conséque
 /** Titre du corrigé enseignant. */
 export const NR_CAUSES_CONSEQUENCES_CORRIGE_TITRE = "Associations attendues :";
 
+/* --- UI wizard (Lot 2) --- */
+
+/** Gates */
+export const NR_CAUSES_CONSEQUENCES_GATE_BLOC3 =
+  "Sélectionnez un comportement attendu pour configurer la consigne.";
+export const NR_CAUSES_CONSEQUENCES_GATE_PRE_DOCS =
+  "Configurez la consigne à l'étape précédente avant d'ajouter des documents.";
+export const NR_CAUSES_CONSEQUENCES_GATE_BLOC5 =
+  "Complétez les étapes précédentes (consigne et documents) avant d'assigner les documents aux rôles causaux.";
+
+/** Bloc 3 — labels et hints */
+export const NR_CAUSES_CONSEQUENCES_CONSIGNE_LABEL = "Consigne";
+export const NR_CAUSES_CONSEQUENCES_CONSIGNE_INFO_MODAL_BODY =
+  "La consigne est rédigée selon la formulation officielle du ministère. Vous complétez uniquement la zone soulignée en bleu — le sujet historique sur lequel l'élève associe les documents. Les numéros de documents sont générés automatiquement.";
+export const NR_CAUSES_CONSEQUENCES_CONSIGNE_HELP_43 =
+  "Indiquez la réalité historique dont l'élève doit identifier les deux facteurs explicatifs (ex. « la sédentarité des Premières Nations iroquoiennes vers 1500 »).";
+export const NR_CAUSES_CONSEQUENCES_CONSIGNE_HELP_44 =
+  "Indiquez la réalité historique dont l'élève doit identifier le facteur explicatif et la conséquence (ex. « l'arrivée des loyalistes dans la Province de Québec »).";
+
+export const NR_CAUSES_CONSEQUENCES_SUJET_LABEL = "Sujet historique";
+export const NR_CAUSES_CONSEQUENCES_SUJET_PLACEHOLDER_43 =
+  "ex. la sédentarité des Premières Nations iroquoiennes vers 1500";
+export const NR_CAUSES_CONSEQUENCES_SUJET_PLACEHOLDER_44 =
+  "ex. l'arrivée des loyalistes dans la Province de Québec";
+export const NR_CAUSES_CONSEQUENCES_SUJET_ARIA =
+  "Sujet historique de la consigne — seule zone modifiable du gabarit ministériel";
+
+/** Bloc 3 — guidage */
+export const NR_CAUSES_CONSEQUENCES_GUIDAGE_INFO_MODAL_BODY =
+  "Le guidage complémentaire est optionnel et visible uniquement en mode formatif. Il vous permet d'ajouter des précisions ou rappels pour orienter l'élève dans sa démarche.";
+
+/** Bloc 4 — info (texte identique pour 4.3 et 4.4 : toujours 2 documents). */
+export const NR_CAUSES_CONSEQUENCES_BLOC4_INFO =
+  "Ajoutez les deux documents historiques que l'élève devra associer à leur rôle causal. Chaque document doit illustrer un fait correspondant à un rôle (facteur explicatif, cause, conséquence) selon le comportement choisi.";
+
+/** Bloc 5 — assignation docs → rôles causaux */
+export const NR_CAUSES_CONSEQUENCES_BLOC5_TITLE = "Corrigé — Assignation des documents";
+export const NR_CAUSES_CONSEQUENCES_BLOC5_HELP =
+  "Pour chaque rôle causal, sélectionnez le document qui lui correspond. Chaque document doit être assigné à exactement un rôle.";
+export const NR_CAUSES_CONSEQUENCES_BLOC5_DOC_PLACEHOLDER = "Sélectionner un document";
+export const NR_CAUSES_CONSEQUENCES_BLOC5_DOC_PICKER_ARIA_PREFIX = "Document associé au rôle ";
+
 /* -----------------------------  Bloc 2 — Pondération  --------------------- */
 
 export const BLOC2_PONDERATION_LABEL = "Pondération";
