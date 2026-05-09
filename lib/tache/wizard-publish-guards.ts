@@ -37,6 +37,13 @@ import {
   normalizeLigneDuTempsPayload,
 } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
 import {
+  isManifestationsDocumentsPublishable,
+  isManifestationsDocumentsStepComplete,
+  isManifestationsStep3Complete,
+  isManifestationsStep5Complete,
+  normalizeManifestationsPayload,
+} from "@/lib/tache/non-redaction/manifestations-payload";
+import {
   isOrdreChronologiqueDocumentsPublishable,
   isOrdreChronologiqueDocumentsStepComplete,
   isOrdreChronologiqueStep3Complete,
@@ -46,6 +53,7 @@ import {
   isActiveAvantApresVariant,
   isActiveCarteHistoriqueVariant,
   isActiveLigneDuTempsVariant,
+  isActiveManifestationsVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tache/non-redaction/wizard-variant";
 import { isRedactionStepComplete } from "@/lib/tache/redaction-helpers";
@@ -54,6 +62,7 @@ import {
   nonRedactionAvantApresPayload,
   nonRedactionCartePayload,
   nonRedactionLignePayload,
+  nonRedactionManifestationsPayload,
   nonRedactionOrdrePayload,
 } from "@/lib/tache/wizard-state-nr";
 
@@ -79,6 +88,10 @@ function redactionStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveCarteHistoriqueVariant(state)) {
     const p = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
     return p !== null && isCarteHistoriqueStep3Complete(p);
+  }
+  if (isActiveManifestationsVariant(state)) {
+    const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
+    return p !== null && isManifestationsStep3Complete(p);
   }
   // Les aspects imposés par le parcours (ex. Section B) satisfont la garde « au moins un aspect »
   // sans que l'enseignant ait à les re-cocher au Bloc 7.
@@ -122,6 +135,9 @@ function documentsStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveCarteHistoriqueVariant(state)) {
     return isCarteHistoriqueDocumentsPublishable(b.documentSlots, state.bloc4.documents);
   }
+  if (isActiveManifestationsVariant(state)) {
+    return isManifestationsDocumentsPublishable(b.documentSlots, state.bloc4.documents);
+  }
   return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
 }
 
@@ -156,6 +172,12 @@ function documentsCompleteButUrlsBlocked(state: TacheFormState): boolean {
     return (
       isCarteHistoriqueDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
       !isCarteHistoriqueDocumentsPublishable(b.documentSlots, state.bloc4.documents)
+    );
+  }
+  if (isActiveManifestationsVariant(state)) {
+    return (
+      isManifestationsDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
+      !isManifestationsDocumentsPublishable(b.documentSlots, state.bloc4.documents)
     );
   }
   return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
@@ -197,6 +219,10 @@ export function isWizardPublishReady(state: TacheFormState): boolean {
     const p = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
     if (p === null || !isCarteHistoriqueStep5Complete(p)) return false;
   }
+  if (isActiveManifestationsVariant(state)) {
+    const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
+    if (p === null || !isManifestationsStep5Complete(p)) return false;
+  }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;
   return true;
@@ -229,6 +255,10 @@ export function isPublishBlockedOnlyByIconographicUrls(state: TacheFormState): b
   if (isActiveCarteHistoriqueVariant(state)) {
     const p = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
     if (p === null || !isCarteHistoriqueStep5Complete(p)) return false;
+  }
+  if (isActiveManifestationsVariant(state)) {
+    const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
+    if (p === null || !isManifestationsStep5Complete(p)) return false;
   }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;

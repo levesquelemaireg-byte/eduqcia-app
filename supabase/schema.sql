@@ -544,11 +544,11 @@ INSERT INTO oi (id, titre, icone, status, ordre) VALUES
   ('OI2', 'Situer dans l''espace',                         'map_search',      'active',      2),
   ('OI3', 'Dégager des différences et des similitudes',    'text_compare',    'active',      3),
   ('OI4', 'Déterminer des causes et des conséquences',     'manufacturing',   'active',      4),
-  ('OI5', 'Mettre en relation des faits',                  'graph_3',         'coming_soon', 5),
+  ('OI5', 'Mettre en relation des faits',                  'graph_3',         'active',      5),
   ('OI6', 'Déterminer des changements et des continuités', 'alt_route',       'active',      6),
   ('OI7', 'Établir des liens de causalité',                'list',            'active',      7);
 
--- 17 comportements : 0.1 actif ; OI1 : 1.1–1.3 (non rédactionnel, nb_documents aligné oi.json) ; 4.3 et 4.4 coming_soon
+-- 22 comportements : 0.1 actif ; OI1 : 1.1–1.3 (non rédactionnel, nb_documents aligné oi.json) ; OI2 : 2.1–2.3 ; OI5 : 5.1–5.2 ; 4.3 et 4.4 coming_soon
 INSERT INTO comportements (id, oi_id, enonce, nb_documents, outil_evaluation, status, ordre) VALUES
   ('0.1', 'OI0', 'Établir un fait à partir d''un document historique',                                                                                        1, 'OI0_SO1', 'active',      0),
   ('1.1', 'OI1', 'Ordonner chronologiquement des faits en tenant compte de repères de temps',                                                                   4, 'OI1_SO1', 'active',      0),
@@ -566,6 +566,8 @@ INSERT INTO comportements (id, oi_id, enonce, nb_documents, outil_evaluation, st
   ('4.2', 'OI4', 'Indiquer un fait qui découle d''une réalité historique (réponse écrite)',                                                                    1, 'OI4_SO2', 'active',      1),
   ('4.3', 'OI4', 'Deux facteurs explicatifs (réponse = numéros de documents)',                                                                                 2, 'OI4_SO3', 'coming_soon', 2),
   ('4.4', 'OI4', 'Facteur et conséquence (réponse = numéros de documents)',                                                                                    2, 'OI4_SO4', 'coming_soon', 3),
+  ('5.1', 'OI5', 'Associer des faits à des manifestations ou à des descriptions qui leur sont apparentées (deux faits).',                                      2, 'OI5_SO1', 'active',      0),
+  ('5.2', 'OI5', 'Associer des faits à des manifestations ou à des descriptions qui leur sont apparentées (quatre faits).',                                    4, 'OI5_SO2', 'active',      1),
   ('6.1', 'OI6', 'Indiquer un fait qui montre qu''une réalité historique se transforme',                                                                       2, 'OI6_SO1', 'active',      0),
   ('6.2', 'OI6', 'Indiquer un fait qui montre qu''une réalité historique se maintient',                                                                        2, 'OI6_SO2', 'active',      1),
   ('6.3', 'OI6', 'Montrer qu''une réalité historique se transforme ou se maintient',                                                                           3, 'OI6_SO3', 'active',      2),

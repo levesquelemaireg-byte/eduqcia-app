@@ -24,6 +24,7 @@ import {
   isActiveAvantApresVariant,
   isActiveCarteHistoriqueVariant,
   isActiveLigneDuTempsVariant,
+  isActiveManifestationsVariant,
   isActiveNonRedactionVariant,
   isActiveOrdreChronologiqueVariant,
 } from "@/lib/tache/non-redaction/wizard-variant";
@@ -31,6 +32,7 @@ import {
   nonRedactionAvantApresPayload,
   nonRedactionCartePayload,
   nonRedactionLignePayload,
+  nonRedactionManifestationsPayload,
   nonRedactionOrdrePayload,
 } from "@/lib/tache/wizard-state-nr";
 import {
@@ -50,6 +52,11 @@ import {
   buildLigneDuTempsGuidageHtml,
   normalizeLigneDuTempsPayload,
 } from "@/lib/tache/non-redaction/ligne-du-temps-payload";
+import {
+  buildManifestationsConsigneHtml,
+  buildManifestationsCorrigeHtml,
+  normalizeManifestationsPayload,
+} from "@/lib/tache/non-redaction/manifestations-payload";
 import {
   buildOrdreChronologiqueConsigneHtml,
   buildOrdreChronologiqueCorrigeHtml,
@@ -113,6 +120,10 @@ function deduireEspaceProduction(state: TacheFormState): EspaceProduction {
   if (isActiveOrdreChronologiqueVariant(state) || isActiveCarteHistoriqueVariant(state)) {
     return { type: "cases", options: ["A", "B", "C", "D"] };
   }
+  if (isActiveManifestationsVariant(state)) {
+    const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
+    return { type: "cases", options: p ? p.categories : [] };
+  }
   if (isActiveLigneDuTempsVariant(state) || isActiveAvantApresVariant(state)) {
     return { type: "libre" };
   }
@@ -142,6 +153,11 @@ function construireGuidage(state: TacheFormState): Guidage {
       const text = state.bloc3.guidage.trim();
       return text ? { content: text } : null;
     }
+    if (isActiveManifestationsVariant(state)) {
+      // Guidage libre saisi par l'enseignant — peut être vide.
+      const text = state.bloc3.guidage.trim();
+      return text ? { content: text } : null;
+    }
     return null;
   }
 
@@ -167,6 +183,12 @@ function construireConsigne(state: TacheFormState): string {
   if (isActiveCarteHistoriqueVariant(state) && carteNorm) {
     return supprimerAncres(buildCarteHistoriqueConsigneHtml(carteNorm));
   }
+  const manifestationsNorm = normalizeManifestationsPayload(
+    nonRedactionManifestationsPayload(state),
+  );
+  if (isActiveManifestationsVariant(state) && manifestationsNorm) {
+    return supprimerAncres(buildManifestationsConsigneHtml(manifestationsNorm));
+  }
   return getRedactionSliceForPreview(state).consigne;
 }
 
@@ -187,6 +209,12 @@ function construireCorrige(state: TacheFormState): string {
   const carteNorm = normalizeCarteHistoriquePayload(nonRedactionCartePayload(state));
   if (isActiveCarteHistoriqueVariant(state) && carteNorm) {
     return buildCarteHistoriqueCorrigeHtml(carteNorm);
+  }
+  const manifestationsNorm = normalizeManifestationsPayload(
+    nonRedactionManifestationsPayload(state),
+  );
+  if (isActiveManifestationsVariant(state) && manifestationsNorm) {
+    return buildManifestationsCorrigeHtml(manifestationsNorm);
   }
   return getRedactionSliceForPreview(state).corrige;
 }

@@ -166,7 +166,7 @@
     "id": "OI5",
     "titre": "Mettre en relation des faits",
     "icone": "graph_3",
-    "status": "coming_soon",
+    "status": "active",
     "comportements_attendus": [
       {
         "id": "5.1",
