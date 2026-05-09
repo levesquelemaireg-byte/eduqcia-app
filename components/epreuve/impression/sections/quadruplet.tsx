@@ -48,16 +48,12 @@ export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
         dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(consigne) }}
       />
 
-      {/* Guidage (optionnel — visible en formatif, masque sinon) */}
+      {/* Guidage (optionnel — visible en formatif, masqué sinon).
+          Style délégué à `.bloc-guidage` dans styles/impression/base.css :
+          italique + couleur secondaire, sans bordure ni fond (spec §4.1). */}
       {guidage && (
         <div
-          style={{
-            fontSize: "10pt",
-            lineHeight: 1.4,
-            marginTop: "6px",
-            paddingLeft: "12px",
-            borderLeft: "2pt solid #000",
-          }}
+          className="bloc-guidage"
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(guidage.content) }}
         />
       )}

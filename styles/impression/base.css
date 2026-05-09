@@ -42,6 +42,25 @@
 }
 
 /* -------------------------------------------------------------------------- */
+/*  Guidage — distinction par italique + couleur secondaire (spec §4.1)       */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Le guidage se distingue de la consigne par l'italique et la couleur
+ * secondaire, jamais par une bordure ou un fond. Visible uniquement en
+ * mode formatif — le builder met `guidage = null` dans les autres modes.
+ */
+
+.bloc-guidage {
+  font-size: 10pt;
+  font-style: italic;
+  line-height: 1.4;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  color: var(--color-steel, #666);
+}
+
+/* -------------------------------------------------------------------------- */
 /*  Sauts de page — dispositifs visuels NR (spec §4.8)                        */
 /* -------------------------------------------------------------------------- */
 
