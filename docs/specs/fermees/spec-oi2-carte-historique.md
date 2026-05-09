@@ -1,5 +1,9 @@
 # Spec : Parcours non-rédactionnel `carte-historique` (OI2 — Situer dans l'espace)
 
+> **✅ SPEC FERMÉE — Livrée le 25 avril 2026** (commits `151ea18`, `7f0755f`, `1f84bf4`)
+> Cette spec est un document historique. Le code fait foi.
+> Pour l'architecture courante, voir le code dans `lib/tache/non-redaction/` et `components/tache/non-redaction/`.
+
 **Projet :** ÉduQc.IA  
 **Scope :** Implémentation complète du parcours wizard pour les 3 comportements de l'OI2  
 **Date :** Avril 2026  

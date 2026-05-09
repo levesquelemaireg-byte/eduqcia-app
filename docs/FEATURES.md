@@ -43,31 +43,28 @@ Il existe 8 OI, chacune avec un identifiant, un titre, une icône Material Symbo
 
 Ces OI sont disponibles dans le formulaire de création. **Sauf** pour les **comportements non rédactionnels de l’OI1** (1.1, 1.2, 1.3), elles s’appuient sur une **réponse rédigée** de l’élève (phrases complètes), avec le nombre de documents imposé par le comportement.
 
-| ID  | Titre                                         | Comportements actifs                          |
-| --- | --------------------------------------------- | --------------------------------------------- |
-| OI0 | Établir des faits                             | 0.1                                           |
-| OI1 | Situer dans le temps                          | 1.1, 1.2, 1.3 (non rédactionnel — 3 parcours) |
-| OI3 | Dégager des différences et des similitudes    | 3.1, 3.2, 3.3, 3.4, 3.5                       |
-| OI4 | Déterminer des causes et des conséquences     | 4.1, 4.2 seulement                            |
-| OI6 | Déterminer des changements et des continuités | 6.1, 6.2, 6.3                                 |
-| OI7 | Établir des liens de causalité                | 7.1                                           |
+| ID  | Titre                                         | Comportements actifs                                                            |
+| --- | --------------------------------------------- | ------------------------------------------------------------------------------- |
+| OI0 | Établir des faits                             | 0.1                                                                             |
+| OI1 | Situer dans le temps                          | 1.1, 1.2, 1.3 (non rédactionnel — 3 parcours)                                   |
+| OI2 | Situer dans l'espace                          | 2.1, 2.2, 2.3 (non rédactionnel — `carte-historique`)                           |
+| OI3 | Dégager des différences et des similitudes    | 3.1, 3.2, 3.3, 3.4, 3.5                                                         |
+| OI4 | Déterminer des causes et des conséquences     | 4.1, 4.2 (rédactionnels) ; 4.3, 4.4 (non rédactionnels — `causes-consequences`) |
+| OI5 | Mettre en relation des faits                  | 5.1, 5.2 (non rédactionnel — `manifestations`)                                  |
+| OI6 | Déterminer des changements et des continuités | 6.1, 6.2, 6.3                                                                   |
+| OI7 | Établir des liens de causalité                | 7.1                                                                             |
 
 ### 2.2 OI coming_soon (formulaire distinct à développer)
 
-Les **OI1 — Situer dans le temps** comportements **1.1**, **1.2** et **1.3** sont **disponibles** avec leurs parcours non rédactionnels — détail [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md). Le tableau ci-dessous recense les **autres** opérations intellectuelles ou comportements qui exigent encore un format de réponse différent (numéros de documents, carte, association, etc.) et un **formulaire distinct** (ou des comportements additionnels).
+Tous les parcours non rédactionnels prévus pour le MVP sont désormais **livrés** : OI1 (1.1, 1.2, 1.3), OI2 (carte-historique), OI4.3 / 4.4 (causes-consequences), OI5 (manifestations). Détail wizard et copy : [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md).
 
-**Données :** les comportements concernés portent un champ `variant_slug` dans `public/data/oi.json` (registre `lib/tache/non-redaction/`). L’UI spécifique par parcours se branche dans le wizard via `components/tache/wizard/wizardBlocResolver.tsx` (étapes 3 et 4) lorsque la paire de composants pour ce slug est enregistrée dans `TACHE_NON_REDACTION_WIZARD_BLOCS` ; sinon le flux rédactionnel existant s’applique.
+**Données :** les comportements concernés portent un champ `variant_slug` dans `public/data/oi.json` (registre `lib/tache/non-redaction/`). L’UI spécifique par parcours se branche dans le wizard via `components/tache/wizard/wizardBlocResolver.tsx` (étapes 3 et 4) lorsque la paire de composants pour ce slug est enregistrée dans `TACHE_NON_REDACTION_WIZARD_BLOCS` ; sinon le flux rédactionnel existant s’applique. **Slugs livrés au 8 mai 2026 :** `ordre-chronologique` (OI1.1), `ligne-du-temps` (OI1.2), `avant-apres` (OI1.3), `carte-historique` (OI2.1/2.2/2.3), `manifestations` (OI5.1/5.2), `causes-consequences` (OI4.3/4.4).
 
 **Repère temporel et année normalisée (OI1) :** chaque document peut porter **`repere_temporel`** (texte) et **`annee_normalisee`** (entier) — saisie **`RepereTemporelField`**, comparaison **`getAnneePourComparaison`** (`lib/tache/document-annee.ts`). Pour l’**OI1**, ces champs alimentent les **algorithmes** des parcours non rédactionnels (ordre chronologique, ligne du temps, avant/après, etc.). **Cadre commun** (obligations Bloc 4 / Bloc 5, comportements 1.1 / 1.2 / 1.3) : [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) § **Données temporelles — repère et année normalisée** ; configuration par slug : `lib/tache/behaviours/*.ts` (`requiresRepereTemporel`, `completionCriteria`). **FAQ enseignants (rôle du repère, comportements, limites produit) :** [FAQ.md](./FAQ.md#faq-repere-temporel-enseignants).
 
 **Feuille élève (sommaire + aperçu impression) :** tant qu’un `variant_slug` est actif pour la paire OI / comportement, le pied de fiche et l’aperçu imprimable **n’affichent** ni le compteur de lignes ni les **traits horizontaux** de réponse rédigée (`TacheFicheData.showStudentAnswerLines === false`). Au **Bloc 2**, la section **Espace de production** reste visible en **lecture seule** : pour ces comportements, `nb_lignes` vaut **0** dans `public/data/oi.json`, ce qui affiche le message **non rédactionnel** (pas de curseur ni de saisie manuelle). La zone de réponse sur la feuille élève suit le modèle du parcours (ex. ordre chronologique : consigne, options A–D en grille avec cases chiffres, libellé **Réponse :** et une case pour la lettre ; ligne du temps : consigne avec frise et **Réponse :** dans le HTML publié, une case lettre ; **avant / après** : intro publiée (thème, repère, année), tableau **Avant** / **Après** par option A–D, **Réponse :** et case lettre).
 
-| ID    | Titre                        | Raison                         |
-| ----- | ---------------------------- | ------------------------------ |
-| OI2   | Situer dans l'espace         | Carte géographique             |
-| OI4.3 | Deux facteurs explicatifs    | Réponse = numéros de documents |
-| OI4.4 | Facteur et conséquence       | Réponse = numéros de documents |
-| OI5   | Mettre en relation des faits | Association de faits           |
+_Aucune OI encore en `coming_soon` au 8 mai 2026 — tous les parcours non rédactionnels prévus pour le MVP sont actifs._
 
 **Comportement 1.2 (ligne du temps)** — **livré** dans le wizard : **étape 3** = consigne, segments (3 ou 4), **N+1** dates sur la frise, corrigé lettre ; **étape 4** = **document cible** seul (`nb_documents` 1). Fichiers : `Bloc3LigneDuTemps` / `Bloc4LigneDuTemps`, `ligne-du-temps-payload.ts`, action `NON_REDACTION_PATCH_LIGNE_TEMPS`, entrée `ligne-du-temps` dans `TACHE_NON_REDACTION_WIZARD_BLOCS`. Détail copy et UX : [wizard-oi-non-redactionnelle.md](./wizard-oi-non-redactionnelle.md) § Parcours 2.
 
@@ -91,6 +88,12 @@ Le **comportement attendu** est l'unité de base de la TAÉ. Il définit :
 | ID  | Énoncé                                                                                                                     | nb_documents | Grille  |
 | --- | -------------------------------------------------------------------------------------------------------------------------- | ------------ | ------- |
 | 0.1 | Établir un fait à partir d'un document historique                                                                          | 1            | OI0_SO1 |
+| 1.1 | Ordonner chronologiquement des faits en tenant compte de repères de temps (non rédactionnel — `ordre-chronologique`)       | 4            | OI1_SO1 |
+| 1.2 | Situer des faits sur une ligne du temps (non rédactionnel — `ligne-du-temps`)                                              | 1            | OI1_SO2 |
+| 1.3 | Classer des faits selon qu'ils sont antérieurs ou postérieurs à un repère de temps (non rédactionnel — `avant-apres`)      | 4            | OI1_SO3 |
+| 2.1 | Identifier sur une carte un élément géographique ou un territoire (non rédactionnel — `carte-historique`)                  | 1            | OI2_SO1 |
+| 2.2 | Identifier sur une carte une association d'éléments géographiques (non rédactionnel — `carte-historique`)                  | 1            | OI2_SO2 |
+| 2.3 | Identifier sur une carte plusieurs éléments géographiques (non rédactionnel — `carte-historique`)                          | 1            | OI2_SO3 |
 | 3.1 | Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison                                          | 1            | OI3_SO1 |
 | 3.2 | Indiquer ce qui est semblable par rapport à un ou plusieurs objets de comparaison                                          | 1            | OI3_SO2 |
 | 3.3 | Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence)                           | 2            | OI3_SO3 |
@@ -98,6 +101,10 @@ Le **comportement attendu** est l'unité de base de la TAÉ. Il définit :
 | 3.5 | Montrer des différences et des similitudes par rapport à des points de vue d'acteurs ou à des interprétations d'historiens | 3            | OI3_SO5 |
 | 4.1 | Indiquer un facteur explicatif, c.-à-d. un fait qui explique une réalité historique (réponse écrite)                       | 1            | OI4_SO1 |
 | 4.2 | Indiquer un fait qui découle d'une réalité historique (réponse écrite)                                                     | 1            | OI4_SO2 |
+| 4.3 | Déterminer les deux facteurs explicatifs (non rédactionnel — `causes-consequences`)                                        | 2            | OI4_SO3 |
+| 4.4 | Déterminer le facteur explicatif et la conséquence (non rédactionnel — `causes-consequences`)                              | 2            | OI4_SO4 |
+| 5.1 | Associer des faits à des manifestations — deux faits (non rédactionnel — `manifestations`)                                 | 2            | OI5_SO1 |
+| 5.2 | Associer des faits à des manifestations — quatre faits (non rédactionnel — `manifestations`)                               | 4            | OI5_SO2 |
 | 6.1 | Indiquer un fait qui montre qu'une réalité historique se transforme                                                        | 2            | OI6_SO1 |
 | 6.2 | Indiquer un fait qui montre qu'une réalité historique se maintient                                                         | 2            | OI6_SO2 |
 | 6.3 | Montrer qu'une réalité historique se transforme ou se maintient                                                            | 3            | OI6_SO3 |
