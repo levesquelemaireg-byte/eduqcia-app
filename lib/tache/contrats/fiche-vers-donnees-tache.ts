@@ -15,11 +15,16 @@ import { resoudreOutilEvaluation } from "./etat-wizard-vers-tache";
 import type { DonneesTache, EspaceProduction, Guidage } from "./donnees";
 import type { GrilleEntry } from "@/lib/tache/grilles/types";
 
-/** Déduit l'espace de production depuis les données de la fiche. */
-function deduireEspaceProduction(fiche: TacheFicheData): EspaceProduction {
+/**
+ * Déduit l'espace de production depuis les données de la fiche.
+ *
+ * Retourne `null` pour TOUS les parcours NR (la zone réponse est dans la
+ * consigne HTML, séparée par `extraireFragmentsNR` au rendu — cf. spec
+ * §3.2). Sinon : lignes vierges rédactionnelles.
+ */
+function deduireEspaceProduction(fiche: TacheFicheData): EspaceProduction | null {
   const slug = getVariantSlugForComportementId(fiche.comportement.id);
-  if (slug === "ordre-chronologique") return { type: "cases", options: ["A", "B", "C", "D"] };
-  if (slug === "ligne-du-temps" || slug === "avant-apres") return { type: "libre" };
+  if (slug !== null) return null;
   return { type: "lignes", nbLignes: fiche.nb_lignes };
 }
 

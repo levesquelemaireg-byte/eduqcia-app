@@ -1,17 +1,23 @@
 /**
- * SectionQuadruplet — bloc atomique insecable du PDF.
+ * SectionQuadruplet — bloc atomique insécable du PDF.
  *
- * Affiche dans l'ordre : consigne (HTML), guidage (si non null),
- * espace de production, outil d'evaluation.
+ * Type guard sur `consigne` (spec §3.3) :
+ * - `string` (rédactionnel) : consigne → guidage → espace production → grille
+ * - `FragmentsNR` (NR)     : intro → guidage → corps → reponse → grille
  *
- * Invariant §0.2 : le quadruplet ne peut jamais etre coupe sur deux pages.
- * Le CSS `break-inside: avoid` est applique via la classe `.bloc-quadruplet`.
+ * Pour les NR, `SectionEspaceProduction` n'est PAS appelé : la zone réponse
+ * vit dans `consigne.reponse` (ou `consigne.corps` quand les cases sont
+ * intégrées au dispositif visuel — manifestations, causes-conséquences,
+ * carte-historique 2.3). Résout Bug 4 (cases en doublon).
  *
- * Invariants : Arial, noir, pas de decoration.
+ * Invariant §0.2 : le quadruplet ne peut jamais être coupé sur deux pages
+ * (`break-inside: avoid` sur `.bloc-quadruplet`).
  */
 
 import DOMPurify from "isomorphic-dompurify";
 import type { ContenuQuadruplet } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
+import type { FragmentsNR } from "@/lib/impression/extraire-fragments-nr";
+import type { Guidage } from "@/lib/tache/contrats/donnees";
 import { SectionEspaceProduction } from "./espace-production";
 import { SectionOutilEvaluation } from "./outil-evaluation";
 
@@ -25,12 +31,29 @@ const STYLE_BASE: React.CSSProperties = {
   marginBottom: "12px",
 };
 
+const STYLE_CONSIGNE: React.CSSProperties = { fontSize: "11pt", lineHeight: 1.5 };
+
+/** Bloc HTML inline sécurisé via DOMPurify. */
+function HtmlBloc({ html, style }: { html: string; style?: React.CSSProperties }) {
+  return <div style={style} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
+}
+
+/** Guidage stylé via `.bloc-guidage` (italique + couleur secondaire, spec §4.1). */
+function BlocGuidage({ guidage }: { guidage: Guidage }) {
+  if (!guidage) return null;
+  return (
+    <div
+      className="bloc-guidage"
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(guidage.content) }}
+    />
+  );
+}
+
 export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
   const { tacheIndex, titre, consigne, guidage, espaceProduction, outilEvaluation } = contenu;
 
   return (
     <div className="bloc-quadruplet" style={STYLE_BASE}>
-      {/* Titre de la tache */}
       <p
         style={{
           fontSize: "11pt",
@@ -42,27 +65,64 @@ export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
         {titre || `Question ${tacheIndex + 1}`}
       </p>
 
-      {/* Consigne (HTML) */}
-      <div
-        style={{ fontSize: "11pt", lineHeight: 1.5 }}
-        dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(consigne) }}
-      />
-
-      {/* Guidage (optionnel — visible en formatif, masqué sinon).
-          Style délégué à `.bloc-guidage` dans styles/impression/base.css :
-          italique + couleur secondaire, sans bordure ni fond (spec §4.1). */}
-      {guidage && (
-        <div
-          className="bloc-guidage"
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(guidage.content) }}
+      {typeof consigne === "string" ? (
+        <BrancheRedactionnelle
+          consigne={consigne}
+          guidage={guidage}
+          espaceProduction={espaceProduction}
         />
+      ) : (
+        <BrancheNR fragments={consigne} guidage={guidage} />
       )}
 
-      {/* Espace de production */}
-      <SectionEspaceProduction espaceProduction={espaceProduction} />
-
-      {/* Outil d'evaluation */}
       <SectionOutilEvaluation outilEvaluation={outilEvaluation} />
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Branche rédactionnelle                                                    */
+/* -------------------------------------------------------------------------- */
+
+function BrancheRedactionnelle({
+  consigne,
+  guidage,
+  espaceProduction,
+}: {
+  consigne: string;
+  guidage: Guidage;
+  espaceProduction: ContenuQuadruplet["espaceProduction"];
+}) {
+  return (
+    <>
+      <HtmlBloc html={consigne} style={STYLE_CONSIGNE} />
+      <BlocGuidage guidage={guidage} />
+      {espaceProduction && <SectionEspaceProduction espaceProduction={espaceProduction} />}
+    </>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*  Branche NR — guidage entre intro et corps (spec §3.3)                     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Le wrapper recomposé porte l'attribut `data-{parcours}="true"` original
+ * pour préserver le scoping CSS (les règles `.{parcours}-eleve-*` dans
+ * `globals.css` sont scopées par cet attribut). Le renderer reste agnostique
+ * de la valeur du parcours — c'est un passthrough technique.
+ */
+function BrancheNR({ fragments, guidage }: { fragments: FragmentsNR; guidage: Guidage }) {
+  // Convention builders : `<div data-{parcours}="true" class="{parcours}-root">`.
+  // On reproduit le wrapper original pour préserver l'intégralité du scoping CSS.
+  const wrapperAttrs = { [`data-${fragments.parcours}`]: "true" };
+  const wrapperClass = `${fragments.parcours}-root`;
+  return (
+    <div {...wrapperAttrs} className={wrapperClass} style={STYLE_CONSIGNE}>
+      {fragments.intro && <HtmlBloc html={fragments.intro} />}
+      <BlocGuidage guidage={guidage} />
+      {fragments.corps && <HtmlBloc html={fragments.corps} />}
+      {fragments.reponse && <HtmlBloc html={fragments.reponse} />}
     </div>
   );
 }

@@ -2,11 +2,12 @@
  * ApercuImpression — composant unique de rendu des pages paginées.
  *
  * Consomme `RenduImprimable` et rend les pages via `SectionPage`.
- * Dispatche chaque bloc vers le composant de section approprié
- * selon `bloc.kind` et le contenu.
+ * Dispatche chaque bloc vers le composant de section approprié selon
+ * `bloc.kind` et le contenu (3 type guards mutuellement exclusifs sur
+ * les blocs `quadruplet` : corrigé, cahier-réponses, quadruplet standard).
  *
- * Invariant §0.5 : un seul composant de rendu, identique pour
- * wizard, route SSR et Puppeteer.
+ * Invariant §0.5 : un seul composant de rendu, identique pour wizard,
+ * route SSR et Puppeteer.
  */
 
 import type { Page, BlocMesure } from "@/lib/epreuve/pagination/types";
@@ -14,18 +15,20 @@ import type { RenduImprimable } from "@/lib/impression/types";
 import type {
   ContenuQuadruplet,
   ContenuCorrige,
+  ContenuCahierReponses,
 } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import type { ContenuDossierPage } from "@/lib/impression/builders/blocs-dossier-pages";
 import { SectionPage } from "./section-page";
 import { DossierGrille } from "./dossier/grille";
 import { SectionQuadruplet } from "./sections/quadruplet";
 import { SectionCorrige } from "./sections/corrige";
+import { SectionCahierReponses } from "./sections/cahier-reponses";
 
 export type ApercuImpressionProps = {
   rendu: RenduImprimable & { ok: true };
 };
 
-/** Type guard : le contenu est un corrigé (possède `corrige` et pas de `consigne`). */
+/** Type guard : contenu corrigé (possède `corrige`, pas de `consigne`). */
 function estContenuCorrige(content: unknown): content is ContenuCorrige {
   return (
     typeof content === "object" &&
@@ -35,7 +38,22 @@ function estContenuCorrige(content: unknown): content is ContenuCorrige {
   );
 }
 
-/** Type guard : le contenu est un quadruplet (possède `consigne`). */
+/**
+ * Type guard : contenu cahier-réponses (possède `espaceProduction` et
+ * `outilEvaluation`, mais pas `consigne` ni `corrige`). Spec §7.4.
+ */
+function estContenuCahierReponses(content: unknown): content is ContenuCahierReponses {
+  return (
+    typeof content === "object" &&
+    content !== null &&
+    "espaceProduction" in content &&
+    "outilEvaluation" in content &&
+    !("consigne" in content) &&
+    !("corrige" in content)
+  );
+}
+
+/** Type guard : contenu quadruplet (possède `consigne`). */
 function estContenuQuadruplet(content: unknown): content is ContenuQuadruplet {
   return typeof content === "object" && content !== null && "consigne" in content;
 }
@@ -57,6 +75,9 @@ function RenduBloc({ bloc }: { bloc: BlocMesure }) {
     case "quadruplet":
       if (estContenuCorrige(bloc.content)) {
         return <SectionCorrige contenu={bloc.content} />;
+      }
+      if (estContenuCahierReponses(bloc.content)) {
+        return <SectionCahierReponses contenu={bloc.content} />;
       }
       if (estContenuQuadruplet(bloc.content)) {
         return <SectionQuadruplet contenu={bloc.content} />;

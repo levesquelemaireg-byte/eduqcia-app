@@ -215,12 +215,11 @@ describe("etatWizardVersTache", () => {
   });
 
   describe("parcours NR — ordre chronologique", () => {
-    it("déduit espaceProduction cases ABCD", () => {
+    it("espaceProduction est null pour les NR (zone réponse intégrée à la consigne)", () => {
+      // Spec §3.2 : tous les parcours NR retournent null. La zone réponse
+      // est dans la consigne HTML, séparée par extraireFragmentsNR au rendu.
       const result = etatWizardVersTache(etatOrdreChronologique(), OI_FIXTURE, GRILLES_FIXTURE);
-      expect(result.espaceProduction).toEqual({
-        type: "cases",
-        options: ["A", "B", "C", "D"],
-      });
+      expect(result.espaceProduction).toBeNull();
     });
 
     it("la consigne ne contient aucune ancre HTML", () => {

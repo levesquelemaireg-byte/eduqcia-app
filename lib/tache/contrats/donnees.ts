@@ -59,7 +59,11 @@ export type DonneesTache = {
   consigne: string;
   guidage: Guidage;
   documents: RendererDocument[];
-  espaceProduction: EspaceProduction;
+  /**
+   * Espace de production — `null` pour les parcours NR, où la zone réponse
+   * est intégrée dans la consigne HTML (cf. spec §3.2 et FragmentsNR).
+   */
+  espaceProduction: EspaceProduction | null;
   outilEvaluation: OutilEvaluation;
   corrige: string;
 

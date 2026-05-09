@@ -46,6 +46,8 @@ function estimerHauteurBlocDossierPage(content: unknown): number {
 }
 
 function estimerHauteurEspaceProduction(content: unknown): number {
+  // null = parcours NR (zone réponse intégrée dans la consigne, déjà mesurée).
+  if (content === null) return 0;
   if (!estObjet(content) || typeof content.type !== "string") return 40;
 
   switch (content.type) {
@@ -106,21 +108,39 @@ function estimerHauteurOutilEvaluation(content: unknown): number {
   return 14 + 34 + totalRows;
 }
 
+/**
+ * Calcule la longueur HTML « équivalente consigne » selon que le contenu
+ * est une string rédactionnelle ou un `FragmentsNR` ({intro, corps, reponse}).
+ */
+function longueurConsigne(content: unknown): { texte: string; longueur: number } {
+  if (typeof content === "string") {
+    return { texte: content, longueur: longueurHtml(content) };
+  }
+  if (estObjet(content)) {
+    const intro = typeof content.intro === "string" ? content.intro : "";
+    const corps = typeof content.corps === "string" ? content.corps : "";
+    const reponse = typeof content.reponse === "string" ? content.reponse : "";
+    const concat = `${intro}${corps}${reponse}`;
+    return { texte: concat, longueur: longueurHtml(concat) };
+  }
+  return { texte: "", longueur: 0 };
+}
+
 function estimerHauteurBlocQuadruplet(content: unknown): number {
   if (!estObjet(content)) return 260;
 
   const titre = typeof content.titre === "string" ? content.titre.trim() : "";
-  const consigne = typeof content.consigne === "string" ? content.consigne : "";
+  const consigneInfo = longueurConsigne(content.consigne);
   const corrige = typeof content.corrige === "string" ? content.corrige : "";
 
   let total = 56;
   total += lignesDepuisLongueur(titre.length, 60, 1) * 20;
 
-  const hasConsigne = htmlHasMeaningfulText(consigne);
+  const hasConsigne = htmlHasMeaningfulText(consigneInfo.texte);
   const hasCorrige = htmlHasMeaningfulText(corrige);
 
   if (hasConsigne) {
-    const lignesConsigne = lignesDepuisLongueur(longueurHtml(consigne), 92);
+    const lignesConsigne = lignesDepuisLongueur(consigneInfo.longueur, 92);
     total += 12 + lignesConsigne * 19;
   }
 

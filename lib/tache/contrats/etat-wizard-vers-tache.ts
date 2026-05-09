@@ -51,7 +51,6 @@ import {
 import {
   buildCausesConsequencesConsigneHtml,
   buildCausesConsequencesCorrigeHtml,
-  getCausesConsequencesCategoryLabels,
   normalizeCausesConsequencesPayload,
 } from "@/lib/tache/non-redaction/causes-consequences-payload";
 import {
@@ -123,25 +122,24 @@ export function resoudreOutilEvaluation(
   return grille;
 }
 
-/** Déduit l'espace de production depuis l'état du wizard. */
-function deduireEspaceProduction(state: TacheFormState): EspaceProduction {
-  if (isActiveOrdreChronologiqueVariant(state) || isActiveCarteHistoriqueVariant(state)) {
-    return { type: "cases", options: ["A", "B", "C", "D"] };
-  }
-  if (isActiveManifestationsVariant(state)) {
-    const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
-    return { type: "cases", options: p ? p.categories : [] };
-  }
-  if (isActiveCausesConsequencesVariant(state)) {
-    const p = normalizeCausesConsequencesPayload(nonRedactionCausesConsequencesPayload(state));
-    if (!p) return { type: "cases", options: [] };
-    return {
-      type: "cases",
-      options: getCausesConsequencesCategoryLabels(p.comportementId, p.consigneSujet),
-    };
-  }
-  if (isActiveLigneDuTempsVariant(state) || isActiveAvantApresVariant(state)) {
-    return { type: "libre" };
+/**
+ * Déduit l'espace de production depuis l'état du wizard.
+ *
+ * Retourne `null` pour TOUS les parcours NR — la zone réponse est intégrée
+ * dans la consigne HTML, et l'extracteur `extraireFragmentsNR` la sépare au
+ * moment du rendu impression (cf. spec §3.2 et §3.3). Le renderer NR ne fait
+ * PAS appel à `SectionEspaceProduction` (résout Bug 4 : doublon de cases).
+ */
+function deduireEspaceProduction(state: TacheFormState): EspaceProduction | null {
+  if (
+    isActiveOrdreChronologiqueVariant(state) ||
+    isActiveLigneDuTempsVariant(state) ||
+    isActiveAvantApresVariant(state) ||
+    isActiveCarteHistoriqueVariant(state) ||
+    isActiveManifestationsVariant(state) ||
+    isActiveCausesConsequencesVariant(state)
+  ) {
+    return null;
   }
   return { type: "lignes", nbLignes: state.bloc2.nbLignes ?? 5 };
 }

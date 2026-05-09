@@ -29,6 +29,7 @@ import {
   aplatirDocumentsAvecNumeros,
   resoudreReferencesDocuments,
 } from "@/lib/impression/renumerotation";
+import { extraireFragmentsNR, type FragmentsNR } from "@/lib/impression/extraire-fragments-nr";
 import type { RenduImprimable } from "@/lib/impression/types";
 
 /* -------------------------------------------------------------------------- */
@@ -95,8 +96,10 @@ function resoudreRefsDansTache(
 export type ContenuQuadruplet = {
   tacheIndex: number;
   titre: string;
-  consigne: string;
+  /** String pour les rédactionnels, `FragmentsNR` pour les NR (cf. spec §3.1). */
+  consigne: string | FragmentsNR;
   guidage: Guidage;
+  /** `null` pour les NR — la zone réponse vit dans `consigne` (FragmentsNR). */
   espaceProduction: DonneesTache["espaceProduction"];
   outilEvaluation: DonneesTache["outilEvaluation"];
 };
@@ -106,6 +109,14 @@ export type ContenuCorrige = {
   tacheIndex: number;
   titre: string;
   corrige: string;
+  outilEvaluation: DonneesTache["outilEvaluation"];
+};
+
+/** Contenu d'un bloc cahier-réponses (espace réponse + grille, sans consigne). */
+export type ContenuCahierReponses = {
+  tacheIndex: number;
+  titre: string;
+  espaceProduction: DonneesTache["espaceProduction"];
   outilEvaluation: DonneesTache["outilEvaluation"];
 };
 
@@ -140,7 +151,13 @@ function construireBlocsQuestionnaire(
   const blocs: Bloc[] = [];
 
   taches.forEach((tache, i) => {
-    const { consigne, guidage } = resoudreRefsDansTache(tache, taches);
+    const { consigne: consigneResolue, guidage } = resoudreRefsDansTache(tache, taches);
+
+    // Pour les NR, on découpe la consigne en fragments (intro/corps/reponse)
+    // afin que le renderer puisse insérer le guidage entre intro et corps
+    // (spec §3.2). Pour les rédactionnels, on garde le string tel quel.
+    const fragments = extraireFragmentsNR(consigneResolue);
+    const consigne: string | FragmentsNR = fragments ?? consigneResolue;
 
     const contenu: ContenuQuadruplet = {
       tacheIndex: i,
@@ -178,7 +195,16 @@ function construireBlocsQuestionnaire(
   return blocs;
 }
 
-/** Construit les blocs du cahier de réponses (espace de production seul, sans consigne). */
+/**
+ * Construit les blocs du cahier de réponses — épreuve ministérielle.
+ *
+ * Chaque bloc contient l'espace de production (lignes ou cases) et la
+ * grille d'évaluation (qui apparaît AUSSI dans le questionnaire — voir
+ * spec §7.4 : « la grille est aux deux endroits »). Pas de consigne.
+ *
+ * Résout Bug 7 : auparavant `outilEvaluation` n'était pas inclus, donc le
+ * type guard du renderer retournait null pour ces blocs.
+ */
 function construireBlocsCahierReponses(taches: TacheImpression[]): Bloc[] {
   return taches.map((tache, i) => ({
     id: genererIdBloc("cahier-reponses", i),
@@ -188,7 +214,8 @@ function construireBlocsCahierReponses(taches: TacheImpression[]): Bloc[] {
       tacheIndex: i,
       titre: tache.titre,
       espaceProduction: tache.espaceProduction,
-    },
+      outilEvaluation: tache.outilEvaluation,
+    } satisfies ContenuCahierReponses,
   }));
 }
 
