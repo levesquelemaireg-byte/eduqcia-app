@@ -117,7 +117,23 @@ export function TacheVueDetaillee({
             layout={layout}
           />
         }
-        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
+        onglets={
+          <Onglets
+            ongletActif={ongletActif}
+            surChangerOnglet={setOngletActif}
+            actions={
+              ongletActif === "apercu-imprime" && payloadImpression ? (
+                <NavbarModesImpression
+                  entite="tache"
+                  mode={mode}
+                  optionCorrige={optionCorrige}
+                  surChangerMode={setMode}
+                  surChangerCorrige={setOptionCorrige}
+                />
+              ) : null
+            }
+          />
+        }
         contenuPrincipal={
           ongletActif === "sommaire" ? (
             <FluxLecture
@@ -128,16 +144,7 @@ export function TacheVueDetaillee({
               heroRef={heroRef}
             />
           ) : payloadImpression ? (
-            <div className="flex flex-col gap-4">
-              <NavbarModesImpression
-                entite="tache"
-                mode={mode}
-                optionCorrige={optionCorrige}
-                surChangerMode={setMode}
-                surChangerCorrige={setOptionCorrige}
-              />
-              <ApercuImprimeInline payload={payloadImpression} />
-            </div>
+            <ApercuImprimeInline payload={payloadImpression} />
           ) : (
             <div className="py-12 text-center text-sm text-muted">
               <span

@@ -77,16 +77,17 @@ export function NavbarModesImpression({
 }: NavbarModesImpressionProps) {
   const modeOptions = entite === "epreuve" ? MODE_OPTIONS_EPREUVE : MODE_OPTIONS_TACHE;
 
+  // Pas de wrapper visuel (border/bg/padding) — la navbar s'insère dans la
+  // barre supérieure existante (slot `actions` du composant `Onglets`).
   return (
-    <div
-      className={`flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-border bg-panel px-4 py-3 ${className ?? ""}`}
-    >
+    <div className={`flex flex-wrap items-center gap-x-3 gap-y-2 ${className ?? ""}`}>
       <SegmentedControl
         aria-label={NAVBAR_IMPRESSION_MODE_GROUPE_LABEL}
         options={modeOptions}
         value={mode}
         onChange={(v) => surChangerMode(v as ModeImpression)}
       />
+      <span aria-hidden="true" className="hidden h-5 w-px bg-border md:block" />
       <SegmentedControl
         aria-label={NAVBAR_IMPRESSION_CORRIGE_GROUPE_LABEL}
         options={CORRIGE_OPTIONS}

@@ -89,21 +89,28 @@ export function EpreuveVueDetaillee({
             layout={layout}
           />
         }
-        onglets={<Onglets ongletActif={ongletActif} surChangerOnglet={setOngletActif} />}
+        onglets={
+          <Onglets
+            ongletActif={ongletActif}
+            surChangerOnglet={setOngletActif}
+            actions={
+              ongletActif === "apercu-imprime" ? (
+                <NavbarModesImpression
+                  entite="epreuve"
+                  mode={mode}
+                  optionCorrige={optionCorrige}
+                  surChangerMode={setMode}
+                  surChangerCorrige={setOptionCorrige}
+                />
+              ) : null
+            }
+          />
+        }
         contenuPrincipal={
           ongletActif === "sommaire" ? (
             <SectionPileTaches taches={donnees.taches} />
           ) : (
-            <div className="flex flex-col gap-4">
-              <NavbarModesImpression
-                entite="epreuve"
-                mode={mode}
-                optionCorrige={optionCorrige}
-                surChangerMode={setMode}
-                surChangerCorrige={setOptionCorrige}
-              />
-              <ApercuImprimeInline payload={payloadImpression} />
-            </div>
+            <ApercuImprimeInline payload={payloadImpression} />
           )
         }
         rail={
