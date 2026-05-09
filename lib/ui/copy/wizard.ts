@@ -35,6 +35,16 @@ export const PREVIEW_PANEL_PRINT_SHORT_LABEL = "Imprimé";
 export const PREVIEW_PANEL_PRINT_FORMATIF_LABEL = "Formatif";
 export const PREVIEW_PANEL_PRINT_SOMMATIF_STANDARD_LABEL = "Sommatif standard";
 export const PREVIEW_PANEL_PRINT_CORRIGE_LABEL = "Corrigé";
+
+/** Navbar modes d'impression — vues détaillées tâche + épreuve (spec §8). */
+export const NAVBAR_IMPRESSION_MODE_GROUPE_LABEL = "Mode d'impression";
+export const NAVBAR_IMPRESSION_CORRIGE_GROUPE_LABEL = "Corrigé";
+export const NAVBAR_IMPRESSION_MODE_FORMATIF = "Formatif";
+export const NAVBAR_IMPRESSION_MODE_SOMMATIF_STANDARD = "Sommatif standard";
+export const NAVBAR_IMPRESSION_MODE_EPREUVE_MINISTERIELLE = "Épreuve ministérielle";
+export const NAVBAR_IMPRESSION_CORRIGE_SANS = "Sans corrigé";
+export const NAVBAR_IMPRESSION_CORRIGE_SIMPLE = "Corrigé simple";
+export const NAVBAR_IMPRESSION_CORRIGE_DETAILLE = "Corrigé détaillé";
 export const PREVIEW_PANEL_MODE_ARIA = "Mode d'aperçu";
 export const PREVIEW_PANEL_VARIANT_ARIA = "Variante d'aperçu imprimé";
 export const PREVIEW_PANEL_FEUILLET_ARIA = "Feuillet d'aperçu imprimé";

@@ -11,6 +11,7 @@ import { signerTokenDraft } from "@/lib/epreuve/impression/token-draft";
 import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import type { ModeImpression } from "@/lib/epreuve/pagination/types";
 
 const KV_TTL_SECONDS = 10 * 60;
 
@@ -27,6 +28,13 @@ function chargerGrilles(): GrilleEntry[] {
 
 export type GenererTokenResult = { ok: true; token: string } | { ok: false; error: string };
 
+export type OptionsApercuEpreuve = {
+  /** Mode d'impression — défaut `sommatif-standard` pour les épreuves (spec §7.2). */
+  mode?: ModeImpression;
+  /** Inclure le corrigé — défaut `false` (spec §7.2). */
+  estCorrige?: boolean;
+};
+
 /**
  * Génère un token d'aperçu impression pour une épreuve publiée/brouillon.
  *
@@ -34,8 +42,16 @@ export type GenererTokenResult = { ok: true; token: string } | { ok: false; erro
  * 2. Convertit chaque TacheFicheData → DonneesTache
  * 3. Construit DonneesEpreuve, stocke dans Vercel KV
  * 4. Retourne le token HMAC signé
+ *
+ * Le mode et estCorrige sont optionnels et adoptent les défauts spec §7.2
+ * pour les épreuves : mode=sommatif-standard, estCorrige=false. Le hardcode
+ * `mode: "formatif"` est interdit (spec §13 règle 6) — il causait l'absence
+ * du dossier documentaire dans l'aperçu épreuve.
  */
-export async function genererTokenApercuEpreuve(evaluationId: string): Promise<GenererTokenResult> {
+export async function genererTokenApercuEpreuve(
+  evaluationId: string,
+  options: OptionsApercuEpreuve = {},
+): Promise<GenererTokenResult> {
   const user = await requireActiveAppUser();
   const supabase = await createClient();
 
@@ -89,8 +105,8 @@ export async function genererTokenApercuEpreuve(evaluationId: string): Promise<G
   const kvValue = JSON.stringify({
     type: "epreuve",
     payload: epreuve,
-    mode: "formatif",
-    estCorrige: false,
+    mode: options.mode ?? "sommatif-standard",
+    estCorrige: options.estCorrige ?? false,
   });
 
   const payloadId = crypto.randomUUID();
