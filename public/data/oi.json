@@ -148,7 +148,7 @@
         "enonce": "Déterminer les deux facteurs explicatifs (réponse constituée de numéros de documents)",
         "nb_documents": 2,
         "nb_lignes": 0,
-        "status": "coming_soon",
+        "status": "active",
         "outil_evaluation": "OI4_SO3",
         "variant_slug": "causes-consequences"
       },
@@ -157,7 +157,7 @@
         "enonce": "Déterminer le facteur explicatif et la conséquence (réponse constituée de numéros de documents)",
         "nb_documents": 2,
         "nb_lignes": 0,
-        "status": "coming_soon",
+        "status": "active",
         "outil_evaluation": "OI4_SO4",
         "variant_slug": "causes-consequences"
       }

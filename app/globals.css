@@ -778,6 +778,71 @@ body {
 }
 
 /*
+ * Causes et conséquences (OI4 — comportements 4.3 / 4.4) — feuille élève.
+ * 4.3 : intro mono-paragraphe + 2 cellules empilées (label = « Un facteur explicatif de … » × 2).
+ * 4.4 : intro + liste à puces (cause / conséquence) + 2 cellules empilées
+ *       (label = « Une cause de … » / « Une conséquence de … »).
+ * Layout 1 colonne (empilé), pas de grille 2×2 — les labels reprennent le sujet
+ * de la consigne et peuvent être longs. Construit dans `causes-consequences-payload.ts`
+ * (`buildCausesConsequencesConsigneHtml`).
+ */
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-root {
+  margin-top: 0.15rem;
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-intro {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-intro-list {
+  margin: 0 0 0.65rem;
+  padding-left: 1.5rem;
+  list-style: disc;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-intro-list li {
+  margin: 0 0 0.25rem;
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-grille {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin: 0.35rem 0 0.5rem;
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-cellule {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid var(--color-deep);
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-label {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.35;
+  color: var(--color-deep);
+}
+
+[data-causes-consequences-eleve="true"] .causes-consequences-eleve-case {
+  display: inline-block;
+  width: 1.75rem;
+  height: 1.5rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  flex-shrink: 0;
+}
+
+/*
  * Ligne du temps (1.2) — feuille élève (sommaire, aperçu impression, `/questions/[id]/print`).
  * Intro + frise + « Réponse » dans `consigne` ; guidage injecté entre intro et frise — `ligne-du-temps-payload.ts`.
  */

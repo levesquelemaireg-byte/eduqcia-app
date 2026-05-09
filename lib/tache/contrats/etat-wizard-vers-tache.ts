@@ -23,6 +23,7 @@ import type { OiEntryJson } from "@/lib/types/oi";
 import {
   isActiveAvantApresVariant,
   isActiveCarteHistoriqueVariant,
+  isActiveCausesConsequencesVariant,
   isActiveLigneDuTempsVariant,
   isActiveManifestationsVariant,
   isActiveNonRedactionVariant,
@@ -31,6 +32,7 @@ import {
 import {
   nonRedactionAvantApresPayload,
   nonRedactionCartePayload,
+  nonRedactionCausesConsequencesPayload,
   nonRedactionLignePayload,
   nonRedactionManifestationsPayload,
   nonRedactionOrdrePayload,
@@ -46,6 +48,12 @@ import {
   buildCarteHistoriqueCorrigeHtml,
   normalizeCarteHistoriquePayload,
 } from "@/lib/tache/non-redaction/carte-historique-payload";
+import {
+  buildCausesConsequencesConsigneHtml,
+  buildCausesConsequencesCorrigeHtml,
+  getCausesConsequencesCategoryLabels,
+  normalizeCausesConsequencesPayload,
+} from "@/lib/tache/non-redaction/causes-consequences-payload";
 import {
   buildLigneDuTempsConsigneHtml,
   buildLigneDuTempsCorrigeHtml,
@@ -124,6 +132,14 @@ function deduireEspaceProduction(state: TacheFormState): EspaceProduction {
     const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
     return { type: "cases", options: p ? p.categories : [] };
   }
+  if (isActiveCausesConsequencesVariant(state)) {
+    const p = normalizeCausesConsequencesPayload(nonRedactionCausesConsequencesPayload(state));
+    if (!p) return { type: "cases", options: [] };
+    return {
+      type: "cases",
+      options: getCausesConsequencesCategoryLabels(p.comportementId, p.consigneSujet),
+    };
+  }
   if (isActiveLigneDuTempsVariant(state) || isActiveAvantApresVariant(state)) {
     return { type: "libre" };
   }
@@ -154,6 +170,11 @@ function construireGuidage(state: TacheFormState): Guidage {
       return text ? { content: text } : null;
     }
     if (isActiveManifestationsVariant(state)) {
+      // Guidage libre saisi par l'enseignant — peut être vide.
+      const text = state.bloc3.guidage.trim();
+      return text ? { content: text } : null;
+    }
+    if (isActiveCausesConsequencesVariant(state)) {
       // Guidage libre saisi par l'enseignant — peut être vide.
       const text = state.bloc3.guidage.trim();
       return text ? { content: text } : null;
@@ -189,6 +210,12 @@ function construireConsigne(state: TacheFormState): string {
   if (isActiveManifestationsVariant(state) && manifestationsNorm) {
     return supprimerAncres(buildManifestationsConsigneHtml(manifestationsNorm));
   }
+  const causesConsequencesNorm = normalizeCausesConsequencesPayload(
+    nonRedactionCausesConsequencesPayload(state),
+  );
+  if (isActiveCausesConsequencesVariant(state) && causesConsequencesNorm) {
+    return supprimerAncres(buildCausesConsequencesConsigneHtml(causesConsequencesNorm));
+  }
   return getRedactionSliceForPreview(state).consigne;
 }
 
@@ -215,6 +242,12 @@ function construireCorrige(state: TacheFormState): string {
   );
   if (isActiveManifestationsVariant(state) && manifestationsNorm) {
     return buildManifestationsCorrigeHtml(manifestationsNorm);
+  }
+  const causesConsequencesNorm = normalizeCausesConsequencesPayload(
+    nonRedactionCausesConsequencesPayload(state),
+  );
+  if (isActiveCausesConsequencesVariant(state) && causesConsequencesNorm) {
+    return buildCausesConsequencesCorrigeHtml(causesConsequencesNorm);
   }
   return getRedactionSliceForPreview(state).corrige;
 }

@@ -32,6 +32,13 @@ import {
   normalizeCarteHistoriquePayload,
 } from "@/lib/tache/non-redaction/carte-historique-payload";
 import {
+  isCausesConsequencesDocumentsPublishable,
+  isCausesConsequencesDocumentsStepComplete,
+  isCausesConsequencesStep3Complete,
+  isCausesConsequencesStep5Complete,
+  normalizeCausesConsequencesPayload,
+} from "@/lib/tache/non-redaction/causes-consequences-payload";
+import {
   isLigneDuTempsStep3Complete,
   isLigneDuTempsStep5SegmentComplete,
   normalizeLigneDuTempsPayload,
@@ -52,6 +59,7 @@ import {
 import {
   isActiveAvantApresVariant,
   isActiveCarteHistoriqueVariant,
+  isActiveCausesConsequencesVariant,
   isActiveLigneDuTempsVariant,
   isActiveManifestationsVariant,
   isActiveOrdreChronologiqueVariant,
@@ -61,6 +69,7 @@ import { getRedactionSliceForPreview } from "@/lib/tache/tache-form-state-types"
 import {
   nonRedactionAvantApresPayload,
   nonRedactionCartePayload,
+  nonRedactionCausesConsequencesPayload,
   nonRedactionLignePayload,
   nonRedactionManifestationsPayload,
   nonRedactionOrdrePayload,
@@ -92,6 +101,10 @@ function redactionStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveManifestationsVariant(state)) {
     const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
     return p !== null && isManifestationsStep3Complete(p);
+  }
+  if (isActiveCausesConsequencesVariant(state)) {
+    const p = normalizeCausesConsequencesPayload(nonRedactionCausesConsequencesPayload(state));
+    return p !== null && isCausesConsequencesStep3Complete(p);
   }
   // Les aspects imposés par le parcours (ex. Section B) satisfont la garde « au moins un aspect »
   // sans que l'enseignant ait à les re-cocher au Bloc 7.
@@ -138,6 +151,9 @@ function documentsStepOkForPublish(state: TacheFormState): boolean {
   if (isActiveManifestationsVariant(state)) {
     return isManifestationsDocumentsPublishable(b.documentSlots, state.bloc4.documents);
   }
+  if (isActiveCausesConsequencesVariant(state)) {
+    return isCausesConsequencesDocumentsPublishable(b.documentSlots, state.bloc4.documents);
+  }
   return isDocumentsStepPublishable(b.documentSlots, state.bloc4.documents);
 }
 
@@ -178,6 +194,12 @@ function documentsCompleteButUrlsBlocked(state: TacheFormState): boolean {
     return (
       isManifestationsDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
       !isManifestationsDocumentsPublishable(b.documentSlots, state.bloc4.documents)
+    );
+  }
+  if (isActiveCausesConsequencesVariant(state)) {
+    return (
+      isCausesConsequencesDocumentsStepComplete(b.documentSlots, state.bloc4.documents) &&
+      !isCausesConsequencesDocumentsPublishable(b.documentSlots, state.bloc4.documents)
     );
   }
   return isDocumentsCompleteButNotPublishable(b.documentSlots, state.bloc4.documents);
@@ -223,6 +245,10 @@ export function isWizardPublishReady(state: TacheFormState): boolean {
     const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
     if (p === null || !isManifestationsStep5Complete(p)) return false;
   }
+  if (isActiveCausesConsequencesVariant(state)) {
+    const p = normalizeCausesConsequencesPayload(nonRedactionCausesConsequencesPayload(state));
+    if (p === null || !isCausesConsequencesStep5Complete(p)) return false;
+  }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;
   return true;
@@ -259,6 +285,10 @@ export function isPublishBlockedOnlyByIconographicUrls(state: TacheFormState): b
   if (isActiveManifestationsVariant(state)) {
     const p = normalizeManifestationsPayload(nonRedactionManifestationsPayload(state));
     if (p === null || !isManifestationsStep5Complete(p)) return false;
+  }
+  if (isActiveCausesConsequencesVariant(state)) {
+    const p = normalizeCausesConsequencesPayload(nonRedactionCausesConsequencesPayload(state));
+    if (p === null || !isCausesConsequencesStep5Complete(p)) return false;
   }
   if (!isCdStepComplete(state)) return false;
   if (!isConnaissancesStepComplete(state)) return false;
