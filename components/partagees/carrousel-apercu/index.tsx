@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import type { TypeFeuillet } from "@/lib/epreuve/pagination/types";
 import { CARROUSEL_APERCU_COPY, FEUILLET_LABELS_COPY } from "./copy";
@@ -11,7 +11,13 @@ import { cn } from "@/lib/utils/cn";
 /*  Types                                                                     */
 /* -------------------------------------------------------------------------- */
 
-type FeuilletInfo = {
+const ORDRE_FEUILLETS: TypeFeuillet[] = [
+  "dossier-documentaire",
+  "questionnaire",
+  "cahier-reponses",
+];
+
+export type FeuilletInfo = {
   type: TypeFeuillet;
   label: string;
   pages: string[];
@@ -25,19 +31,20 @@ export type CarrouselApercuProps = {
   pagesParFeuillet: Record<TypeFeuillet, number>;
   /** Empreinte FNV-1a des PNG affichés (key React pour bust de cache). */
   empreintePng: string;
+  /** Feuillet actuellement affiché — contrôlé par le parent. */
+  feuilletActif: TypeFeuillet;
 };
 
 /* -------------------------------------------------------------------------- */
 /*  Construction des feuillets actifs                                         */
 /* -------------------------------------------------------------------------- */
 
-const ORDRE_FEUILLETS: TypeFeuillet[] = [
-  "dossier-documentaire",
-  "questionnaire",
-  "cahier-reponses",
-];
-
-function construireFeuillets(
+/**
+ * Liste les feuillets non vides (au moins une page) avec leur tranche
+ * de pages PNG. Exporté pour permettre au parent (modale carrousel) de
+ * construire les onglets feuillets et savoir s'il faut les afficher.
+ */
+export function construireFeuillets(
   pages: string[],
   pagesParFeuillet: Record<TypeFeuillet, number>,
 ): FeuilletInfo[] {
@@ -68,21 +75,17 @@ function CarrouselFeuillet({
   feuillet,
   totalPagesGlobal,
   empreintePng,
-  indexInitial = 0,
-  surChangementPage,
 }: {
   feuillet: FeuilletInfo;
   totalPagesGlobal: number;
   empreintePng: string;
-  indexInitial?: number;
-  surChangementPage?: (type: TypeFeuillet, index: number) => void;
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "center",
     containScroll: "trimSnaps",
-    startIndex: indexInitial,
+    startIndex: 0,
   });
-  const [indexActif, setIndexActif] = useState(indexInitial);
+  const [indexActif, setIndexActif] = useState(0);
   // Setter stable (référence ne change jamais) — pas de boucle de
   // re-render même si on l'utilise comme dépendance du useEffect.
   const setNavControls = useCarrouselNavSetter();
@@ -90,9 +93,7 @@ function CarrouselFeuillet({
   useEffect(() => {
     if (!emblaApi) return;
     const handler = () => {
-      const idx = emblaApi.selectedScrollSnap();
-      setIndexActif(idx);
-      surChangementPage?.(feuillet.type, idx);
+      setIndexActif(emblaApi.selectedScrollSnap());
     };
     emblaApi.on("select", handler);
     emblaApi.on("init", handler);
@@ -100,7 +101,7 @@ function CarrouselFeuillet({
       emblaApi.off("select", handler);
       emblaApi.off("init", handler);
     };
-  }, [emblaApi, feuillet.type, surChangementPage]);
+  }, [emblaApi]);
 
   // Expose les controls au Context (consommé par le footer de la modale).
   useEffect(() => {
@@ -158,63 +159,32 @@ function CarrouselFeuillet({
 /*  Composant principal                                                       */
 /* -------------------------------------------------------------------------- */
 
-export function CarrouselApercu({ pages, pagesParFeuillet, empreintePng }: CarrouselApercuProps) {
+/**
+ * Carrousel des pages d'un feuillet — composant pur de rendu.
+ *
+ * Le state du feuillet actif et les onglets de navigation sont remontés
+ * dans le parent (modale carrousel) pour s'intégrer au flux DOM de la
+ * modale (header → onglets → contenu → footer).
+ */
+export function CarrouselApercu({
+  pages,
+  pagesParFeuillet,
+  empreintePng,
+  feuilletActif,
+}: CarrouselApercuProps) {
   const feuillets = construireFeuillets(pages, pagesParFeuillet);
-  const [feuilletActifIndex, setFeuilletActifIndex] = useState(0);
-  const feuilletActif = feuillets[feuilletActifIndex] ?? feuillets[0];
+  const feuillet = feuillets.find((f) => f.type === feuilletActif) ?? feuillets[0] ?? null;
 
-  // Persistance de la position par feuillet au changement d'onglet
-  const positionsRef = useRef<Partial<Record<TypeFeuillet, number>>>({});
-  const [indexInitialActuel, setIndexInitialActuel] = useState(0);
-  const surChangementPage = useCallback((type: TypeFeuillet, index: number) => {
-    positionsRef.current[type] = index;
-  }, []);
-
-  if (feuillets.length === 0) return null;
+  if (!feuillet) return null;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden">
-      {/* Onglets feuillets */}
-      {feuillets.length > 1 && (
-        <div role="tablist" className="flex gap-1 border-b border-border" aria-label="Feuillets">
-          {feuillets.map((f, i) => (
-            <button
-              key={f.type}
-              type="button"
-              role="tab"
-              aria-selected={i === feuilletActifIndex}
-              onClick={() => {
-                setFeuilletActifIndex(i);
-                setIndexInitialActuel(
-                  positionsRef.current[feuillets[i]?.type ?? "dossier-documentaire"] ?? 0,
-                );
-              }}
-              className={cn(
-                "px-4 py-2 text-sm font-medium transition-colors",
-                i === feuilletActifIndex
-                  ? "border-b-2 border-accent text-accent"
-                  : "text-muted hover:text-deep",
-              )}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {/* Carrousel du feuillet actif — overflow-hidden, pas de scroll vertical. */}
-      {feuilletActif && (
-        <div role="tabpanel" className="min-h-0 flex-1 overflow-hidden">
-          <CarrouselFeuillet
-            key={feuilletActif.type}
-            feuillet={feuilletActif}
-            totalPagesGlobal={pages.length}
-            empreintePng={empreintePng}
-            indexInitial={indexInitialActuel}
-            surChangementPage={surChangementPage}
-          />
-        </div>
-      )}
+    <div role="tabpanel" className="min-h-0 flex-1 overflow-hidden">
+      <CarrouselFeuillet
+        key={feuillet.type}
+        feuillet={feuillet}
+        totalPagesGlobal={pages.length}
+        empreintePng={empreintePng}
+      />
     </div>
   );
 }

@@ -7,10 +7,11 @@ import {
   NavbarModesImpression,
   type OptionCorrige,
 } from "@/components/partagees/navbar-modes-impression";
-import type { ModeImpression } from "@/lib/epreuve/pagination/types";
-import { CarrouselApercu } from "./index";
+import type { ModeImpression, TypeFeuillet } from "@/lib/epreuve/pagination/types";
+import { CarrouselApercu, construireFeuillets } from "./index";
 import { CARROUSEL_APERCU_COPY } from "./copy";
 import { CarrouselNavProvider, useCarrouselNavControls } from "./nav-context";
+import { cn } from "@/lib/utils/cn";
 
 export type CarrouselApercuModaleProps = {
   open: boolean;
@@ -37,13 +38,12 @@ const DEBOUNCE_REGENERATION_MS = 500;
 export function CarrouselApercuModale({ open, onClose, payload }: CarrouselApercuModaleProps) {
   const titleId = useId();
 
-  // State des modes — initialisé depuis le payload (qui porte les défauts
-  // spec §7.2 : tâche=formatif, épreuve=sommatif-standard).
-  const modeInitial: ModeImpression = payload.type === "document" ? "formatif" : payload.mode;
-  const optionCorrigeInitial: OptionCorrige =
-    payload.type !== "document" && payload.estCorrige ? "simple" : "aucun";
-  const [mode, setMode] = useState<ModeImpression>(modeInitial);
-  const [optionCorrige, setOptionCorrige] = useState<OptionCorrige>(optionCorrigeInitial);
+  // Défauts neutres à l'ouverture, indépendants du payload reçu : la
+  // modale est l'outil de configuration complet et démarre toujours sur
+  // le mode le plus simple (formatif, sans corrigé). Le payload reçu de
+  // la vue détaillée porte ses propres défauts pour son rendu inline.
+  const [mode, setMode] = useState<ModeImpression>("formatif");
+  const [optionCorrige, setOptionCorrige] = useState<OptionCorrige>("aucun");
 
   // Phase 6 : « Corrigé simple » et « Corrigé détaillé » mappent tous deux
   // vers estCorrige=true. Le rendu différencié arrive en Phase 5.
@@ -57,6 +57,26 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
   }, [payload, mode, estCorrige]);
 
   const { etat, generer, telechargerPdf, pdfEnCours } = useApercuPng(payloadEffectif);
+
+  // State du feuillet actif — onglets rendus dans la modale (pas dans
+  // CarrouselApercu) pour s'intégrer au flux DOM (header → onglets →
+  // contenu → footer) sans flotter par-dessus la sidebar.
+  const [feuilletActif, setFeuilletActif] = useState<TypeFeuillet>("dossier-documentaire");
+
+  const feuillets = useMemo(() => {
+    if (etat.statut !== "pret") return [];
+    return construireFeuillets(etat.pages, etat.pagesParFeuillet);
+  }, [etat]);
+
+  // Reset du feuillet actif au premier disponible quand la liste change
+  // (changement de mode → composition différente des feuillets).
+  useEffect(() => {
+    if (feuillets.length === 0) return;
+    const existe = feuillets.some((f) => f.type === feuilletActif);
+    if (!existe) {
+      setFeuilletActif(feuillets[0]!.type);
+    }
+  }, [feuillets, feuilletActif]);
 
   // Régénération : immédiate à l'ouverture, debounce 500ms sur changement
   // ultérieur de mode/corrigé. `generer` n'est pas dans les deps pour éviter
@@ -145,8 +165,40 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
             </button>
           </header>
 
-          {/* Contenu principal — overflow-hidden, pas de scroll vertical. */}
-          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-steel/25 px-4 py-6 sm:px-8">
+          {/* Onglets feuillets — fond blanc, border-bottom — conditionnel.
+              Cachés en formatif (un seul feuillet questionnaire). Apparaissent
+              en sommatif (2) ou ministériel (3). */}
+          {feuillets.length > 1 && (
+            <div
+              role="tablist"
+              aria-label="Feuillets"
+              className="flex shrink-0 gap-1 border-b-[0.5px] border-border bg-(--color-background-primary) px-4 sm:px-5"
+            >
+              {feuillets.map((f) => {
+                const estActif = f.type === feuilletActif;
+                return (
+                  <button
+                    key={f.type}
+                    type="button"
+                    role="tab"
+                    aria-selected={estActif}
+                    onClick={() => setFeuilletActif(f.type)}
+                    className={cn(
+                      "px-4 py-2 text-sm font-medium transition-colors",
+                      estActif
+                        ? "border-b-2 border-accent text-accent"
+                        : "text-muted hover:text-deep",
+                    )}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Contenu principal — fond gris secondaire, overflow-hidden. */}
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-(--color-background-secondary) px-4 py-6 sm:px-8">
             {etat.statut === "chargement" && <SqueletteChargement />}
 
             {etat.statut === "erreur" && (
@@ -158,6 +210,7 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
                 pages={etat.pages}
                 pagesParFeuillet={etat.pagesParFeuillet}
                 empreintePng={etat.empreintePng}
+                feuilletActif={feuilletActif}
               />
             )}
           </div>
