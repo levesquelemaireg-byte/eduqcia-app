@@ -251,8 +251,9 @@ function buildLigneDuTempsTimelineHtml(
   const friseLines: string[] = [];
   for (let j = 0; j < xs.length; j++) {
     const x = xs[j]!;
+    // stroke-width 1px max (Phase 8b correction 9 : bordures 1px partout).
     friseLines.push(
-      `<line x1="${x}" y1="0" x2="${x}" y2="${LIGNE_TEMPS_RIBBON_RIBBON_H}" stroke="${LIGNE_TEMPS_RIBBON_INK}" stroke-width="1.5" />`,
+      `<line x1="${x}" y1="0" x2="${x}" y2="${LIGNE_TEMPS_RIBBON_RIBBON_H}" stroke="${LIGNE_TEMPS_RIBBON_INK}" stroke-width="1" />`,
     );
   }
 
@@ -262,7 +263,9 @@ function buildLigneDuTempsTimelineHtml(
     const bx = cx - half;
     letters.push(
       `<rect x="${bx}" y="${LIGNE_TEMPS_RIBBON_LETTER_BOX_TOP_U}" width="${LIGNE_TEMPS_RIBBON_LETTER_BOX_U}" height="${LIGNE_TEMPS_RIBBON_LETTER_BOX_U}" rx="0" fill="#ffffff" stroke="${LIGNE_TEMPS_RIBBON_INK}" stroke-width="1" />` +
-        `<text x="${cx}" y="${LIGNE_TEMPS_RIBBON_LETTER_TEXT_CENTER_Y}" dominant-baseline="central" text-anchor="middle" fill="${LIGNE_TEMPS_RIBBON_INK}" font-size="${LIGNE_TEMPS_RIBBON_LETTER_FONT_SIZE}" font-weight="700" font-family="Arial, sans-serif">${escapeHtml(String(seg.letter))}</text>`,
+        // dy="0.35em" : fallback pour Puppeteer/Chrome où dominant-baseline="central"
+        // ne centre pas correctement sur les majuscules (Phase 8b correction 6).
+        `<text x="${cx}" y="${LIGNE_TEMPS_RIBBON_LETTER_TEXT_CENTER_Y}" dy="0.35em" dominant-baseline="central" text-anchor="middle" fill="${LIGNE_TEMPS_RIBBON_INK}" font-size="${LIGNE_TEMPS_RIBBON_LETTER_FONT_SIZE}" font-weight="400" font-family="Arial, sans-serif">${escapeHtml(String(seg.letter))}</text>`,
     );
   }
 

@@ -170,7 +170,10 @@ export function mergeCausesConsequencesPayload(
  * Toujours longueur 2.
  *
  * - 4.3 → ["Un facteur explicatif de {sujet}", "Un facteur explicatif de {sujet}"]
- * - 4.4 → ["Une cause de {sujet}", "Une conséquence de {sujet}"]
+ * - 4.4 → ["Cause :", "Conséquence :"] — labels courts ; le sujet et la
+ *   structure cause/conséquence sont déjà rappelés dans la consigne
+ *   (intro + liste à puces). Évite la redondance et le bug de
+ *   concaténation des prépositions (ex. "de" + "du" = "de du").
  */
 export function getCausesConsequencesCategoryLabels(
   comportementId: CausesConsequencesComportementId,
@@ -184,8 +187,8 @@ export function getCausesConsequencesCategoryLabels(
     ];
   }
   return [
-    `${NR_CAUSES_CONSEQUENCES_44_CAUSE_LABEL_PREFIX}${sujet}`,
-    `${NR_CAUSES_CONSEQUENCES_44_CONSEQUENCE_LABEL_PREFIX}${sujet}`,
+    NR_CAUSES_CONSEQUENCES_44_CAUSE_LABEL_PREFIX,
+    NR_CAUSES_CONSEQUENCES_44_CONSEQUENCE_LABEL_PREFIX,
   ];
 }
 

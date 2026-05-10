@@ -253,12 +253,14 @@ function escapeHtml(s: string): string {
 
 function buildIntroHtml(p: ManifestationsPayload): string {
   // `{{doc_1}}` à `{{doc_4}}` sont réécrits à l'impression (épreuve / feuille élève).
+  // Spec §4 / Phase 8b correction 11 : intro + instruction fusionnées
+  // dans un seul paragraphe pour un texte continu (pas de saut artificiel).
   const docToken =
     p.comportementId === "5.1" ? NR_MANIFESTATIONS_51_DOC_TOKEN : NR_MANIFESTATIONS_52_DOC_TOKEN;
   const sujet = escapeHtml(p.consigneSujet.trim());
   const inscrivez =
     p.comportementId === "5.1" ? NR_MANIFESTATIONS_51_INSCRIVEZ : NR_MANIFESTATIONS_52_INSCRIVEZ;
-  return `<p class="manifestations-eleve-intro">${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_PREFIX)}${docToken}${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_SUFFIX)} ${sujet}.</p><p class="manifestations-eleve-instruction">${escapeHtml(inscrivez)}</p>`;
+  return `<p class="manifestations-eleve-intro">${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_PREFIX)}${docToken}${escapeHtml(NR_MANIFESTATIONS_PUBLISHED_INTRO_SUFFIX)} ${sujet}. ${escapeHtml(inscrivez)}</p>`;
 }
 
 function buildCelluleHtml(label: string, casesCount: number): string {

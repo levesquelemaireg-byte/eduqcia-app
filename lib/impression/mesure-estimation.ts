@@ -126,6 +126,36 @@ function longueurConsigne(content: unknown): { texte: string; longueur: number }
   return { texte: "", longueur: 0 };
 }
 
+/**
+ * Overhead vertical d'un dispositif visuel NR (table, frise, grille…),
+ * non capturé par la simple longueur HTML stripped. L'objectif est que
+ * `paginer` ne sous-estime pas un quadruplet NR, ce qui causerait une
+ * coupure visuelle (page-break-inside: avoid masquerait alors le débordement
+ * via overflow: hidden sur `.page-content`).
+ *
+ * Phase 8b correction 7. Calibré généreusement (privilégie sur-estimation).
+ */
+function overheadDispositifNR(consigne: unknown): number {
+  if (typeof consigne === "string") return 0;
+  if (!estObjet(consigne) || typeof consigne.parcours !== "string") return 0;
+  switch (consigne.parcours) {
+    case "ordre-chrono-eleve":
+      return 140; // grille 2×2 d'options A-D
+    case "ligne-temps-eleve":
+      return 160; // frise SVG 800×120
+    case "avant-apres-eleve":
+      return 200; // tableau 4 rangées + en-têtes + gap 4px
+    case "carte-historique-eleve":
+      return 160; // table A-D ou liste d'items
+    case "manifestations-eleve":
+      return 100; // grille 2×N de cellules avec cases
+    case "causes-consequences-eleve":
+      return 100; // 2 cellules empilées
+    default:
+      return 80;
+  }
+}
+
 function estimerHauteurBlocQuadruplet(content: unknown): number {
   if (!estObjet(content)) return 260;
 
@@ -142,6 +172,7 @@ function estimerHauteurBlocQuadruplet(content: unknown): number {
   if (hasConsigne) {
     const lignesConsigne = lignesDepuisLongueur(consigneInfo.longueur, 92);
     total += 12 + lignesConsigne * 19;
+    total += overheadDispositifNR(content.consigne);
   }
 
   if (hasCorrige) {

@@ -126,7 +126,11 @@ describe("epreuveVersImprimable — mode formatif", () => {
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
     const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
-    const contenu = blocs[0].content as { guidage: { content: string } | null };
+    // Phase 8b correction 2 : en formatif, dossier-page de chaque tâche
+    // précède son quadruplet → on filtre par kind pour cibler le quadruplet.
+    const quadruplet = blocs.find((b) => b.kind === "quadruplet");
+    expect(quadruplet).toBeDefined();
+    const contenu = quadruplet!.content as { guidage: { content: string } | null };
     expect(contenu.guidage).not.toBeNull();
     expect(contenu.guidage?.content).toContain("Guidage");
   });
@@ -259,12 +263,18 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
   const tache = creerTache({ id: "t1", corrige: "<p>Réponse attendue</p>" });
   const epreuve = creerEpreuve([tache]);
 
+  // Phase 8b correction 2 : en formatif, chaque tâche est précédée de
+  // ses dossier-pages (kind === "dossier-page"). On filtre par kind
+  // "quadruplet" pour ne compter que les quadruplets et corrigés.
+
   it("ajoute un bloc corrigé après le quadruplet quand estCorrige=true", () => {
     const options: OptionsRendu = { mode: "formatif", estCorrige: true };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire")
+      .flatMap((p) => p.blocs)
+      .filter((b) => b.kind === "quadruplet");
     // quadruplet + corrigé
     expect(blocs).toHaveLength(2);
     expect(blocs[1].id).toContain("corrige");
@@ -275,7 +285,9 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire")
+      .flatMap((p) => p.blocs)
+      .filter((b) => b.kind === "quadruplet");
     expect(blocs).toHaveLength(1);
   });
 
@@ -286,7 +298,9 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
     const resultat = epreuveVersImprimable(ep, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire").flatMap((p) => p.blocs);
+    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire")
+      .flatMap((p) => p.blocs)
+      .filter((b) => b.kind === "quadruplet");
     expect(blocs).toHaveLength(1);
   });
 });
@@ -296,8 +310,11 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
 /* -------------------------------------------------------------------------- */
 
 describe("epreuveVersImprimable — pagination", () => {
+  // Phase 8b correction 2 : en formatif, chaque tâche est précédée de
+  // ses dossier-pages. Pour tester la pagination pure (sans dossier-pages
+  // qui doublent la hauteur), on passe `documents: []` aux fixtures.
   it("crée plusieurs pages quand les blocs ne tiennent pas sur une seule", () => {
-    const taches = Array.from({ length: 5 }, (_, i) => creerTache({ id: `t${i}` }));
+    const taches = Array.from({ length: 5 }, (_, i) => creerTache({ id: `t${i}`, documents: [] }));
     const epreuve = creerEpreuve(taches);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
     // Chaque bloc = 300px, max = 904px → 3 blocs par page, 5 blocs → 2 pages
@@ -309,7 +326,7 @@ describe("epreuveVersImprimable — pagination", () => {
   });
 
   it("numérote les pages correctement (globalement)", () => {
-    const taches = Array.from({ length: 4 }, (_, i) => creerTache({ id: `t${i}` }));
+    const taches = Array.from({ length: 4 }, (_, i) => creerTache({ id: `t${i}`, documents: [] }));
     const epreuve = creerEpreuve(taches);
     const options: OptionsRendu = { mode: "formatif", estCorrige: false };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(500));

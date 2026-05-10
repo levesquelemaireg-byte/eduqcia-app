@@ -485,7 +485,8 @@ function optionTableRowHtml(p: AvantApresPayload, row: AvantApresOptionRow): str
   const av = docTokensForPair(row.avantSlots);
   const ap = docTokensForPair(row.apresSlots);
   const repInner = buildEleveSheetReperePivotInnerHtml(p);
-  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-repere">${repInner}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
+  // Lettre A) B) C) D) en poids normal (spec §4.3 : pas en gras).
+  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell">${escapeHtml(row.letter)})</th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-repere">${repInner}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
 }
 
 export function buildAvantApresConsigneHtml(p: AvantApresPayload): string {

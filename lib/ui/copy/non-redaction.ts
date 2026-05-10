@@ -640,10 +640,13 @@ export const NR_CAUSES_CONSEQUENCES_44_BULLET_CONSEQUENCE_PREFIX = "une conséqu
 
 /** 4.3 — préfixe de label de cellule (espace de production + corrigé). */
 export const NR_CAUSES_CONSEQUENCES_43_LABEL_PREFIX = "Un facteur explicatif de ";
-/** 4.4 — préfixe de label « cause » (espace de production + corrigé). */
-export const NR_CAUSES_CONSEQUENCES_44_CAUSE_LABEL_PREFIX = "Une cause de ";
-/** 4.4 — préfixe de label « conséquence » (espace de production + corrigé). */
-export const NR_CAUSES_CONSEQUENCES_44_CONSEQUENCE_LABEL_PREFIX = "Une conséquence de ";
+/**
+ * 4.4 — labels courts des cellules (espace de production + corrigé).
+ * Le sujet et la structure cause/conséquence sont déjà rappelés dans la
+ * consigne (intro + liste à puces) — pas de redondance.
+ */
+export const NR_CAUSES_CONSEQUENCES_44_CAUSE_LABEL_PREFIX = "Cause :";
+export const NR_CAUSES_CONSEQUENCES_44_CONSEQUENCE_LABEL_PREFIX = "Conséquence :";
 
 /** Titre du corrigé enseignant. */
 export const NR_CAUSES_CONSEQUENCES_CORRIGE_TITRE = "Associations attendues :";

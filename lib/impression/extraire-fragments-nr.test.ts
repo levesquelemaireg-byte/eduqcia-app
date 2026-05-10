@@ -158,11 +158,12 @@ describe("extraireFragmentsNR — carte-historique 2.1 (question simple)", () =>
     consigneElement1: "le Saint-Laurent",
   });
 
-  it("intro contient intro + question, corps vide, reponse non-null", () => {
+  it("intro contient le texte fusionné intro + question (Phase 8b), corps vide, reponse non-null", () => {
     const f = extraireFragmentsNR(html);
     expect(f).not.toBeNull();
+    // Phase 8b correction 8 : intro + question fusionnées dans un seul <p>.
     expect(f!.intro).toContain('class="carte-historique-eleve-intro"');
-    expect(f!.intro).toContain('class="carte-historique-eleve-question"');
+    expect(f!.intro).toContain("le Saint-Laurent");
     expect(f!.corps).toBe("");
     expect(f!.reponse).not.toBeNull();
     expect(f!.reponse!).toContain('class="carte-historique-eleve-reponse"');
@@ -176,10 +177,11 @@ describe("extraireFragmentsNR — carte-historique 2.2 (tableau)", () => {
     consigneElement2: "Lac",
   });
 
-  it("intro contient intro + question, corps = table, reponse non-null", () => {
+  it("intro contient le texte fusionné, reponse non-null", () => {
     const f = extraireFragmentsNR(html);
     expect(f).not.toBeNull();
-    expect(f!.intro).toContain('class="carte-historique-eleve-question"');
+    // Phase 8b correction 8 : intro + question fusionnées dans un seul <p>.
+    expect(f!.intro).toContain('class="carte-historique-eleve-intro"');
     // Le builder n'émet la table que si generated22 est vrai — sinon corps reste vide.
     // On vérifie au moins que la reponse séparée est bien capturée.
     expect(f!.reponse).not.toBeNull();
@@ -194,10 +196,11 @@ describe("extraireFragmentsNR — carte-historique 2.3 (liste avec cases inline)
     consigneElement2: "Lac Saint-Jean",
   });
 
-  it("intro contient intro + question, corps = ul (items), reponse = null", () => {
+  it("intro contient le texte fusionné, corps = ul (items), reponse = null", () => {
     const f = extraireFragmentsNR(html);
     expect(f).not.toBeNull();
-    expect(f!.intro).toContain('class="carte-historique-eleve-question"');
+    // Phase 8b correction 8 : intro + lead question fusionnés dans un seul <p>.
+    expect(f!.intro).toContain('class="carte-historique-eleve-intro"');
     expect(f!.corps).toContain('class="carte-historique-eleve-items"');
     // Les <span class="carte-historique-eleve-reponse"> sont inline dans <li>
     // → restriction <div> exclut → reponse = null (cases dans corps).
@@ -221,8 +224,8 @@ describe("extraireFragmentsNR — manifestations", () => {
   it("découpe en intro + corps (grille), reponse = null", () => {
     const f = extraireFragmentsNR(html);
     expect(f).not.toBeNull();
+    // Phase 8b correction 11 : intro + instruction fusionnées dans un seul <p>.
     expect(f!.intro).toContain('class="manifestations-eleve-intro"');
-    expect(f!.intro).toContain('class="manifestations-eleve-instruction"');
     expect(f!.corps).toContain('class="manifestations-eleve-grille"');
     expect(f!.reponse).toBeNull();
     expect(f!.corps).toContain('class="manifestations-eleve-case"');

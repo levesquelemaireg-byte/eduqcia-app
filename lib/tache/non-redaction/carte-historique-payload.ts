@@ -346,9 +346,16 @@ function escapeHtml(s: string): string {
     .replace(/"/g, "&quot;");
 }
 
-function buildIntroHtml(): string {
-  // `{{doc_1}}` est réécrit à l'impression (épreuve / feuille élève).
-  return `<p class="carte-historique-eleve-intro">${NR_CARTE_PUBLISHED_INTRO_PREFIX}${NR_CARTE_PUBLISHED_INTRO_DOC_PLACEHOLDER}${NR_CARTE_PUBLISHED_INTRO_SUFFIX}</p>`;
+/**
+ * Construit l'intro fusionnée avec la question dans un seul `<p>` —
+ * spec §5.4 : « consigne unique (un seul paragraphe, pas de séparation
+ * intro/question) ». Le `{{doc_1}}` est réécrit à l'impression.
+ *
+ * Le contenu spécifique de la question est passé en `questionInner` —
+ * il vient APRÈS l'intro standard, séparé par un espace.
+ */
+function buildIntroAvecQuestion(questionInner: string): string {
+  return `<p class="carte-historique-eleve-intro">${NR_CARTE_PUBLISHED_INTRO_PREFIX}${NR_CARTE_PUBLISHED_INTRO_DOC_PLACEHOLDER}${NR_CARTE_PUBLISHED_INTRO_SUFFIX} ${questionInner}</p>`;
 }
 
 function buildReponseBoxHtml(): string {
@@ -357,12 +364,13 @@ function buildReponseBoxHtml(): string {
 
 function build21ConsigneHtml(p: CarteHistoriquePayload): string {
   const e1 = escapeHtml(p.consigneElement1.trim());
-  const question = `<p class="carte-historique-eleve-question">${escapeHtml(NR_CARTE_21_QUESTION_PREFIX)}<strong>${e1}</strong>${escapeHtml(NR_CARTE_21_QUESTION_SUFFIX)}</p>`;
-  return `${ELEVE_ROOT_OPEN}${buildIntroHtml()}${question}${buildReponseBoxHtml()}${ELEVE_ROOT_CLOSE}`;
+  const questionInner = `${escapeHtml(NR_CARTE_21_QUESTION_PREFIX)}<strong>${e1}</strong>${escapeHtml(NR_CARTE_21_QUESTION_SUFFIX)}`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroAvecQuestion(questionInner)}${buildReponseBoxHtml()}${ELEVE_ROOT_CLOSE}`;
 }
 
 function build22OptionRowHtml(letter: CarteHistoriqueLetter, pair: CarteHistoriquePair): string {
-  return `<tr class="carte-historique-eleve-option-row"><th scope="row" class="carte-historique-eleve-letter-cell"><strong>${escapeHtml(letter)})</strong></th><td>${escapeHtml(String(pair[0]))}</td><td>${escapeHtml(String(pair[1]))}</td></tr>`;
+  // Lettre A) B) C) D) en poids normal (spec §4.3 : pas en gras).
+  return `<tr class="carte-historique-eleve-option-row"><th scope="row" class="carte-historique-eleve-letter-cell">${escapeHtml(letter)})</th><td>${escapeHtml(String(pair[0]))}</td><td>${escapeHtml(String(pair[1]))}</td></tr>`;
 }
 
 function build22TableHtml(p: CarteHistoriquePayload): string {
@@ -385,9 +393,9 @@ function build22TableHtml(p: CarteHistoriquePayload): string {
 }
 
 function build22ConsigneHtml(p: CarteHistoriquePayload): string {
-  const question = `<p class="carte-historique-eleve-question">${escapeHtml(NR_CARTE_22_QUESTION)}</p>`;
+  const questionInner = escapeHtml(NR_CARTE_22_QUESTION);
   const table = build22TableHtml(p);
-  return `${ELEVE_ROOT_OPEN}${buildIntroHtml()}${question}${table}${buildReponseBoxHtml()}${ELEVE_ROOT_CLOSE}`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroAvecQuestion(questionInner)}${table}${buildReponseBoxHtml()}${ELEVE_ROOT_CLOSE}`;
 }
 
 function build23ItemHtml(label: string): string {
@@ -395,9 +403,9 @@ function build23ItemHtml(label: string): string {
 }
 
 function build23ConsigneHtml(p: CarteHistoriquePayload): string {
-  const lead = `<p class="carte-historique-eleve-question">${escapeHtml(NR_CARTE_23_QUESTION_LEAD)}</p>`;
+  const questionInner = escapeHtml(NR_CARTE_23_QUESTION_LEAD);
   const items = `<ul class="carte-historique-eleve-items">${build23ItemHtml(p.consigneElement1.trim())}${build23ItemHtml(p.consigneElement2.trim())}</ul>`;
-  return `${ELEVE_ROOT_OPEN}${buildIntroHtml()}${lead}${items}${ELEVE_ROOT_CLOSE}`;
+  return `${ELEVE_ROOT_OPEN}${buildIntroAvecQuestion(questionInner)}${items}${ELEVE_ROOT_CLOSE}`;
 }
 
 /** HTML stocké en `tache.consigne` — feuille élève complète selon comportement. */

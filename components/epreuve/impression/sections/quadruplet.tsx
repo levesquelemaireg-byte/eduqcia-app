@@ -43,18 +43,23 @@ const STYLE_BASE: React.CSSProperties = {
   marginBottom: "12px",
 };
 
-const STYLE_CONSIGNE: React.CSSProperties = { fontSize: "11pt", lineHeight: 1.5 };
+const STYLE_CONSIGNE: React.CSSProperties = { fontSize: "11pt", lineHeight: 1.35 };
 
-/** Hanging indent : numéro fixe + colonne contenu indentée (spec §4.2). */
+/**
+ * Hanging indent : numéro fixe + colonne contenu indentée (spec §4.2).
+ * `align-items: baseline` aligne la baseline du numéro sur celle de la
+ * première ligne de texte de la consigne (Phase 8b correction 1).
+ */
 const STYLE_HANGING: React.CSSProperties = {
   display: "flex",
+  alignItems: "baseline",
   gap: "6px",
-  marginBottom: "18pt", // espace avant la grille (spec §4)
+  marginBottom: "14pt", // espace avant la grille (Phase 8b correction 5)
 };
 
 const STYLE_NUMERO: React.CSSProperties = {
   fontSize: "11pt",
-  fontWeight: 500,
+  fontWeight: 400, // poids normal — pas en gras (Phase 8b correction 1)
   flexShrink: 0,
   marginTop: 0,
 };

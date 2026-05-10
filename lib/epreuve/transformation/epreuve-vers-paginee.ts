@@ -141,7 +141,18 @@ function construireBlocsDossierDocumentaire(
   );
 }
 
-/** Construit les blocs du questionnaire (un quadruplet par tâche, + corrigé si flag actif). */
+/**
+ * Construit les blocs du questionnaire — un quadruplet par tâche
+ * (+ corrigé si flag actif).
+ *
+ * En mode formatif, chaque quadruplet est précédé des blocs dossier-page
+ * de SES documents (numérotation locale 1..N par tâche — Phase 8b
+ * correction 2). En sommatif/ministériel, les documents vivent dans
+ * un feuillet `dossier-documentaire` séparé avec numérotation globale.
+ *
+ * Les placeholders `{{doc_X}}` dans les consignes/guidages sont résolus
+ * avec le bon scope : LOCAL ([tache]) en formatif, GLOBAL (taches) sinon.
+ */
 function construireBlocsQuestionnaire(
   taches: TacheImpression[],
   mode: ModeImpression,
@@ -149,15 +160,34 @@ function construireBlocsQuestionnaire(
 ): Bloc[] {
   const regles = reglesVisibilite(mode);
   const blocs: Bloc[] = [];
+  const formatif = mode === "formatif";
 
   taches.forEach((tache, i) => {
-    const { consigne: consigneResolue, guidage } = resoudreRefsDansTache(tache, taches);
+    // Scope de numérotation des `{{doc_X}}` : local en formatif, global ailleurs.
+    const refsScope = formatif ? [tache] : taches;
+    const { consigne: consigneResolue, guidage } = resoudreRefsDansTache(tache, refsScope);
 
     // Pour les NR, on découpe la consigne en fragments (intro/corps/reponse)
     // afin que le renderer puisse insérer le guidage entre intro et corps
     // (spec §3.2). Pour les rédactionnels, on garde le string tel quel.
     const fragments = extraireFragmentsNR(consigneResolue);
     const consigne: string | FragmentsNR = fragments ?? consigneResolue;
+
+    // En formatif : insérer les blocs dossier-page de la tâche AVANT son
+    // quadruplet (documents intégrés à chaque question).
+    if (formatif && tache.documents.length > 0) {
+      const docsNumerotes = tache.documents.map((document, idx) => ({
+        numeroGlobal: idx + 1,
+        document,
+      }));
+      blocs.push(
+        ...construireBlocsDossierPages(
+          docsNumerotes,
+          { titresVisibles: regles.titresDocumentsVisibles },
+          `formatif-tache-${tache.id}-dossier`,
+        ),
+      );
+    }
 
     const contenu: ContenuQuadruplet = {
       tacheIndex: i,
@@ -179,7 +209,7 @@ function construireBlocsQuestionnaire(
       const contenuCorrige: ContenuCorrige = {
         tacheIndex: i,
         titre: tache.titre,
-        corrige: resoudreReferencesDocuments(tache.corrige, tache.documents, taches),
+        corrige: resoudreReferencesDocuments(tache.corrige, tache.documents, refsScope),
         outilEvaluation: tache.outilEvaluation,
       };
 

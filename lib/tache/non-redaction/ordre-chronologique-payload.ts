@@ -330,7 +330,8 @@ function ordreEleveDigitCellsHtml(row: OrdreOptionRow): string {
 }
 
 function ordreEleveOptionRowHtml(letter: string, row: OrdreOptionRow): string {
-  return `<div class="ordre-chrono-eleve-option"><span class="ordre-chrono-eleve-letter-label"><strong>${escapeHtml(letter)})</strong></span><span class="ordre-chrono-eleve-seq">${ordreEleveDigitCellsHtml(row)}</span></div>`;
+  // Lettre A) B) C) D) en poids normal (spec §4.3 : pas en gras).
+  return `<div class="ordre-chrono-eleve-option"><span class="ordre-chrono-eleve-letter-label">${escapeHtml(letter)})</span><span class="ordre-chrono-eleve-seq">${ordreEleveDigitCellsHtml(row)}</span></div>`;
 }
 
 /** Phrase d’intro feuille élève avec jetons `{{doc_*}}` (réécrits à l’impression épreuve). */

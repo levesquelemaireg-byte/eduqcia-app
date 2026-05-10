@@ -210,12 +210,12 @@ describe("getCausesConsequencesCategoryLabels", () => {
     ]);
   });
 
-  it("retourne cause + conséquence pour 4.4", () => {
+  it("retourne des labels courts indépendants du sujet pour 4.4 (Phase 8b correction 12)", () => {
+    // Labels courts : la consigne (intro + liste à puces cause/conséquence)
+    // rappelle déjà le sujet et la structure. Évite la redondance et le bug
+    // de concaténation des prépositions ("de" + "du" → "de du").
     const labels = getCausesConsequencesCategoryLabels("4.4", "l'arrivée des loyalistes");
-    expect(labels).toEqual([
-      "Une cause de l'arrivée des loyalistes",
-      "Une conséquence de l'arrivée des loyalistes",
-    ]);
+    expect(labels).toEqual(["Cause :", "Conséquence :"]);
   });
 
   it("trim le sujet", () => {
@@ -352,7 +352,7 @@ describe("buildCausesConsequencesConsigneHtml", () => {
     expect((html.match(/causes-consequences-eleve-case/g) ?? []).length).toBe(2);
   });
 
-  it("4.4 — intro avec liste à puces + 2 cellules distinctes", () => {
+  it("4.4 — intro avec liste à puces + 2 cellules avec labels courts (Phase 8b correction 12)", () => {
     const html = buildCausesConsequencesConsigneHtml({
       schemaVersion: 1,
       comportementId: "4.4",
@@ -360,10 +360,12 @@ describe("buildCausesConsequencesConsigneHtml", () => {
       associations: [null, null],
     });
     expect(html).toContain("causes-consequences-eleve-intro-list");
+    // Liste à puces (intro) : sujet visible.
     expect(html).toContain("une cause de l'arrivée des loyalistes");
     expect(html).toContain("une conséquence de l'arrivée des loyalistes");
-    expect(html).toContain("Une cause de l'arrivée des loyalistes");
-    expect(html).toContain("Une conséquence de l'arrivée des loyalistes");
+    // Labels des cellules : courts, indépendants du sujet (évite redondance).
+    expect(html).toContain("Cause :");
+    expect(html).toContain("Conséquence :");
   });
 
   it("échappe les caractères HTML du sujet", () => {
@@ -415,15 +417,15 @@ describe("buildCausesConsequencesCorrigeHtml", () => {
     expect(html).toContain(": 2");
   });
 
-  it("4.4 — distingue cause et conséquence", () => {
+  it("4.4 — distingue cause et conséquence (labels courts Phase 8b)", () => {
     const html = buildCausesConsequencesCorrigeHtml({
       schemaVersion: 1,
       comportementId: "4.4",
       consigneSujet: "l'arrivée",
       associations: [2, 1],
     });
-    expect(html).toContain("Une cause de l'arrivée");
-    expect(html).toContain("Une conséquence de l'arrivée");
+    expect(html).toContain("Cause :");
+    expect(html).toContain("Conséquence :");
     expect(html).toContain(": 2");
     expect(html).toContain(": 1");
   });

@@ -28,13 +28,14 @@ const STYLE_BASE: React.CSSProperties = {
 
 const STYLE_HANGING: React.CSSProperties = {
   display: "flex",
+  alignItems: "baseline", // alignement baseline numéro / 1re ligne consigne
   gap: "6px",
-  marginBottom: "18pt",
+  marginBottom: "14pt", // Phase 8b correction 5 : 18pt → 14pt
 };
 
 const STYLE_NUMERO: React.CSSProperties = {
   fontSize: "11pt",
-  fontWeight: 500,
+  fontWeight: 400, // poids normal — pas en gras (Phase 8b correction 1)
   flexShrink: 0,
   marginTop: 0,
 };
@@ -52,7 +53,7 @@ export function SectionCorrige({ contenu }: SectionCorrigeProps) {
       <div style={STYLE_HANGING}>
         <span style={STYLE_NUMERO}>{tacheIndex + 1}.</span>
         <div
-          style={{ ...STYLE_COLONNE_CONTENU, fontSize: "11pt", lineHeight: 1.5 }}
+          style={{ ...STYLE_COLONNE_CONTENU, fontSize: "11pt", lineHeight: 1.35 }}
           dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(corrige) }}
         />
       </div>

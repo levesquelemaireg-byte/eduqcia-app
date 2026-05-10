@@ -21,8 +21,8 @@
 
 [data-ligne-temps-eleve="true"] .ligne-temps-eleve-intro {
   margin: 0 0 0.65rem;
-  font-weight: 600;
-  line-height: 1.45;
+  font-weight: 400;
+  line-height: 1.35;
   color: var(--color-deep);
 }
 
@@ -83,9 +83,10 @@
 }
 
 [data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse-box {
+  /* Case lettre standardisée 22×22 (Phase 8b correction 10). */
   display: inline-block;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 22px;
+  height: 22px;
   box-sizing: border-box;
   border: 1px solid var(--color-deep);
   flex-shrink: 0;
