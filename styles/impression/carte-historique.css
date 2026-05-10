@@ -1,0 +1,106 @@
+/**
+ * styles/impression/carte-historique.css — feuille élève OI 2.
+ *
+ * 2.1 : intro + question + « Réponse : □ »
+ * 2.2 : intro + question + tableau A–D (paires de chiffres) + « Réponse : □ »
+ * 2.3 : intro + question + liste à puces (un item par lieu, chacun avec
+ *       « Réponse : □ »)
+ *
+ * Construit dans `lib/tache/non-redaction/carte-historique-payload.ts`
+ * (`buildCarteHistoriqueConsigneHtml`).
+ *
+ * Phase 7 : déplacé depuis `app/globals.css`. Aucun changement visuel.
+ */
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-root {
+  margin-top: 0.15rem;
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-intro {
+  margin: 0 0 0.55rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-question {
+  margin: 0 0 0.65rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+/* 2.2 — tableau d'options A–D. */
+[data-carte-historique-eleve="true"] .carte-historique-eleve-table {
+  width: auto;
+  border-collapse: collapse;
+  margin: 0.35rem 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-table th,
+[data-carte-historique-eleve="true"] .carte-historique-eleve-table td {
+  border: 1px solid var(--color-border);
+  padding: 0.4rem 0.65rem;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Colonne des lettres A–D : hors du quadrillage principal (feuille ministérielle). */
+[data-carte-historique-eleve="true"] .carte-historique-eleve-th-letter,
+[data-carte-historique-eleve="true"] .carte-historique-eleve-letter-cell {
+  border: none;
+  font-weight: 700;
+  text-align: right;
+  padding-right: 0.45rem;
+  padding-left: 0;
+  color: var(--color-deep);
+}
+
+/* 2.3 — liste à puces (un item par lieu). */
+[data-carte-historique-eleve="true"] .carte-historique-eleve-items {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: disc;
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-item {
+  margin: 0 0 0.55rem;
+  line-height: 1.5;
+  color: var(--color-deep);
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Zone réponse — pattern partagé (2.1 / 2.2 = bloc final ; 2.3 = inline dans chaque item). */
+[data-carte-historique-eleve="true"] .carte-historique-eleve-reponse {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  margin-top: 0.25rem;
+  margin-left: 0.5rem;
+}
+
+[data-carte-historique-eleve="true"]
+  .carte-historique-eleve-root
+  > .carte-historique-eleve-reponse {
+  display: flex;
+  margin-left: 0;
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-reponse-label {
+  font-weight: 600;
+  color: var(--color-deep);
+}
+
+[data-carte-historique-eleve="true"] .carte-historique-eleve-reponse-box {
+  display: inline-block;
+  width: 2.1rem;
+  height: 2.1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  flex-shrink: 0;
+}

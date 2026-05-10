@@ -1,6 +1,9 @@
 import type { ReactNode } from "react";
+// Géométrie de page Letter portrait + `@page` + `@media print` — propres
+// au contexte print physique (route `/apercu/[token]` rendue par Puppeteer).
+// Les règles `[data-*-eleve]` et `.bloc-guidage` sont chargées au root
+// via `styles/impression/index.css` (cf. `app/layout.tsx`).
 import "@/styles/impression.css";
-import "@/styles/impression/base.css";
 
 /**
  * Layout minimal pour la route d'aperçu impression.

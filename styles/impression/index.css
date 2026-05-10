@@ -1,0 +1,32 @@
+/**
+ * styles/impression/index.css — barrel des règles de rendu imprimé
+ * scopées par parcours.
+ *
+ * Importe :
+ * - `base.css` : restauration listes (Tailwind Preflight) + `.bloc-guidage`
+ *   + `.zone-dispositif-nr` (page-break-inside).
+ * - 6 fichiers parcours NR : règles `[data-{parcours}-eleve="true"]`
+ *   issues du split de `app/globals.css` (Phase 7, spec §11.1).
+ *
+ * Importé par `app/layout.tsx` (root) afin de couvrir TOUS les contextes
+ * où le HTML NR peut être rendu :
+ * - route `/apercu/[token]` (impression Puppeteer, fiche détaillée)
+ * - aperçu live wizard (`ApercuImprimeLiveTache`, `ApercuImprimeLiveDocument`)
+ * - wizard édition NR (`TimeLine.tsx`, `LigneDuTempsFrisePicker.tsx`,
+ *   composants Bloc3 NR)
+ *
+ * Toutes les règles sont scopées par `[data-*-eleve]` ou par classes
+ * spécifiques `.ligne-temps-ribbon-*` — aucune pollution sur l'app.
+ *
+ * Ne contient PAS la géométrie de page (`@page`, `.page` dimensions
+ * Letter, `@media print`) — celle-ci vit dans `styles/impression.css`
+ * importé uniquement par le layout `/apercu` (contexte print physique).
+ */
+
+@import "./base.css";
+@import "./ordre-chronologique.css";
+@import "./ligne-du-temps.css";
+@import "./avant-apres.css";
+@import "./carte-historique.css";
+@import "./manifestations.css";
+@import "./causes-consequences.css";

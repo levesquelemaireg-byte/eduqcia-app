@@ -1,0 +1,92 @@
+/**
+ * styles/impression/ligne-du-temps.css — feuille élève OI 1.2.
+ *
+ * Intro + frise SVG + « Réponse » dans `consigne` ; guidage injecté entre
+ * intro et frise (cf. `lib/tache/non-redaction/ligne-du-temps-payload.ts`).
+ *
+ * Inclut aussi les classes `.ligne-temps-ribbon-*` du SVG, partagées entre
+ * le builder publié (`buildLigneDuTempsConsigneHtml`) et le wizard édition
+ * (`components/tache/non-redaction/ligne-du-temps/TimeLine.tsx` —
+ * `-letter-selected`, `-hit`).
+ *
+ * Phase 7 : déplacé depuis `app/globals.css`. Aucun changement visuel.
+ * La classe orpheline `.ligne-temps-eleve-guidage` (déclarée mais jamais
+ * émise par le builder) a été supprimée — le guidage est désormais rendu
+ * par `.bloc-guidage` (Phase 4).
+ */
+
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-root {
+  margin-top: 0.15rem;
+}
+
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-intro {
+  margin: 0 0 0.65rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-deep);
+}
+
+[data-ligne-temps-eleve="true"] .ligne-temps-frise {
+  margin: 0 0 1.1rem;
+}
+
+/*
+ * Frise ruban SVG (feuille élève + wizard) — gabarit 800×120.
+ * Couleurs en hex inline dans le markup (cf. `ligne-du-temps-payload.ts`
+ * pour la palette gris impression, `TimeLine.tsx` pour la palette teal
+ * édition).
+ */
+.ligne-temps-ribbon-svg {
+  display: block;
+  overflow: visible;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Encadré lettre sélectionnée (wizard `TimeLine`) — bordure success 2px ;
+   fond segment vert via `fill` inline sur le rect segment. */
+.ligne-temps-ribbon-letter-selected {
+  stroke: var(--color-border-success);
+  stroke-width: 2px;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Zone cliquable — `none` (pas `transparent`) pour ne pas masquer le texte
+   au-dessus dans certains moteurs. */
+.ligne-temps-ribbon-hit {
+  cursor: pointer;
+  fill: none;
+  pointer-events: all;
+}
+
+.ligne-temps-ribbon-hit:focus {
+  outline: none;
+}
+
+.ligne-temps-ribbon-hit:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.65rem;
+  margin-top: 0.25rem;
+}
+
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse-label {
+  font-weight: 600;
+  color: var(--color-deep);
+}
+
+[data-ligne-temps-eleve="true"] .ligne-temps-eleve-reponse-box {
+  display: inline-block;
+  width: 2.1rem;
+  height: 2.1rem;
+  box-sizing: border-box;
+  border: 1px solid var(--color-deep);
+  flex-shrink: 0;
+}
