@@ -8,10 +8,22 @@
  * Pour les NR, `SectionEspaceProduction` n'est PAS appelé : la zone réponse
  * vit dans `consigne.reponse` (ou `consigne.corps` quand les cases sont
  * intégrées au dispositif visuel — manifestations, causes-conséquences,
- * carte-historique 2.3). Résout Bug 4 (cases en doublon).
+ * carte-historique 2.3).
  *
- * Invariant §0.2 : le quadruplet ne peut jamais être coupé sur deux pages
- * (`break-inside: avoid` sur `.bloc-quadruplet`).
+ * Layout (spec §4.2 — hanging indent + §9.2 — titre = numéro) :
+ * - Le numéro de question (« 1. », « 2. », …) est fixe à gauche,
+ *   `flex-shrink: 0`. L'énoncé du comportement attendu n'est JAMAIS
+ *   visible par l'élève — c'est un metadata enseignant.
+ * - Tout le contenu (consigne, guidage, zone d'options, espace réponse)
+ *   vit dans la colonne indentée à droite.
+ * - La grille d'évaluation est HORS du hanging indent (pleine largeur).
+ *
+ * Spacing (spec §4 — convention `margin-bottom`, jamais `margin-top`) :
+ * - 18pt entre le dernier élément du contenu (espace réponse / fragment
+ *   NR) et la grille d'évaluation.
+ *
+ * Sécabilité (spec §4.8) : un quadruplet ne peut jamais être coupé sur
+ * deux pages — `break-inside: avoid` sur `.bloc-quadruplet`.
  */
 
 import DOMPurify from "isomorphic-dompurify";
@@ -33,6 +45,25 @@ const STYLE_BASE: React.CSSProperties = {
 
 const STYLE_CONSIGNE: React.CSSProperties = { fontSize: "11pt", lineHeight: 1.5 };
 
+/** Hanging indent : numéro fixe + colonne contenu indentée (spec §4.2). */
+const STYLE_HANGING: React.CSSProperties = {
+  display: "flex",
+  gap: "6px",
+  marginBottom: "18pt", // espace avant la grille (spec §4)
+};
+
+const STYLE_NUMERO: React.CSSProperties = {
+  fontSize: "11pt",
+  fontWeight: 500,
+  flexShrink: 0,
+  marginTop: 0,
+};
+
+const STYLE_COLONNE_CONTENU: React.CSSProperties = {
+  flex: 1,
+  minWidth: 0,
+};
+
 /** Bloc HTML inline sécurisé via DOMPurify. */
 function HtmlBloc({ html, style }: { html: string; style?: React.CSSProperties }) {
   return <div style={style} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
@@ -50,31 +81,26 @@ function BlocGuidage({ guidage }: { guidage: Guidage }) {
 }
 
 export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
-  const { tacheIndex, titre, consigne, guidage, espaceProduction, outilEvaluation } = contenu;
+  const { tacheIndex, consigne, guidage, espaceProduction, outilEvaluation } = contenu;
 
   return (
     <div className="bloc-quadruplet" style={STYLE_BASE}>
-      <p
-        style={{
-          fontSize: "11pt",
-          fontWeight: 700,
-          marginBottom: "6px",
-          marginTop: 0,
-        }}
-      >
-        {titre || `Question ${tacheIndex + 1}`}
-      </p>
+      <div style={STYLE_HANGING}>
+        <span style={STYLE_NUMERO}>{tacheIndex + 1}.</span>
+        <div style={STYLE_COLONNE_CONTENU}>
+          {typeof consigne === "string" ? (
+            <BrancheRedactionnelle
+              consigne={consigne}
+              guidage={guidage}
+              espaceProduction={espaceProduction}
+            />
+          ) : (
+            <BrancheNR fragments={consigne} guidage={guidage} />
+          )}
+        </div>
+      </div>
 
-      {typeof consigne === "string" ? (
-        <BrancheRedactionnelle
-          consigne={consigne}
-          guidage={guidage}
-          espaceProduction={espaceProduction}
-        />
-      ) : (
-        <BrancheNR fragments={consigne} guidage={guidage} />
-      )}
-
+      {/* Grille d'évaluation — HORS du hanging indent (pleine largeur, centrée). */}
       <SectionOutilEvaluation outilEvaluation={outilEvaluation} />
     </div>
   );

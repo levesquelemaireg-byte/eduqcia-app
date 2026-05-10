@@ -3,20 +3,42 @@
 import { useMemo } from "react";
 import { MetaChip } from "@/lib/fiche/primitives/MetaChip";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
+import { extraireFragmentsNR } from "@/lib/impression/extraire-fragments-nr";
+import { resoudreReferencesDocuments } from "@/lib/impression/renumerotation";
 import { ICONES_METIER } from "@/lib/ui/icons/icones-metier";
 
 type Props = {
   rang: number;
   donnees: DonneesTache;
+  /**
+   * Toutes les tâches de l'épreuve (pour la résolution des placeholders
+   * `{{doc_X}}` avec numérotation globale, cohérente avec le pipeline
+   * impression).
+   */
+  toutesLesTaches: DonneesTache[];
   surClic: () => void;
 };
 
 /**
  * Carte compacte d'une tâche dans la pile d'épreuve.
  * Affiche rang, consigne tronquée, pills OI/comportement/connaissance, footer.
+ *
+ * Pour la consigne tronquée :
+ * - Les placeholders `{{doc_X}}` sont résolus en numéros globaux
+ *   (numérotation à travers toutes les tâches de l'épreuve).
+ * - Pour les parcours NR, on n'affiche que l'intro textuelle (sans le
+ *   HTML du dispositif visuel — grille, frise, table, cases).
  */
-export function TacheMiniatureEpreuve({ rang, donnees, surClic }: Props) {
-  const consigneTexte = useMemo(() => stripHtml(donnees.consigne), [donnees.consigne]);
+export function TacheMiniatureEpreuve({ rang, donnees, toutesLesTaches, surClic }: Props) {
+  const consigneTexte = useMemo(() => {
+    const resolue = resoudreReferencesDocuments(
+      donnees.consigne,
+      donnees.documents,
+      toutesLesTaches,
+    );
+    const fragments = extraireFragmentsNR(resolue);
+    return stripHtml(fragments ? fragments.intro : resolue);
+  }, [donnees.consigne, donnees.documents, toutesLesTaches]);
   const maxPoints = useMemo(() => calculerMaxPoints(donnees), [donnees]);
   const auteurNom = donnees.auteurs[0]
     ? `${donnees.auteurs[0].first_name} ${donnees.auteurs[0].last_name}`

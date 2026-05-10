@@ -446,7 +446,7 @@
       "consigne": "<p>Exemple : expliquez l'enchaînement logique entre des faits (consigne HTML).</p>",
       "guidage": "<p>Reliez les documents dans un ordre causal cohérent.</p>",
       "corrige": "<p>Corrigé type HTML pour l'enseignant.</p>",
-      "nb_lignes": 10,
+      "nb_lignes": 6,
       "niveau_id": 3,
       "discipline_id": 3,
       "aspects_societe": [
@@ -550,7 +550,7 @@
       "consigne": "<p></p>",
       "guidage": "",
       "corrige": "",
-      "nb_lignes": 10,
+      "nb_lignes": 6,
       "niveau_id": 4,
       "discipline_id": 3,
       "aspects_societe": [

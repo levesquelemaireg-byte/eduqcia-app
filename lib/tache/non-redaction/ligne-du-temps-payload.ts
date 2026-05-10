@@ -26,13 +26,13 @@ import {
   LIGNE_TEMPS_RIBBON_LETTER_FONT_SIZE,
   LIGNE_TEMPS_RIBBON_LETTER_TEXT_CENTER_Y,
   LIGNE_TEMPS_RIBBON_POLYGON_POINTS,
+  LIGNE_TEMPS_RIBBON_PRINT_PALE,
   LIGNE_TEMPS_RIBBON_RIBBON_H,
-  LIGNE_TEMPS_RIBBON_TEAL_PALE,
   LIGNE_TEMPS_RIBBON_VB_H,
   LIGNE_TEMPS_RIBBON_VB_W,
   ligneDuTempsRibbonClipIdForBoundaries,
   ligneDuTempsRibbonFriseLayoutFromDates,
-  ligneDuTempsRibbonSegmentFillU,
+  ligneDuTempsRibbonSegmentFillPrint,
 } from "@/lib/tache/non-redaction/ligne-du-temps-ribbon-layout";
 import { prepareAvantApresConsigneForTeacherDisplay } from "@/lib/tache/non-redaction/avant-apres-payload";
 import { prepareOrdreChronologiqueConsigneForTeacherDisplay } from "@/lib/tache/non-redaction/ordre-chronologique-payload";
@@ -239,12 +239,12 @@ function buildLigneDuTempsTimelineHtml(
   const half = LIGNE_TEMPS_RIBBON_LETTER_BOX_U / 2;
 
   const defs = `<defs><clipPath id="${escapeHtml(clipId)}"><polygon points="${LIGNE_TEMPS_RIBBON_POLYGON_POINTS}" /></clipPath></defs>`;
-  const polyBg = `<polygon points="${LIGNE_TEMPS_RIBBON_POLYGON_POINTS}" fill="${LIGNE_TEMPS_RIBBON_TEAL_PALE}" />`;
+  const polyBg = `<polygon points="${LIGNE_TEMPS_RIBBON_POLYGON_POINTS}" fill="${LIGNE_TEMPS_RIBBON_PRINT_PALE}" />`;
 
   const segRects: string[] = [];
   segments.forEach((seg, i) => {
     segRects.push(
-      `<rect x="${seg.x0}" y="0" width="${seg.x1 - seg.x0}" height="${LIGNE_TEMPS_RIBBON_RIBBON_H}" fill="${ligneDuTempsRibbonSegmentFillU(i)}" />`,
+      `<rect x="${seg.x0}" y="0" width="${seg.x1 - seg.x0}" height="${LIGNE_TEMPS_RIBBON_RIBBON_H}" fill="${ligneDuTempsRibbonSegmentFillPrint(i)}" />`,
     );
   });
 
@@ -262,7 +262,7 @@ function buildLigneDuTempsTimelineHtml(
     const bx = cx - half;
     letters.push(
       `<rect x="${bx}" y="${LIGNE_TEMPS_RIBBON_LETTER_BOX_TOP_U}" width="${LIGNE_TEMPS_RIBBON_LETTER_BOX_U}" height="${LIGNE_TEMPS_RIBBON_LETTER_BOX_U}" rx="0" fill="#ffffff" stroke="${LIGNE_TEMPS_RIBBON_INK}" stroke-width="1" />` +
-        `<text x="${cx}" y="${LIGNE_TEMPS_RIBBON_LETTER_TEXT_CENTER_Y}" dominant-baseline="central" text-anchor="middle" fill="${LIGNE_TEMPS_RIBBON_INK}" font-size="${LIGNE_TEMPS_RIBBON_LETTER_FONT_SIZE}" font-weight="700" font-family="var(--font-sans)">${escapeHtml(String(seg.letter))}</text>`,
+        `<text x="${cx}" y="${LIGNE_TEMPS_RIBBON_LETTER_TEXT_CENTER_Y}" dominant-baseline="central" text-anchor="middle" fill="${LIGNE_TEMPS_RIBBON_INK}" font-size="${LIGNE_TEMPS_RIBBON_LETTER_FONT_SIZE}" font-weight="700" font-family="Arial, sans-serif">${escapeHtml(String(seg.letter))}</text>`,
     );
   }
 
@@ -280,7 +280,7 @@ function buildLigneDuTempsTimelineHtml(
   for (let j = 0; j < nums.length; j++) {
     const x = xs[j]!;
     dateTexts.push(
-      `<text x="${x}" y="${String(LIGNE_TEMPS_RIBBON_DATE_TEXT_Y)}" dominant-baseline="middle" text-anchor="middle" fill="#444444" font-size="${LIGNE_TEMPS_RIBBON_DATE_FONT_SIZE}" font-weight="${LIGNE_TEMPS_RIBBON_DATE_FONT_WEIGHT}" font-family="var(--font-sans)">${escapeHtml(String(nums[j]))}</text>`,
+      `<text x="${x}" y="${String(LIGNE_TEMPS_RIBBON_DATE_TEXT_Y)}" dominant-baseline="middle" text-anchor="middle" fill="#444444" font-size="${LIGNE_TEMPS_RIBBON_DATE_FONT_SIZE}" font-weight="${LIGNE_TEMPS_RIBBON_DATE_FONT_WEIGHT}" font-family="Arial, sans-serif">${escapeHtml(String(nums[j]))}</text>`,
     );
   }
 

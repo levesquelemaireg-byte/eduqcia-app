@@ -23,7 +23,6 @@ import {
   NR_AVANT_APRES_ELEVE_SHEET_REPONSE_LABEL,
   NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_APRES,
   NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_AVANT,
-  NR_AVANT_APRES_ELEVE_SHEET_TABLE_REPERE_TH_SR,
 } from "@/lib/ui/ui-copy";
 
 const slotIdZ = z.custom<DocumentSlotId>(
@@ -477,30 +476,26 @@ function buildEleveSheetReperePivotInnerHtml(p: AvantApresPayload): string {
   return `${escapeHtml(r)} (${escapeHtml(y)})`;
 }
 
-function optionTableFirstRowHtml(p: AvantApresPayload, row: AvantApresOptionRow): string {
+/**
+ * Une rangée du tableau d'options — la cellule pivot est répétée dans
+ * chaque rangée (spec §5.3 : pas de `rowspan` car incompatible avec le
+ * gap 4px entre rangées).
+ */
+function optionTableRowHtml(p: AvantApresPayload, row: AvantApresOptionRow): string {
   const av = docTokensForPair(row.avantSlots);
   const ap = docTokensForPair(row.apresSlots);
   const repInner = buildEleveSheetReperePivotInnerHtml(p);
-  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-repere" rowspan="4">${repInner}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
-}
-
-function optionTableFollowRowHtml(row: AvantApresOptionRow): string {
-  const av = docTokensForPair(row.avantSlots);
-  const ap = docTokensForPair(row.apresSlots);
-  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
+  return `<tr class="avant-apres-eleve-option-row"><th scope="row" class="avant-apres-eleve-letter-cell"><strong>${escapeHtml(row.letter)})</strong></th><td class="avant-apres-eleve-cell-avant">${av}</td><td class="avant-apres-eleve-cell-repere">${repInner}</td><td class="avant-apres-eleve-cell-apres">${ap}</td></tr>`;
 }
 
 export function buildAvantApresConsigneHtml(p: AvantApresPayload): string {
   const intro = buildAvantApresIntroHtml(p);
-  const head = `<thead><tr><th scope="col" class="avant-apres-eleve-th-letter">&#160;</th><th scope="col" class="avant-apres-eleve-col-avant">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_AVANT)}</th><th scope="col" class="avant-apres-eleve-col-repere avant-apres-eleve-th-repere-empty"><span class="avant-apres-sr-only">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_REPERE_TH_SR)}</span></th><th scope="col" class="avant-apres-eleve-col-apres">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_APRES)}</th></tr></thead>`;
-  const rows = p.optionRows;
-  const bodyRows =
-    rows.length === 0
-      ? ""
-      : [
-          optionTableFirstRowHtml(p, rows[0]!),
-          ...rows.slice(1).map((r) => optionTableFollowRowHtml(r)),
-        ].join("");
+  // En-tête : seules les colonnes « Avant » et « Après » sont encadrées
+  // (spec §5.3). La cellule centrale (sous-le-pivot) est conservée vide
+  // pour préserver l'alignement à 4 colonnes du tbody, mais sans bordure
+  // visible (cf. .avant-apres-eleve-th-repere-empty dans globals.css).
+  const head = `<thead><tr><th scope="col" class="avant-apres-eleve-th-letter">&#160;</th><th scope="col" class="avant-apres-eleve-col-avant">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_AVANT)}</th><th scope="col" class="avant-apres-eleve-col-repere avant-apres-eleve-th-repere-empty" aria-hidden="true"></th><th scope="col" class="avant-apres-eleve-col-apres">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_TABLE_COL_APRES)}</th></tr></thead>`;
+  const bodyRows = p.optionRows.map((r) => optionTableRowHtml(p, r)).join("");
   const body = `<tbody>${bodyRows}</tbody>`;
   const table = `<table class="avant-apres-eleve-table" role="grid" aria-label="${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_OPTIONS_GROUP_ARIA)}">${head}${body}</table>`;
   const reponse = `<div class="avant-apres-eleve-reponse"><span class="avant-apres-eleve-reponse-label">${escapeHtml(NR_AVANT_APRES_ELEVE_SHEET_REPONSE_LABEL)}</span><span class="avant-apres-eleve-reponse-box" aria-hidden="true"></span></div>`;

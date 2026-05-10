@@ -28,9 +28,24 @@ export const LIGNE_TEMPS_RIBBON_LETTER_FONT_SIZE = 16;
 /** Polygone ruban : encoche gauche, pointe droite (40 u de chaque côté). */
 export const LIGNE_TEMPS_RIBBON_POLYGON_POINTS = "0,0 40,40 0,80 760,80 800,40 760,0";
 
+/**
+ * Palette TEAL — utilisée par le wizard édition (`TimeLine.tsx`,
+ * `LigneDuTempsFrisePicker.tsx`) pour la lisibilité à l'écran.
+ */
 export const LIGNE_TEMPS_RIBBON_TEAL_PALE = "#dff4fb";
 export const LIGNE_TEMPS_RIBBON_TEAL_MED = "#7fcfe4";
 export const LIGNE_TEMPS_RIBBON_TEAL_DARK = "#229bc3";
+
+/**
+ * Palette GRIS impression — utilisée par le builder publié
+ * (`buildLigneDuTempsConsigneHtml`) qui produit le HTML rendu en
+ * impression N&B (spec §4.9 et §5.2). La distinction y est portée par
+ * l'épaisseur des bordures, pas par la couleur.
+ */
+export const LIGNE_TEMPS_RIBBON_PRINT_PALE = "#f0f0f0";
+export const LIGNE_TEMPS_RIBBON_PRINT_MED = "#d9d9d9";
+export const LIGNE_TEMPS_RIBBON_PRINT_DARK = "#bfbfbf";
+
 export const LIGNE_TEMPS_RIBBON_INK = "#1a1a1a";
 export const LIGNE_TEMPS_RIBBON_DATE_FILL = "#444";
 
@@ -44,8 +59,14 @@ export type LigneDuTempsRibbonFriseSegment = {
   end: number;
 };
 
+/** Remplissage segment — palette teal pour l'écran (wizard édition). */
 export function ligneDuTempsRibbonSegmentFillU(index: number): string {
   return index % 2 === 0 ? LIGNE_TEMPS_RIBBON_TEAL_MED : LIGNE_TEMPS_RIBBON_TEAL_DARK;
+}
+
+/** Remplissage segment — palette gris pour le rendu imprimé (spec §5.2). */
+export function ligneDuTempsRibbonSegmentFillPrint(index: number): string {
+  return index % 2 === 0 ? LIGNE_TEMPS_RIBBON_PRINT_MED : LIGNE_TEMPS_RIBBON_PRINT_DARK;
 }
 
 /** @deprecated bornes sur l’ancien corps 0–740 — utiliser `ligneDuTempsRibbonSeparatorXsU` + zone 45–755. */

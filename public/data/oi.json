@@ -22,7 +22,7 @@
     "comportements_attendus": [
       {
         "id": "1.1",
-        "enonce": "Ordonner chronologiquement des faits en tenant compte de repères de temps",
+        "enonce": "Ordonner chronologiquement des faits en tenant compte de repères de temps.",
         "nb_documents": 4,
         "nb_lignes": 0,
         "outil_evaluation": "OI1_SO1",
@@ -30,7 +30,7 @@
       },
       {
         "id": "1.2",
-        "enonce": "Situer des faits sur une ligne du temps",
+        "enonce": "Situer des faits sur une ligne du temps.",
         "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI1_SO2",
@@ -38,7 +38,7 @@
       },
       {
         "id": "1.3",
-        "enonce": "Classer des faits selon qu'ils sont antérieurs ou postérieurs à un repère de temps",
+        "enonce": "Classer des faits selon qu'ils sont antérieurs ou postérieurs à un repère de temps.",
         "nb_documents": 4,
         "nb_lignes": 0,
         "outil_evaluation": "OI1_SO3",
@@ -54,7 +54,7 @@
     "comportements_attendus": [
       {
         "id": "2.1",
-        "enonce": "Identifier sur une carte un élément géographique ou un territoire",
+        "enonce": "Identifier sur une carte un élément géographique ou un territoire.",
         "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI2_SO1",
@@ -62,7 +62,7 @@
       },
       {
         "id": "2.2",
-        "enonce": "Identifier sur une carte une association d'éléments géographiques",
+        "enonce": "Identifier sur une carte une association d’éléments géographiques.",
         "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI2_SO2",
@@ -70,7 +70,7 @@
       },
       {
         "id": "2.3",
-        "enonce": "Identifier sur une carte plusieurs éléments géographiques",
+        "enonce": "Identifier sur une carte plusieurs éléments géographiques.",
         "nb_documents": 1,
         "nb_lignes": 0,
         "outil_evaluation": "OI2_SO3",
@@ -86,28 +86,28 @@
     "comportements_attendus": [
       {
         "id": "3.1",
-        "enonce": "Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison",
+        "enonce": "Indiquer ce qui est différent par rapport à un ou plusieurs objets de comparaison.",
         "nb_documents": 1,
         "nb_lignes": 3,
         "outil_evaluation": "OI3_SO1"
       },
       {
         "id": "3.2",
-        "enonce": "Indiquer ce qui est semblable par rapport à un ou plusieurs objets de comparaison",
+        "enonce": "Indiquer ce qui est semblable par rapport à un ou plusieurs objets de comparaison.",
         "nb_documents": 1,
         "nb_lignes": 3,
         "outil_evaluation": "OI3_SO2"
       },
       {
         "id": "3.3",
-        "enonce": "Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence)",
+        "enonce": "Indiquer le point précis sur lequel des acteurs ou des historiens sont en désaccord (divergence).",
         "nb_documents": 2,
         "nb_lignes": 3,
         "outil_evaluation": "OI3_SO3"
       },
       {
         "id": "3.4",
-        "enonce": "Indiquer le point précis sur lequel des acteurs ou des historiens sont d'accord (convergence)",
+        "enonce": "Indiquer le point précis sur lequel des acteurs ou des historiens sont d'accord (convergence).",
         "nb_documents": 2,
         "nb_lignes": 3,
         "outil_evaluation": "OI3_SO4"
@@ -137,7 +137,7 @@
       },
       {
         "id": "4.2",
-        "enonce": "Indiquer un fait qui découle d'une réalité historique (réponse écrite)",
+        "enonce": "Indiquer un fait qui découle d'une réalité historique (réponse écrite).",
         "nb_documents": 1,
         "nb_lignes": 3,
         "status": "active",
@@ -145,7 +145,7 @@
       },
       {
         "id": "4.3",
-        "enonce": "Déterminer les deux facteurs explicatifs (réponse constituée de numéros de documents)",
+        "enonce": "Déterminer les deux facteurs explicatifs (réponse constituée de numéros de documents).",
         "nb_documents": 2,
         "nb_lignes": 0,
         "status": "active",
@@ -154,7 +154,7 @@
       },
       {
         "id": "4.4",
-        "enonce": "Déterminer le facteur explicatif et la conséquence (réponse constituée de numéros de documents)",
+        "enonce": "Déterminer le facteur explicatif et la conséquence (réponse constituée de numéros de documents).",
         "nb_documents": 2,
         "nb_lignes": 0,
         "status": "active",
@@ -195,21 +195,21 @@
     "comportements_attendus": [
       {
         "id": "6.1",
-        "enonce": "Indiquer un fait qui montre qu'une réalité historique se transforme",
+        "enonce": "Indiquer un fait qui montre qu'une réalité historique se transforme.",
         "nb_documents": 2,
         "nb_lignes": 3,
         "outil_evaluation": "OI6_SO1"
       },
       {
         "id": "6.2",
-        "enonce": "Indiquer un fait qui montre qu'une réalité historique se maintient",
+        "enonce": "Indiquer un fait qui montre qu'une réalité historique se maintient.",
         "nb_documents": 2,
         "nb_lignes": 3,
         "outil_evaluation": "OI6_SO2"
       },
       {
         "id": "6.3",
-        "enonce": "Montrer qu'une réalité historique se transforme ou se maintient",
+        "enonce": "Montrer qu'une réalité historique se transforme ou se maintient.",
         "nb_documents": 2,
         "nb_lignes": 5,
         "outil_evaluation": "OI6_SO3"
@@ -224,9 +224,9 @@
     "comportements_attendus": [
       {
         "id": "7.1",
-        "enonce": "Exprimer un enchaînement logique qui existe entre des faits",
+        "enonce": "Exprimer un enchaînement logique qui existe entre des faits.",
         "nb_documents": 3,
-        "nb_lignes": 10,
+        "nb_lignes": 6,
         "outil_evaluation": "OI7_SO1"
       }
     ]

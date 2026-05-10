@@ -542,7 +542,11 @@ body {
 [data-avant-apres-eleve="true"] .avant-apres-eleve-table {
   width: 100%;
   max-width: 100%;
-  border-collapse: collapse;
+  /* `separate` + `border-spacing 0 4px` produit un gap vertical 4px entre
+     rangées (spec §4.4 et §5.3 — la pivot étant répétée par rangée, pas
+     de rowspan compatible avec `collapse`). */
+  border-collapse: separate;
+  border-spacing: 0 4px;
   margin: 0.35rem 0 0.75rem;
   font-size: 0.95rem;
 }
@@ -552,6 +556,15 @@ body {
   border: 1px solid var(--color-border);
   padding: 0.4rem 0.5rem;
   vertical-align: middle;
+}
+
+/* Bordures simples entre cellules adjacentes d'une même rangée (spec §4.5) :
+   les cellules avant + repère portent leur bordure droite supprimée pour
+   former un cadre unique avec la cellule après. */
+[data-avant-apres-eleve="true"] .avant-apres-eleve-cell-avant,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-cell-repere,
+[data-avant-apres-eleve="true"] .avant-apres-eleve-table thead .avant-apres-eleve-col-avant {
+  border-right: none;
 }
 
 /* Colonne des lettres A–D : hors du quadrillage principal (feuille ministérielle). */
@@ -574,8 +587,10 @@ body {
 }
 
 [data-avant-apres-eleve="true"] .avant-apres-eleve-th-repere-empty {
-  position: relative;
-  border-bottom: 1px solid var(--color-border);
+  /* Cellule placeholder en en-tête — invisible. Conserve l'alignement
+     à 4 colonnes du tbody sans afficher de cadre (spec §5.3 : « pas de
+     cellule centrale dans l'en-tête »). */
+  border: none;
   background-color: transparent;
 }
 

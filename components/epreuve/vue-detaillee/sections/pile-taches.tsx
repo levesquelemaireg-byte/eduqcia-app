@@ -35,6 +35,7 @@ export function SectionPileTaches({ taches }: Props) {
             key={tache.id}
             rang={index + 1}
             donnees={tache}
+            toutesLesTaches={taches}
             surClic={() => setTachePanneauId(tache.id)}
           />
         ))}
