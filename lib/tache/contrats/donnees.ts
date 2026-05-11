@@ -31,11 +31,16 @@ export type Guidage = { content: string } | null;
  */
 export type OutilEvaluation = GrilleEntry | null;
 
-/** Espace de production — zone où l'élève produit sa réponse. */
-export type EspaceProduction =
-  | { type: "lignes"; nbLignes: number }
-  | { type: "cases"; options: string[] }
-  | { type: "libre" };
+/**
+ * Espace de production — zone où l'élève produit sa réponse rédactionnelle.
+ *
+ * Phase 1 : seul le variant `"lignes"` est en circulation. Les variants
+ * `"cases"` et `"libre"` ont été retirés — pour les parcours NR, la zone
+ * réponse vit dans la consigne via `FragmentsNR` (intégrée au dispositif
+ * visuel), pas dans un espace de production séparé. `DonneesTache.espaceProduction`
+ * est `null` pour tous les NR.
+ */
+export type EspaceProduction = { type: "lignes"; nbLignes: number };
 
 /* -------------------------------------------------------------------------- */
 /*  Type pivot unique                                                         */

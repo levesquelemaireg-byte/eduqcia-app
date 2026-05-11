@@ -1,12 +1,12 @@
 /**
- * SectionEspaceProduction — zone de reponse de l'eleve dans le PDF.
+ * SectionEspaceProduction — zone de réponse rédactionnelle (lignes vierges).
  *
- * Rendu selon le type :
- * - 'lignes' : lignes vierges (nbLignes)
- * - 'cases'  : cases A/B/C/D
- * - 'libre'  : zone libre encadree
+ * Phase 1 a posé `espaceProduction: null` pour tous les parcours NR (les
+ * cases vivent dans la consigne via `FragmentsNR`). Seul le variant
+ * `"lignes"` est en circulation — d'où la simplification au seul cas
+ * `LignesVierges`.
  *
- * Invariants : Arial, noir, pas de decoration.
+ * Invariants : Arial, noir, pas de décoration.
  */
 
 import type { EspaceProduction } from "@/lib/tache/contrats/donnees";
@@ -21,7 +21,7 @@ const STYLE_BASE: React.CSSProperties = {
   marginTop: "8px",
 };
 
-/** Lignes vierges pour reponse redactionnelle. */
+/** Lignes vierges pour réponse rédactionnelle. */
 function LignesVierges({ nbLignes }: { nbLignes: number }) {
   return (
     <div style={STYLE_BASE}>
@@ -39,55 +39,7 @@ function LignesVierges({ nbLignes }: { nbLignes: number }) {
   );
 }
 
-/** Cases A/B/C/D pour OI1 ordre chronologique. */
-function CasesReponse({ options }: { options: string[] }) {
-  return (
-    <div style={{ ...STYLE_BASE, display: "flex", gap: "12px" }}>
-      {options.map((option) => (
-        <div
-          key={option}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-          }}
-        >
-          <div
-            style={{
-              width: "18px",
-              height: "18px",
-              border: "1pt solid #000",
-              flexShrink: 0,
-            }}
-          />
-          <span style={{ fontSize: "11pt" }}>{option}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/** Zone libre encadree. */
-function ZoneLibre() {
-  return (
-    <div
-      style={{
-        ...STYLE_BASE,
-        border: "0.5pt solid #000",
-        minHeight: "80px",
-        width: "100%",
-      }}
-    />
-  );
-}
-
 export function SectionEspaceProduction({ espaceProduction }: SectionEspaceProductionProps) {
-  switch (espaceProduction.type) {
-    case "lignes":
-      return <LignesVierges nbLignes={espaceProduction.nbLignes} />;
-    case "cases":
-      return <CasesReponse options={espaceProduction.options} />;
-    case "libre":
-      return <ZoneLibre />;
-  }
+  // Seul le variant `lignes` est en circulation depuis Phase 1.
+  return <LignesVierges nbLignes={espaceProduction.nbLignes} />;
 }

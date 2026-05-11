@@ -13,6 +13,10 @@
   min-width: 660px;
   max-width: 660px;
   border-collapse: collapse;
+  /* Contour externe MEQ — volontairement 1.5px (template ministériel
+     pixel-perfect, cf. public/data/grilles-templates.html template
+     OI6_SO3). La règle « bordures 1px max » Phase 8b §9 ne s'applique
+     qu'aux dispositifs NR et aux bordures internes des grilles. */
   border: 1.5px solid #000;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 10pt;

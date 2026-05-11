@@ -43,6 +43,10 @@
   font-size: var(--eval-grid-font-size, 14px);
   line-height: var(--eval-grid-line-height, 1.15);
   table-layout: fixed;
+  /* Contour externe MEQ — volontairement 2px (template ministériel
+     pixel-perfect, cf. public/data/grilles-templates.html). La règle
+     « bordures 1px max » Phase 8b §9 ne s'applique qu'aux dispositifs
+     NR et aux bordures internes des grilles. */
   border: 2px solid var(--eval-grid-ink, #000);
 }
 
