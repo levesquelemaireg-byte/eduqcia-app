@@ -14,6 +14,7 @@ import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import type { ModeCorrige } from "@/lib/impression/types";
 import type { RenduImprimable } from "@/lib/impression/types";
 import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 
@@ -43,37 +44,49 @@ const BodySchema = z.object({
 /** Format KV — discriminé par `type`. */
 type DraftKvTyped =
   | { type: "document"; payload: RendererDocument }
-  | { type: "tache"; payload: DonneesTache; mode: ModeImpression; estCorrige: boolean }
-  | { type: "epreuve"; payload: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
+  | { type: "tache"; payload: DonneesTache; mode: ModeImpression; corrige: ModeCorrige }
+  | { type: "epreuve"; payload: DonneesEpreuve; mode: ModeImpression; corrige: ModeCorrige };
 
-/** Format KV legacy (pre-discriminatedUnion). */
-type DraftKvLegacy = {
-  payload: DonneesEpreuve;
-  mode: ModeImpression;
-  estCorrige: boolean;
-};
+/** Migre l'ancien `estCorrige: boolean` vers `corrige: ModeCorrige`. */
+function migrerCorrige(o: Record<string, unknown>): ModeCorrige {
+  if ("corrige" in o) {
+    const c = o.corrige;
+    if (c === "simple" || c === "detaille" || c === null) return c;
+  }
+  if ("estCorrige" in o) return o.estCorrige === true ? "simple" : null;
+  return null;
+}
 
 function extraireDonneesKv(raw: unknown): DraftKvTyped {
   const parsed: unknown = typeof raw === "string" ? JSON.parse(raw) : raw;
 
   if (parsed && typeof parsed === "object" && "type" in parsed) {
-    return parsed as DraftKvTyped;
+    const o = parsed as Record<string, unknown> & { type: string };
+    if (o.type === "document") return parsed as DraftKvTyped;
+    if (o.type === "tache") {
+      return {
+        type: "tache",
+        payload: o.payload as DonneesTache,
+        mode: o.mode as ModeImpression,
+        corrige: migrerCorrige(o),
+      };
+    }
+    return {
+      type: "epreuve",
+      payload: o.payload as DonneesEpreuve,
+      mode: o.mode as ModeImpression,
+      corrige: migrerCorrige(o),
+    };
   }
 
   // Rétrocompatibilité : ancien format épreuve (sans discriminant `type`)
-  if (
-    parsed &&
-    typeof parsed === "object" &&
-    "payload" in parsed &&
-    "mode" in parsed &&
-    "estCorrige" in parsed
-  ) {
-    const legacy = parsed as DraftKvLegacy;
+  if (parsed && typeof parsed === "object" && "payload" in parsed && "mode" in parsed) {
+    const o = parsed as Record<string, unknown>;
     return {
       type: "epreuve",
-      payload: legacy.payload,
-      mode: legacy.mode,
-      estCorrige: legacy.estCorrige,
+      payload: o.payload as DonneesEpreuve,
+      mode: o.mode as ModeImpression,
+      corrige: migrerCorrige(o),
     };
   }
 
@@ -82,7 +95,7 @@ function extraireDonneesKv(raw: unknown): DraftKvTyped {
     type: "epreuve",
     payload: parsed as DonneesEpreuve,
     mode: "formatif",
-    estCorrige: false,
+    corrige: null,
   };
 }
 
@@ -94,14 +107,14 @@ function construireRendu(data: DraftKvTyped): RenduImprimable {
     case "tache":
       return tacheVersImprimable(
         data.payload,
-        { mode: data.mode, estCorrige: data.estCorrige },
+        { mode: data.mode, corrige: data.corrige },
         mesurerBlocImpression,
       );
 
     case "epreuve":
       return epreuveVersImprimable(
         data.payload,
-        { mode: data.mode, estCorrige: data.estCorrige },
+        { mode: data.mode, corrige: data.corrige },
         mesurerBlocImpression,
       );
   }

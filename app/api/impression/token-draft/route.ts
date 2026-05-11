@@ -21,31 +21,54 @@ const KV_TTL_SECONDS = 10 * 60; // 10 minutes
 
 const modeSchema = z.enum(["formatif", "sommatif-standard", "epreuve-ministerielle"]);
 
-const BodySchema = z.discriminatedUnion("type", [
-  z.object({
-    type: z.literal("document"),
-    payload: z.record(z.string(), z.unknown()),
-  }),
-  z.object({
-    type: z.literal("tache"),
-    payload: z.record(z.string(), z.unknown()),
-    mode: modeSchema,
-    estCorrige: z.boolean(),
-  }),
-  z.object({
-    type: z.literal("epreuve"),
-    payload: z.record(z.string(), z.unknown()),
-    mode: modeSchema,
-    estCorrige: z.boolean(),
-  }),
-]);
+/** Mode de corrigé (spec §3.5) : `null` = pas de corrigé. */
+const corrigeSchema = z.union([z.literal("simple"), z.literal("detaille"), z.null()]);
+
+/**
+ * Préprocesseur d'objet : si le body contient le legacy `estCorrige`
+ * (boolean), le convertit vers `corrige` ("simple" | null). Permet de
+ * lire les anciens tokens KV stockés avant Phase 5.
+ */
+function migrerEstCorrige(obj: unknown): unknown {
+  if (typeof obj !== "object" || obj === null) return obj;
+  const o = obj as Record<string, unknown>;
+  if ("estCorrige" in o && !("corrige" in o)) {
+    return { ...o, corrige: o.estCorrige === true ? "simple" : null };
+  }
+  return obj;
+}
+
+const BodySchema = z.preprocess(
+  migrerEstCorrige,
+  z.discriminatedUnion("type", [
+    z.object({
+      type: z.literal("document"),
+      payload: z.record(z.string(), z.unknown()),
+    }),
+    z.object({
+      type: z.literal("tache"),
+      payload: z.record(z.string(), z.unknown()),
+      mode: modeSchema,
+      corrige: corrigeSchema,
+    }),
+    z.object({
+      type: z.literal("epreuve"),
+      payload: z.record(z.string(), z.unknown()),
+      mode: modeSchema,
+      corrige: corrigeSchema,
+    }),
+  ]),
+);
 
 /** Schema legacy (sans champ `type`) — rétrocompatibilité. */
-const LegacyBodySchema = z.object({
-  payload: z.record(z.string(), z.unknown()),
-  mode: modeSchema,
-  estCorrige: z.boolean(),
-});
+const LegacyBodySchema = z.preprocess(
+  migrerEstCorrige,
+  z.object({
+    payload: z.record(z.string(), z.unknown()),
+    mode: modeSchema,
+    corrige: corrigeSchema,
+  }),
+);
 
 export async function POST(request: Request) {
   // 1. Vérifier l'auth
@@ -84,7 +107,7 @@ export async function POST(request: Request) {
     const legacyParsed = LegacyBodySchema.safeParse(body);
     if (!legacyParsed.success) {
       return NextResponse.json(
-        { error: "Body invalide : type, payload, mode et estCorrige requis." },
+        { error: "Body invalide : type, payload, mode et corrige requis." },
         { status: 400 },
       );
     }

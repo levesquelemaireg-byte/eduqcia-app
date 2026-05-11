@@ -45,16 +45,16 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
   const [mode, setMode] = useState<ModeImpression>("formatif");
   const [optionCorrige, setOptionCorrige] = useState<OptionCorrige>("aucun");
 
-  // Phase 6 : « Corrigé simple » et « Corrigé détaillé » mappent tous deux
-  // vers estCorrige=true. Le rendu différencié arrive en Phase 5.
-  const estCorrige = optionCorrige !== "aucun";
+  // Phase 5 : `OptionCorrige` ("aucun" | "simple" | "detaille") du contrôle
+  // UI mappe directement vers `ModeCorrige` ("aucun" → null, sinon idem).
+  const corrige: "simple" | "detaille" | null = optionCorrige === "aucun" ? null : optionCorrige;
 
   // Payload effectif passé à useApercuPng — applique le mode/corrigé locaux
   // au-dessus du payload reçu. Le hook régénère les PNG quand le payload change.
   const payloadEffectif = useMemo<PayloadImpression>(() => {
     if (payload.type === "document") return payload;
-    return { ...payload, mode, estCorrige };
-  }, [payload, mode, estCorrige]);
+    return { ...payload, mode, corrige };
+  }, [payload, mode, corrige]);
 
   const { etat, generer, telechargerPdf, pdfEnCours } = useApercuPng(payloadEffectif);
 
@@ -95,7 +95,7 @@ export function CarrouselApercuModale({ open, onClose, payload }: CarrouselAperc
     const timer = setTimeout(() => generer(), DEBOUNCE_REGENERATION_MS);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- generer change à chaque render via useApercuPng
-  }, [open, mode, estCorrige]);
+  }, [open, mode, corrige]);
 
   // Verrou scroll body
   useEffect(() => {

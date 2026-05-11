@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression, TypeFeuillet } from "@/lib/epreuve/pagination/types";
-import type { RenduImprimable } from "@/lib/impression/types";
+import type { ModeCorrige, RenduImprimable } from "@/lib/impression/types";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import { epreuveVersImprimable } from "@/lib/epreuve/transformation/epreuve-vers-paginee";
 import { tacheVersImprimable } from "@/lib/tache/impression/tache-vers-imprimable";
@@ -39,8 +39,8 @@ export type UseApercuPngRetour = {
 /** Payload discriminé pour le hook : document, tâche ou épreuve. */
 export type PayloadImpression =
   | { type: "document"; donnees: RendererDocument }
-  | { type: "tache"; donnees: DonneesTache; mode: ModeImpression; estCorrige: boolean }
-  | { type: "epreuve"; donnees: DonneesEpreuve; mode: ModeImpression; estCorrige: boolean };
+  | { type: "tache"; donnees: DonneesTache; mode: ModeImpression; corrige: ModeCorrige }
+  | { type: "epreuve"; donnees: DonneesEpreuve; mode: ModeImpression; corrige: ModeCorrige };
 
 /* -------------------------------------------------------------------------- */
 /*  Helpers                                                                   */
@@ -69,13 +69,13 @@ function calculerRendu(payload: PayloadImpression): RenduImprimable {
     case "tache":
       return tacheVersImprimable(
         payload.donnees,
-        { mode: payload.mode, estCorrige: payload.estCorrige },
+        { mode: payload.mode, corrige: payload.corrige },
         mesurerBlocImpression,
       );
     case "epreuve":
       return epreuveVersImprimable(
         payload.donnees,
-        { mode: payload.mode, estCorrige: payload.estCorrige },
+        { mode: payload.mode, corrige: payload.corrige },
         mesurerBlocImpression,
       );
   }
@@ -91,14 +91,14 @@ function construireBodyTokenDraft(payload: PayloadImpression): unknown {
         type: "tache",
         payload: payload.donnees,
         mode: payload.mode,
-        estCorrige: payload.estCorrige,
+        corrige: payload.corrige,
       };
     case "epreuve":
       return {
         type: "epreuve",
         payload: payload.donnees,
         mode: payload.mode,
-        estCorrige: payload.estCorrige,
+        corrige: payload.corrige,
       };
   }
 }

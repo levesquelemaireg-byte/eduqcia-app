@@ -72,7 +72,7 @@ export function EpreuveVueDetaillee({
         type: "epreuve",
         donnees: donnees,
         mode: "sommatif-standard",
-        estCorrige: false,
+        corrige: null,
       }) as const,
     [donnees],
   );

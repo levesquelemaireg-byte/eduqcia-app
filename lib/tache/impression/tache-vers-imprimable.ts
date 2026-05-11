@@ -15,11 +15,12 @@ import type { Mesureur } from "@/lib/epreuve/pagination/pager";
 import { mesurerBloc, verifierDebordement, paginer } from "@/lib/epreuve/pagination/pager";
 import { construireBlocsTache } from "@/lib/impression/builders/blocs-tache";
 import { resoudreReferencesDocuments } from "@/lib/impression/renumerotation";
-import type { RenduImprimable } from "@/lib/impression/types";
+import type { ModeCorrige, RenduImprimable } from "@/lib/impression/types";
 
 export type OptionsTacheImprimable = {
   mode: ModeImpression;
-  estCorrige: boolean;
+  /** Mode du corrigé (spec §3.5, §7.5). `null` = pas de corrigé. */
+  corrige: ModeCorrige;
 };
 
 /**
@@ -34,7 +35,7 @@ function calculerEmpreinte(tache: DonneesTache, options: OptionsTacheImprimable)
     documents: tache.documents.map((d) => d.id),
     corrige: tache.corrige,
     mode: options.mode,
-    estCorrige: options.estCorrige,
+    modeCorrige: options.corrige,
   });
   let hash = 0x811c9dc5;
   for (let i = 0; i < payload.length; i++) {
@@ -90,7 +91,7 @@ export function tacheVersImprimable(
   return {
     ok: true,
     empreinte: calculerEmpreinte(tache, options),
-    contexte: { type: "tache", mode: options.mode, estCorrige: options.estCorrige },
+    contexte: { type: "tache", mode: options.mode, corrige: options.corrige },
     enTete: null,
     pages,
   };

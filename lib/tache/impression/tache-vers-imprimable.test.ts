@@ -70,13 +70,13 @@ describe("tacheVersImprimable", () => {
     const tache = creerTache();
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);
     if (!rendu.ok) return;
     expect(rendu.pages.length).toBeGreaterThan(0);
-    expect(rendu.contexte).toEqual({ type: "tache", mode: "formatif", estCorrige: false });
+    expect(rendu.contexte).toEqual({ type: "tache", mode: "formatif", corrige: null });
     expect(rendu.enTete).toBeNull();
   });
 
@@ -88,7 +88,7 @@ describe("tacheVersImprimable", () => {
     // Avec un quadruplet, 2 blocs × 600px = 1200px → 2 pages (904px max).
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(600),
     );
     expect(rendu.ok).toBe(true);
@@ -101,7 +101,7 @@ describe("tacheVersImprimable", () => {
     const hauteur = MAX_CONTENT_HEIGHT_PX * 0.98;
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(hauteur),
     );
     expect(rendu.ok).toBe(false);
@@ -113,7 +113,7 @@ describe("tacheVersImprimable", () => {
     const tache = creerTache();
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: true },
+      { mode: "formatif", corrige: "simple" },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);
@@ -124,7 +124,7 @@ describe("tacheVersImprimable", () => {
 
   it("calcule une empreinte déterministe", () => {
     const tache = creerTache();
-    const opts = { mode: "formatif" as const, estCorrige: false };
+    const opts = { mode: "formatif" as const, corrige: null };
     const r1 = tacheVersImprimable(tache, opts, mesureurFixe(200));
     const r2 = tacheVersImprimable(tache, opts, mesureurFixe(200));
     expect(r1.ok && r2.ok).toBe(true);
@@ -134,14 +134,10 @@ describe("tacheVersImprimable", () => {
 
   it("produit des empreintes différentes pour des modes différents", () => {
     const tache = creerTache();
-    const r1 = tacheVersImprimable(
-      tache,
-      { mode: "formatif", estCorrige: false },
-      mesureurFixe(200),
-    );
+    const r1 = tacheVersImprimable(tache, { mode: "formatif", corrige: null }, mesureurFixe(200));
     const r2 = tacheVersImprimable(
       tache,
-      { mode: "sommatif-standard", estCorrige: false },
+      { mode: "sommatif-standard", corrige: null },
       mesureurFixe(200),
     );
     expect(r1.ok && r2.ok).toBe(true);
@@ -160,7 +156,7 @@ describe("tacheVersImprimable", () => {
     });
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);
@@ -181,7 +177,7 @@ describe("tacheVersImprimable", () => {
     });
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);
@@ -202,7 +198,7 @@ describe("tacheVersImprimable", () => {
     });
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: true },
+      { mode: "formatif", corrige: "simple" },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);
@@ -223,7 +219,7 @@ describe("tacheVersImprimable", () => {
     });
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);
@@ -241,7 +237,7 @@ describe("tacheVersImprimable", () => {
     });
     const rendu = tacheVersImprimable(
       tache,
-      { mode: "formatif", estCorrige: false },
+      { mode: "formatif", corrige: null },
       mesureurFixe(200),
     );
     expect(rendu.ok).toBe(true);

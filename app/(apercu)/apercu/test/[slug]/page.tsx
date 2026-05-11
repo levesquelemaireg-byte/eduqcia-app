@@ -23,7 +23,9 @@ type PageProps = {
 type GoldenFixture = {
   epreuve: DonneesEpreuve;
   mode: ModeImpression;
-  estCorrige: boolean;
+  /** Phase 5 — fixtures legacy ont `estCorrige: boolean` ; migration au load. */
+  estCorrige?: boolean;
+  corrige?: "simple" | "detaille" | null;
 };
 
 /** Slugs autorisés — correspondance 1:1 avec les fichiers fixtures. */
@@ -73,10 +75,12 @@ export default async function ApercuTestPage({ params }: PageProps) {
     notFound();
   }
 
-  // Paginer avec mesureur heuristique partagé
+  // Paginer avec mesureur heuristique partagé. Migration estCorrige (legacy)
+  // → corrige (Phase 5) si la fixture n'a pas encore le nouveau champ.
+  const corrige = fixture.corrige ?? (fixture.estCorrige ? "simple" : null);
   const rendu = epreuveVersImprimable(
     fixture.epreuve,
-    { mode: fixture.mode, estCorrige: fixture.estCorrige },
+    { mode: fixture.mode, corrige },
     mesurerBlocImpression,
   );
 

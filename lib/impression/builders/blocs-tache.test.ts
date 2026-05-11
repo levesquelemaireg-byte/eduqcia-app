@@ -62,7 +62,7 @@ function creerTache(overrides?: Partial<DonneesTache>): DonneesTache {
 describe("construireBlocsTache", () => {
   it("produit une page de dossier (groupant les documents) + un quadruplet en mode formatif", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: null });
     // 2 docs courts → 1 page de grille (1 bloc dossier-page) + 1 quadruplet = 2 blocs
     expect(blocs).toHaveLength(2);
     expect(blocs[0].kind).toBe("dossier-page");
@@ -71,35 +71,35 @@ describe("construireBlocsTache", () => {
 
   it("masque les titres de documents en mode sommatif-standard", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "sommatif-standard", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "sommatif-standard", corrige: null });
     const contenu = blocs[0].content as ContenuDossierPage;
     expect(contenu.titresVisibles).toBe(false);
   });
 
   it("conserve les titres de documents en mode formatif", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: null });
     const contenu = blocs[0].content as ContenuDossierPage;
     expect(contenu.titresVisibles).toBe(true);
   });
 
   it("masque le guidage en mode sommatif-standard", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "sommatif-standard", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "sommatif-standard", corrige: null });
     const quadruplet = blocs[1].content as { guidage: unknown };
     expect(quadruplet.guidage).toBeNull();
   });
 
   it("conserve le guidage en mode formatif", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: null });
     const quadruplet = blocs[1].content as { guidage: { content: string } };
     expect(quadruplet.guidage.content).toContain("Guidage");
   });
 
   it("ajoute un bloc corrigé quand estCorrige=true et corrigé non vide", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: true });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: "simple" });
     // 1 dossier-page + 1 quadruplet + 1 corrigé = 3
     expect(blocs).toHaveLength(3);
     expect(blocs[2].id).toContain("corrige");
@@ -107,19 +107,19 @@ describe("construireBlocsTache", () => {
 
   it("ne produit pas de corrigé si le corrigé est vide", () => {
     const tache = creerTache({ corrige: "" });
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: true });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: "simple" });
     expect(blocs).toHaveLength(2);
   });
 
   it("ne produit pas de corrigé si estCorrige=false", () => {
     const tache = creerTache();
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: null });
     expect(blocs).toHaveLength(2);
   });
 
   it("ne produit aucun bloc dossier-page si la tâche n'a pas de documents", () => {
     const tache = creerTache({ documents: [] });
-    const blocs = construireBlocsTache(tache, { mode: "formatif", estCorrige: false });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: null });
     // 0 dossier-page + 1 quadruplet = 1
     expect(blocs).toHaveLength(1);
     expect(blocs[0].kind).toBe("quadruplet");

@@ -9,6 +9,7 @@ import { parseCategorieTextuelle } from "@/lib/documents/categorie-textuelle";
 import { parseTypeIconographique } from "@/lib/documents/type-iconographique";
 import { documentVersImprimable } from "@/lib/document/impression/document-vers-imprimable";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import type { ModeCorrige } from "@/lib/impression/types";
 import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
 import type { AutonomousDocumentFormValues } from "@/lib/schemas/autonomous-document";
 import { etatWizardVersTache } from "@/lib/tache/contrats/etat-wizard-vers-tache";
@@ -21,7 +22,7 @@ import styles from "./apercu-imprime-live.module.css";
 type TacheProps = {
   previewMeta: WizardFichePreviewMeta;
   mode: ModeImpression;
-  estCorrige: boolean;
+  corrige: ModeCorrige;
 };
 
 /**
@@ -31,7 +32,7 @@ type TacheProps = {
  * `ApercuImpression` (composant canonique partagé avec Puppeteer SSR).
  * Rendu dans le `.canvas` scrollable, enfant direct du tabpanel.
  */
-export function ApercuImprimeLiveTache({ previewMeta, mode, estCorrige }: TacheProps) {
+export function ApercuImprimeLiveTache({ previewMeta, mode, corrige }: TacheProps) {
   const { state } = useTacheForm();
   const { oiList } = useOiData();
   const grilles = useGrilles();
@@ -41,8 +42,8 @@ export function ApercuImprimeLiveTache({ previewMeta, mode, estCorrige }: TacheP
     if (!grilles) return null;
 
     const donnees = etatWizardVersTache(state, oiList, grilles, previewMeta);
-    return tacheVersImprimable(donnees, { mode, estCorrige }, mesurerBlocImpression);
-  }, [state, oiList, grilles, previewMeta, mode, estCorrige]);
+    return tacheVersImprimable(donnees, { mode, corrige }, mesurerBlocImpression);
+  }, [state, oiList, grilles, previewMeta, mode, corrige]);
 
   return (
     <div className={styles.canvas}>{rendu?.ok ? <ApercuImpression rendu={rendu} /> : null}</div>

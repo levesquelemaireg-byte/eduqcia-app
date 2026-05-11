@@ -77,7 +77,7 @@ export function TacheVueDetaillee({
             type: "tache",
             donnees: donneesTache,
             mode: "formatif",
-            estCorrige: false,
+            corrige: null,
           } as const)
         : null,
     [donneesTache],

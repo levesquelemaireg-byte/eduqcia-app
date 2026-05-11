@@ -12,6 +12,7 @@ import type { GrilleEntry } from "@/lib/tache/grilles/types";
 import type { DonneesEpreuve } from "@/lib/epreuve/contrats/donnees";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { ModeImpression } from "@/lib/epreuve/pagination/types";
+import type { ModeCorrige } from "@/lib/impression/types";
 
 const KV_TTL_SECONDS = 10 * 60;
 
@@ -31,8 +32,8 @@ export type GenererTokenResult = { ok: true; token: string } | { ok: false; erro
 export type OptionsApercuEpreuve = {
   /** Mode d'impression — défaut `sommatif-standard` pour les épreuves (spec §7.2). */
   mode?: ModeImpression;
-  /** Inclure le corrigé — défaut `false` (spec §7.2). */
-  estCorrige?: boolean;
+  /** Mode du corrigé (spec §3.5) — défaut `null` (pas de corrigé, spec §7.2). */
+  corrige?: ModeCorrige;
 };
 
 /**
@@ -43,8 +44,8 @@ export type OptionsApercuEpreuve = {
  * 3. Construit DonneesEpreuve, stocke dans Vercel KV
  * 4. Retourne le token HMAC signé
  *
- * Le mode et estCorrige sont optionnels et adoptent les défauts spec §7.2
- * pour les épreuves : mode=sommatif-standard, estCorrige=false. Le hardcode
+ * Le mode et corrige sont optionnels et adoptent les défauts spec §7.2
+ * pour les épreuves : mode=sommatif-standard, corrige=null. Le hardcode
  * `mode: "formatif"` est interdit (spec §13 règle 6) — il causait l'absence
  * du dossier documentaire dans l'aperçu épreuve.
  */
@@ -106,7 +107,7 @@ export async function genererTokenApercuEpreuve(
     type: "epreuve",
     payload: epreuve,
     mode: options.mode ?? "sommatif-standard",
-    estCorrige: options.estCorrige ?? false,
+    corrige: options.corrige ?? null,
   });
 
   const payloadId = crypto.randomUUID();

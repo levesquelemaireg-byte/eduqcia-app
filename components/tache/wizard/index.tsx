@@ -208,7 +208,10 @@ function TacheFormInner({
             {(modeId, subModeId) => {
               const isImpressionMode = modeId === "impression";
               const varianteActive = subModeId ?? "formatif";
-              const estCorrige = varianteActive === "corrige";
+              // Phase 5 : sous-mode "corrige" du wizard → corrige="simple"
+              // (le sous-mode "détaillé" arrivera quand le wizard l'exposera).
+              const corrige: "simple" | "detaille" | null =
+                varianteActive === "corrige" ? "simple" : null;
               const modeImpression: ModeImpression =
                 varianteActive === "formatif" ? "formatif" : "sommatif-standard";
 
@@ -217,7 +220,7 @@ function TacheFormInner({
                   <ApercuImprimeLiveTache
                     previewMeta={wizardPreviewMeta}
                     mode={modeImpression}
-                    estCorrige={estCorrige}
+                    corrige={corrige}
                   />
                 );
               }

@@ -30,7 +30,7 @@ import {
   resoudreReferencesDocuments,
 } from "@/lib/impression/renumerotation";
 import { extraireFragmentsNR, type FragmentsNR } from "@/lib/impression/extraire-fragments-nr";
-import type { RenduImprimable } from "@/lib/impression/types";
+import type { ModeCorrige, RenduImprimable } from "@/lib/impression/types";
 
 /* -------------------------------------------------------------------------- */
 /*  Types publics                                                             */
@@ -38,7 +38,8 @@ import type { RenduImprimable } from "@/lib/impression/types";
 
 export type OptionsRendu = {
   mode: ModeImpression;
-  estCorrige: boolean;
+  /** Mode du corrigé (spec §3.5). `null` = pas de corrigé. */
+  corrige: ModeCorrige;
 };
 
 export type { Mesureur } from "@/lib/epreuve/pagination/pager";
@@ -156,7 +157,7 @@ function construireBlocsDossierDocumentaire(
 function construireBlocsQuestionnaire(
   taches: TacheImpression[],
   mode: ModeImpression,
-  estCorrige: boolean,
+  corrige: ModeCorrige,
 ): Bloc[] {
   const regles = reglesVisibilite(mode);
   const blocs: Bloc[] = [];
@@ -205,7 +206,7 @@ function construireBlocsQuestionnaire(
       content: contenu,
     });
 
-    if (estCorrige && tache.corrige) {
+    if (corrige !== null && tache.corrige) {
       const contenuCorrige: ContenuCorrige = {
         tacheIndex: i,
         titre: tache.titre,
@@ -257,27 +258,27 @@ function composerParMode(
   taches: TacheImpression[],
   options: OptionsRendu,
 ): Record<TypeFeuillet, Bloc[]> {
-  const { mode, estCorrige } = options;
+  const { mode, corrige } = options;
 
   switch (mode) {
     case "formatif":
       return {
         "dossier-documentaire": [],
-        questionnaire: construireBlocsQuestionnaire(taches, mode, estCorrige),
+        questionnaire: construireBlocsQuestionnaire(taches, mode, corrige),
         "cahier-reponses": [],
       };
 
     case "sommatif-standard":
       return {
         "dossier-documentaire": construireBlocsDossierDocumentaire(taches, mode),
-        questionnaire: construireBlocsQuestionnaire(taches, mode, estCorrige),
+        questionnaire: construireBlocsQuestionnaire(taches, mode, corrige),
         "cahier-reponses": [],
       };
 
     case "epreuve-ministerielle":
       return {
         "dossier-documentaire": construireBlocsDossierDocumentaire(taches, mode),
-        questionnaire: construireBlocsQuestionnaire(taches, mode, estCorrige),
+        questionnaire: construireBlocsQuestionnaire(taches, mode, corrige),
         "cahier-reponses": construireBlocsCahierReponses(taches),
       };
   }
@@ -292,7 +293,7 @@ function calculerEmpreinte(epreuve: DonneesEpreuve, options: OptionsRendu): stri
     id: epreuve.id,
     taches: epreuve.taches.map((t) => t.id),
     mode: options.mode,
-    estCorrige: options.estCorrige,
+    modeCorrige: options.corrige,
   });
   let hash = 0x811c9dc5;
   for (let i = 0; i < payload.length; i++) {
@@ -368,7 +369,7 @@ export function epreuveVersImprimable(
   return {
     ok: true,
     empreinte: calculerEmpreinte(epreuve, options),
-    contexte: { type: "epreuve", mode: options.mode, estCorrige: options.estCorrige },
+    contexte: { type: "epreuve", mode: options.mode, corrige: options.corrige },
     enTete: epreuve.enTete,
     pages,
   };

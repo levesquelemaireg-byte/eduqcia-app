@@ -96,7 +96,7 @@ describe("epreuveVersImprimable — mode formatif", () => {
     documents: [creerDoc("doc-t2-A", "Document A t2"), creerDoc("doc-t2-B", "Document B t2")],
   });
   const epreuve = creerEpreuve([tache1, tache2]);
-  const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+  const options: OptionsRendu = { mode: "formatif", corrige: null };
 
   it("ne produit pas de dossier documentaire en formatif", () => {
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
@@ -147,7 +147,7 @@ describe("epreuveVersImprimable — mode formatif", () => {
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    expect(resultat.contexte).toEqual({ type: "epreuve", mode: "formatif", estCorrige: false });
+    expect(resultat.contexte).toEqual({ type: "epreuve", mode: "formatif", corrige: null });
   });
 
   it("calcule une empreinte non vide", () => {
@@ -174,7 +174,7 @@ describe("epreuveVersImprimable — mode sommatif-standard", () => {
     documents: [creerDoc("doc-t2-A", "Acte de Québec"), creerDoc("doc-t2-B", "Constitution")],
   });
   const epreuve = creerEpreuve([tache1, tache2]);
-  const options: OptionsRendu = { mode: "sommatif-standard", estCorrige: false };
+  const options: OptionsRendu = { mode: "sommatif-standard", corrige: null };
 
   it("produit un dossier documentaire (1 bloc dossier-page par page de grille)", () => {
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
@@ -234,7 +234,7 @@ describe("epreuveVersImprimable — mode sommatif-standard", () => {
 describe("epreuveVersImprimable — mode épreuve-ministérielle", () => {
   const tache = creerTache({ id: "t1" });
   const epreuve = creerEpreuve([tache]);
-  const options: OptionsRendu = { mode: "epreuve-ministerielle", estCorrige: false };
+  const options: OptionsRendu = { mode: "epreuve-ministerielle", corrige: null };
 
   it("produit les 3 feuillets", () => {
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
@@ -268,7 +268,7 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
   // "quadruplet" pour ne compter que les quadruplets et corrigés.
 
   it("ajoute un bloc corrigé après le quadruplet quand estCorrige=true", () => {
-    const options: OptionsRendu = { mode: "formatif", estCorrige: true };
+    const options: OptionsRendu = { mode: "formatif", corrige: "simple" };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
@@ -281,7 +281,7 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
   });
 
   it("n'ajoute pas de bloc corrigé quand estCorrige=false", () => {
-    const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+    const options: OptionsRendu = { mode: "formatif", corrige: null };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
@@ -294,7 +294,7 @@ describe("epreuveVersImprimable — flag estCorrige", () => {
   it("n'ajoute pas de bloc corrigé si le corrigé est vide", () => {
     const tacheSansCorrige = creerTache({ id: "t2", corrige: "" });
     const ep = creerEpreuve([tacheSansCorrige]);
-    const options: OptionsRendu = { mode: "formatif", estCorrige: true };
+    const options: OptionsRendu = { mode: "formatif", corrige: "simple" };
     const resultat = epreuveVersImprimable(ep, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
@@ -316,7 +316,7 @@ describe("epreuveVersImprimable — pagination", () => {
   it("crée plusieurs pages quand les blocs ne tiennent pas sur une seule", () => {
     const taches = Array.from({ length: 5 }, (_, i) => creerTache({ id: `t${i}`, documents: [] }));
     const epreuve = creerEpreuve(taches);
-    const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+    const options: OptionsRendu = { mode: "formatif", corrige: null };
     // Chaque bloc = 300px, max = 904px → 3 blocs par page, 5 blocs → 2 pages
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(300));
     expect(resultat.ok).toBe(true);
@@ -328,7 +328,7 @@ describe("epreuveVersImprimable — pagination", () => {
   it("numérote les pages correctement (globalement)", () => {
     const taches = Array.from({ length: 4 }, (_, i) => creerTache({ id: `t${i}`, documents: [] }));
     const epreuve = creerEpreuve(taches);
-    const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+    const options: OptionsRendu = { mode: "formatif", corrige: null };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(500));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
@@ -349,7 +349,7 @@ describe("epreuveVersImprimable — détection de débordement", () => {
   it("retourne une erreur si un bloc dépasse le ratio maximum", () => {
     const tache = creerTache({ id: "t1" });
     const epreuve = creerEpreuve([tache]);
-    const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+    const options: OptionsRendu = { mode: "formatif", corrige: null };
     // Hauteur = 97.1% de MAX → ratio > 0.97
     const hauteurDebordante = MAX_CONTENT_HEIGHT_PX * 0.971;
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(hauteurDebordante));
@@ -362,7 +362,7 @@ describe("epreuveVersImprimable — détection de débordement", () => {
   it("passe si le bloc est exactement au ratio maximum", () => {
     const tache = creerTache({ id: "t1" });
     const epreuve = creerEpreuve([tache]);
-    const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+    const options: OptionsRendu = { mode: "formatif", corrige: null };
     const hauteurLimite = MAX_CONTENT_HEIGHT_PX * 0.97;
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(hauteurLimite));
     expect(resultat.ok).toBe(true);
@@ -379,10 +379,10 @@ describe("epreuveVersImprimable — empreinte", () => {
     const epreuve = creerEpreuve([tache]);
     const mesureur = mesureurFixe(200);
 
-    const r1 = epreuveVersImprimable(epreuve, { mode: "formatif", estCorrige: false }, mesureur);
+    const r1 = epreuveVersImprimable(epreuve, { mode: "formatif", corrige: null }, mesureur);
     const r2 = epreuveVersImprimable(
       epreuve,
-      { mode: "sommatif-standard", estCorrige: false },
+      { mode: "sommatif-standard", corrige: null },
       mesureur,
     );
 
@@ -394,7 +394,7 @@ describe("epreuveVersImprimable — empreinte", () => {
   it("produit la même empreinte pour les mêmes inputs", () => {
     const tache = creerTache({ id: "t1" });
     const epreuve = creerEpreuve([tache]);
-    const options: OptionsRendu = { mode: "formatif", estCorrige: false };
+    const options: OptionsRendu = { mode: "formatif", corrige: null };
     const mesureur = mesureurFixe(200);
 
     const r1 = epreuveVersImprimable(epreuve, options, mesureur);
