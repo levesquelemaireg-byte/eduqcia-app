@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { DonneesTache } from "@/lib/tache/contrats/donnees";
 import type { RendererDocument } from "@/lib/types/document-renderer";
 import type { ContenuBlocQuadruplet } from "@/lib/impression/builders/blocs-quadruplet";
-import type { ContenuBlocCorrige } from "@/lib/impression/builders/blocs-corrige";
+import type { ContenuAnnexeCorrige } from "@/components/epreuve/impression/sections/annexe-corrige";
 import { MAX_CONTENT_HEIGHT_PX } from "@/lib/epreuve/pagination/constantes";
 import { tacheVersImprimable } from "./tache-vers-imprimable";
 
@@ -109,7 +109,7 @@ describe("tacheVersImprimable", () => {
     expect(rendu.erreur.kind).toBe("DEBORDEMENT_BLOC");
   });
 
-  it("inclut le corrigé quand estCorrige=true", () => {
+  it("injecte le corrigé simple comme overlay sur le quadruplet (rédactionnel → corrigeTexte)", () => {
     const tache = creerTache();
     const rendu = tacheVersImprimable(
       tache,
@@ -118,8 +118,31 @@ describe("tacheVersImprimable", () => {
     );
     expect(rendu.ok).toBe(true);
     if (!rendu.ok) return;
+    const quadruplet = rendu.pages.flatMap((p) => p.blocs).find((b) => b.kind === "quadruplet");
+    const contenu = quadruplet!.content as ContenuBlocQuadruplet;
+    expect(contenu.corrigeTexte).toBe("<p>Corrigé</p>");
+    // Aucun bloc corrigé séparé (Phase 5 lot 3).
     const blocs = rendu.pages.flatMap((p) => p.blocs);
-    expect(blocs.some((b) => b.id.includes("corrige"))).toBe(true);
+    expect(blocs.some((b) => b.id.startsWith("corrige-"))).toBe(false);
+  });
+
+  it("ajoute les blocs annexe (titre + question) en mode détaillé", () => {
+    const tache = creerTache();
+    const rendu = tacheVersImprimable(
+      tache,
+      { mode: "formatif", corrige: "detaille" },
+      mesureurFixe(200),
+    );
+    expect(rendu.ok).toBe(true);
+    if (!rendu.ok) return;
+    const annexeBlocs = rendu.pages
+      .flatMap((p) => p.blocs)
+      .filter((b) => b.kind === "annexe-corrige");
+    expect(annexeBlocs).toHaveLength(2);
+    const titre = annexeBlocs[0]!.content as ContenuAnnexeCorrige;
+    const question = annexeBlocs[1]!.content as ContenuAnnexeCorrige;
+    expect(titre.type).toBe("titre");
+    expect(question.type).toBe("question");
   });
 
   it("calcule une empreinte déterministe", () => {
@@ -191,7 +214,7 @@ describe("tacheVersImprimable", () => {
     expect(contenu.guidage!.content).toBe("<p>Compare 1 avec 2.</p>");
   });
 
-  it("résout les placeholders {{doc_N}} dans le corrigé", () => {
+  it("résout les placeholders {{doc_N}} dans le corrigé (overlay corrigeTexte)", () => {
     const tache = creerTache({
       corrige: "<p>Réponse appuyée sur le document {{doc_1}}.</p>",
       documents: [creerDoc("d1")],
@@ -203,13 +226,10 @@ describe("tacheVersImprimable", () => {
     );
     expect(rendu.ok).toBe(true);
     if (!rendu.ok) return;
-    const blocCorrige = rendu.pages
-      .flatMap((p) => p.blocs)
-      .find((b) => b.id.startsWith("corrige-"));
-    expect(blocCorrige).toBeDefined();
-    const contenu = blocCorrige!.content as ContenuBlocCorrige;
-    expect(contenu.corrige).toBe("<p>Réponse appuyée sur le document 1.</p>");
-    expect(contenu.corrige).not.toContain("{{doc_");
+    const quadruplet = rendu.pages.flatMap((p) => p.blocs).find((b) => b.kind === "quadruplet");
+    const contenu = quadruplet!.content as ContenuBlocQuadruplet;
+    expect(contenu.corrigeTexte).toBe("<p>Réponse appuyée sur le document 1.</p>");
+    expect(contenu.corrigeTexte).not.toContain("{{doc_");
   });
 
   it("résout les placeholders {{doc_A}} legacy (alphabétique) dans la consigne", () => {

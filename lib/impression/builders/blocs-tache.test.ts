@@ -97,24 +97,38 @@ describe("construireBlocsTache", () => {
     expect(quadruplet.guidage.content).toContain("Guidage");
   });
 
-  it("ajoute un bloc corrigé quand estCorrige=true et corrigé non vide", () => {
+  it("injecte le corrigé comme overlay (corrigeTexte) sur le quadruplet en mode simple", () => {
     const tache = creerTache();
     const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: "simple" });
-    // 1 dossier-page + 1 quadruplet + 1 corrigé = 3
-    expect(blocs).toHaveLength(3);
-    expect(blocs[2].id).toContain("corrige");
-  });
-
-  it("ne produit pas de corrigé si le corrigé est vide", () => {
-    const tache = creerTache({ corrige: "" });
-    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: "simple" });
+    // Phase 5 lot 3 : aucun bloc corrigé séparé — 1 dossier-page + 1 quadruplet.
     expect(blocs).toHaveLength(2);
+    const quadruplet = blocs[1].content as { corrigeTexte: string | null };
+    expect(quadruplet.corrigeTexte).toBe("<p>Corrigé</p>");
   });
 
-  it("ne produit pas de corrigé si estCorrige=false", () => {
+  it("ajoute les blocs annexe en mode détaillé", () => {
+    const tache = creerTache();
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: "detaille" });
+    // 1 dossier-page + 1 quadruplet + 1 titre annexe + 1 question annexe = 4
+    expect(blocs).toHaveLength(4);
+    expect(blocs[2].kind).toBe("annexe-corrige");
+    expect(blocs[3].kind).toBe("annexe-corrige");
+  });
+
+  it("ne produit pas d'annexe si le corrigé est vide", () => {
+    const tache = creerTache({ corrige: "" });
+    const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: "detaille" });
+    expect(blocs).toHaveLength(2);
+    const quadruplet = blocs[1].content as { corrigeTexte: string | null };
+    expect(quadruplet.corrigeTexte).toBeNull();
+  });
+
+  it("ne produit pas d'overlay corrigé si corrige=null", () => {
     const tache = creerTache();
     const blocs = construireBlocsTache(tache, { mode: "formatif", corrige: null });
     expect(blocs).toHaveLength(2);
+    const quadruplet = blocs[1].content as { corrigeTexte: string | null };
+    expect(quadruplet.corrigeTexte).toBeNull();
   });
 
   it("ne produit aucun bloc dossier-page si la tâche n'a pas de documents", () => {

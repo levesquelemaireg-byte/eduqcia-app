@@ -259,49 +259,61 @@ describe("epreuveVersImprimable — mode épreuve-ministérielle", () => {
 /*  Flag estCorrige                                                           */
 /* -------------------------------------------------------------------------- */
 
-describe("epreuveVersImprimable — flag estCorrige", () => {
+describe("epreuveVersImprimable — overlay corrigé (Phase 5 lot 3)", () => {
   const tache = creerTache({ id: "t1", corrige: "<p>Réponse attendue</p>" });
   const epreuve = creerEpreuve([tache]);
 
-  // Phase 8b correction 2 : en formatif, chaque tâche est précédée de
-  // ses dossier-pages (kind === "dossier-page"). On filtre par kind
-  // "quadruplet" pour ne compter que les quadruplets et corrigés.
+  // Phase 5 lot 3 : le bloc corrigé séparé a été remplacé par l'overlay
+  // (corrigeTexte sur le quadruplet rédactionnel ou fragments NR avec
+  // marquage rouge) + une annexe optionnelle quand `corrige === "detaille"`.
 
-  it("ajoute un bloc corrigé après le quadruplet quand estCorrige=true", () => {
+  it("injecte le corrigé comme overlay (corrigeTexte) sur le quadruplet rédactionnel en mode simple", () => {
     const options: OptionsRendu = { mode: "formatif", corrige: "simple" };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire")
+    const quadruplets = pagesDuFeuillet(resultat.pages, "questionnaire")
       .flatMap((p) => p.blocs)
       .filter((b) => b.kind === "quadruplet");
-    // quadruplet + corrigé
-    expect(blocs).toHaveLength(2);
-    expect(blocs[1].id).toContain("corrige");
+    expect(quadruplets).toHaveLength(1);
+    const contenu = quadruplets[0].content as { corrigeTexte: string | null };
+    expect(contenu.corrigeTexte).toBe("<p>Réponse attendue</p>");
   });
 
-  it("n'ajoute pas de bloc corrigé quand estCorrige=false", () => {
+  it("ajoute les blocs annexe en mode détaillé", () => {
+    const options: OptionsRendu = { mode: "formatif", corrige: "detaille" };
+    const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
+    expect(resultat.ok).toBe(true);
+    if (!resultat.ok) return;
+    const annexeBlocs = resultat.pages
+      .flatMap((p) => p.blocs)
+      .filter((b) => b.kind === "annexe-corrige");
+    expect(annexeBlocs).toHaveLength(2); // titre + question
+  });
+
+  it("ne touche pas au quadruplet quand corrige=null", () => {
     const options: OptionsRendu = { mode: "formatif", corrige: null };
     const resultat = epreuveVersImprimable(epreuve, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire")
+    const quadruplet = pagesDuFeuillet(resultat.pages, "questionnaire")
       .flatMap((p) => p.blocs)
-      .filter((b) => b.kind === "quadruplet");
-    expect(blocs).toHaveLength(1);
+      .find((b) => b.kind === "quadruplet");
+    const contenu = quadruplet!.content as { corrigeTexte: string | null };
+    expect(contenu.corrigeTexte).toBeNull();
   });
 
-  it("n'ajoute pas de bloc corrigé si le corrigé est vide", () => {
+  it("n'ajoute pas d'annexe si le corrigé est vide en mode détaillé", () => {
     const tacheSansCorrige = creerTache({ id: "t2", corrige: "" });
     const ep = creerEpreuve([tacheSansCorrige]);
-    const options: OptionsRendu = { mode: "formatif", corrige: "simple" };
+    const options: OptionsRendu = { mode: "formatif", corrige: "detaille" };
     const resultat = epreuveVersImprimable(ep, options, mesureurFixe(200));
     expect(resultat.ok).toBe(true);
     if (!resultat.ok) return;
-    const blocs = pagesDuFeuillet(resultat.pages, "questionnaire")
+    const annexeBlocs = resultat.pages
       .flatMap((p) => p.blocs)
-      .filter((b) => b.kind === "quadruplet");
-    expect(blocs).toHaveLength(1);
+      .filter((b) => b.kind === "annexe-corrige");
+    expect(annexeBlocs).toHaveLength(0);
   });
 });
 

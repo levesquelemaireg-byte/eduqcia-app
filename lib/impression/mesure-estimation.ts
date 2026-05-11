@@ -202,6 +202,21 @@ function estimerHauteurBlocQuadruplet(content: unknown): number {
 }
 
 /**
+ * Hauteur d'un bloc annexe corrigé — soit le titre seul (~64px), soit une
+ * question (numéro + texte du corrigé sur quelques lignes).
+ */
+function estimerHauteurAnnexeCorrige(content: unknown): number {
+  if (!estObjet(content)) return 60;
+  if (content.type === "titre") return 64;
+  if (content.type === "question") {
+    const corrige = typeof content.corrige === "string" ? content.corrige : "";
+    const lignes = lignesDepuisLongueur(longueurHtml(corrige), 88, 1);
+    return Math.ceil((24 + lignes * 19 + 14) * 1.1);
+  }
+  return 60;
+}
+
+/**
  * Mesureur heuristique partagé quand la mesure DOM réelle n'est pas disponible.
  *
  * Objectif : sur-estimer légèrement pour éviter la troncature visuelle des pages.
@@ -212,6 +227,8 @@ export function mesurerBlocImpression(bloc: Bloc): number {
       return estimerHauteurBlocDossierPage(bloc.content);
     case "quadruplet":
       return estimerHauteurBlocQuadruplet(bloc.content);
+    case "annexe-corrige":
+      return estimerHauteurAnnexeCorrige(bloc.content);
     case "entete-section":
       return 40;
     default:

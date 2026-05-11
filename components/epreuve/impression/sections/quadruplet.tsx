@@ -86,7 +86,8 @@ function BlocGuidage({ guidage }: { guidage: Guidage }) {
 }
 
 export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
-  const { tacheIndex, consigne, guidage, espaceProduction, outilEvaluation } = contenu;
+  const { tacheIndex, consigne, guidage, espaceProduction, outilEvaluation, corrigeTexte } =
+    contenu;
 
   return (
     <div className="bloc-quadruplet" style={STYLE_BASE}>
@@ -98,6 +99,7 @@ export function SectionQuadruplet({ contenu }: SectionQuadrupletProps) {
               consigne={consigne}
               guidage={guidage}
               espaceProduction={espaceProduction}
+              corrigeTexte={corrigeTexte}
             />
           ) : (
             <BrancheNR fragments={consigne} guidage={guidage} />
@@ -119,16 +121,20 @@ function BrancheRedactionnelle({
   consigne,
   guidage,
   espaceProduction,
+  corrigeTexte,
 }: {
   consigne: string;
   guidage: Guidage;
   espaceProduction: ContenuQuadruplet["espaceProduction"];
+  corrigeTexte: string | null;
 }) {
   return (
     <>
       <HtmlBloc html={consigne} style={STYLE_CONSIGNE} />
       <BlocGuidage guidage={guidage} />
-      {espaceProduction && <SectionEspaceProduction espaceProduction={espaceProduction} />}
+      {espaceProduction && (
+        <SectionEspaceProduction espaceProduction={espaceProduction} corrigeTexte={corrigeTexte} />
+      )}
     </>
   );
 }

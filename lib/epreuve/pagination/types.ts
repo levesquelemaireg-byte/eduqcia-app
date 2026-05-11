@@ -15,7 +15,7 @@ export type TypeFeuillet = "dossier-documentaire" | "questionnaire" | "cahier-re
 /*  Blocs                                                                     */
 /* -------------------------------------------------------------------------- */
 
-export type KindBloc = "dossier-page" | "quadruplet" | "entete-section";
+export type KindBloc = "dossier-page" | "quadruplet" | "entete-section" | "annexe-corrige";
 
 /**
  * Contrat de pagination explicite.

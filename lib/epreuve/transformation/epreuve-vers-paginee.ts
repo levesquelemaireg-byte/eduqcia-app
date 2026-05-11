@@ -8,7 +8,9 @@
  * - Renumérotation globale des documents
  * - Résolution des placeholders `{{doc_N}}` (et `{{doc_A}}` legacy) dans consignes et guidages
  * - Composition par mode (formatif / sommatif-standard / épreuve-ministérielle)
- * - Application du flag `estCorrige`
+ * - Overlay « corrigé simple » sur les fragments NR / lignes vierges
+ *   (rédactionnel) + annexe optionnelle quand `corrige === "detaille"`
+ *   (cf. spec §3.5, §7.5).
  * - Règles de visibilité (guidage et titres de documents)
  */
 
@@ -30,7 +32,9 @@ import {
   resoudreReferencesDocuments,
 } from "@/lib/impression/renumerotation";
 import { extraireFragmentsNR, type FragmentsNR } from "@/lib/impression/extraire-fragments-nr";
+import { produireCorrigeSimpleNR } from "@/lib/impression/produire-corrige-simple";
 import type { ModeCorrige, RenduImprimable } from "@/lib/impression/types";
+import type { ContenuAnnexeCorrige } from "@/components/epreuve/impression/sections/annexe-corrige";
 
 /* -------------------------------------------------------------------------- */
 /*  Types publics                                                             */
@@ -69,11 +73,14 @@ function genererIdBloc(feuillet: TypeFeuillet, index: number, suffixe?: string):
   return suffixe ? `${base}-${suffixe}` : base;
 }
 
-/** Applique la résolution des refs doc dans la consigne et le guidage d'une tâche. */
+/**
+ * Applique la résolution des refs doc dans la consigne, le guidage et le
+ * corrigé d'une tâche.
+ */
 function resoudreRefsDansTache(
   tache: TacheImpression,
   toutesLesTaches: Pick<DonneesTache, "documents">[],
-): { consigne: string; guidage: Guidage } {
+): { consigne: string; guidage: Guidage; corrige: string } {
   const consigne = resoudreReferencesDocuments(tache.consigne, tache.documents, toutesLesTaches);
 
   const guidage: Guidage = tache.guidage
@@ -86,7 +93,9 @@ function resoudreRefsDansTache(
       }
     : null;
 
-  return { consigne, guidage };
+  const corrige = resoudreReferencesDocuments(tache.corrige, tache.documents, toutesLesTaches);
+
+  return { consigne, guidage, corrige };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -103,14 +112,12 @@ export type ContenuQuadruplet = {
   /** `null` pour les NR — la zone réponse vit dans `consigne` (FragmentsNR). */
   espaceProduction: DonneesTache["espaceProduction"];
   outilEvaluation: DonneesTache["outilEvaluation"];
-};
-
-/** Contenu d'un bloc corrigé. */
-export type ContenuCorrige = {
-  tacheIndex: number;
-  titre: string;
-  corrige: string;
-  outilEvaluation: DonneesTache["outilEvaluation"];
+  /**
+   * Pour les rédactionnels avec corrigé : texte de la réponse attendue
+   * positionné en rouge italique sur les lignes vierges. `null` sinon.
+   * Les NR n'utilisent pas ce champ — l'overlay est déjà dans les fragments.
+   */
+  corrigeTexte: string | null;
 };
 
 /** Contenu d'un bloc cahier-réponses (espace réponse + grille, sans consigne). */
@@ -143,16 +150,21 @@ function construireBlocsDossierDocumentaire(
 }
 
 /**
- * Construit les blocs du questionnaire — un quadruplet par tâche
- * (+ corrigé si flag actif).
+ * Construit les blocs du questionnaire — un quadruplet par tâche, suivi
+ * (uniquement si `corrige === "detaille"`) des blocs annexe « Notes du
+ * correcteur » empilés en fin de feuillet.
  *
  * En mode formatif, chaque quadruplet est précédé des blocs dossier-page
  * de SES documents (numérotation locale 1..N par tâche — Phase 8b
  * correction 2). En sommatif/ministériel, les documents vivent dans
  * un feuillet `dossier-documentaire` séparé avec numérotation globale.
  *
- * Les placeholders `{{doc_X}}` dans les consignes/guidages sont résolus
- * avec le bon scope : LOCAL ([tache]) en formatif, GLOBAL (taches) sinon.
+ * Les placeholders `{{doc_X}}` dans les consignes/guidages/corrigés sont
+ * résolus avec le bon scope : LOCAL ([tache]) en formatif, GLOBAL (taches) sinon.
+ *
+ * L'overlay corrigé simple (spec §3.5) est injecté directement dans le
+ * `ContenuQuadruplet` (fragments NR modifiés en rouge ou `corrigeTexte`
+ * positionné sur les lignes vierges) — aucun bloc corrigé séparé.
  */
 function construireBlocsQuestionnaire(
   taches: TacheImpression[],
@@ -163,16 +175,33 @@ function construireBlocsQuestionnaire(
   const blocs: Bloc[] = [];
   const formatif = mode === "formatif";
 
+  const tachesResolues: { tache: TacheImpression; corrigeResolu: string }[] = [];
+
   taches.forEach((tache, i) => {
     // Scope de numérotation des `{{doc_X}}` : local en formatif, global ailleurs.
     const refsScope = formatif ? [tache] : taches;
-    const { consigne: consigneResolue, guidage } = resoudreRefsDansTache(tache, refsScope);
+    const {
+      consigne: consigneResolue,
+      guidage,
+      corrige: corrigeResolu,
+    } = resoudreRefsDansTache(tache, refsScope);
+
+    tachesResolues.push({ tache, corrigeResolu });
 
     // Pour les NR, on découpe la consigne en fragments (intro/corps/reponse)
     // afin que le renderer puisse insérer le guidage entre intro et corps
     // (spec §3.2). Pour les rédactionnels, on garde le string tel quel.
     const fragments = extraireFragmentsNR(consigneResolue);
-    const consigne: string | FragmentsNR = fragments ?? consigneResolue;
+    const aCorrige = corrige !== null && corrigeResolu.trim().length > 0;
+
+    let consigne: string | FragmentsNR;
+    let corrigeTexte: string | null = null;
+    if (fragments) {
+      consigne = aCorrige ? produireCorrigeSimpleNR(fragments, corrigeResolu) : fragments;
+    } else {
+      consigne = consigneResolue;
+      corrigeTexte = aCorrige ? corrigeResolu : null;
+    }
 
     // En formatif : insérer les blocs dossier-page de la tâche AVANT son
     // quadruplet (documents intégrés à chaque question).
@@ -197,6 +226,7 @@ function construireBlocsQuestionnaire(
       guidage: regles.guidageVisible ? guidage : null,
       espaceProduction: tache.espaceProduction,
       outilEvaluation: tache.outilEvaluation,
+      corrigeTexte,
     };
 
     blocs.push({
@@ -205,23 +235,33 @@ function construireBlocsQuestionnaire(
       tacheId: tache.id,
       content: contenu,
     });
-
-    if (corrige !== null && tache.corrige) {
-      const contenuCorrige: ContenuCorrige = {
-        tacheIndex: i,
-        titre: tache.titre,
-        corrige: resoudreReferencesDocuments(tache.corrige, tache.documents, refsScope),
-        outilEvaluation: tache.outilEvaluation,
-      };
-
-      blocs.push({
-        id: genererIdBloc("questionnaire", i, "corrige"),
-        kind: "quadruplet",
-        tacheId: tache.id,
-        content: contenuCorrige,
-      });
-    }
   });
+
+  // Annexe « Notes du correcteur » — uniquement en mode détaillé.
+  if (corrige === "detaille") {
+    const entreesAvecCorrige = tachesResolues
+      .map(({ tache, corrigeResolu }, index) => ({ tache, corrigeResolu, index }))
+      .filter(({ corrigeResolu }) => corrigeResolu.trim().length > 0);
+    if (entreesAvecCorrige.length > 0) {
+      blocs.push({
+        id: "questionnaire-annexe-titre",
+        kind: "annexe-corrige",
+        content: { type: "titre" } satisfies ContenuAnnexeCorrige,
+      });
+      for (const { tache, corrigeResolu, index } of entreesAvecCorrige) {
+        blocs.push({
+          id: `questionnaire-annexe-${tache.id}`,
+          kind: "annexe-corrige",
+          tacheId: tache.id,
+          content: {
+            type: "question",
+            tacheIndex: index,
+            corrige: corrigeResolu,
+          } satisfies ContenuAnnexeCorrige,
+        });
+      }
+    }
+  }
 
   return blocs;
 }
