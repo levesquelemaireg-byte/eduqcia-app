@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 const isDev = process.env.NODE_ENV === "development";
 
 const nextConfig: NextConfig = {
+  // Puppeteer + chromium-min : ne pas bundler — résolution de chemins runtime
+  // (extraction du pack brotli dans /tmp) incompatible avec le bundling Next.
+  serverExternalPackages: ["@sparticuz/chromium-min", "puppeteer-core"],
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

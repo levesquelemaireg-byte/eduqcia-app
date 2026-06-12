@@ -120,17 +120,18 @@ Implémentation actuelle : pages `(auth)`, Server Actions dans `lib/actions/auth
 
 ## Variables d’environnement
 
-| Variable                        | Rôle                                                                   |
-| ------------------------------- | ---------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SUPABASE_URL`      | URL du projet Supabase.                                                |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon Supabase (client + serveur).                                  |
-| `SUPABASE_SERVICE_ROLE_KEY`     | Clé service role (serveur uniquement).                                 |
-| `NEXT_PUBLIC_SITE_URL`          | URL canonique utilisée pour callbacks et URLs d’aperçu/PDF.            |
-| `DRAFT_TOKEN_SECRET`            | Secret HMAC des tokens draft impression (minimum 32 caractères).       |
-| `KV_REST_API_URL`               | Endpoint REST Vercel KV pour stocker les payloads draft.               |
-| `KV_REST_API_TOKEN`             | Token REST Vercel KV.                                                  |
-| `CHROMIUM_EXECUTABLE_PATH`      | Optionnel : chemin Chromium explicite hors runtime Vercel.             |
-| `NODE_ENV`                      | Active les gardes dev-only (`/dev/wizard-lab`, `/apercu/test/[slug]`). |
+| Variable                        | Rôle                                                                                                                                                                                                                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SUPABASE_URL`      | URL du projet Supabase.                                                                                                                                                                                                                                                 |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clé anon Supabase (client + serveur).                                                                                                                                                                                                                                   |
+| `SUPABASE_SERVICE_ROLE_KEY`     | Clé service role (serveur uniquement).                                                                                                                                                                                                                                  |
+| `NEXT_PUBLIC_SITE_URL`          | URL canonique utilisée pour callbacks et URLs d’aperçu/PDF.                                                                                                                                                                                                             |
+| `DRAFT_TOKEN_SECRET`            | Secret HMAC des tokens draft impression (minimum 32 caractères).                                                                                                                                                                                                        |
+| `KV_REST_API_URL`               | Endpoint REST Vercel KV pour stocker les payloads draft.                                                                                                                                                                                                                |
+| `KV_REST_API_TOKEN`             | Token REST Vercel KV.                                                                                                                                                                                                                                                   |
+| `CHROMIUM_EXECUTABLE_PATH`      | Optionnel : chemin Chromium explicite hors runtime Vercel (local).                                                                                                                                                                                                      |
+| `CHROMIUM_PACK_URL`             | **Obligatoire sur Vercel** : URL du pack brotli `@sparticuz/chromium-min` (téléchargé dans `/tmp` au cold start). Doit correspondre à la version du paquet npm (ex. `https://github.com/Sparticuz/chromium/releases/download/v147.0.0/chromium-v147.0.0-pack.x64.tar`). |
+| `NODE_ENV`                      | Active les gardes dev-only (`/dev/wizard-lab`, `/apercu/test/[slug]`).                                                                                                                                                                                                  |
 
 Dupliquer **Production** et **Preview** sur l’hôte (ex. Vercel) ; pour Preview, `NEXT_PUBLIC_SITE_URL` doit être l’URL de preview. Local : `.env.local` depuis `.env.example` (non versionné). La CI injecte des placeholders — pas de secrets dans le workflow. Pour tester l’impression localement, ajouter aussi `DRAFT_TOKEN_SECRET`, `KV_REST_API_URL`, `KV_REST_API_TOKEN` (et éventuellement `CHROMIUM_EXECUTABLE_PATH`).
 

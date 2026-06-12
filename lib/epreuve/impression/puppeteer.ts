@@ -19,9 +19,17 @@ const NAVIGATION_TIMEOUT_MS = 25_000;
 
 /**
  * Lance un navigateur Chromium headless optimisé pour Vercel serverless.
+ *
+ * Résolution du binaire :
+ * - `CHROMIUM_EXECUTABLE_PATH` (local) : chemin direct vers un Chrome installé.
+ * - `CHROMIUM_PACK_URL` (Vercel) : URL du pack brotli `@sparticuz/chromium-min`,
+ *   téléchargé et extrait dans /tmp au premier appel. Obligatoire en serverless —
+ *   la variante `-min` n'embarque aucun binaire.
  */
 async function lancerNavigateur() {
-  const executablePath = process.env.CHROMIUM_EXECUTABLE_PATH ?? (await chromium.executablePath());
+  const executablePath =
+    process.env.CHROMIUM_EXECUTABLE_PATH ??
+    (await chromium.executablePath(process.env.CHROMIUM_PACK_URL));
 
   return puppeteer.launch({
     args: process.env.CHROMIUM_EXECUTABLE_PATH

@@ -31,6 +31,9 @@ import { mesurerBlocImpression } from "@/lib/impression/mesure-estimation";
  * Timeout Puppeteer : 30s → 504 Gateway Timeout.
  */
 
+/** Durée max de la fonction Vercel — téléchargement pack Chromium (cold start) + rendu. */
+export const maxDuration = 60;
+
 const PUPPETEER_TIMEOUT_MS = 30_000;
 
 const BodySchema = z.object({
